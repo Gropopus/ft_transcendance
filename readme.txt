@@ -1,3 +1,4 @@
+#TOKEN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
 Salut les Benoits,
 
 j'ai fais un set-up de base pour le projet.
@@ -20,24 +21,7 @@ ca communique avec notre database par le port 80.
 
 Notre database s'appel db, le login pour s'y connecter est "user" et le mot de passe "password"
 
+localhost:3000 --> API(NESTJS)
+localhost:4200 --> Angular(html/css/js)
+localhost:5050 --> postgresadmin
 
-	localhost:3000					localhost:4200	localhost:5050
-		|								|				|
-#####################CONTAINER DOCKER###|###############|############
-#		|								|				|			#
-#		V								v				|			#
-#	----------							-----------		|			#
-#	|port:3000|							|port:4200 |	|			#
-#	| API	  |	<---  get data from ----|angular   |	|			#
-#	|NESTJS   |							|js/htm/css|	|			#
-#	----------							-----------		|			#
-#		|find data from									|			#
-#		|												|			#
-#		v												V			#
-#	----------										----------		#
-#	|postgres |<------- send data to --------------	|postgres |		#
-#	|port:5432|			via port 80					|admin    |		#
-#	|name: db |										|port:5050|		#
-#	----------										|port:80  |		#
-#													----------		#
-#####################################################################
