@@ -1,0 +1,103 @@
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { TodoEntity } from './entity/todo.entity';
+import { TodoCreateDto } from './dto/todo.create.dto';
+import { TodoDto } from './dto/todo.dto';
+import { toTodoDto } from '../shared/mapper';
+import { toPromise } from '../shared/utils';
+// import { CreateTodoDto } from './dto/todo.create.dto';
+
+import { todos } from 'src/mock/todos.mock';
+import * as uuid from 'uuid';
+import {v4 as uuidv4} from 'uuid';
+
+@Injectable()
+export class TodoService {
+    /** 1 */
+    todos: TodoEntity[] = todos;
+
+    async getOneTodo(id: string): Promise<TodoDto> {
+      /** 2 */
+      const todo = this.todos.find(todo => todo.id === id);
+
+      if (!todo) {
+      /** 3 */
+        throw new HttpException(`Todo item doesn't exist`, HttpStatus.BAD_REQUEST);
+      }
+
+      /** 4 */
+      return toPromise(toTodoDto(todo));
+    }
+
+    async createTodo(todoDto: TodoCreateDto): Promise<TodoDto> {
+      const { name, description } = todoDto;
+
+      const todo: TodoEntity = {
+          id: uuidv4(),
+          name,
+          description,
+      };
+
+      this.todos.push(todo);
+      return toPromise(toTodoDto(todo));
+    }
+
+    // async getAllTodo(): Promise<TodoDto[]> {
+    //   const todos = await this.todoRepo.find({ relations: ['tasks', 'owner'] });
+    //   return todos.map(todo => toTodoDto(todo));
+    // }
+
+// rest of the service has been removed for brevity
+
+  // async updateTodo(id: string, todoDto: TodoDto): Promise<TodoDto> {
+  //   const { name, description } = todoDto;
+  //
+  //   let todo: TodoEntity = await this.todoRepo.findOne({ where: { id } });
+  //
+  //   if (!todo) {
+  //     throw new HttpException(
+  //       `Todo list doesn't exist`,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //
+  //   todo = {
+  //     id,
+  //     name,
+  //     description,
+  //   };
+  //
+  //   await this.todoRepo.update({ id }, todo); // update
+  //
+  //   todo = await this.todoRepo.findOne({
+  //     where: { id },
+  //     relations: ['tasks', 'owner'],
+  //   }); // re-query
+  //
+  //   return toTodoDto(todo);
+  // }
+  //
+  // async destroyTodo(id: string): Promise<TodoDto> {
+  //   const todo: TodoEntity = await this.todoRepo.findOne({
+  //     where: { id },
+  //     relations: ['tasks', 'owner'],
+  //   });
+  //
+  //   if (!todo) {
+  //     throw new HttpException(
+  //       `Todo list doesn't exist`,
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //
+  //   if (todo.tasks && todo.tasks.length > 0) {
+  //     throw new HttpException(
+  //       `Cannot delete this Todo list, it has existing tasks`,
+  //       HttpStatus.FORBIDDEN,
+  //     );
+  //   }
+  //
+  //   await this.todoRepo.delete({ id }); // delete todo list
+  //
+  //   return toTodoDto(todo);
+  // }
+}
