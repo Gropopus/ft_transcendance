@@ -1,4 +1,4 @@
-import { TodoEntity } from '../todo/entity/todo.entity';
+import { TodoEntity } from '@todo/entity/todo.entity';
 
 export const todos: TodoEntity[] = [
     {
