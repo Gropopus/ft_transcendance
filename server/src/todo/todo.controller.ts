@@ -16,16 +16,13 @@ import { TodoListDto } from './dto/todo.list.dto';
 
 @Controller("api/todos")
 export class TodoController {
-    /** 1 */
     constructor(private readonly todoService: TodoService) {}
+
     @Get()
-    /** 2 */
-    // async findAll(): Promise<TodoListDto> {
-    //     /** 3 */
-    //     const todos = await this.todoService.getAllTodo();
-    //
-    //     /** 4 */     return toPromise({ todos });
-    // }
+    async findAll(): Promise<TodoListDto> {
+      const todos = await this.todoService.getAllTodo();
+      return toPromise({ todos });
+    }
 
     /** 5 */
     @Get(":id")

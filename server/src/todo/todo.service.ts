@@ -4,14 +4,19 @@ import { TodoCreateDto } from './dto/todo.create.dto';
 import { TodoDto } from './dto/todo.dto';
 import { toTodoDto } from '../shared/mapper';
 import { toPromise } from '../shared/utils';
-// import { CreateTodoDto } from './dto/todo.create.dto';
 
 import { todos } from 'src/mock/todos.mock';
-import * as uuid from 'uuid';
 import {v4 as uuidv4} from 'uuid';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TodoService {
+    constructor(
+        @InjectRepository(TodoEntity)
+        private readonly todoRepo: Repository<TodoEntity>,
+    ) {}
     /** 1 */
     todos: TodoEntity[] = todos;
 
@@ -41,10 +46,11 @@ export class TodoService {
       return toPromise(toTodoDto(todo));
     }
 
-    // async getAllTodo(): Promise<TodoDto[]> {
-    //   const todos = await this.todoRepo.find({ relations: ['tasks', 'owner'] });
-    //   return todos.map(todo => toTodoDto(todo));
-    // }
+    async getAllTodo(): Promise<TodoDto[]> {
+      const todos = await this.todoRepo.find({ relations: ['tasks', 'owner'] });
+      console.log('test');
+      return todos.map(todo => toTodoDto(todo));
+    }
 
 // rest of the service has been removed for brevity
 
