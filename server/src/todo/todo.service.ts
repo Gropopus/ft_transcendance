@@ -21,15 +21,12 @@ export class TodoService {
     todos: TodoEntity[] = todos;
 
     async getOneTodo(id: string): Promise<TodoDto> {
-      /** 2 */
       const todo = this.todos.find(todo => todo.id === id);
 
       if (!todo) {
-      /** 3 */
         throw new HttpException(`Todo item doesn't exist`, HttpStatus.BAD_REQUEST);
       }
 
-      /** 4 */
       return toPromise(toTodoDto(todo));
     }
 

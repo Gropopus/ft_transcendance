@@ -11,7 +11,9 @@ export class AppModule {
       return {
         module: AppModule,
         controllers: [AppController],
-        imports: [TodoModule, TypeOrmModule.forRoot(connOptions)],
+        imports: [
+          TypeOrmModule.forRoot(connOptions),
+          TodoModule],
         providers: [AppService],
       };
     }

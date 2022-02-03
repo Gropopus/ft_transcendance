@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "run:services": "docker-compose up && exit 0",
     "TypeORM": "ts-node -r tsconfig-paths/register./node_modules/TypeORM/cli.js",
-    "migration:generate": "yarn run TypeORM migration:generate -n"
+    "migration:generate": "npm run TypeORM migration:generate -n"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
