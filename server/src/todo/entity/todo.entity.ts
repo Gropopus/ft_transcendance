@@ -1,8 +1,20 @@
-import { Entity } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn
+} from 'typeorm';
 
 @Entity('todo')
 export class TodoEntity {
-    id: string;
-    name: string;
-    description?: string;
+  @PrimaryGeneratedColumn()
+  id: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  description?: string;
+
+  @CreateDateColumn() createdOn?: Date;
 }

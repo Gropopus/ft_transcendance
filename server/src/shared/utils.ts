@@ -1,9 +1,11 @@
 
+import { getConnectionOptions, getConnection } from 'TypeORM';
+
 export const toPromise = <T>(data: T): Promise<T> => {
     return new Promise<T>(resolve => { resolve(data);  });
 };
 
-import { getConnectionOptions, getConnection } from 'TypeORM';
+// lit ormcongif.json
 export const getDbConnectionOptions = async (connectionName: string = 'default',
 ) => {
     const options = await getConnectionOptions(process.env.NODE_ENV || 'development', );
