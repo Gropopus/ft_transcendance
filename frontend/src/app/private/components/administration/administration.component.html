@@ -1,0 +1,74 @@
+<div class="wrapper">
+	<div class="container">
+	  <div class="dashboard">
+		  <a [routerLink]="['../setting']">Go to setting</a>
+		</div>
+	  <mat-card>
+		<div>
+		  <div>
+			<div class="title">
+				<h1>All chatchannels</h1>
+		</div>
+			<div *ngIf="(allChannels$|async)?.items?.length > 0; else no_channels" class="channels">
+			<mat-list>
+				<mat-list-item *ngFor="let channel of (allChannels$ | async)?.items">
+					Name: {{channel.name}} Id: {{channel.id}} 
+				<button mat-button class="firstbutton" (click)="deleteChannel(channel.id)">
+					Delete {{channel.name}}     
+				</button>
+				<button mat-button class="firstbutton" (click)="optionChannel(channel.id)">
+					Option Channel
+				</button>
+				<mat-divider></mat-divider>
+				</mat-list-item>
+			</mat-list>
+			<mat-paginator [length]="(allChannels$ | async)?.meta?.totalItems" [pageIndex]="(allChannels$ | async)?.meta?.currentPage"
+				[pageSize]="10" (page)="onPaginateChannels($event)"
+				></mat-paginator>
+			</div>
+		  </div>
+		</div>
+	  </mat-card>
+	  <mat-card>
+		<div>
+		  <div>
+			<div class="title">
+				<h1>All Users</h1>
+		  </div>
+		  <div *ngIf="(allUsers$|async)?.items?.length > 0; else no_friends" class="friends-list">
+			<mat-list>
+				<mat-list-item *ngFor="let allUsers of (allUsers$ | async)?.items">
+					{{allUsers.username}} | {{allUsers.role}}
+					<button *ngIf="!allUsers.ban; else UnBan" mat-button class="firstbutton" (click)="banUser(allUsers)">
+						Ban {{allUsers.username}}     
+					</button>
+					<ng-template #UnBan>
+						<button mat-button class="firstbutton" (click)="banUser(allUsers)">
+							Unban {{allUsers.username}}
+						</button>
+					</ng-template>
+					<button *ngIf="allUsers.role != admin ; else adminRole" mat-button class="firstbutton" (click)="changeRole(allUsers)">
+						Promote admin {{allUsers.username}}     
+					</button>
+					<ng-template #adminRole>
+						<button mat-button class="firstbutton" (click)="changeRole(allUsers)">
+							Demote admin {{allUsers.username}}
+						</button>
+					</ng-template>
+				  <mat-divider></mat-divider>
+				</mat-list-item>
+			  </mat-list>
+		</div>
+		<ng-template #no_friends>
+			<br>
+			<mat-error>`I have no friends and no enemies - only competitors`</mat-error>
+		</ng-template>
+		  </div>
+		</div>
+	  </mat-card>
+	</div>
+  
+	<ng-template #no_channels>
+		<mat-error>No Chatchannels for you so far, please create one or get invited</mat-error>
+	</ng-template>
+  </div>
