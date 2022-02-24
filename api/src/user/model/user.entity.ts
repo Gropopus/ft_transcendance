@@ -3,6 +3,7 @@ import { ConnectedUserEntity } from "src/chat/model/connected-user.entity";
 import { JoinedChannelEntity } from "src/chat/model/joined-channel.entity";
 import { MessageEntity } from "src/chat/model/message.entity";
 import { ChannelEntity } from "src/chat/model/channel.entity";
+import { RelationshipEntity } from "src/relationship/relationship.entity";
 import { Exclude } from 'class-transformer';
 import { UserRole, UserStatus } from "./user.interface";
 
@@ -68,6 +69,12 @@ export class UserEntity {
 
 	@OneToMany(() => ChannelEntity, channel => channel.owner)
 	chatOwner: ChannelEntity[];
+
+	@OneToMany(() => RelationshipEntity, relationship => relationship.userId1)
+	relationships: RelationshipEntity[];
+
+	@OneToMany(() => RelationshipEntity, relationship => relationship.userId2)
+	relationships1: RelationshipEntity[];
 
  	@BeforeInsert()
  	@BeforeUpdate()
