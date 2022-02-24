@@ -1,0 +1,23 @@
+<mat-form-field appearance="standard">
+  <input matInput placeholder="Search Username" [matAutocomplete]="auto" [formControl]="searchUsername">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
+    (optionSelected)="setSelectedUser($event.option.value)">
+    <ng-container>
+      <mat-option *ngFor="let user of filteredUsers" [value]="user">
+        <p><span>{{user.username}}</span></p>
+      </mat-option>
+    </ng-container>
+  </mat-autocomplete>
+</mat-form-field>
+<button mat-button type="button" [disabled]="!selectedUser" (click)="addUserToForm()">Add User</button>
+
+<mat-chip-list *ngIf="users.length > 0; else no_users">
+  <mat-chip *ngFor="let user of users" (removed)="removeUserFromForm(user)">
+    {{user.username}}
+    <mat-icon matChipRemove>cancel</mat-icon>
+  </mat-chip>
+</mat-chip-list>
+
+<ng-template #no_users>
+  <mat-error>No Users added so far</mat-error>
+</ng-template>

@@ -1,38 +1,14 @@
-# specifier la version de node et de l'image
-# nom de image delelopment
-FROM node:16.13.2 AS development
+FROM node:14
 
-#specifie le directory dans le container
-WORKDIR /src/app
+WORKDIR /transcendance/src/app
 
-# copie les package-lock.json & package.json de l'host au working directory
 COPY package*.json ./
 
-# install dans le container
 RUN npm install
+RUN npm install -g @angular/cli@12.0.0
 
-# Bundle App Sources
-COPY . .
-
-RUN npm run build
+# RUN npm uninstall bcrypt
+# RUN npm i bcrypt
 
 EXPOSE 3000
-
-#######################################
-#              PRODUCTION             #
-#######################################
-
-# Build une image production
-FROM node:16.13.2 AS production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-WORKDIR /src/app
-
-COPY --from=development /src/app/ .
-
-EXPOSE 8080
-
-#run app
 CMD [ "node", "dist/main" ]

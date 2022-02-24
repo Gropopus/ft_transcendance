@@ -1,0 +1,33 @@
+<div class="setting">
+	<h1>Settings :</h1>
+	<div id="username">
+		<h2>Change username:</h2>
+		<form class="form" [formGroup]="settingForm" (ngSubmit)="update(true)">
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="New Username" formControlName="username">
+				<mat-error *ngIf="settingForm.controls.username.errors">{{getErrorMessageUser()}}</mat-error>
+			</mat-form-field>
+			<button mat-flat-button color="primary" [disabled]="!settingForm.valid" type="submit" id="username-button">Valid</button>
+		</form>
+	</div>
+	<mat-divider></mat-divider>
+	<div id="username">
+		<img src="/assets/img/site/security.png" alt="logo" width="50" height="50">
+		<h2>Google Authentification</h2>
+		<p>Protect your account</p>
+		<button mat-button (click)="getQrCode()">{{getStateAuth()}}</button>
+	</div>
+	<mat-divider></mat-divider>
+	<div id="username">
+		<h2>Update profile picture</h2>
+		<input
+			type="file" accept="image/x-png,image/gif,image/jpeg" (change)="onFileChanged($event)"
+			#fileInput>
+		<button mat-flat-button color="primary" (click)="onUpload()">Upload!</button>
+	</div>
+	<mat-divider></mat-divider>
+	<div *ngIf="settingForm.value.role==owner || settingForm.value.role==admin" id="username">
+		<h2>Admin</h2>
+		<a routerLink="/private/admin" routerLinkActive="active" #rla="routerLinkActive">management</a>
+	</div>
+</div>
