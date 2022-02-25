@@ -1,19 +1,23 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { relationshipType } from "./relationship.interface";
+import { UserEntity } from "src/user/model/user.entity";
 import { Exclude } from 'class-transformer';
 
 @Entity()
 export class RelationshipEntity {
-    @PrimaryColumn()
-    userId1: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @PrimaryColumn()
-    userId2: number;
+    @Column()
+    target: number;
+    
+    @Column()
+    user: number;
 
     @Column({
-        type:"enum",
+        type: "enum",
         enum: relationshipType,
         default: relationshipType.REQUEST
     })
-    type: relationshipType;
+    type: relationshipType;                                                                                   
 }

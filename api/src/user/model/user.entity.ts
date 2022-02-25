@@ -70,11 +70,8 @@ export class UserEntity {
 	@OneToMany(() => ChannelEntity, channel => channel.owner)
 	chatOwner: ChannelEntity[];
 
-	@OneToMany(() => RelationshipEntity, relationship => relationship.userId1)
+	@OneToMany(() => RelationshipEntity, relationship => relationship.user)
 	relationships: RelationshipEntity[];
-
-	@OneToMany(() => RelationshipEntity, relationship => relationship.userId2)
-	relationships1: RelationshipEntity[];
 
  	@BeforeInsert()
  	@BeforeUpdate()

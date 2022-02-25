@@ -1,6 +1,7 @@
 export interface Irelationship {
-    userId1?: number;
-    userId2?: number;
+    id?: number,
+    user?: number,
+    target?: number;
     type?: relationshipType;
 }
 
@@ -8,4 +9,4 @@ export enum relationshipType {
     REQUEST = 'request',
     FRIEND = 'friend',
     BLOCK = 'block',
-}
+}   

@@ -1,5 +1,6 @@
 import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { RelationshipService } from 'src/relationship/relationship.service'
+
 @Controller('relationship')
 export class RelationshipController {
     constructor(
@@ -28,18 +29,5 @@ export class RelationshipController {
     @Get(':u1/block/:u2')
     async blockUser(@Param() params) {
         this.rsService.blockUser(params.u1, params.u2);
-    }
-
-    @Get(':user/friendList')
-    async getFriendList(@Param() params) {
-        this.rsService.getFriendList(params.user);
-    }
-    @Get(':user/blockList')
-    async getBlockList(@Param() params) {
-        this.rsService.getBlockList(params.user);
-    }
-    @Get(':user/RequestList')
-    async getRequestList(@Param() params) {
-        this.rsService.getRequestList(params.user);
     }
 }
