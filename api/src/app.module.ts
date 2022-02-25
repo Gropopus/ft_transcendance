@@ -54,6 +54,14 @@ export class AppModule implements NestModule {
 		{path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
 		{path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
 		{path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
+    // relationship
+    {path: 'api/relationship/:u1/add/:u2', method: RequestMethod.PUT},
+    {path: 'api/relationship/:u1/unfriend/:u2', method: RequestMethod.PUT},
+    {path: 'api/relationship/:u1/accept/:u2', method: RequestMethod.PUT},
+    {path: 'api/relationship/:u1/refuse/:u2', method: RequestMethod.PUT},
+    {path: 'api/relationship/:u1/block/:u2', method: RequestMethod.PUT},
+    {path: 'api/relationship/:user/friends', method: RequestMethod.GET},
+    {path: 'api/relationship/:user/requests', method: RequestMethod.GET},
 
       )
       .forRoutes('')

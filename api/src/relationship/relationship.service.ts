@@ -48,4 +48,13 @@ export class RelationshipService {
     async refuseFriendRequest(u1: number, u2: number) {
         await this.rsRepository.delete({user : u1, target :  u2});
     }
+
+    async friendRelations(userId: number) {
+        return this.rsRepository.find({ user: userId, type: relationshipType.FRIEND});
+    }
+
+    async friendRequests(userId: number) {
+        return this.rsRepository.find({ user: userId, type: relationshipType.REQUEST});
+    }
+
 }
