@@ -14,7 +14,7 @@ import { CustomSocket } from '../../sockets/custom-socket';
 @Injectable({
   providedIn: 'root'
 })
-export class FriendsService {
+export class FriendService {
 
   constructor(
 	private http: HttpClient,

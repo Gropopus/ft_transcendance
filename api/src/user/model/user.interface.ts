@@ -1,5 +1,5 @@
 import { Ichannel } from "src/chat/model/channel.interface";
-import { IFriend } from "src/friends/friends.interface";
+import { IFriend } from "src/friend/friend.interface";
 
 export interface UserI {
     id?: number;

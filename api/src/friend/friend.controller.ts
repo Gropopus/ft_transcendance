@@ -1,10 +1,10 @@
 import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FriendsService } from './friends.service'
+import { FriendService } from './friend.service'
 
 @Controller('friends')
-export class FriendsController {
+export class FriendController {
     constructor(
-        private rsService: FriendsService) {}
+        private rsService: FriendService) {}
 
     @Put(':u1/add/:u2')
     async addFriend(@Param() params) {

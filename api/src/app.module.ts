@@ -7,10 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
-<<<<<<< HEAD
-=======
-import { FriendModule } from './friends/friends.module';
->>>>>>> adbenoit
+import { FriendModule } from './friend/friend.module';
 
 @Module({
   imports: [
@@ -24,10 +21,7 @@ import { FriendModule } from './friends/friends.module';
     UserModule,
     AuthModule,
     ChatModule,
-<<<<<<< HEAD
-=======
     FriendModule,
->>>>>>> adbenoit
   ],
   controllers: [AppController],
   providers: [AppService],

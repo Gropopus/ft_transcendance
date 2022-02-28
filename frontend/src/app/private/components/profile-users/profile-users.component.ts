@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from '../../../public/services/user-service/user.service';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { FriendsService } from '../../services/friends-service/friends.service';
+import { FriendService } from '../../services/friends-service/friends.service';
 import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { HistoryI } from 'src/app/model/history/history.interface';
 import { HistoryService } from '../../../public/services/history-service/history.service';
@@ -42,7 +42,7 @@ export class ProfileusersComponent implements OnInit {
 		private router: Router,
 		private authService: AuthService,
 		private historyService: HistoryService,
-		private friendsService: FriendsService,
+		private friendsService: FriendService,
 		private chatService: ChatService,
 		
 		) { 

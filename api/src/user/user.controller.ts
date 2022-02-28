@@ -110,13 +110,8 @@ export class UserController {
 	    const user: UserI = await this.userService.findOne(req.user.id);
 
 		// Remove old avatar
-<<<<<<< HEAD
 	    if (fs.existsSync('src/uploads/avatar/' + user.avatar) && user.avatar != "user.png"){
 			fs.unlinkSync('src/uploads/avatar/' + user.avatar)
-=======
-	    if (fs.existsSync('./' + user.avatar) && user.avatar != "user.png"){
-			fs.unlinkSync('./' + user.avatar)
->>>>>>> adbenoit
 		}
 	    return this.userService.updateOneOb(user.id, {avatar: file.filename}).pipe(
 	        map((user: UserI) => ({avatar: user.avatar}))
@@ -125,21 +120,13 @@ export class UserController {
 
 	@Get('avatar/:imagename')
 	findProfileImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
-<<<<<<< HEAD
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + imagename)));
-=======
-	    return of(res.sendFile(join(process.cwd(), imagename)));
->>>>>>> adbenoit
 	}
 
 	@Get('avatarById/:id')
 	async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
 	    const user = await this.userService.findOne(id);
-<<<<<<< HEAD
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + user.avatar)));
-=======
-	    return of(res.sendFile(join(process.cwd(), user.avatar)));
->>>>>>> adbenoit
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)

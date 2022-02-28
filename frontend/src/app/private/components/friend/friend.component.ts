@@ -9,7 +9,7 @@ import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { UserI } from 'src/app/model/user/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
-import { FriendsService } from '../../services/friends-service/friends.service';
+import { FriendService } from '../../services/friends-service/friends.service';
 
 @Component({
   selector: 'app-friend',
@@ -27,7 +27,7 @@ export class FriendComponent implements OnInit {
 		private router: Router,
 		private userService: UserService,
 		private authService: AuthService,
-		private friendsService: FriendsService,
+		private friendsService: FriendService,
 		) { }
 
   
