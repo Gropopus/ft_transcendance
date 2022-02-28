@@ -7,6 +7,10 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
+<<<<<<< HEAD
+=======
+import { FriendModule } from './friends/friends.module';
+>>>>>>> adbenoit
 
 @Module({
   imports: [
@@ -20,6 +24,10 @@ import { ChatModule } from './chat/chat.module';
     UserModule,
     AuthModule,
     ChatModule,
+<<<<<<< HEAD
+=======
+    FriendModule,
+>>>>>>> adbenoit
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -54,6 +62,14 @@ export class AppModule implements NestModule {
 		{path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
 		{path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
 		{path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
+    // friends
+    {path: 'api/friends/:u1/add/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/remove/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/accept/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/decline/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/status/:u2', method: RequestMethod.GET},
+    {path: 'api/friends/:user', method: RequestMethod.GET},
+    {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
 
       )
       .forRoutes('')
