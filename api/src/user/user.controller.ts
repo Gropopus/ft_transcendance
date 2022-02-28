@@ -21,7 +21,7 @@ import * as fs from 'fs';
 
 export const storage = {
   storage: diskStorage({
-      destination: './src/uploads/avatar',
+      destination: '.',
       filename: (req, file, cb) => {
           const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
           const extension: string = path.parse(file.originalname).ext;
@@ -110,8 +110,8 @@ export class UserController {
 	    const user: UserI = await this.userService.findOne(req.user.id);
 
 		// Remove old avatar
-	    if (fs.existsSync('src/uploads/avatar/' + user.avatar) && user.avatar != "user.png"){
-			fs.unlinkSync('src/uploads/avatar/' + user.avatar)
+	    if (fs.existsSync('./' + user.avatar) && user.avatar != "user.png"){
+			fs.unlinkSync('./' + user.avatar)
 		}
 	    return this.userService.updateOneOb(user.id, {avatar: file.filename}).pipe(
 	        map((user: UserI) => ({avatar: user.avatar}))
@@ -120,13 +120,13 @@ export class UserController {
 
 	@Get('avatar/:imagename')
 	findProfileImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
-	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + imagename)));
+	    return of(res.sendFile(join(process.cwd(), imagename)));
 	}
 
 	@Get('avatarById/:id')
 	async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
 	    const user = await this.userService.findOne(id);
-	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + user.avatar)));
+	    return of(res.sendFile(join(process.cwd(), user.avatar)));
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)

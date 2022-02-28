@@ -1,10 +1,10 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { relationshipType } from "./relationship.interface";
+import { FriendStatus } from "./friends.interface";
 import { UserEntity } from "src/user/model/user.entity";
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class RelationshipEntity {
+export class FriendEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -16,8 +16,8 @@ export class RelationshipEntity {
 
     @Column({
         type: "enum",
-        enum: relationshipType,
-        default: relationshipType.REQUEST
+        enum: FriendStatus,
+        default: FriendStatus.PENDING
     })
-    type: relationshipType;                                                                                   
+    status: FriendStatus;                                                                                   
 }

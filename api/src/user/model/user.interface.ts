@@ -1,5 +1,5 @@
 import { Ichannel } from "src/chat/model/channel.interface";
-import { Irelationship } from "src/relationship/relationship.interface";
+import { IFriend } from "src/friends/friends.interface";
 
 export interface UserI {
     id?: number;
@@ -17,7 +17,7 @@ export interface UserI {
 	twoFactorAuthEnabled?: boolean;
 	twoFactorAuthenticationSecret?: string;
 	chatOwner?: Ichannel[];
-    relationships?: Irelationship[];
+    friends?: IFriend[];
 }
 
 export enum UserRole {
