@@ -7,7 +7,7 @@ import { UserI } from 'src/app/model/user/user.interface';
 import { HistoryI } from 'src/app/model/history/history.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from '../../../public/services/user-service/user.service';
-import { HistoryService } from '../../../public/services/history-service/history.service';
+import { PlayerService } from '../../../public/services/history-service/history.service';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { Router, ActivatedRoute} from '@angular/router';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -21,7 +21,7 @@ import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractC
 export class ProfileComponent implements OnInit {
 
 	
-	constructor(private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private authService: AuthService, private historyService: HistoryService) { }
+	constructor(private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private authService: AuthService, private PlayerService: PlayerService) { }
 	
 	
 
@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
 		  switchMap((idt: number) => this.userService.findOne(idt).pipe(
 			tap((user) => {
 			  this.user = this.userService.findOne(user.id);
-			  this.history = this.historyService.findAllByUserId(user.id);
+			  this.history = this.PlayerService.findAllByUserId(user.id);
 			  this.getImageFromService(user.id);
 			})
 		  ))

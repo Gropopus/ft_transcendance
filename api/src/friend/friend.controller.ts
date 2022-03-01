@@ -4,40 +4,40 @@ import { FriendService } from './friend.service'
 @Controller('friends')
 export class FriendController {
     constructor(
-        private rsService: FriendService) {}
+        private friendService: FriendService) {}
 
     @Put(':u1/add/:u2')
     async addFriend(@Param() params) {
-        this.rsService.addFriend(params.u1,params.u2);
+        this.friendService.addFriend(params.u1,params.u2);
     }
     
     @Put(':u1/remove/:u2')
     async unfriends(@Param() params) {
-        this.rsService.unfriends(params.u1, params.u2);
+        this.friendService.unfriends(params.u1, params.u2);
     }
     
     @Put(':u1/accept/:u2')
     async acceptFriendRequest(@Param() params) {
-        this.rsService.acceptFriendRequest(params.u1, params.u2);
+        this.friendService.acceptFriendRequest(params.u1, params.u2);
     }
 
     @Put(':u1/decline/:u2')
     async declineFriendRequest(@Param() params) {
-        this.rsService.declineFriendRequest(params.u1, params.u2);
+        this.friendService.declineFriendRequest(params.u1, params.u2);
     }
 
     @Get(':user')
     async friendsRelations(@Param() params) {
-        return this.rsService.friendsRelations(params.user);
+        return this.friendService.friendsRelations(params.user);
     }
 
     @Get(':user/received-requests')
     async friendsRequests(@Param() params) {
-        return this.rsService.friendsRequests(params.user);
+        return this.friendService.friendsRequests(params.user);
     }
 
     @Get(':u1/status/:u2')
     async friendsStatus(@Param() params) {
-        return this.rsService.friendsStatus(params.u1, params.u2);
+        return this.friendService.friendsStatus(params.u1, params.u2);
     }
 }

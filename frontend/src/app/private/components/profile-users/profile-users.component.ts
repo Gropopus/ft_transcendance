@@ -12,7 +12,7 @@ import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractC
 import { FriendService } from '../../services/friends-service/friends.service';
 import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { HistoryI } from 'src/app/model/history/history.interface';
-import { HistoryService } from '../../../public/services/history-service/history.service';
+import { PlayerService } from '../../../public/services/history-service/history.service';
 import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
@@ -41,7 +41,7 @@ export class ProfileusersComponent implements OnInit {
 		private userService: UserService,
 		private router: Router,
 		private authService: AuthService,
-		private historyService: HistoryService,
+		private PlayerService: PlayerService,
 		private friendsService: FriendService,
 		private chatService: ChatService,
 		
@@ -70,7 +70,7 @@ export class ProfileusersComponent implements OnInit {
 							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
 						}
 						else {
-							this.history = this.historyService.findAllByUserId(val.id);
+							this.history = this.PlayerService.findAllByUserId(val.id);
 							this.getImageFromService(val.id);
 							this.idProfile = val.id;
 							this.isFriend();

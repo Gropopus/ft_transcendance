@@ -1,7 +1,7 @@
 import { FriendEntity } from "src/app/friend/models/friend.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { FriendRequestEntity } from "../friends/friends.entity";
-import { HistoryEntity } from "../history/history.entity";
+import { PlayerEntity } from "../history/history.entity";
 import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
@@ -62,14 +62,14 @@ export class UserEntity {
 	receivedFriendRequests: FriendRequestEntity[];
 
 	@OneToMany(
-		() => HistoryEntity,
-		(historyEntity) => historyEntity.playerOne,
+		() => PlayerEntity,
+		(PlayerEntity) => PlayerEntity.playerOne,
 	)
 	host: FriendRequestEntity[];
 
 	@OneToMany(
-	() =>HistoryEntity,
-	(historyEntity) => historyEntity.playerTwo,
+	() =>PlayerEntity,
+	(PlayerEntity) => PlayerEntity.playerTwo,
 	)
 	opponent: FriendRequestEntity[];
 	

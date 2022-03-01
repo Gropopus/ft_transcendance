@@ -6,6 +6,7 @@ import { ChannelEntity } from "src/chat/model/channel.entity";
 import { FriendEntity } from "src/friend/friend.entity";
 import { Exclude } from 'class-transformer';
 import { UserRole, UserStatus } from "./user.interface";
+import { PlayerEntity } from "src/player/player.entity";
 
 @Entity()
 export class UserEntity {
@@ -72,6 +73,9 @@ export class UserEntity {
 
 	@OneToMany(() => FriendEntity, friends => friends.user)
 	friends: FriendEntity[];
+
+    @OneToMany(() => PlayerEntity, player => player.user)
+	history: PlayerEntity[];
 
  	@BeforeInsert()
  	@BeforeUpdate()
