@@ -23,7 +23,7 @@ import { PlayerModule } from './player/player.module';
     AuthModule,
     ChatModule,
     FriendModule,
-    PlayerModule,
+    // PlayerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -53,19 +53,24 @@ export class AppModule implements NestModule {
         {path: '/api/oauth2/school42', method: RequestMethod.GET},
         {path: '/api/oauth2/school42/callback', method: RequestMethod.GET},
 		// channel
-		{path: '/api/channel/:idChannel', method: RequestMethod.GET},
-		{path: '/api/channel/:id/admin/destroy', method: RequestMethod.PUT},
-		{path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
-		{path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
-		{path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
+      {path: '/api/channel/:idChannel', method: RequestMethod.GET},
+      {path: '/api/channel/:id/admin/destroy', method: RequestMethod.PUT},
+      {path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
+      {path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
+      {path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
     // friends
-    {path: 'api/friends/:u1/add/:u2', method: RequestMethod.PUT},
-    {path: 'api/friends/:u1/remove/:u2', method: RequestMethod.PUT},
-    {path: 'api/friends/:u1/accept/:u2', method: RequestMethod.PUT},
-    {path: 'api/friends/:u1/decline/:u2', method: RequestMethod.PUT},
-    {path: 'api/friends/:u1/status/:u2', method: RequestMethod.GET},
-    {path: 'api/friends/:user', method: RequestMethod.GET},
-    {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
+      {path: 'api/friends/:u1/add/:u2', method: RequestMethod.PUT},
+      {path: 'api/friends/:u1/remove/:u2', method: RequestMethod.PUT},
+      {path: 'api/friends/:u1/accept/:u2', method: RequestMethod.PUT},
+      {path: 'api/friends/:u1/decline/:u2', method: RequestMethod.PUT},
+      {path: 'api/friends/:u1/status/:u2', method: RequestMethod.GET},
+      {path: 'api/friends/:user', method: RequestMethod.GET},
+      {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
+    //player
+      {path: 'api/player/:pid/stat', method: RequestMethod.GET},
+      {path: 'api/player/:u1/:u2/newP', method: RequestMethod.PUT},
+      {path: 'api/player/:pid/scores', method: RequestMethod.PUT},
+
 
       )
       .forRoutes('')

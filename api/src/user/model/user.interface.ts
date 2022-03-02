@@ -1,5 +1,6 @@
 import { Ichannel } from "src/chat/model/channel.interface";
 import { IFriend } from "src/friend/friend.interface";
+import { IPlayer } from "src/player/player.interface";
 
 export interface UserI {
     id?: number;
@@ -18,6 +19,7 @@ export interface UserI {
 	twoFactorAuthenticationSecret?: string;
 	chatOwner?: Ichannel[];
     friends?: IFriend[];
+    history?: IPlayer[];
 }
 
 export enum UserRole {

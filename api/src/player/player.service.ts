@@ -13,25 +13,32 @@ export class PlayerService {
         {}
 
     async create(user1: UserI, user2: UserI) {
-        let player1 = {
+        let player1: IPlayer = {
             user: user1,
-            opponent: {}
         }
-        let player2 = {
+        let player2: IPlayer = {
             user: user2,
-            opponent: player1,
+            opponent: player1.id,
             side: PlayerSide.RIGHT
         }
-        player1.opponent = player2;
-        const player = await this.playerRepository.save(this.playerRepository.create(player1));
+        player1.opponent = player2.id;
+        await this.playerRepository.save(this.playerRepository.create(player1));
         await this.playerRepository.save(this.playerRepository.create(player2));
-        return this.playerRepository.find({id: player.id});
+        return this.playerRepository.find({id: player1.id});
     }
 
     async setScores(pid: number, his_score: number, op_score: number) {
+        await this.playerRepository.update({id : pid}, {
+                points: his_score,
+                status: (his_score > op_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
+            });
+        await this.playerRepository.update( {id : this.playerRepository.find({ id: pid})[0].opponent.id}, {
+            points: op_score,
+            status:  (op_score > his_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
+        });
     }
 
-    async playerStat(pid: number) {
-        return this.playerRepository.find({ id: pid });
+    async playerStatistics(pid: number) {
+        return this.playerRepository.find({ id: pid })[0];
     }
 }

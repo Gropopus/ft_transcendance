@@ -5,7 +5,7 @@ export interface IPlayer {
     user?: UserI,
     points?: number,
     status?: PlayerStatus,
-    opponent?: IPlayer,
+    opponent?: number,
     side?: PlayerSide
 }
 

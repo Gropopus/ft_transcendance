@@ -1,7 +1,6 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Exclude } from 'class-transformer';
+import { JoinColumn, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "src/user/model/user.entity";
-import { UserI } from "src/user/model/user.interface";
+// import { UserI } from "src/user/model/user.interface";
 import { PlayerStatus, PlayerSide } from "./player.interface"
 
 @Entity()
@@ -10,7 +9,8 @@ export class PlayerEntity {
     id: number;
 
     @ManyToOne(() => UserEntity, user => user.history)
-    user: UserI;
+    @JoinColumn()
+    user: UserEntity;
 
     @Column({default: 0})
     points: number;
@@ -28,4 +28,7 @@ export class PlayerEntity {
         default: PlayerSide.LEFT
     })
     side: PlayerSide;
+
+    @Column()
+    opponent: number;
 }
