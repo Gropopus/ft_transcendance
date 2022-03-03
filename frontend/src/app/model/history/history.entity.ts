@@ -11,7 +11,7 @@ export class PlayerEntity {
 
   @ManyToOne(
     () => UserEntity,
-    (userEntity) => userEntity.opponent,
+    (userEntity) => userEntity.opponentId,
   )
   playerTwo: UserEntity;
 

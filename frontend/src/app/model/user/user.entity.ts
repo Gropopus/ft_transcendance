@@ -71,7 +71,7 @@ export class UserEntity {
 	() =>PlayerEntity,
 	(PlayerEntity) => PlayerEntity.playerTwo,
 	)
-	opponent: FriendRequestEntity[];
+	opponentId: FriendRequestEntity[];
 	
 	@BeforeInsert()
 	emailToLowerCase() {

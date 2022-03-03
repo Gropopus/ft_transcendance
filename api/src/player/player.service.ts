@@ -24,8 +24,8 @@ export class PlayerService {
         let player2 = this.playerRepository.create(iplayer2);
         await this.playerRepository.save(player1);
         await this.playerRepository.save(player2);
-        player1.opponent = player2.id;
-        player2.opponent = player1.id;
+        player1.opponentId = player2.id;
+        player2.opponentId = player1.id;
         await this.playerRepository.save(player1);
         await this.playerRepository.save(player2);
         return player1;
@@ -35,7 +35,7 @@ export class PlayerService {
         await this.playerRepository.update({id: pid}, {
                 points: his_score
             });
-        const op_id = (await this.playerRepository.findOne({ id: pid})).opponent;
+        const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
         await this.playerRepository.update( {id: op_id}, {
             points: op_score
         });
@@ -47,7 +47,7 @@ export class PlayerService {
                 points: his_score,
                 status: (his_score > op_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
             });
-        const op_id = (await this.playerRepository.findOne({ id: pid})).opponent;
+        const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
         await this.playerRepository.update( {id: op_id}, {
             points: op_score,
             status:  (op_score > his_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
