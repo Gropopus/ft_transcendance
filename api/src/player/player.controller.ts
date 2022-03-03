@@ -8,20 +8,25 @@ export class PlayerController {
         private playerService: PlayerService,
         private userService: UserService) {}
 
-    @Get(':pid/stat')
+    @Get(':pid')
     async playerStat(@Param() params) {
-        return this.playerService.playerStatistics(params.pid);
+        return this.playerService.getPlayer(params.pid);
     }
 
-    @Put(':u1/:u2/newP')
+    @Put('create/:u1/:u2')
     async create_players(@Param() params) {
         return this.playerService.create(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2))
     }
 
-    @Put(':pid/scores')
+    @Put(':pid/setscores')
     async setScores(@Param() params) {
         return this.playerService.setScores(params.pid, 1, 2);
+    }
+
+    @Put(':pid/finalscores')
+    async setFinalScores(@Param() params) {
+        return this.playerService.setScores(params.pid, 5, 6);
     }
 }

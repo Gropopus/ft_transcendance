@@ -23,7 +23,7 @@ import { PlayerModule } from './player/player.module';
     AuthModule,
     ChatModule,
     FriendModule,
-    // PlayerModule,
+    PlayerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -68,8 +68,9 @@ export class AppModule implements NestModule {
       {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
     //player
       {path: 'api/player/:pid/stat', method: RequestMethod.GET},
-      {path: 'api/player/:u1/:u2/newP', method: RequestMethod.PUT},
-      {path: 'api/player/:pid/scores', method: RequestMethod.PUT},
+      {path: 'api/player/create/:u1/:u2', method: RequestMethod.PUT},
+      {path: 'api/player/:pid/setscores', method: RequestMethod.PUT},
+      {path: 'api/player/:pid/finalscores', method: RequestMethod.PUT},
 
 
       )

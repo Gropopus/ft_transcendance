@@ -29,6 +29,6 @@ export class PlayerEntity {
     })
     side: PlayerSide;
 
-    @Column()
+    @Column({default: 0})
     opponent: number;
 }
