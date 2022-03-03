@@ -67,11 +67,8 @@ export class AppModule implements NestModule {
       {path: 'api/friends/:user', method: RequestMethod.GET},
       {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
     //player
-      {path: 'api/player/:pid/stat', method: RequestMethod.GET},
-      {path: 'api/player/create/:u1/:u2', method: RequestMethod.PUT},
-      {path: 'api/player/:pid/setscores', method: RequestMethod.PUT},
-      {path: 'api/player/:pid/finalscores', method: RequestMethod.PUT},
-
+      {path: 'api/history/player/:playerId', method: RequestMethod.GET},
+      {path: 'api/history/:userId', method: RequestMethod.GET},
 
       )
       .forRoutes('')

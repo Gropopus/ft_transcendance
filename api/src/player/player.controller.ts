@@ -2,31 +2,19 @@ import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards
 import { UserService } from 'src/user/user.service';
 import { PlayerService } from './player.service'
 
-@Controller('player')
+@Controller('history')
 export class PlayerController {
     constructor(
         private playerService: PlayerService,
         private userService: UserService) {}
 
-    @Get(':pid')
+    @Get('player/:playerId')
     async playerStat(@Param() params) {
-        return this.playerService.getPlayer(params.pid);
+        return this.playerService.getPlayer(params.playerId);
     }
-
-    @Put('create/:u1/:u2')
-    async create_players(@Param() params) {
-        return this.playerService.create(
-            await this.userService.findOne(params.u1),
-            await this.userService.findOne(params.u2))
-    }
-
-    @Put(':pid/setscores')
-    async setScores(@Param() params) {
-        return this.playerService.setScores(params.pid, 1, 2);
-    }
-
-    @Put(':pid/finalscores')
-    async setFinalScores(@Param() params) {
-        return this.playerService.setScores(params.pid, 5, 6);
+    
+    @Get(':userId')
+    async UserHistory(@Param() params) {
+        return this.playerService.getUserHistory(await this.userService.findOne(params.userId));
     }
 }

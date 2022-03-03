@@ -58,4 +58,8 @@ export class PlayerService {
     async getPlayer(pid: number) {
         return this.playerRepository.findOne({ id: pid });
     }
+
+    async getUserHistory(user: UserI) {
+        return this.playerRepository.find({ user: user })
+    }
 }
