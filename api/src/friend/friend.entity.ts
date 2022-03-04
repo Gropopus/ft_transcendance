@@ -1,4 +1,4 @@
-import { JoinColumn, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { JoinColumn, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FriendStatus } from "./friend.interface";
 import { UserEntity } from "src/user/model/user.entity";
 import { Iuser } from "src/user/model/user.interface";

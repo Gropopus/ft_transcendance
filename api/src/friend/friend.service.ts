@@ -26,7 +26,7 @@ export class FriendService {
         await this.rsRepository.save(this.rsRepository.create(u1Relation));
         await this.rsRepository.save(this.rsRepository.create(u2Relation));
     }
-
+    
     async unfriends(u1: Iuser, u2: Iuser) {
         await this.rsRepository.delete({user : u1, targetId :  u2.id});
         await this.rsRepository.delete({user : u2, targetId :  u1.id});
@@ -45,12 +45,22 @@ export class FriendService {
     async friendsRelations(u: Iuser) {
         return this.rsRepository.find({ user: u, status: FriendStatus.FRIEND});
     }
-
+    
     async friendsRequests(u: Iuser) {
         return this.rsRepository.find({ user: u, status: FriendStatus.WAITING});
     }
     
     async friendsStatus(u1: Iuser, u2: Iuser) {
         return this.rsRepository.findOne({ user: u1, targetId: u2.id});
+    }
+    
+    async blockUser(u1: Iuser, u2: Iuser) {
+        await this.rsRepository.delete({user : u1, targetId :  u2.id});
+        const relation = {
+            user: u1,
+            targetId: u2.id,
+            status: FriendStatus.BLOCKED
+        }
+        await this.rsRepository.save(this.rsRepository.create(relation));
     }
 }
