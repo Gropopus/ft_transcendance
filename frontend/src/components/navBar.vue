@@ -4,15 +4,15 @@ import navBarButton from './navBarButton.vue'
 
 <template>
 	<div class="navBar">
-		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
 	</div>
 </template>
@@ -34,8 +34,11 @@ export default	{
 			n: 0
 		}
 	},
+	computed:	{
+		pageId: this.genId();
+	},
 	methods:	{
-		pageId:	function()	{
+		genId:	function():	number	{
 			return (this.n++);
 		}
 	}
