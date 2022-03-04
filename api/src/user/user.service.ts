@@ -31,10 +31,10 @@ export class UserService {
 			newUser.twoFactorAuthEnabled = false;
 			newUser.picture = "profile-picture.png";
 			const user = await this.userRepository.save(this.userRepository.create(newUser));
-			if (user.id == 1) {
-			user.role = UserRole.OWNER;
-			await this.userRepository.save(user);
-			}
+			//if (user.id == 0) {
+			//user.role = UserRole.OWNER;
+			//await this.userRepository.save(user);
+			//}
 			return this.findOne(user.id);
 		} else {
 			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
