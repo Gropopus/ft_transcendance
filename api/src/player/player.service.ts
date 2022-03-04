@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlayerEntity } from 'src/player/player.entity'
 import { IPlayer, PlayerStatus, PlayerSide } from 'src/player/player.interface'
-import { UserI } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 
 @Injectable()
 export class PlayerService {
@@ -12,7 +12,7 @@ export class PlayerService {
         private playerRepository: Repository<PlayerEntity>)
         {}
 
-    async create(user1: UserI, user2: UserI) {
+    async create(user1: Iuser, user2: Iuser) {
         let iplayer1: IPlayer = {
             user: user1,
         }
@@ -59,7 +59,7 @@ export class PlayerService {
         return this.playerRepository.findOne({ id: pid });
     }
 
-    async getUserHistory(user: UserI) {
+    async getUserHistory(user: Iuser) {
         return this.playerRepository.find({ user: user })
     }
 }

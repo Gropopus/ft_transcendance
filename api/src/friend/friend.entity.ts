@@ -1,7 +1,7 @@
 import { JoinColumn, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { FriendStatus } from "./friend.interface";
 import { UserEntity } from "src/user/model/user.entity";
-import { UserI } from "src/user/model/user.interface";
+import { Iuser } from "src/user/model/user.interface";
 
 @Entity()
 export class FriendEntity {
@@ -10,7 +10,7 @@ export class FriendEntity {
 
     @ManyToOne(() => UserEntity, user => user.friends)
     @JoinColumn()
-    user: UserI;
+    user: Iuser;
 
     @Column()
     targetId: number;

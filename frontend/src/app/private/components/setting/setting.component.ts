@@ -37,7 +37,7 @@ export class SettingComponent implements OnInit {
 		username: [null, [Validators.required, Validators.maxLength(20)]],
 		role: [null],
 		email: [{value: null, disabled: true}, [Validators.required]],
-		avatar: [null],
+		picture: [null],
 		twoFactorAuthEnabled: [null],
 		twoFactorAuthenticationSecret : {value: null, disabled: true}
 	  });
@@ -51,7 +51,7 @@ export class SettingComponent implements OnInit {
 			  username: user.username,
 			  role: user.role,
 			  email: user.email,
-			  avatar: user.avatar,
+			  picture: user.picture,
 			  twoFactorAuthEnabled: user.twoFactorAuthEnabled,
 			  twoFactorAuthenticationSecret: user.twoFactorAuthenticationSecret,
 			})

@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 
 @Entity()
-export class PlayerEntity {
+export class HistoryEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -11,7 +11,7 @@ export class PlayerEntity {
 
   @ManyToOne(
     () => UserEntity,
-    (userEntity) => userEntity.opponentId,
+    (userEntity) => userEntity.opponent,
   )
   playerTwo: UserEntity;
 

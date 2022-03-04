@@ -5,7 +5,7 @@ import { RolesGuard } from 'src/auth/login/guards/roles.guards';
 import { hasRoles } from 'src/auth/login/roles.decorator';
 import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { ChannelService } from 'src/chat/channel.service';
-import { UserI, UserRole } from 'src/user/model/user.interface';
+import { Iuser, UserRole } from 'src/user/model/user.interface';
 import { Observable } from 'rxjs';
 
 
@@ -35,7 +35,7 @@ export class ChannelController {
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/give')
-	async updateChannelUserForAdmin(@Param('id') id: string, @Body() user: UserI): Promise<Ichannel> {  
+	async updateChannelUserForAdmin(@Param('id') id: string, @Body() user: Iuser): Promise<Ichannel> {  
 	  var channel: Ichannel = await this.channelService.getChannel(Number(id));
 	  return this.channelService.addAdminToChannel(channel, user);
 	}
@@ -43,15 +43,15 @@ export class ChannelController {
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/remove')
-	async updateChannelAdminForAdmin(@Param('id') id: string, @Body() user: UserI): Promise<Ichannel> {
+	async updateChannelAdminForAdmin(@Param('id') id: string, @Body() user: Iuser): Promise<Ichannel> {
 	  return this.channelService.deleteAUserAdminFromChannel(Number(id), user.id);
 	}
 	
 	@UseGuards(JwtAuthGuard)
 	@Get(':idChannel/:idUser')
-	async UserIsChannel(@Param('idChannel') idChannel: number, @Param('idUser') idUser: number): Promise<Number> {
+	async IusersChannel(@Param('idChannel') idChannel: number, @Param('idUser') idUser: number): Promise<Number> {
 		var channel: Ichannel = await this.channelService.getChannel(idChannel);
-		return this.channelService.boolUserIsOnChannel(idUser, channel);
+		return this.channelService.boolIusersOnChannel(idUser, channel);
 	}
 
 	@UseGuards(JwtAuthGuard)

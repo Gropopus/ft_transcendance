@@ -1,8 +1,8 @@
-import { UserI } from "src/user/model/user.interface";
+import { Iuser } from "src/user/model/user.interface";
 
 export interface IPlayer {
     id?: number,
-    user?: UserI,
+    user?: Iuser,
     points?: number,
     status?: PlayerStatus,
     opponentId?: number,

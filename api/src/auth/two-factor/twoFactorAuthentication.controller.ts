@@ -92,6 +92,6 @@ import { UserEntity } from 'src/user/model/user.entity';
 	
 	@Get('qrcode')
 	async findQrCode(@Res() res) {
-		return of(res.sendFile(join(process.cwd(), 'src/uploads/qrcode/qrcode.png')));
+		return of(res.sendFile(join(process.cwd(), 'src/uploads/qrcode.png')));
 	}
   }

@@ -8,7 +8,7 @@ import { HistoryI } from 'src/app/model/history/history.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class PlayerService {
+export class HistoryService {
 
   constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
 

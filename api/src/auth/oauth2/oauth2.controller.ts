@@ -4,7 +4,7 @@ import RequestWithUser from '../requestWithUser.interface';
 import { Response } from 'express';
 import { School42AuthenticationGuard } from './school42Authentication.guard';
 import {UserService} from 'src/user/user.service';
-import { UserI } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 
 
 @Controller('oauth2')
@@ -19,7 +19,7 @@ export class Oauth2Controller {
   @HttpCode(200)
   async school42Callback(@Req() request: any, @Res() response: Response) {
     const { user } = request;
-	const userEntity: UserI = {email: user.email, password: 'School42'};
+	const userEntity: Iuser = {email: user.email, password: 'School42'};
 	const login = await this.usersService.login(userEntity);
 	const resp = {id : user.id ,two_factor: user.twoFactorAuthEnabled , token: login.jwt};
     try {

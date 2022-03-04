@@ -5,7 +5,6 @@ import { UserController } from './user.controller';
 import { UserEntity } from './model/user.entity';
 import { UserHelperService } from './user-helper/user-helper.service';
 import { UserService } from './user.service';
-import { PlayerModule } from 'src/player/player.module';
 
 @Module({
   imports: [

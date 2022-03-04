@@ -8,14 +8,14 @@ export interface UserI {
     password?: string;
     email?: string;
 	ban?: boolean;
-    avatar?: string;
+    picture?: string;
     level?: number;
 	following?: FriendEntity[];
 	followers?: FriendEntity[];
     status?: UserStatus;
     role?: UserRole;
-	nbWin?: number;
-	nbLoss?: number;
+	victory?: number;
+	defeat?: number;
 	twoFactorAuthEnabled?: boolean;
 	twoFactorAuthenticationSecret?: string;
 	chatOwner?: Ichannel[];

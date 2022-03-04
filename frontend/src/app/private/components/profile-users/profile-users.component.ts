@@ -9,10 +9,10 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from '../../../public/services/user-service/user.service';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { FriendService } from '../../services/friends-service/friends.service';
+import { FriendsService } from '../../services/friends-service/friends.service';
 import { FriendRequest } from 'src/app/model/friends/friends.interface';
 import { HistoryI } from 'src/app/model/history/history.interface';
-import { PlayerService } from '../../../public/services/history-service/history.service';
+import { HistoryService } from '../../../public/services/history-service/history.service';
 import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
@@ -41,8 +41,8 @@ export class ProfileusersComponent implements OnInit {
 		private userService: UserService,
 		private router: Router,
 		private authService: AuthService,
-		private PlayerService: PlayerService,
-		private friendsService: FriendService,
+		private historyService: HistoryService,
+		private friendsService: FriendsService,
 		private chatService: ChatService,
 		
 		) { 
@@ -70,7 +70,7 @@ export class ProfileusersComponent implements OnInit {
 							this.router.navigate(['../../profile'],{ relativeTo: this.activatedRoute })
 						}
 						else {
-							this.history = this.PlayerService.findAllByUserId(val.id);
+							this.history = this.historyService.findAllByUserId(val.id);
 							this.getImageFromService(val.id);
 							this.idProfile = val.id;
 							this.isFriend();
@@ -190,7 +190,7 @@ export class ProfileusersComponent implements OnInit {
 		getImageFromService(id:number) {
 			this.isImageLoading = true;
 			
-			this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+			this.userService.getImage("/api/users/pictureById/" + id.toString()).subscribe(data => {
 			  this.createImageFromBlob(data);
 			  this.isImageLoading = false;
 			}, error => {

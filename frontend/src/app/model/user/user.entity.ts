@@ -1,7 +1,7 @@
 import { FriendEntity } from "src/app/friend/models/friend.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { FriendRequestEntity } from "../friends/friends.entity";
-import { PlayerEntity } from "../history/history.entity";
+import { HistoryEntity } from "../history/history.entity";
 import { UserRole, UserStatus } from "./user.interface";
 
 @Entity()
@@ -20,7 +20,7 @@ export class UserEntity {
     email: string;
 
     @Column()
-    avatar: string;
+    picture: string;
     
     @Column()
     level: number;
@@ -38,10 +38,10 @@ export class UserEntity {
     role: UserRole;
 
 	@Column()
-	nbWin: number;
+	victory: number;
 	
 	@Column()
-	nbLoss: number;
+	defeat: number;
 	
 	@Column()
 	twoFactorAuthEnabled: boolean;
@@ -62,16 +62,16 @@ export class UserEntity {
 	receivedFriendRequests: FriendRequestEntity[];
 
 	@OneToMany(
-		() => PlayerEntity,
-		(PlayerEntity) => PlayerEntity.playerOne,
+		() => HistoryEntity,
+		(historyEntity) => historyEntity.playerOne,
 	)
 	host: FriendRequestEntity[];
 
 	@OneToMany(
-	() =>PlayerEntity,
-	(PlayerEntity) => PlayerEntity.playerTwo,
+	() =>HistoryEntity,
+	(historyEntity) => historyEntity.playerTwo,
 	)
-	opponentId: FriendRequestEntity[];
+	opponent: FriendRequestEntity[];
 	
 	@BeforeInsert()
 	emailToLowerCase() {

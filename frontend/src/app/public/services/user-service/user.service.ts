@@ -103,8 +103,8 @@ export class UserService {
 	  )
 	}
 
-	uploadFile(avatar : FormData): Observable<UserI> {
-		return this.http.post('api/users/upload', avatar);
+	uploadFile(picture : FormData): Observable<UserI> {
+		return this.http.post('api/users/upload', picture);
 	}
 	
 	findOne(id: number): Observable<UserI> {
