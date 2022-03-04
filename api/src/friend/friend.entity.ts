@@ -8,10 +8,16 @@ export class FriendEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => UserEntity, user => user.friends)
-    @JoinColumn()
-    user: Iuser;
+    @ManyToOne(() => UserEntity, (UserEntity) => UserEntity.friends)
+    user: UserEntity;
+    // @JoinColumn()
 
+    @ManyToOne(
+        () => UserEntity,
+        (userEntity) => userEntity.recvFriendRequests,
+      )
+      receiver: UserEntity;
+    
     @Column()
     targetId: number;
 

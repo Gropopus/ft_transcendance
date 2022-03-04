@@ -74,6 +74,13 @@ export class UserEntity {
 	@OneToMany(() => FriendEntity, friends => friends.user)
 	friends: FriendEntity[];
 
+	@OneToMany(
+	() => FriendEntity,
+	(friendRequestEntity) => friendRequestEntity.receiver,
+	)
+	recvFriendRequests: FriendEntity[];
+
+
     @OneToMany(() => PlayerEntity, player => player.user)
 	history: PlayerEntity[];
 

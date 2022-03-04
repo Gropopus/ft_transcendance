@@ -27,6 +27,30 @@ export class MessageService {
 
   async findMessagesForChannel(channel: Ichannel, user: Iuser, options: IPaginationOptions): Promise<Pagination<Imessage>> {
 	
+    const blocked = this.userRepository
+    .createQueryBuilder("u")
+    .leftJoin('u.friends', 'c')
+    .leftJoin('u.recvFriendRequests', 'r')
+    .where("r.user = :id")
+    .andWhere("r.status = 'user-blocked'")
+    .setParameters({ id : user.id })
+    .getMany();
+
+    const blockedIds = (await blocked).map(b => b.id);
+    if (blockedIds.length != 0) {
+    // query for messages excluding blocked users
+    const query = this.messageRepository
+        .createQueryBuilder('message')
+        .leftJoin('message.channel', 'channel')
+        .leftJoinAndSelect('message.user', 'u')
+        .where('channel.id = :channelId', { channelId: channel.id })
+        .andWhere('u.id NOT IN (:...blockedIds)')
+        .setParameters({ blockedIds: blockedIds })
+        .orderBy('message.created_at', 'DESC');
+
+    return paginate(query, options);
+  } 
+
 	const query = this.messageRepository
 	.createQueryBuilder('message')
 	.leftJoin('message.channel', 'channel')
