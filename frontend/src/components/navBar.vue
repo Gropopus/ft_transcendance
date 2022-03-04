@@ -4,20 +4,15 @@ import navBarButton from './navBarButton.vue'
 
 <template>
 	<div class="navBar">
-		<navBarButton id="currentTab" iconPath="./src/assets/logout-picture.png">
-			<template #tabName>Play</template>
+		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
-			<template #tabName>Chat</template>
+		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
-			<template #tabName>Stats</template>
+		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
-			<template #tabName>Profile</template>
+		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
-			<template #tabName>Logout</template>
+		<navBarButton :pageId="pageId()" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
 		</navBarButton>
 	</div>
 </template>
@@ -29,9 +24,19 @@ export default	{
 			type:	[Number, String],
 			default:	0
 		},
-		pageId:	{
+		currentPage:	{
 			type:	[Number, String],
 			default:	0
+		}
+	},
+	data:	function()	{
+		return {
+			n: 0
+		}
+	},
+	methods:	{
+		pageId:	function()	{
+			return (this.n++);
 		}
 	}
 }

@@ -22,7 +22,7 @@ export default	{
 			type:	[Number, String],
 			default:	0
 		},
-		pageId:	{
+		currentPage:	{
 			type:	[Number, String],
 			default:	0
 		}
@@ -47,7 +47,7 @@ export default	{
 							logoutPage,
 							settingsPage
 						]
-				return Tags[this.pageId];
+				return Tags[this.currentPage];
 		}
 	}
 }

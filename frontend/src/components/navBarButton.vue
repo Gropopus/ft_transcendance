@@ -1,16 +1,16 @@
 <template>
 	<button class="navBarButton" @click="changeCurrent($event)">
-		<img :src="iconPath" alt="Salut">
-		<slot name="tabName">Button</slot>
+		<img :src="tabIcon" alt="Salut">
+		{{ tabName }}
 	</button>
 </template>
 
 <script lang="ts">
 export default	{
 	props:	{
-		iconPath:	{
-			type:	String,
-			default:	"./src/assets/friends.png"
+		currentPage:	{
+			type:	[Number, String],
+			default:	0
 		},
 		pageId:	{
 			type:	[Number, String],
@@ -19,15 +19,35 @@ export default	{
 	},
 	methods:	{
 		changeCurrent:	function(e: event)	{
-			let curTab = document.getElementById('currentTab');
-			
-			if (e.currentTarget != curTab)
-			{
-				curTab.removeAttribute('id');
-				e.currentTarget.setAttribute('id', 'currentTab');
-			}
-			let plop = e.currentTarget.innerHTML.substring(e.currentTarget.innerHTML.search(">") + 1).trim();
-			console.log(plop);
+			console.log(this.tabName);
+			console.log(this.Id);
+		}
+	},
+	beforeCreate:	function()	{
+		this.Id = this.pageId;
+	},
+	computed:	{
+		tabName:	function(): string	{
+			const tabNames: Array<string>	=	[
+				"Play",
+				"Chat",
+				"Stats",
+				"Profile",
+				"Logout",
+				"Settings"
+			]
+			return (tabNames[this.Id]);
+		},
+		tabIcon:	function(): string	{
+			const iconNames: Array<string>	=	[
+				"./src/assets/logout-picture.png",
+				"./src/assets/logout-picture.png",
+				"./src/assets/logout-picture.png",
+				"./src/assets/logout-picture.png",
+				"./src/assets/logout-picture.png",
+				"./src/assets/logout-picture.png"
+			]
+			return (iconNames[this.Id]);
 		}
 	}
 }
