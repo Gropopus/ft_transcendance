@@ -8,7 +8,8 @@ export interface IFriend {
 }
 
 export enum FriendStatus {
-    WAITING = 'waiting-for-a-response',
-    PENDING = 'pending-(no-response)',
-    FRIEND = 'friends'
+    WAITING = 'user-waiting-for-a-response',
+    PENDING = 'resquest-pending',
+    FRIEND = 'friends',
+    BLOCKED= 'user-blocked'
 }
