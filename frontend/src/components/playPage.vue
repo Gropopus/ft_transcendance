@@ -1,18 +1,18 @@
 <template>
-	<div class="logoutPage">
+	<div class="playPage">
 		<p>
-		holalalalala
+		salyte
 		</p>
 		<br>
 		<p>
-		houlououououououo
+		jawgkfjwhelfm3
 		</p>
 	</div>
 </template>
 
 <style lang="css">
-.logoutPage
+.playPage
 {
-	background:	purple;
+	background:	blue;
 }
 </style>

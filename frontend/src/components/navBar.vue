@@ -5,19 +5,19 @@ import navBarButton from './navBarButton.vue'
 <template>
 	<div class="navBar">
 		<navBarButton id="currentTab" iconPath="./src/assets/logout-picture.png">
-			Play
+			<template #tabName>Play</template>
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png">
-			Chat
+		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
+			<template #tabName>Chat</template>
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png">
-			Stats
+		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
+			<template #tabName>Stats</template>
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png">
-			Profile
+		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
+			<template #tabName>Profile</template>
 		</navBarButton>
-		<navBarButton iconPath="./src/assets/logout-picture.png">
-			Logout
+		<navBarButton iconPath="./src/assets/logout-picture.png" :pageId="this.pageId">
+			<template #tabName>Logout</template>
 		</navBarButton>
 	</div>
 </template>
@@ -26,6 +26,10 @@ import navBarButton from './navBarButton.vue'
 export default	{
 	props:	{
 		userId:	{
+			type:	[Number, String],
+			default:	0
+		},
+		pageId:	{
 			type:	[Number, String],
 			default:	0
 		}

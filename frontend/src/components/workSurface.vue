@@ -1,20 +1,28 @@
 <script setup lang="ts">
 import logPage from './logPage.vue'
+import playPage from './playPage.vue'
+import chatPage from './chatPage.vue'
+import statsPage from './statsPage.vue'
+import profilePage from './profilePage.vue'
 import logoutPage from './logoutPage.vue'
+import settingsPage from './settingsPage.vue'
 </script>
 
 <template>
 	<div class="workSurface" v-bind:style='{"border-top" :(isLogged() ? "hidden" : "solid 3px white")}'>
 		<logPage v-if="!isLogged()" :userId="userId" v-on:update:userId="salut($event)" />
-		<slot v-else name="pageContent"></slot>
+		<component v-else v-bind:is='contentTag' />
 	</div>
 </template>
-
 
 <script lang="ts">
 export default	{
 	props:	{
 		userId:	{
+			type:	[Number, String],
+			default:	0
+		},
+		pageId:	{
 			type:	[Number, String],
 			default:	0
 		}
@@ -27,6 +35,19 @@ export default	{
 		},
 		salut:	function(rep: event): Void	{
 			this.$emit('update:userId', rep);
+		}
+	},
+	computed:	{
+		contentTag:	function():	Vue.component	{
+			const	Tags: Array<Vue.component> = [
+							playPage,
+							chatPage,
+							statsPage,
+							profilePage,
+							logoutPage,
+							settingsPage
+						]
+				return Tags[this.pageId];
 		}
 	}
 }
@@ -42,9 +63,5 @@ export default	{
 	height:	100%;
 	border:	solid 3px white;
 	min-height:	500px;
-}
-.playPage
-{
-	background: red;
 }
 </style>

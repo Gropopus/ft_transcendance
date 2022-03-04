@@ -1,7 +1,7 @@
 <template>
 	<button class="navBarButton" @click="changeCurrent($event)">
 		<img :src="iconPath" alt="Salut">
-		<slot>Button</slot>
+		<slot name="tabName">Button</slot>
 	</button>
 </template>
 
@@ -11,6 +11,10 @@ export default	{
 		iconPath:	{
 			type:	String,
 			default:	"./src/assets/friends.png"
+		},
+		pageId:	{
+			type:	[Number, String],
+			default:	0
 		}
 	},
 	methods:	{
@@ -22,6 +26,8 @@ export default	{
 				curTab.removeAttribute('id');
 				e.currentTarget.setAttribute('id', 'currentTab');
 			}
+			let plop = e.currentTarget.innerHTML.substring(e.currentTarget.innerHTML.search(">") + 1).trim();
+			console.log(plop);
 		}
 	}
 }

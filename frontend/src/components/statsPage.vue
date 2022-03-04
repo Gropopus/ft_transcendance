@@ -1,5 +1,5 @@
 <template>
-	<div class="logoutPage">
+	<div class="statsPage">
 		<p>
 		holalalalala
 		</p>
@@ -11,8 +11,8 @@
 </template>
 
 <style lang="css">
-.logoutPage
+.statsPage
 {
-	background:	purple;
+	background:	red;
 }
 </style>

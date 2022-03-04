@@ -7,8 +7,7 @@ import workSurface from './workSurface.vue'
 <template>
 	<div class="winSurface">
 		<navBar v-if="isLogged()" :userId="this.userId" v-on:update:userId="this.userId = $event "/>
-		<workSurface :userId="this.userId" v-on:update:userId="this.userId = $event ">
-			<template v-slot:pageContent><div v-html="pageId"></div></template>
+		<workSurface :userId="this.userId" :pageId="this.pageId" v-on:update:userId="this.userId = $event ">
 		</workSurface>
 	</div>
 </template>
@@ -18,7 +17,7 @@ export default	{
 	data:	function()	{
 		return {
 			userId: 0,
-			pageId: "<logoutPage></logoutPage>"
+			pageId: 0
 		}
 	},
 	methods:	{

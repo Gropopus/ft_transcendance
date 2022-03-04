@@ -1,5 +1,5 @@
 <template>
-	<div class="logoutPage">
+	<div class="settingsPage">
 		<p>
 		holalalalala
 		</p>
@@ -11,8 +11,8 @@
 </template>
 
 <style lang="css">
-.logoutPage
+.settingsPage
 {
-	background:	purple;
+	background:	pink;
 }
 </style>
