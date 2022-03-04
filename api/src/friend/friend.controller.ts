@@ -61,4 +61,19 @@ export class FriendController {
             await this.userService.findOne(params.u2)
         );
     }
+
+    @Put(':u1/block/:u2')
+    async blockUser(@Param() params) {
+        return this.friendService.blockUser(
+            await this.userService.findOne(params.u1),
+            await this.userService.findOne(params.u2)
+        );
+    }
+
+    @Get(':user/blocked-users')
+    async getBlockedUsers(@Param() params) {
+        return this.friendService.getBlockedUsers(
+            await this.userService.findOne(params.user)
+        );
+    }
 }
