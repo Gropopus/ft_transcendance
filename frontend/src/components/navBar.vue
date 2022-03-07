@@ -4,15 +4,15 @@ import navBarButton from './navBarButton.vue'
 
 <template>
 	<div class="navBar">
-		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton pageId="0" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
-		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton pageId="1" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
-		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton pageId="2" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
-		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton pageId="3" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
-		<navBarButton :pageId="this.pageId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event ">
+		<navBarButton pageId="4" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
 	</div>
 </template>
@@ -29,17 +29,10 @@ export default	{
 			default:	0
 		}
 	},
-	data:	function()	{
-		return {
-			n: 0
-		}
-	},
-	computed:	{
-		pageId: this.genId();
-	},
 	methods:	{
-		genId:	function():	number	{
-			return (this.n++);
+		changeCurrent:	function(e: event)	{
+			this.$emit('update:currentPage', e);
+			console.log(e);
 		}
 	}
 }

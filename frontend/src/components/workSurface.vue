@@ -10,7 +10,7 @@ import settingsPage from './settingsPage.vue'
 
 <template>
 	<div class="workSurface" v-bind:style='{"border-top" :(isLogged() ? "hidden" : "solid 3px white")}'>
-		<logPage v-if="!isLogged()" :userId="userId" v-on:update:userId="salut($event)" />
+		<logPage v-if="!isLogged()" :userId="userId" v-on:update:userId="setId($event)" />
 		<component v-else v-bind:is='contentTag' />
 	</div>
 </template>
@@ -33,7 +33,7 @@ export default	{
 				return true;
 			return (false);
 		},
-		salut:	function(rep: event): Void	{
+		setId:	function(rep: event): Void	{
 			this.$emit('update:userId', rep);
 		}
 	},

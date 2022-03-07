@@ -1,5 +1,5 @@
 <template>
-	<button class="navBarButton" @click="changeCurrent($event)">
+	<button class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" :("this.pageId" === "this.currentPage" ? "white" : "none")}'>
 		<img :src="tabIcon" alt="Salut">
 		{{ tabName }}
 	</button>
@@ -19,12 +19,11 @@ export default	{
 	},
 	methods:	{
 		changeCurrent:	function(e: event)	{
+			this.$emit('update:currentPage', this.pageId);
 			console.log(this.tabName);
-			console.log(this.Id);
+			console.log(this.pageId);
+			console.log(this.currentPage);
 		}
-	},
-	beforeCreate:	function()	{
-		this.Id = this.pageId;
 	},
 	computed:	{
 		tabName:	function(): string	{
@@ -36,7 +35,7 @@ export default	{
 				"Logout",
 				"Settings"
 			]
-			return (tabNames[this.Id]);
+			return (tabNames[this.pageId]);
 		},
 		tabIcon:	function(): string	{
 			const iconNames: Array<string>	=	[
@@ -47,7 +46,7 @@ export default	{
 				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png"
 			]
-			return (iconNames[this.Id]);
+			return (iconNames[this.pageId]);
 		}
 	}
 }
@@ -87,10 +86,5 @@ export default	{
 	object-fit: contain;
 	vertical-align:	center;
 	padding-left: 10%;
-}
-
-#currentTab
-{
-	background:	white;
 }
 </style>
