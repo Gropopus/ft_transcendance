@@ -64,6 +64,18 @@ export class FriendService {
         await this.friendRepository.save(this.friendRepository.create(relation));
     }
 
+    async unblockUser(u1: Iuser, u2: Iuser) {
+        await this.friendRepository.delete({user : u1, targetId :  u2.id});
+        if (!this.friendRepository.count({ user: u2, targetId: u1.id, status: FriendStatus.FRIEND}))
+            return ;
+        const relation = {
+            user: u1,
+            targetId: u2.id,
+            status: FriendStatus.FRIEND
+        }
+        await this.friendRepository.save(this.friendRepository.create(relation));
+    }
+
     async getBlockedUsers(u: Iuser) {
         return this.friendRepository.find({ user: u, status: FriendStatus.BLOCKED});
     }

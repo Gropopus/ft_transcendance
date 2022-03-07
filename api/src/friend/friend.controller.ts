@@ -70,6 +70,14 @@ export class FriendController {
         );
     }
 
+    @Put(':u1/unblock/:u2')
+    async unblockUser(@Param() params) {
+        return this.friendService.unblockUser(
+            await this.userService.findOne(params.u1),
+            await this.userService.findOne(params.u2)
+        );
+    }
+
     @Get(':user/blocked-users')
     async getBlockedUsers(@Param() params) {
         return this.friendService.getBlockedUsers(

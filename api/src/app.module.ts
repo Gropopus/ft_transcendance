@@ -67,6 +67,7 @@ export class AppModule implements NestModule {
     {path: 'api/friends/:user', method: RequestMethod.GET},
     {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
     {path: 'api/friends/:u1/block/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/unblock/:u2', method: RequestMethod.PUT},
     {path: 'api/friends/:user/blocked-users', method: RequestMethod.GET},
     // history
     {path: 'api/history/player/:playerId', method: RequestMethod.GET},
