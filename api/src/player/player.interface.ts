@@ -6,7 +6,8 @@ export interface IPlayer {
     points?: number,
     status?: PlayerStatus,
     opponentId?: number,
-    side?: PlayerSide
+    side?: PlayerSide,
+    gameId?: number
 }
 
 export enum PlayerStatus {

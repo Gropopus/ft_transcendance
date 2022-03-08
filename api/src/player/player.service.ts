@@ -12,13 +12,15 @@ export class PlayerService {
         private playerRepository: Repository<PlayerEntity>)
         {}
 
-    async create(user1: Iuser, user2: Iuser) {
+    async createGame(user1: Iuser, user2: Iuser, gid: number) {
         let iplayer1: IPlayer = {
             user: user1,
+            gameId: gid
         }
         let iplayer2: IPlayer = {
             user: user2,
-            side: PlayerSide.RIGHT
+            side: PlayerSide.RIGHT,
+            gameId: gid
         }
         let player1 = this.playerRepository.create(iplayer1);
         let player2 = this.playerRepository.create(iplayer2);
@@ -28,7 +30,7 @@ export class PlayerService {
         player2.opponentId = player1.id;
         await this.playerRepository.save(player1);
         await this.playerRepository.save(player2);
-        return player1;
+        return { p1: player1, p2: player2 };
     }
 
     async setScores(pid: number, his_score: number, op_score: number) {
@@ -62,4 +64,5 @@ export class PlayerService {
     async getUserHistory(user: Iuser) {
         return this.playerRepository.find({ user: user })
     }
+
 }
