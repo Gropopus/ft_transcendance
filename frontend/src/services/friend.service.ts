@@ -1,5 +1,5 @@
 import { http } from '@/http-common';
-import { Iuser } from 'src/model/user/user.interface'
+import { Iuser } from '../model/user/user.interface'
 
 export class friendService {
     constructor(
