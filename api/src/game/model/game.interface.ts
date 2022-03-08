@@ -1,5 +1,5 @@
 export interface Igame {
-	id?: string;
+	id?: number;
 	
 	player_left?: any;
 	score_l?: number;
