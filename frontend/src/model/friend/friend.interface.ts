@@ -1,0 +1,15 @@
+import { Iuser } from "../user/user.interface";
+
+export interface IFriend {
+    id?: number,
+    user?: Iuser,
+    targetId?: number;
+    status?: FriendStatus;
+}
+
+export enum FriendStatus {
+    WAITING = 'user-waiting-for-a-response',
+    PENDING = 'resquest-pending',
+    FRIEND = 'friends',
+    BLOCKED= 'user-blocked'
+}
