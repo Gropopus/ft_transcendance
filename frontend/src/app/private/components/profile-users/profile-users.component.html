@@ -1,0 +1,138 @@
+<div *ngIf="(user$ | async) as user" class="wrapper">
+	<div class="container">
+
+		<div class="profile">
+
+			<div class="profile-image">
+				<img [src]="imageToShow" alt="Place image title" *ngIf="imageToShow; else noImageFound">
+				<ng-template #noImageFound>
+				     <img src="/assets/img/site/fallbackImage.png" alt="Fallbackimage">
+				</ng-template>
+			</div>
+
+			<div class="profile-user-settings">
+				
+				<h1 class="profile-user-name">{{user.username}} {{user.status}}</h1>
+			</div>
+			<div class="profile-user-settings">
+				<button *ngIf="yourFriend==0; else pending" class="btn profile-edit-btn" (click)=addFriend()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-plus"></i>
+					Add Friend
+				</button>
+				<ng-template #pending>
+				<button *ngIf="yourFriend==1; else rmFriend" class="btn profile-edit-btn" (click)=removeFriend()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+					Cancel request
+				</button>
+				</ng-template>
+				<ng-template #rmFriend>
+				<button *ngIf="yourFriend==2; else declined" class="btn profile-edit-btn" (click)=removeFriend()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+					Delete Friend
+				</button>
+				</ng-template>
+				<ng-template #declined>
+				<button *ngIf="yourFriend==3; else waiting" class="btn profile-edit-btn">
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+					User declined
+				</button>
+				</ng-template>
+				<ng-template #waiting>
+				<div *ngIf="yourFriend==4; else blocked">
+					<button class="btn profile-edit-btn" (click)="responseToFriend('accepted')">
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+						Accepte
+					</button>
+					<button  class="btn profile-edit-btn" (click)="responseToFriend('declined')">
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+						Decline
+					</button>
+				</div>
+				</ng-template>
+				<ng-template #blocked>
+					<button class="btn profile-edit-btn">
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-user-minus"></i>
+						User not found
+					</button>
+				</ng-template>
+
+
+				<button *ngIf="yourBlocked; else muteUSer" class="btn profile-edit-btn" (click)=blockUser()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-comment"></i>
+					Unmute User
+				</button>
+				<ng-template #muteUSer>
+					<button class="btn profile-edit-btn" (click)=blockUser()>
+						<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-comment-slash"></i>
+						Mute User
+					</button>
+				</ng-template>
+				<br>
+				<br>
+				<button *ngIf="user.status=='in-game';" class="btn profile-edit-btn" (click)=spectateGame()>
+					<i class="btn profile-settings-btn" aria-label="profile settings" class="fad fa-gamepad"></i>
+					Spectate
+				</button>
+			</div>
+
+			<div class="profile-stats">
+
+			</div>
+
+		</div>
+		<!-- End of profile section -->
+	</div>
+	<div class="container-block">
+		<div class="stats">Stats
+			<div class="ranked">Ranked
+				<br>
+				Or
+				<br>
+				image or
+			</div>
+			<div *ngIf="user.nbLoss + user.nbWin!=0; else Zero" class="several">Victory/Loss
+				<br>
+				{{user.nbWin}}/{{user.nbLoss}}
+				<br>
+				WinRate: {{user.nbWin / (user.nbWin + user.nbLoss) * 100 | number:'1.1-2'}}%
+				<br>
+				<progress value="{{user.nbWin / (user.nbWin + user.nbLoss) * 100}}" max="100"></progress>
+			</div>
+
+			<ng-template #Zero>
+			<div class="several">
+				<br>
+				<br>
+				This player has no games played yet
+			</div>
+			</ng-template>
+
+		</div>
+			<div class="achievements">Achievements
+
+			</div>
+			<div class="battles">Last 5 matches
+				<div *ngIf="(history|async)?.length > 0;" class="requests-list">
+					<mat-selection-list [multiple]="false" (selectionChange)="onSelectOpp($event)">
+						<mat-list-option *ngFor="let history of (history | async)" [value]="history">
+							<div class="parent">
+								<div class="result" *ngIf="(history.playerOne.id == user.id && history.playerOneScore == 5) || (history.playerTwo.id == user.id && history.playerTwoScore == 5); else lost" style="color: green">
+									WIN {{history.game}}
+								</div>
+								<ng-template #lost>
+									<div class="result" style="color: rgb(163, 26, 26)">
+										LOSE {{history.game}}
+									</div>
+								</ng-template>
+									<span class="player-One">{{history.playerOne.username}}</span>
+									<span class="score">{{history.playerOneScore}} - {{history.playerTwoScore}}</span>
+									<span class="player-Two">{{history.playerTwo.username}}</span>
+							</div>
+							<mat-divider></mat-divider>
+						</mat-list-option>
+					  </mat-selection-list>
+				</div>
+			</div>
+		</div>
+		<!-- End of container -->
+	</div>

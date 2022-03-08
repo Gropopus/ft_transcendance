@@ -1,0 +1,24 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" 
+rel="stylesheet">
+<div class="wrapper">
+	<div class="header"> <img style="width: 300px"src="/assets/header-id.png"> </div>
+	<div class="container-login" >
+	<!--	<h2 class="login">A cute ft_transcendance</h2-->
+		<div class="picto-head"> <img style="width: 80px" src="/assets/picto-id.png"> </div>
+		<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Email" formControlName="email">
+				 <mat-error *ngIf="loginForm.controls.email.errors">{{getErrorMessageEmail()}}</mat-error>
+			</mat-form-field>
+			<mat-form-field appearance="standard">
+				<input matInput placeholder="Password" formControlName="password"[type]="hide ? 'password' : 'text'">
+					<mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+			</mat-form-field>
+			<button mat-flat-button color="primary" [disabled]="!loginForm.valid" type="submit" id="login-button">Log in</button>
+			<a routerLink="/public/register" class="log-reg-dir">Register</a>
+		</form>
+		<a class="log-reg-dir" href="/api/oauth2/school42">
+			<span style="color: #ffffff"> Log in with 42</span>
+	  </a>
+	</div>
+</div>

@@ -1,0 +1,142 @@
+@font-face {
+  font-family: 'Myanmar Text';
+  font-style: normal;
+  font-weight: 200;
+  src: url(/assets/mmrtext/mmrtext.ttf);
+}
+@font-face {
+  font-family: 'Myanmar Text';
+  font-style: normal;
+  font-weight: 300;
+  src: url(/assets/mmrtext/mmrtext.ttf);
+}
+
+  * {
+    letter-spacing: 2px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-weight: 300;
+  }body ::-webkit-input-placeholder {
+    /* WebKit browsers */
+    font-family: 'Myanmar Text';
+    color: white;
+    font-weight: 300;
+  }
+  body :-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    font-family: 'Myanmar Text';
+    color: white;
+    opacity: 1;
+    font-weight: 300;
+  }
+  body ::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    font-family: 'Myanmar Text';
+    color: white;
+    opacity: 1;
+    font-weight: 300;
+  }
+  body :-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    font-family: 'Myanmar Text';
+    color: white;
+    font-weight: 300;
+  }
+  .login{
+      color: white;
+      text-align: center;
+  }
+  
+  .container-login {
+    border: 2px solid #f5f7f9;
+    /*border-bottom: 50%;*/
+    width: 30%;
+    height: 80%;
+    margin: 0 auto 0;
+    text-align: center;
+  }
+
+  form {
+    padding: 50px 0;
+    border-radius: 300px;
+    position: relative;
+    z-index: 2;
+  }
+  form mat-form-field {
+	  display: block;
+	  -webkit-appearance: none;
+	  -moz-appearance: none;
+	  appearance: none;
+	  outline: 0;
+	  border: 1px solid rgba(255, 255, 255, 0.4);
+	  background-color: rgba(255, 255, 255, 0.2);
+	  width: 250px;
+	  border-radius: 3px;
+	  margin: 0 auto 15px auto;
+	  text-align: center;
+	  font-size: 18px;
+	  color: white;
+	  transition-duration: 0.25s;
+	  font-weight: 300;
+	  padding: 7px 20px;
+	  padding-top: 0px;
+	}
+/*hidden icon */
+.mat-icon{
+    height:18px !important;
+    width:8px !important;
+    font-size:18px !important;
+}
+
+div.label label {
+  color: #173DC7;
+  display: block;
+	text-align: left;
+  margin-left: 5%;
+  letter-spacing: 1px;
+}
+
+#register-button{
+  margin-top: 5%;
+	 border-top: 200px;
+ }
+
+form mat-form-field:hover {
+	  background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  form button, a.log-reg-dir {
+    display: block;
+    margin: 0 auto 10px auto;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    outline: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 0;
+    padding: 10px 15px;
+    color: #ffffff;
+    border-radius: 3px;
+    width: 60%;
+    cursor: pointer;
+    font-size: 18px;
+    transition-duration: 0.25s;
+  }
+  form a.log-reg-dir {
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+  }
+  form button:hover {
+    background-color: #f5f7f9;
+    border-radius: 5px;
+    box-shadow: 0 0 8px #FFE471,
+              0 0 15px #FFE471,
+              0 0 25px #FFE471,
+              0 0 50px #FFE471;
+  }
+
+  form a:hover {
+        background-color: rgba(0, 0, 0, 0.6);
+    }

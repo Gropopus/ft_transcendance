@@ -1,49 +1,49 @@
-version: "3.3"
+version: "3.8"
 
 services:
-# nestjs API
   api:
-      build:
-        dockerfile: Dockerfile
-        context: ./api
-        # Only build development stage from Dockerfile
-        target: development
-      # Mount our host dir to the docker container
-      # Mount api directory (./api) to (:) docker container (/thomas/src/app)
-      # Reflect File changes from host to container
-      volumes:
-        - ./api:/src/app
-        - /src/app/node_modules/
-      # RUN in debug mode: npm run start:debug --> Also start vscode debugger
-      # Run in dev mode: npm run start:dev
-      command: npm run start:debug
-      depends_on: 
-        - postgres
-      environment:
-        DATABASE_URL: postgres://user:password@postgres:5432/db
-        NODE_ENV: development
-        PORT: 3000
-      ports:
-        - 3000:3000
-        - 9229:9229
-
-# Angular frontend
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+    # Mount our host dir to the docker container
+    # Mount api directory (./api) to (:) docker container (/transcendance/src/app)
+    # Reflect File changes from host to container
+    volumes:
+      - ./api:/transcendance/src/app
+      - /transcendance/src/app/node_modules/
+    # RUN in debug mode: npm run start:debug --> Also start your vscode debugger
+    # Run in dev mode: npm run start:dev
+    command: npm run start:debug
+    depends_on: 
+      - postgres
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/db
+      NODE_ENV: development
+      JWT_SECRET: super_secret_123456789
+      JWT_REFRESH_SECRET: supers_secret_refresh_123456789
+      OAUTH_42_UID: 90727c13a881b305781354461f119b6772fdd365a2557c93b61b6d1d9015a3c4
+      OAUTH_42_SECRET: 35d48dac171d7fca11cba6b999b66b791ea50d83f3c963d5d0f4e7f8c58daf30
+      PORT: 3000
+    ports:
+      - 3000:3000
+      - 9229:9229
+      - 42069:42069
+  
   frontend:
     build:
       dockerfile: Dockerfile
       context: ./frontend
-      target: development
     command: npm run start
     volumes:
-      - ./frontend:/frontend/src/app
-      - /frontend/src/node_modules/
+      - ./frontend:/transcendance/frontend/src/app
+      - /transcendance/frontend/src/app/node_modules
     ports:
       - 4200:4200
     links:
       - api
 
   postgres:
-    image: postgres:14.1
+    image: postgres:10.4
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -53,11 +53,10 @@ services:
 
   postgres_admin:
     image: dpage/pgadmin4:4.28
-    depends_on:
+    depends_on: 
       - postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
-      - 5050:80  
-
+      - 5050:80
