@@ -4,6 +4,8 @@
   },
   "dependencies": {
     "@vue/cli": "^5.0.1",
-    "npm": "^8.5.3"
+    "npm": "^8.5.3",
+    "vuex": "^4.0.2",
+    "vuex-class": "^0.3.2"
   }
 }
