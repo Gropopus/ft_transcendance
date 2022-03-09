@@ -13,21 +13,25 @@ import { JoinedChannelService } from './service/joined-channel.service';
 import { MessageService } from './service/message.service';
 import { UserEntity } from 'src/user/model/user.entity';
 import { UserService } from 'src/user/user.service';
+import { FriendService } from 'src/friend/friend.service';
+import { FriendModule } from 'src/friend/friend.module';
 import { UserHelperService } from 'src/user/user-helper/user-helper.service';
 import { ChannelController } from './channel.controller';
+import { FriendEntity } from 'src/friend/friend.entity';
 
 @Module({
-  imports: [UserModule, 
+  imports: [UserModule, FriendModule,
     TypeOrmModule.forFeature([
       ChannelEntity,
       ConnectedUserEntity,
       MessageEntity,
       JoinedChannelEntity,
       UserEntity,
+      FriendEntity,
     ]),
 	AuthModule
   ],
   controllers: [ChannelController],
-  providers: [ChatGateway, ChannelService, ConnectedUserService, JoinedChannelService, MessageService,  UserService, UserHelperService],
+  providers: [ChatGateway, ChannelService, ConnectedUserService, JoinedChannelService, MessageService, UserService, UserHelperService, FriendService],
 })
 export class ChatModule { }

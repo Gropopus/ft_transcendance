@@ -9,11 +9,33 @@ var game;
 var anim;
 var init = -1;
 var gameId = "-1";
+var matchmaking = 0;
+//0 not using
+//1 in search
+//2 wait for confirm
+//3 wait for opponent
+//4 you play
+var confirm_id = -1;
+var ready_usefull = 0;
+var nb_confirm = 0;
 
 const PLAYER_HEIGHT = 100;
 const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
 
+function textDraw(str, color) {
+	var context = canvas.getContext('2d');
+
+	// Draw field
+	context.fillStyle = color;
+	context.fillRect(0, 0, canvas.width, canvas.height);
+
+	context.fillStyle = 'white';
+	context.textAlign = 'center';
+	context.textBaseLine = 'middle';
+	context.fillText(str, canvas.width / 2, canvas.height / 2)
+	matchmaking = 0;
+}
 
 function draw() {
 	var context = canvas.getContext('2d');
@@ -94,17 +116,6 @@ socket.on('speed_update', function(speed_x, speed_y) {
 	game.ball.speed.y = speed_y;
 })
 
-
-socket.on('left_score_update', function() {
-	game.player.score += 1;
-	document.querySelector('#player-score').textContent = game.player.score;
-})
-
-socket.on('right_score_update', function() {
-	game.computer.score += 1;
-	document.querySelector('#computer-score').textContent = game.computer.score;
-})
-
 function collide(player) {
 	// The player does not hit the ball
 	if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_HEIGHT) {
@@ -160,17 +171,32 @@ function ballMove() {
 	game.ball.y += game.ball.speed.y;
 }
 
+function enterMatchMaking()
+{
+	textDraw("enter Matchmaking", "black");
+	console.log("Entered matchmaking");
+	matchmaking = 1;
+	socket.emit('joinMatchmaking');
+}
 
 function play() {
-	if (init == -1)
-	{
-		socket.emit('init', { gameId: gameId });
-		init = 1;
+	if (matchmaking == -1)
+		console.log("youy didn't accept")
+	else if (matchmaking == 0)
+		enterMatchMaking();
+	else if (matchmaking == 1)
+		console.log("searching a game");
+	else if (matchmaking == 2)
+		console.log("waiting for confirm");
+	else if (matchmaking == 3)
+		console.log("waiting for opponent");
+	else {
+		if (gameId != -1)
+		{
+			draw();
+			ballMove();
+		}
 	}
-	draw();
-
-	ballMove();
-
 	anim = requestAnimationFrame(play);
 }
 
@@ -193,6 +219,55 @@ socket.on('gameId', function(id) {
 	game.computer.y = canvas.height / 2;
 })
 
+socket.on('AskReady', function(conf_id) {
+	console.log("match found confirm pls")
+
+	textDraw("Please press ready", 'grey');
+	ready_usefull = 1;
+	matchmaking = 2;
+	confirm_id = conf_id;
+	socket.emit('joinRoom', conf_id);
+})
+
+function waited_to_long()
+{
+	if (matchmaking != 4)
+	{
+		console.log("opponent haven't respond go back to matchmaking");
+
+		textDraw('opponent didn\'t respond in time', 'black');
+		socket.emit('MatchTimeOut', confirm_id);
+		matchmaking = -1;
+	}
+}
+
+socket.on('didntRespond', function() {
+	console.log("You didn't respond :'(")
+
+	textDraw('Next time accept the match :)', 'red');
+	matchmaking = -1;
+})
+
+socket.on('playerConfirm', function() {
+	nb_confirm += 1;
+	console.log("a player confirm total to confirm : ", nb_confirm);
+	if (nb_confirm == 2)
+	{
+		console.log("both player confirmed ready to play");
+		matchmaking = 4;
+	}
+})
+
+function ready() {
+	if (ready_usefull == 0)
+		return ;
+	textDraw('Thanks for confirming waiting opponent', 'grey');
+	ready_usefull = 0;
+	matchmaking = 3;
+	socket.emit('playerReady', confirm_id);
+	setTimeout(waited_to_long, 5000);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 	canvas = document.getElementById('canvas');
 	game = {
@@ -214,8 +289,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	
 	game.ball.speed.x = 0 ;
 	game.ball.speed.y = 0 ;
-
-	socket.emit('joinRoom', "2");
 	
 	// Mouse move event
 	canvas.addEventListener('mousemove', playerMove);
@@ -223,5 +296,5 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Mouse click event
 	document.querySelector('#start-game').addEventListener('click', play);
 	document.querySelector('#stop-game').addEventListener('click', stop);
-
+	document.querySelector('#ready').addEventListener('click', ready);
 });

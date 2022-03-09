@@ -1,21 +1,25 @@
 import { Ichannel } from "src/chat/model/channel.interface";
+import { IFriend } from "src/friend/friend.interface";
+import { IPlayer } from "src/player/player.interface";
 
-export interface UserI {
+export interface Iuser {
     id?: number;
     username?: string;
     password?: string;
     email?: string;
 	ban?: boolean;
-    avatar?: string;
+    picture?: string;
     level?: number;
     status?: UserStatus;
     role?: UserRole;
-	nbWin?: number;
-	school42id?: number;
-	nbLoss?: number;
+	victory?: number;
+	id42?: number;
+	defeat?: number;
 	twoFactorAuthEnabled?: boolean;
 	twoFactorAuthenticationSecret?: string;
 	chatOwner?: Ichannel[];
+    friends?: IFriend[];
+    history?: IPlayer[];
 }
 
 export enum UserRole {

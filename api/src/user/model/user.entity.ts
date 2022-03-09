@@ -3,8 +3,10 @@ import { ConnectedUserEntity } from "src/chat/model/connected-user.entity";
 import { JoinedChannelEntity } from "src/chat/model/joined-channel.entity";
 import { MessageEntity } from "src/chat/model/message.entity";
 import { ChannelEntity } from "src/chat/model/channel.entity";
-import { Exclude } from 'class-transformer';
+import { FriendEntity } from "src/friend/friend.entity";
 import { UserRole, UserStatus } from "./user.interface";
+import { PlayerEntity } from "src/player/player.entity";
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class UserEntity {
@@ -24,27 +26,27 @@ export class UserEntity {
 	@Column({select: false})
 	password: string;
 	
-	@Column({default: 'user.png'})
-	avatar: string;
+	@Column({default: 'profile-picture.png'})
+	picture: string;
 	
 	@Column({default: 0})
 	level: number;
 	
 	@Column({ nullable: true })
-	nbWin: number;
+	victory: number;
 	
 	@Column({ unique: true, nullable: true })
-	school42id: number;
+	id42: number;
 
 	@Column({ nullable: true })
-	nbLoss: number;
+	defeat: number;
 	
 	@Column({ default: false })
 	twoFactorAuthEnabled: boolean;
 
 	@Column({ nullable: true })
 	twoFactorAuthenticationSecret: string;
-
+	
 	@Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
 	status: UserStatus;
 
@@ -68,6 +70,19 @@ export class UserEntity {
 
 	@OneToMany(() => ChannelEntity, channel => channel.owner)
 	chatOwner: ChannelEntity[];
+
+	@OneToMany(() => FriendEntity, friends => friends.user)
+	friends: FriendEntity[];
+
+	@OneToMany(
+	() => FriendEntity,
+	(friendRequestEntity) => friendRequestEntity.receiver,
+	)
+	recvFriendRequests: FriendEntity[];
+
+
+    @OneToMany(() => PlayerEntity, player => player.user)
+	history: PlayerEntity[];
 
  	@BeforeInsert()
  	@BeforeUpdate()

@@ -20,7 +20,7 @@ export class UserEntity {
     email: string;
 
     @Column()
-    avatar: string;
+    picture: string;
     
     @Column()
     level: number;
@@ -38,10 +38,10 @@ export class UserEntity {
     role: UserRole;
 
 	@Column()
-	nbWin: number;
+	victory: number;
 	
 	@Column()
-	nbLoss: number;
+	defeat: number;
 	
 	@Column()
 	twoFactorAuthEnabled: boolean;

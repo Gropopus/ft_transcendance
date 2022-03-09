@@ -34,7 +34,7 @@ export class TwoFactorComponent implements OnInit {
 	this.settingForm = this.formBuilder.group({
 		id: [{value: null, disabled: true}, [Validators.required]],
 		username: [null, [Validators.required]],
-		avatar: [null],
+		picture: [null],
 		email: [{value: null, disabled: true}, [Validators.required]],
 		twoFactorAuthEnabled: [null],
 		twoFactorAuthenticationSecret : [null],
@@ -50,7 +50,7 @@ export class TwoFactorComponent implements OnInit {
 				this.settingForm.patchValue({
 					id: user.id,
 					username: user.username,
-					avatar: user.avatar,
+					picture: user.picture,
 					email: user.email,
 					twoFactorAuthEnabled: user.twoFactorAuthEnabled,
 					twoFactorAuthenticationSecret: user.twoFactorAuthenticationSecret

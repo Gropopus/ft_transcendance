@@ -1,4 +1,4 @@
-export interface PageI {
+export interface Ipage {
   page: number;
   limit: number;
 }

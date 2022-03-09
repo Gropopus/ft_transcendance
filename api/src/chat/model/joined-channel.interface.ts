@@ -1,11 +1,11 @@
-import { UserI } from "src/user/model/user.interface";
+import { Iuser } from "src/user/model/user.interface";
 import { Ichannel } from "./channel.interface";
 
 
-export interface JoinedChannelI {
+export interface IjoinedChanel {
   id?: number;
+  Iuserid: number;
   socketId: string;
-  user: UserI;
-  userId: number;
+  user: Iuser;
   channel: Ichannel;
 }

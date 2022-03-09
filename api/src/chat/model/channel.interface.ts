@@ -1,4 +1,4 @@
-import { UserI } from "src/user/model/user.interface";
+import { Iuser } from "src/user/model/user.interface";
 
 export enum ChannelType {
     PUBLIC = 'public',
@@ -13,10 +13,10 @@ export interface Ichannel {
   description?: string;
   password?: string;
   type?: ChannelType;
-  users?: UserI[];
-  admin?: UserI[];
-  muted?: UserI[];
-  owner?: UserI;
+  users?: Iuser[];
+  admin?: Iuser[];
+  muted?: Iuser[];
+  owner?: Iuser;
   created_at?: Date;
   updated_at?: Date;
 }

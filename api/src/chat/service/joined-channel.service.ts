@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JoinedChannelEntity } from 'src/chat/model/joined-channel.entity';
-import { JoinedChannelI } from 'src/chat/model/joined-channel.interface';
+import { IjoinedChanel } from 'src/chat/model/joined-channel.interface';
 import { Ichannel } from 'src/chat/model/channel.interface';
-import { UserI } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,15 +14,15 @@ export class JoinedChannelService {
     private readonly joinedChannelRepository: Repository<JoinedChannelEntity>
   ) { }
 
-  async create(joinedChannel: JoinedChannelI): Promise<JoinedChannelI> { 
+  async create(joinedChannel: IjoinedChanel): Promise<IjoinedChanel> { 
     return this.joinedChannelRepository.save(joinedChannel);
   }
 
-  async findByUser(user: UserI): Promise<JoinedChannelI[]> {
+  async findByUser(user: Iuser): Promise<IjoinedChanel[]> {
     return this.joinedChannelRepository.find({ user });
   }
 
-  async findByChannel(channel: Ichannel): Promise<JoinedChannelI[]> {
+  async findByChannel(channel: Ichannel): Promise<IjoinedChanel[]> {
     return this.joinedChannelRepository.find({ channel });
   }
 

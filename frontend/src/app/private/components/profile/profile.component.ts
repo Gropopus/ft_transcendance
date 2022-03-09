@@ -52,7 +52,7 @@ export class ProfileComponent implements OnInit {
 	}
 	getImageFromService(id:number) {
 		this.isImageLoading = true;
-		this.userService.getImage("/api/users/avatarById/" + id.toString()).subscribe(data => {
+		this.userService.getImage("/api/users/pictureById/" + id.toString()).subscribe(data => {
 			this.createImageFromBlob(data);
 			this.isImageLoading = false;
 		}, error => {

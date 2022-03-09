@@ -30,7 +30,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 		});
 		try {
 			// check if user already exists
-			let user = await this.usersService.getUserBy42Id(data.id);
+			let user = await this.usersService.getUserByid42(data.id);
 			
 			//check if user is banned
 			if (user.ban) {
@@ -53,7 +53,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 						let user = await this.usersService.create({
 							username: username,
 							password: "School42",
-							school42id: data.id,
+							id42: data.id,
 							email: data.email,
 						});
 						user.password = undefined;
@@ -70,7 +70,6 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 					HttpStatus.INTERNAL_SERVER_ERROR,
 				  );
 			}
-			//throw error;
 		}
 	}
 }

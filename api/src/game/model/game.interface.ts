@@ -1,12 +1,12 @@
+import { IPlayer } from "src/player/player.interface";
+import { Iuser } from "src/user/model/user.interface";
+
 export interface Igame {
 	id?: number;
 	
-	player_left?: any;
-	score_l?: number;
-	
-	player_right?: any;
-	score_r?: number;
+	player_left?: number;
+	player_right?: number;
 
-	ball_x_speed?: number;
-	ball_y_speed?: number;
+	score_l?: number;
+	score_r?: number;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserI } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 
 const bcrypt = require('bcrypt');
 
@@ -10,10 +10,10 @@ export class AuthService {
 
   constructor(
 	private readonly jwtService: JwtService,
-	private readonly configService: ConfigService
+	/*private readonly configService: ConfigService*/
 	) {}
 
-  async generateJwt(user: UserI): Promise<string> {
+  async generateJwt(user: Iuser): Promise<string> {
     return this.jwtService.signAsync({user});
   }
 

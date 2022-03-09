@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
+import { FriendModule } from './friend/friend.module';
+import { PlayerModule } from './player/player.module';
 import { GameModule } from './game/game.module';
 
 @Module({
@@ -21,7 +23,9 @@ import { GameModule } from './game/game.module';
     UserModule,
     AuthModule,
     ChatModule,
-    GameModule,
+    FriendModule,
+	PlayerModule,
+	GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -39,7 +43,7 @@ export class AppModule implements NestModule {
         {path: '/api/users/logout', method: RequestMethod.POST},
         {path: '/api/users/upload', method: RequestMethod.POST},
         {path: '/api/users/:id/role', method: RequestMethod.PUT},
-        {path: '/api/users/avatarById/:id', method: RequestMethod.GET},
+        {path: '/api/users/pictureById/:id', method: RequestMethod.GET},
 		// 2fa 
         {path: '/api/2fa/generate', method: RequestMethod.POST},
         {path: '/api/2fa/authenticate', method: RequestMethod.POST},
@@ -56,8 +60,25 @@ export class AppModule implements NestModule {
 		{path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
 		{path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
 		{path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
-		//game
-		{path: '/api/game/', method: RequestMethod.GET},
+    // friends
+		{path: 'api/friends/:u1/add/:u2', method: RequestMethod.PUT},
+		{path: 'api/friends/:u1/remove/:u2', method: RequestMethod.PUT},
+		{path: 'api/friends/:u1/accept/:u2', method: RequestMethod.PUT},
+		{path: 'api/friends/:u1/decline/:u2', method: RequestMethod.PUT},
+		{path: 'api/friends/:u1/status/:u2', method: RequestMethod.GET},
+		{path: 'api/friends/:user', method: RequestMethod.GET},
+		{path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
+		{path: 'api/friends/:u1/block/:u2', method: RequestMethod.PUT},
+		{path: 'api/friends/:user/blocked-users', method: RequestMethod.GET},
+		// history
+		{path: 'api/history/player/:playerId', method: RequestMethod.GET},
+		{path: 'api/history/:userId', method: RequestMethod.GET},
+		// game
+		{path: 'api/game/create', method: RequestMethod.PUT},
+		{path: 'api/game/delete/:gameID', method: RequestMethod.PUT},
+		{path: 'api/game/stat/:gameID', method: RequestMethod.GET},
+		{path: 'api/game/stat/', method: RequestMethod.GET},
+		{path: 'api/game/hello', method: RequestMethod.GET},
       )
       .forRoutes('')
   }
