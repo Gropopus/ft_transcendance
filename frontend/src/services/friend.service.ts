@@ -16,7 +16,7 @@ export class friendService {
     acceptFriendRequest(u1: Iuser, u2: Iuser) {
         return http.put('api/friends/' + u1.id + '/accept/' + u2.id);
     }
-    
+
     declineFriendRequest(u1: Iuser, u2: Iuser) {
         return http.put('api/friends/' + u1.id + '/decline/' + u2.id);
     }
