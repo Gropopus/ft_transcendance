@@ -12,10 +12,10 @@
 			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
 
 			<div class="submitBar">
-				<button @click="coucou()" class="submitButton">
+				<button @click="login()" class="submitButton">
 					Log in
 				</button>
-				<button @click="coucou()" class="submitButton">
+				<button @click="register()" class="submitButton">
 					Register
 				</button>
 			</div> <!-- submitBar end -->
@@ -52,13 +52,21 @@ export default	{
 				return true;
 			return (false);
 		},
-		coucou:	function():	Void	{
+		login:	function():	Void	{
 			/*
 			alert("salut "  + this.userLogin + "!\n" +
 				"your password is "  + this.userPass + "!\n" +
 				"and your id is"  + this.userId + "!" );
 				*/
 			this.$emit('update:userId', 122);
+		},
+		register:	function():	Void	{
+			/*
+			alert("salut "  + this.userLogin + "!\n" +
+				"your password is "  + this.userPass + "!\n" +
+				"and your id is"  + this.userId + "!" );
+				*/
+			this.$emit('register');
 		}
 	}
 }

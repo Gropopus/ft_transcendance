@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import logPage from './logPage.vue'
+import register from './register.vue'
 import playPage from './playPage.vue'
 import chatPage from './chatPage.vue'
 import statsPage from './statsPage.vue'
@@ -10,7 +11,7 @@ import settingsPage from './settingsPage.vue'
 
 <template>
 	<div class="workSurface" v-bind:style='{"border-top" :(isLogged() ? "hidden" : "solid 3px white")}'>
-		<logPage v-if="!isLogged()" :userId="userId" v-on:update:userId="setId($event)" />
+		<component v-if="!isLogged()" v-bind:is='logOrReg' :userId="userId" v-on:update:userId="setId($event)" v-on:register="registerPage()" />
 		<component v-else v-bind:is='contentTag' />
 	</div>
 </template>
@@ -27,6 +28,11 @@ export default	{
 			default:	0
 		}
 	},
+	data:	function()	{
+		return {
+			regForm:	0
+		}
+	},
 	methods:	{
 		isLogged:	function(): Boolean	{
 			if (this.userId != 0)
@@ -35,6 +41,11 @@ export default	{
 		},
 		setId:	function(rep: event): Void	{
 			this.$emit('update:userId', rep);
+		},
+		registerPage:	function()	{
+			console.log("Register = " + this.regForm);
+			this.regForm = 1;
+			console.log("Register = " + this.regForm);
 		}
 	},
 	computed:	{
@@ -48,6 +59,13 @@ export default	{
 							settingsPage
 						]
 				return Tags[this.currentPage];
+		},
+		logOrReg:	function():	Vue.component	{
+			const	logs: Array<Vue.component> = [
+							logPage,
+							register,
+						]
+				return logs[this.regForm];
 		}
 	}
 }

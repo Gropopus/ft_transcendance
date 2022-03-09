@@ -1,28 +1,37 @@
 <template>
-		<div class="LoginForm">
-			<label for="login"> Login </label>	<br>
+		<div class="RegisterForm">
+			<label for="login"> Register </label>	<br>
 			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
 
 			<label for="password"> Password </label>	<br>
 			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
 
 			<label for="email"> email </label>	<br>
-			<input type="email" v-model="userMail" placeholder="email" class="textArea">	<br>
+			<input type="text" v-model="userMail" placeholder="email" class="textArea">	<br>
 
 			<div class="submitBar">
-				<button @click="coucou()" class="submitButton">
-					Log in
-				</button>
-				<button @click="coucou()" class="submitButton">
+				<button @click="" class="submitButton">
 					Register
 				</button>
 			</div> <!-- submitBar end -->
-		</div> <!-- LoginForm end -->
+		</div> <!-- RegisterForm end -->
 </template>
+
+<script>
+export default	{
+	data:	function()	{
+		return {
+			userLogin:	"",
+			userPass:	"",
+			userMail:	"",
+		}
+	}
+}
+</script>
 
 <style>
 
-.LoginHeader
+.RegisterHeader
 {
 	margin-top:	3%;
 	height:	20%;
@@ -30,12 +39,12 @@
 	justify-content:	center;
 }
 
-.LoginHeader > img
+.RegisterHeader > img
 {
 	object-fit: contain;
 }
 
-.LoginForm
+.RegisterForm
 {
 	border-radius: 5px;
 	margin-top:	2%;
@@ -52,7 +61,7 @@
 	font-weight:	bold;
 }
 
-.LoginForm > input.textArea
+.RegisterForm > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
@@ -61,7 +70,7 @@
 	padding:	6px;
 }
 
-.LoginForm > .submitBar
+.RegisterForm > .submitBar
 {
 	margin-top:	2%;
 	display:	flex;
@@ -70,7 +79,7 @@
 	flex-direction:	row;
 }
 
-.LoginForm > .submitBar > .submitButton
+.RegisterForm > .submitBar > .submitButton
 {
 	display:	block;
 	background:	none;
