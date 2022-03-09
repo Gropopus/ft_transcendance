@@ -11,6 +11,12 @@ import winSurface from './components/winSurface.vue'
   </main>
 </template>
 
+<script lang="ts">
+export default	{
+
+}
+</script>
+
 <style>
 @import './assets/base.css';
 </style>

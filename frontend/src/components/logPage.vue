@@ -22,7 +22,7 @@
 		</div> <!-- LoginForm end -->
 
 		
-		<a class="submit42Button">
+		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
 			<img src="../assets/logo-42_white.png">
 			<div>
 				Log In with<br>
