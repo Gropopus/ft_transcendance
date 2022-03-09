@@ -8,6 +8,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "clean": "^4.0.2",
     "vue": "^3.2.31"
   },
   "devDependencies": {
