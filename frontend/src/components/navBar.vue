@@ -22,17 +22,17 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		},
 		currentPage:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		}
 	},
+	emits:	['update:currentPage'],
 	methods:	{
 		changeCurrent:	function(e: event)	{
 			this.$emit('update:currentPage', e);
-			console.log(e);
 		}
 	}
 }

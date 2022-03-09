@@ -10,9 +10,18 @@ import settingsPage from './settingsPage.vue'
 </script>
 
 <template>
-	<div class="workSurface" v-bind:style='{"border-top" :(isLogged() ? "hidden" : "solid 3px white")}'>
-		<component v-if="!isLogged()" v-bind:is='logOrReg' :userId="userId" v-on:update:userId="setId($event)" v-on:register="registerPage()" />
-		<component v-else v-bind:is='contentTag' />
+	<div class="workSurface" v-bind:style='{"border-top" : (isLogged() ? "hidden" : "solid 3px white")}'>
+		<component v-if="!isLogged()"
+				v-bind:is='logOrReg'
+				:userId="this.userId"
+				v-on:update:userId="setId($event)"
+				v-on:register="registerPage()" />
+		<component v-else
+			 	v-bind:is='contentTag'
+				:userId="this.userId"
+			 	:currentPage="this.currentPage"
+				v-on:update:userId="setId($event)"
+				v-on:update:currentPage="changeCurrent($event)" />
 	</div>
 </template>
 
@@ -33,6 +42,7 @@ export default	{
 			regForm:	0
 		}
 	},
+	emits:	['register', 'update:userId', 'update:currentPage'],
 	methods:	{
 		isLogged:	function(): Boolean	{
 			if (this.userId != 0)
@@ -41,14 +51,15 @@ export default	{
 		},
 		setId:	function(rep: event): Void	{
 			this.$emit('update:userId', rep);
+			this.regForm = 0;
+		},
+		changeCurrent:	function(e: event)	{
+			this.$emit('update:currentPage', e);
 		},
 		registerPage:	function()	{
-			console.log("Register = " + this.regForm);
 			this.regForm = 1;
-			console.log("Register = " + this.regForm);
 		}
 	},
-	emits:	['register', 'update:userId'],
 	computed:	{
 		contentTag:	function():	Vue.component	{
 			const	Tags: Array<Vue.component> = [
