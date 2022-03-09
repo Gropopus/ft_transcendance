@@ -46,26 +46,12 @@ export default	{
 			userPass:	"",
 		}
 	},
+	emits:	['register', 'update:userId'],
 	methods:	{
-		isLogged:	function(): Boolean	{
-			if (this.userId != 0)
-				return true;
-			return (false);
-		},
 		login:	function():	Void	{
-			/*
-			alert("salut "  + this.userLogin + "!\n" +
-				"your password is "  + this.userPass + "!\n" +
-				"and your id is"  + this.userId + "!" );
-				*/
 			this.$emit('update:userId', 122);
 		},
 		register:	function():	Void	{
-			/*
-			alert("salut "  + this.userLogin + "!\n" +
-				"your password is "  + this.userPass + "!\n" +
-				"and your id is"  + this.userId + "!" );
-				*/
 			this.$emit('register');
 		}
 	}

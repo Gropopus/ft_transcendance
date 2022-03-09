@@ -48,6 +48,7 @@ export default	{
 			console.log("Register = " + this.regForm);
 		}
 	},
+	emits:	['register', 'update:userId'],
 	computed:	{
 		contentTag:	function():	Vue.component	{
 			const	Tags: Array<Vue.component> = [

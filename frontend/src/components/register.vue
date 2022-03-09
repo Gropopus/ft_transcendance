@@ -1,4 +1,8 @@
 <template>
+		<div class="LoginHeader">
+			<img src="../assets/picto-id.png">
+		</div> <!-- LoginHeader end -->
+
 		<div class="RegisterForm">
 			<label for="login"> Register </label>	<br>
 			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
@@ -10,7 +14,7 @@
 			<input type="text" v-model="userMail" placeholder="email" class="textArea">	<br>
 
 			<div class="submitBar">
-				<button @click="" class="submitButton">
+				<button @click="login()" class="submitButton">
 					Register
 				</button>
 			</div> <!-- submitBar end -->
@@ -19,11 +23,23 @@
 
 <script>
 export default	{
+	props:	{
+		userId:	{
+			type:	[Number, String],
+			default:	0
+		}
+	},
+	emits:	['register', 'update:userId'],
 	data:	function()	{
 		return {
 			userLogin:	"",
 			userPass:	"",
-			userMail:	"",
+			userMail:	""
+		}
+	},
+	methods:	{
+		login:	function()	{
+			this.$emit('update:userId', 122);
 		}
 	}
 }
@@ -94,36 +110,6 @@ export default	{
 	font-size:	24px;
 	color:	white;
 	font-family: MyanmarText;
-}
-
-.submit42Button
-{
-	display:	block;
-	background:	none;
-	margin-left:	auto;
-	margin-right:	auto;
-	margin-bottom:	5%;
-	padding-top:	1%;
-	padding-bottom:	1%;
-	width:	20%;
-	border:	solid 3px white;
-	font-size:	24px;
-	color:	white;
-	min-height:	42px;
-	min-width:	280px;
-	justify-content:	center;
-	line-height:	1.5;
-	font-weight:	bold;
-	font-family: MyanmarText;
-	text-decoration:	none;
-}
-
-.submit42Button > img
-{
-	float:	left;
-	margin-left:	10px;
-	margin-right:	10px;
-	object-fit:	contain;
 }
 
 </style>

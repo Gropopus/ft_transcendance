@@ -20,6 +20,7 @@ export default	{
 			currentPage: 0
 		}
 	},
+	emits:	['register', 'update:userId'],
 	methods:	{
 		isLogged:	function(): Boolean	{
 			if (this.userId != 0)
