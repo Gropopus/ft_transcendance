@@ -14,6 +14,8 @@ import navBarButton from './navBarButton.vue'
 		</navBarButton>
 		<navBarButton pageId="4" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
+		<navBarButton pageId="5" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
+		</navBarButton>
 	</div>
 </template>
 

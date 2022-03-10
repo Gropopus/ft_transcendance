@@ -4,6 +4,7 @@ import register from './register.vue'
 import playPage from './playPage.vue'
 import chatPage from './chatPage.vue'
 import statsPage from './statsPage.vue'
+import friendsPage from './friendsPage.vue'
 import profilePage from './profilePage.vue'
 import logoutPage from './logoutPage.vue'
 import settingsPage from './settingsPage.vue'
@@ -66,6 +67,7 @@ export default	{
 							playPage,
 							chatPage,
 							statsPage,
+							friendsPage,
 							profilePage,
 							logoutPage,
 							settingsPage

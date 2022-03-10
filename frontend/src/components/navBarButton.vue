@@ -37,6 +37,7 @@ export default	{
 				"Play",
 				"Chat",
 				"Stats",
+				"Friends",
 				"Profile",
 				"Logout",
 				"Settings"
@@ -45,6 +46,7 @@ export default	{
 		},
 		tabIcon:	function(): string	{
 			const iconNames: Array<string>	=	[
+				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png",
@@ -67,7 +69,7 @@ export default	{
 	text-align:	center;
 	vertical-align:	center;
 	text-align:	center;
-	min-width:	180px;
+	min-width:	142px;
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
