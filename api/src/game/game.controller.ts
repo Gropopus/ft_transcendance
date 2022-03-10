@@ -13,7 +13,7 @@ export class GameController {
 
 	@Put('create')
 	async createGame() {
-		return (await (this.gameService.createGame())).id ;
+		return (await (this.gameService.createGame()));
 	}
 
 	@Put('delete/:gameID')

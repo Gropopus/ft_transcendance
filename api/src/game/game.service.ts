@@ -25,7 +25,7 @@ export class GameService {
 		await this.gameRepository.delete(id);
 	}
 
-	async createGame() : Promise<Igame> {
+	async createGame() : Promise<number> {
 		let igame: Igame = {
 			player_left: -1,
 			player_right: -1,
@@ -36,32 +36,15 @@ export class GameService {
 		let game = this.gameRepository.create(igame);
 		await this.gameRepository.save(game);
 		console.log('game id is ', game.id);
-		return game;
+		return game.id;
 	}
-	async addPlayerToGame(pid: number, player: number): Promise<number> {
-		let game = this.findOne(pid);
+	async addPlayerToGame(pid: number, player_left: number, player_right: number): Promise<number> {
+		let game = await this.findOne(pid);
 		if (!game)
 			return (-1); // game doenst exist
-		if ((await game).player_left == -1 && (await game).player_right == -1)
-		{
-			if (Math.random() < 0.5)
-				(await game).player_left = player;
-			else
-				(await game).player_right = player;
-		}
-		else
-		{
-			if ((await game).player_right == -1)
-				(await game).player_right = player;
-			else
-				(await game).player_left = player;
-		}
-		await this.gameRepository.update({id: pid}, await game);
-		if ((await game).player_right == player)
-			return (1); // player is right;
-		else
-			return (0); //player is left;
-
+		game.player_right = player_right;
+		game.player_right = player_left;
+		await this.gameRepository.update({id: pid}, game);
 	}
 
 	async setScore(pid: number, score_l: number, score_r: number) {
@@ -69,5 +52,9 @@ export class GameService {
 			score_l: score_l,
 			score_r: score_r,
 		})
+	}
+	async getScore(pid: number) {
+		let game = await this.findOne(pid);
+		return {score_l: game.score_l, score_r: game.score_r};
 	}
 }

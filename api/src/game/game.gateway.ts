@@ -1,5 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { map } from "rxjs";
 import { Socket, Server } from 'socket.io';
 import { PlayerService } from "src/player/player.service";
 import { subscribe } from "superagent";
@@ -11,7 +12,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	
 	constructor (
 		// private playerService : PlayerService,
-		gameService: GameService,
+		private gameService: GameService,
 	) {}
 
 	MAX_SPEED = 12;
@@ -23,10 +24,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	
 	nb_matchmaking: number = 0;
 	nb_try: number = 0;
-	
+	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
 
 	handleConnection(client: Socket, ...args: any[]) {
-		this.logger.log('client connected: ', client.id);
+		// this.logger.log('client connected: ', client.id);
 	}
 	handleDisconnect(client: Socket) {
 		this.logger.log('client disconnected: ', client.id);
@@ -47,71 +48,73 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.logger.log('Init');
 	}
 
-	// @SubscribeMessage('init')
-	// handleInit(socket: Socket, data:any): void {
 
-	// 	Logger.log('speed update at start')
-	// 	if ((Math.floor(Math.random() * 10) + 1) % 2 == 0)
-	// 		this.emitSpeedUpdate(data.gameId, 4, Math.random() * 8 - 4);
-	// 	else
-	// 		this.emitSpeedUpdate(data.gameId, -4, Math.random() * 8 - 4);
-	// }
+	emitScore(gameRoom: string, score_l: number, score_r: number): void {
+		this.server.to(gameRoom).emit('score_update', score_l, score_r)
+	}
+	emitResetSpeed(gameRoom: string, dir: number): void {
+		this.server.to(gameRoom).emit('reset', -4 * dir, Math.random() * 12 - 4);
+	}
+	emitSpeedUpdate(gameRoom: string, speed_x: number, speed_y: number): void {
+		this.server.to(gameRoom).emit('speed_update', speed_x, speed_y);
+	}
 
-	// emitScore(gameId: number): void {
-	// 	this.server.to(gameId.toString()).emit('score_update', this.rooms[gameId].score_l, this.rooms[gameId].score_r);
-	// }
-	// emitResetSpeed(gameId: number, dir: number): void {
-	// 	this.server.to(gameId.toString()).emit('reset', -4 * dir, Math.random() * 12 - 4);
-	// }
-	// emitSpeedUpdate(gameId: string, speed_x: number, speed_y: number): void {
-	// 	this.server.to(gameId).emit('speed_update', speed_x, speed_y);
-	// }
-	// endGame(gameId: string): void {
-	// 	this.server.to(gameId).emit('game_end');
-	// 	//NEED RESULT TO DB
-	// }
+	@SubscribeMessage('player_pos_left')
+	handlePos_left(socket: Socket, data: any): void {
+		this.server.to(data.gameRoom).emit('player_pos_left', data.player_pos_left);
+	}
+	@SubscribeMessage('player_pos_right')
+	handlePos_right(socket: Socket, data: any): void {
+		this.server.to(data.gameRoom).emit('player_pos_right', data.player_pos_right);
+	}
 
-	// @SubscribeMessage('player_pos_left')
-	// handlePos_left(socket: Socket, data: any): void {
-	// 	this.server.to(data.gameId).emit('player_pos_left', data.player_pos_left);
-	// }
-	// @SubscribeMessage('player_pos_right')
-	// handlePos_right(socket: Socket, data: any): void {
-	// 	this.server.to(data.gameId).emit('player_pos_right', data.player_pos_right);
-	// }
+	endGame(data: any, score: {r: number, l: number}){
+		//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
+		this.server.to(data.gameRoom).emit('gameEnd');
+		this.kickAllFrom(data.gameRoom);
+		this.games_score.delete(data.gameId);
+		this.gameService.setScore(data.gameId, score.l, score.r);
+	}
 
-	// @SubscribeMessage('right_miss')
-	// handleright_miss(socket: Socket, gameId: string): void {
-	// 	console.log('right miss the ball point for left');
-	// 	this.rooms[gameId].score_l += 1;
-	// 	this.emitScore(gameId);
-	// 	this.emitResetSpeed(gameId, -1);
-	// 	if (this.rooms[gameId].score_l == 5) 
-	// 	{
-	// 		this.endGame(gameId);
-	// 	}
-	// }
-	// @SubscribeMessage('left_miss')
-	// handleLeft_miss(socket: Socket, gameId: string): void {
-	// 	console.log('left miss the ball point for right');
-	// 	this.rooms[gameId].score_r += 1;
-	// 	this.emitScore(gameId);
-	// 	this.emitResetSpeed(gameId, 1);
-	// }
+	@SubscribeMessage('right_miss')
+	handleright_miss(socket: Socket, data: any) {
+			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
+		console.log('right miss the ball point for left');
 
-	// @SubscribeMessage('bonce')
-	// handleBonce(socket: Socket, data: any): void {
-	// 	this.emitSpeedUpdate(data.gameId, data.speed_x, data.speed_y);
-	// }
-	
-	// @SubscribeMessage('player_ready')
-	// handlePlayerReady(client: Socket, data: any): void {
-	// 	this.rooms[data.gameId].ready += 1;
-	// }
+		let score: {r: number , l: number};
+		score = this.games_score.get(data.gameId);
+		score.l += 1;
+		this.games_score.set(data.gameId, score);
+		this.emitScore(data.gameRoom, score.l, score.r);
+		if (score.l == 11)
+			this.endGame(data, score);
+		else
+			this.emitResetSpeed(data.gameRoom, 1);
+	}
+	@SubscribeMessage('left_miss')
+	handleLeft_miss(socket: Socket, data: any) {
+			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
+		console.log('left miss the ball point for right');
+
+		let score: {r: number , l: number};
+		score = this.games_score.get(data.gameId);
+		score.r += 1;
+		this.games_score.set(data.gameId, score);
+		this.emitScore(data.gameRoom, score.l, score.r);
+		if (score.r == 11)
+			this.endGame(data, score);
+		else
+			this.emitResetSpeed(data.gameRoom, -1);
+	}
+
+	@SubscribeMessage('bonce')
+	handleBonce(socket: Socket, data: any): void {
+			//data.gameRoom;	speed_x;	speed_y;
+		this.emitSpeedUpdate(data.gameRoom, data.speed_x, data.speed_y);
+	}
 	
 	@SubscribeMessage('joinRoom')
 	async handleJoinRoom(client: Socket, room: string) {
-
 		console.log("client join room : ", room);
 		client.join(room);
 		this.server.to(room).emit('gameId', room);
@@ -133,7 +136,43 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('playerReady')
 	async handlePlayerReady(client: Socket, room: string) {
 		this.server.to(room).emit('playerConfirm');
-		console.log("player confirm in room " ,room);
+	}
+
+	@SubscribeMessage('engage')
+	handleEngage(client: Socket, gameRoom: string) {
+		this.emitResetSpeed(gameRoom, -1);
+	}
+
+	@SubscribeMessage('startGame')
+	async handleStartGame(client: Socket, room: string) {
+		if (client.rooms.has(room) == true)
+		{	// if client still in room to avoid duplicate game
+			console.log('game start confirm for room', room);
+			
+			const players = this.server.sockets.adapter.rooms.get(room).values();
+			const playerss = Array.from(players);
+			this.kickAllFrom(room);
+
+			// create game
+			let gameid = await this.gameService.createGame();
+			console.log('player in room', playerss[0], ', ' ,playerss[1]);
+
+			if (Math.random() < 0.5)
+			{
+				await this.gameService.addPlayerToGame(gameid, 1, 0);
+				this.server.to(playerss[1]).emit('gameID', 'left',  gameid, "gameRoom" + gameid);
+				this.server.to(playerss[0]).emit('gameID', 'right', gameid, "gameRoom" + gameid);
+			}
+			else
+			{
+				await this.gameService.addPlayerToGame(gameid, 0, 1);
+				this.server.to(playerss[0]).emit('gameID', 'left', gameid, "gameRoom" + gameid);
+				this.server.to(playerss[1]).emit('gameID', 'right',  gameid, "gameRoom" + gameid);
+			}
+			this.games_score.set(gameid, {r:0, l:0});
+		}
+		else
+			console.log('game already started');
 	}
 
 	@SubscribeMessage('joinMatchmaking')
@@ -145,11 +184,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (this.nb_matchmaking == 2)
 		{
 			this.nb_try += 1;
-			console.log("enough player to start a game :D");
 			this.server.to('MatchMaking').emit('AskReady', this.nb_try.toString());
 			this.kickAllFrom('MatchMaking');
 			this.nb_matchmaking = 0;
 		}
-		else console.log("not enough player to start a game :(");
 	}	
 }
