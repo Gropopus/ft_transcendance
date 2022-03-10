@@ -5,7 +5,7 @@
 		</p>
 		<br>
 		<p>
-		Profile page
+		houlououououououo
 		</p>
 	</div>
 </template>

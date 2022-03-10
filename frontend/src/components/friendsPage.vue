@@ -1,6 +1,6 @@
 <template>
-	<div class="chatPage">
-		<div class="chatArea">
+	<div class="friendsPage">
+		<div class="friendsArea">
 			<br>
 			<br>
 			<br>
@@ -30,7 +30,7 @@
 			<br>
 			<br>
 		</div>
-		<div class="chatToolSpace">
+		<div class="friendsToolSpace">
 		</div>
 	</div>
 </template>
@@ -51,7 +51,7 @@ export default	{
 </script>
 
 <style lang="css">
-.chatArea
+.friendsArea
 {
 	float:	left;
 	width:	70%;
@@ -62,7 +62,7 @@ export default	{
 	border-radius: 5px;
 }
 
-.chatToolSpace
+.friendsToolSpace
 {
 	float:	right;
 	width:	25%;
@@ -72,7 +72,7 @@ export default	{
 	margin-bottom:	min(22px);
 }
 
-.chatToolNav
+.friendsToolNav
 {
 	float:	right;
 	width:	25%;

@@ -14,6 +14,8 @@ import navBarButton from './navBarButton.vue'
 		</navBarButton>
 		<navBarButton pageId="4" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
 		</navBarButton>
+		<navBarButton pageId="5" :currentPage="this.currentPage" v-on:update:currentPage="changeCurrent($event) ">
+		</navBarButton>
 	</div>
 </template>
 
@@ -22,17 +24,17 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		},
 		currentPage:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		}
 	},
+	emits:	['update:currentPage'],
 	methods:	{
 		changeCurrent:	function(e: event)	{
 			this.$emit('update:currentPage', e);
-			console.log(e);
 		}
 	}
 }
