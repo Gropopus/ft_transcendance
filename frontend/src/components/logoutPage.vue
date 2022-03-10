@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { router } from '../main.ts'
+</script>
+
 <template>
 	<div>
 		<div class="LogoutHeader">
@@ -39,9 +43,11 @@ export default	{
 			console.log(this.userID);
 			this.$emit('update:userId', "0");
 			this.$emit('update:currentPage', "0");
+			router.push("/");
 		},
 		cancel:	function()	{
 			console.log(this.currentPage);
+			router.push("/");
 			this.$emit('update:currentPage', "0");
 		}
 	}

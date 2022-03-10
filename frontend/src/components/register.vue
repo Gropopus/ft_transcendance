@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { router } from '../main.ts'
+</script>
+
 <template>
 		<div class="LoginHeader">
 			<img src="../assets/picto-id.png">
@@ -21,12 +25,12 @@
 		</div> <!-- RegisterForm end -->
 </template>
 
-<script>
+<script lang="ts">
 export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		}
 	},
 	emits:	['register', 'update:userId'],
@@ -40,6 +44,7 @@ export default	{
 	methods:	{
 		login:	function()	{
 			this.$emit('update:userId', 122);
+			router.push('/play');
 		}
 	}
 }

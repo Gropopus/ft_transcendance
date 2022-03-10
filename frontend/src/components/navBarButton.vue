@@ -31,6 +31,14 @@ export default	{
 			return (false);
 		}
 	},
+	mounted()	{
+		window.onpopstate = function(e: event)	{
+			console.log(e);
+		}
+		window.onpushstate = function(e: event)	{
+			console.log(e);
+		}
+	},
 	computed:	{
 		tabName:	function(): string	{
 			const tabNames: Array<string>	=	[

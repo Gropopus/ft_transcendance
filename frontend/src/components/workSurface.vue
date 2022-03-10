@@ -8,21 +8,12 @@ import friendsPage from './friendsPage.vue'
 import profilePage from './profilePage.vue'
 import logoutPage from './logoutPage.vue'
 import settingsPage from './settingsPage.vue'
+import { router } from '../main.ts'
 </script>
 
 <template>
 	<div class="workSurface" v-bind:style='{"border-top" : (isLogged() ? "hidden" : "solid 3px white")}'>
-		<component v-if="!isLogged()"
-				v-bind:is='logOrReg'
-				:userId="this.userId"
-				v-on:update:userId="setId($event)"
-				v-on:register="registerPage()" />
-		<component v-else
-			 	v-bind:is='contentTag'
-				:userId="this.userId"
-			 	:currentPage="this.currentPage"
-				v-on:update:userId="setId($event)"
-				v-on:update:currentPage="changeCurrent($event)" />
+		<router-view/>
 	</div>
 </template>
 
@@ -31,16 +22,16 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		},
 		currentPage:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
 		}
 	},
 	data:	function()	{
 		return {
-			regForm:	0
+			regForm:	"0"
 		}
 	},
 	emits:	['register', 'update:userId', 'update:currentPage'],
@@ -63,6 +54,15 @@ export default	{
 	},
 	computed:	{
 		contentTag:	function():	Vue.component	{
+			const	Routes: Array<String> = [
+							'/play',
+							'/chat',
+							'/stats',
+							'/friends',
+							'/profile',
+							'/logout',
+							'/settings'
+						];
 			const	Tags: Array<Vue.component> = [
 							playPage,
 							chatPage,
@@ -72,13 +72,20 @@ export default	{
 							logoutPage,
 							settingsPage
 						]
+				router.push(Routes[this.currentPage]);
 				return Tags[this.currentPage];
 		},
 		logOrReg:	function():	Vue.component	{
+			const	Routes: Array<String> = [
+							'/login',
+							'/register',
+						];
 			const	logs: Array<Vue.component> = [
 							logPage,
 							register,
 						]
+				if (!this.isLogged())
+					router.push(Routes[this.regForm]);
 				return logs[this.regForm];
 		}
 	}

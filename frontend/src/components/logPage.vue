@@ -1,3 +1,6 @@
+<script setup lang="ts">
+import { router } from '../main.ts'
+</script>
 <template>
 	<div>
 		<div class="LoginHeader">
@@ -50,9 +53,11 @@ export default	{
 	methods:	{
 		login:	function():	Void	{
 			this.$emit('update:userId', 122);
+			router.push('/');
 		},
 		register:	function():	Void	{
 			this.$emit('register');
+			router.push('/register');
 		}
 	}
 }
