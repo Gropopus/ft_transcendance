@@ -27,15 +27,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
 
 	handleConnection(client: Socket, ...args: any[]) {
-		// this.logger.log('client connected: ', client.id);
+		console.log('client connected: ', client.id);
 	}
 	handleDisconnect(client: Socket) {
-		this.logger.log('client disconnected: ', client.id);
-		console.log('was in room', client.rooms);
+		console.log('client disconnected: ', client.id);
 		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
 		let numClient = room ? room.size : 0;
-		console.log('nb client in Matchmaking = ', numClient);
-		console.log('nb in Matchmaking = ', this.nb_matchmaking);
 		if (this.nb_matchmaking != numClient)
 		 --this.nb_matchmaking;
 	}
@@ -89,7 +86,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (score.l == 11)
 			this.endGame(data, score);
 		else
-			this.emitResetSpeed(data.gameRoom, 1);
+			this.emitResetSpeed(data.gameRoom, -1);
 	}
 	@SubscribeMessage('left_miss')
 	handleLeft_miss(socket: Socket, data: any) {
@@ -104,7 +101,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (score.r == 11)
 			this.endGame(data, score);
 		else
-			this.emitResetSpeed(data.gameRoom, -1);
+			this.emitResetSpeed(data.gameRoom, 1);
 	}
 
 	@SubscribeMessage('bonce')
