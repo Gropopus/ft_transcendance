@@ -1,35 +1,10 @@
+
 <template>
-	<div class="friendsPage">
-		<div class="friendsArea">
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-		</div>
+	<div id="friendsPage" class="friendsPage">
+		<!-- <div v-for="user in getFriends" class="friendsArea">
+			<p>{{ user.username }}</p> -->
+			
+		<!-- </div> -->
 		<div class="friendsToolSpace">
 		</div>
 	</div>
@@ -48,6 +23,15 @@ export default	{
 		}
 	}
 }
+// const fp = new Vue({
+// 	el: "#friendsArea",
+// 	methods: {
+// 		getFriends() {
+// 			return friendService.getUserFriends(this.userId);
+// 		}
+// 	}
+// })
+
 </script>
 
 <style lang="css">
