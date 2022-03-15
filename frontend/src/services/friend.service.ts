@@ -22,7 +22,7 @@ export class FriendService {
         return await this.axiosFriend.put(`/${userId1}/decline/${userId2}`);
     }
     
-    async friendsRelations(userId: number) {
+    async friendsList(userId: number) {
         return await this.axiosFriend.get(`/${userId}`);
     }
     

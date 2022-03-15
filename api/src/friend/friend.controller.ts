@@ -10,6 +10,7 @@ export class FriendController {
 
     @Put(':u1/add/:u2')
     async addFriend(@Param() params) {
+        console.log(params.u1 + ' add ' + params.u2);
         this.friendService.addFriend(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2)
@@ -26,6 +27,7 @@ export class FriendController {
     
     @Put(':u1/accept/:u2')
     async acceptFriendRequest(@Param() params) {
+        console.log(params.u1 + ' accept ' + params.u2);
         this.friendService.acceptFriendRequest(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2)
@@ -41,8 +43,8 @@ export class FriendController {
     }
 
     @Get(':user')
-    async friendsRelations(@Param() params) {
-        return this.friendService.friendsRelations(
+    async friendsList(@Param() params) {
+        return this.friendService.friendsList(
             await this.userService.findOne(params.user)
         );
     }

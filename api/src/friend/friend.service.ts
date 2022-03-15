@@ -42,11 +42,11 @@ export class FriendService {
         await this.friendRepository.delete({user : u2, targetId :  u1.id});
     }
     
-    async friendsRelations(u: Iuser) {
+    async friendsList(u: Iuser): Promise<IFriend[]> {
         return this.friendRepository.find({ user: u, status: FriendStatus.FRIEND});
     }
     
-    async friendsRequests(u: Iuser) {
+    async friendsRequests(u: Iuser): Promise<IFriend[]> {
         return this.friendRepository.find({ user: u, status: FriendStatus.WAITING});
     }
     
@@ -76,7 +76,7 @@ export class FriendService {
         await this.friendRepository.save(this.friendRepository.create(relation));
     }
 
-    async getBlockedUsers(u: Iuser) {
+    async getBlockedUsers(u: Iuser): Promise<IFriend[]> {
         return this.friendRepository.find({ user: u, status: FriendStatus.BLOCKED});
     }
 }
