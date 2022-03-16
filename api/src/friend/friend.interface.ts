@@ -5,6 +5,7 @@ export interface IFriend {
     user?: Iuser,
     target?: Iuser,
     targetName?: string,
+    targetId?: number,
     status?: FriendStatus;
 }
 

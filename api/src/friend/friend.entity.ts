@@ -19,6 +19,9 @@ export class FriendEntity {
     @Column({ nullable: true })
     targetName: string;
 
+    @Column({ nullable: true })
+    targetId: number;
+
     @Column({
         type: "enum",
         enum: FriendStatus,

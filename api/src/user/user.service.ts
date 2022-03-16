@@ -21,26 +21,26 @@ export class UserService {
 
 	async create(newUser: Iuser): Promise<Iuser> {
 		try {
-		const exists: boolean = await this.mailExists(newUser.email);
-		if (!exists) {
-			const passwordHash: string = await this.hashPassword(newUser.password);
-			newUser.password = passwordHash;
-			newUser.level = 0;
-			newUser.defeat = 0;
-			newUser.victory = 0;
-			newUser.twoFactorAuthEnabled = false;
-			newUser.picture = "profile-picture.png";
-			const user = await this.userRepository.save(this.userRepository.create(newUser));
-			if (user.id == 1) {
-			user.role = UserRole.OWNER;
-			await this.userRepository.save(user);
+			const exists: boolean = await this.mailExists(newUser.email);
+			if (!exists) {
+				const passwordHash: string = await this.hashPassword(newUser.password);
+				newUser.password = passwordHash;
+				newUser.level = 0;
+				newUser.defeat = 0;
+				newUser.victory = 0;
+				newUser.twoFactorAuthEnabled = false;
+				newUser.picture = "profile-picture.png";
+				const user = await this.userRepository.save(this.userRepository.create(newUser));
+				if (user.id == 1) {
+				user.role = UserRole.OWNER;
+				await this.userRepository.save(user);
+				}
+				return this.findOne(user.id);
+			} else {
+				throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
 			}
-			return this.findOne(user.id);
-		} else {
-			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
-		}
 		} catch {
-		throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
+			throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
 		}
 	}
 

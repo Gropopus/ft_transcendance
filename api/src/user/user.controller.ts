@@ -42,7 +42,6 @@ export class UserController {
 
 	@Post()
 	async create(@Body() createUserDto: CreateUserDto): Promise<Iuser> {
-		console.log('user created');
 	  const userEntity: Iuser = this.userHelperService.createUserDtoToEntity(createUserDto);
 	  return this.userService.create(userEntity);
 	}
@@ -65,7 +64,6 @@ export class UserController {
   
 	@Get(':id')
 	async findOne(@Param() params): Promise<Iuser>{    
-		console.log('searching user');
 		  return this.userService.findOne(params.id);
 	}
 
