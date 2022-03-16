@@ -2,12 +2,22 @@
 <template>
 	<div class="friendsPage">
 		<div  class="friendsArea">
-		 <!-- <ul v-if="!loading && data && data.length"> -->
-		<ul :key="friend.id" v-for="friend in friendList">
+			<h2>FRIENDS LIST</h2>
+			<ul :key="friend.id" v-for="friend in friendList">
 				<li> {{ friend.targetName }} </li>
-		</ul>
+			</ul>
 		</div>
-		<div class="friendsToolSpace">
+		<div class="friendsArea">
+			<h2>FRIENDS REQUESTS</h2>
+			<ul :key="request.id" v-for="request in requestList">
+				<li> {{ request.targetName }} </li>
+			</ul>
+		</div>
+		<div class="friendsArea">
+			<h2>BLOCKED USERS</h2>
+			<ul :key="blocked.id" v-for="blocked in blockedList">
+				<li> {{ blocked.targetName }} </li>
+			</ul>
 		</div>
 	</div>
 </template>
@@ -32,28 +42,54 @@ export default	defineComponent ({
 
 	data() {
 		return {
-				friendList: []
+			friendList: [],
+			requestList: [],
+			blockedList: []
 		}
 	},
 
 	mounted() {
 		this.friendList
+		this.requestList
+		this.blockedList
 		console.log(`the component is now mounted.`)
 	},
 
 	async created() {
-		this.friendList = await this.fetchData()
+		this.friendList = await this.fetchFriends()
+		this.requestList = await this.fetchRequest()
+		this.blockedList = await this.fetchBlocked()
 		console.log('created :')
-		console.log(this.friendList)
+		console.log(this.requestList)
 	},
 
 	methods: {
-		async fetchData() {
+		async fetchFriends() {
 			const res = await fetch(`http://localhost:3000/api/friends/1`, {
     			method: 'get',
-    			headers: {
-      				'content-type': 'application/json'
-				}
+    			headers: { 'content-type': 'application/json' }
+    		})
+			const data = await res.json()
+			console.log('friendssss')
+			console.log(data)
+			return data
+		},
+
+		async fetchRequest() {
+			const res = await fetch(`http://localhost:3000/api/friends/1/received-requests`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+    		})
+			const data = await res.json()
+			console.log('request wtttf')
+			console.log(data)
+			return data
+		},
+
+		async fetchBlocked() {
+			const res = await fetch(`http://localhost:3000/api/friends/1/blocked-users`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
     		})
 			const data = await res.json()
 			return data
@@ -66,7 +102,7 @@ export default	defineComponent ({
 .friendsArea
 {
 	float:	left;
-	width:	70%;
+	width:	30%;
 	min-height:	500px;
 	max-height:	500px;
 	overflow-y:	scroll;
