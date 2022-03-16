@@ -16,7 +16,8 @@ export class FriendEntity {
     @JoinColumn()
     target: UserEntity;
 
-    @Column()
+    @Column({ nullable: true })
+    targetName: string;
 
     @Column({
         type: "enum",
