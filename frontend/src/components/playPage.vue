@@ -1,18 +1,33 @@
 <template>
-	<div class="playPage">
-		<p>
-		salyte
-		</p>
-		<br>
-		<p>
-		jawgkfjwhelfm3
-		</p>
+<ul>
+	<div class="GameArea">
+   	 <canvas id="canvas" width="640" height="500"></canvas>
 	</div>
+	<div class="UserRecap">
+		<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
+	</div>
+	<div class="SocialRecap">
+	</div>
+	</ul>
 </template>
 
-<style lang="css">
-.playPage
-{
-	background:	blue;
+<script lang="ts">
+import * as pong from './pong_right.js'
+export default	{
+	props:	{
+		userId:	{
+			type:	[Number, String],
+			default:	"0"
+		},
+		currentPage:	{
+			type:	[Number, String],
+			default:	"0"
+		}
+	},
+	mounted() { //import socketio
+		let socketio = document.createElement('script')
+		socketio.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js')
+		document.head.appendChild(socketio)
+	}
 }
-</style>
+</script>

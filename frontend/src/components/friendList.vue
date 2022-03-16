@@ -1,12 +1,8 @@
 <template>
 	<div class="profilePage">
-		<p>
-		holalalalala
-		</p>
-		<br>
-		<p>
-		houlououououououo
-		</p>
+		<ul v-for>
+
+		</ul>
 	</div>
 </template>
 

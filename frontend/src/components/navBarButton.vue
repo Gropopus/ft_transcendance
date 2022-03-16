@@ -1,5 +1,5 @@
 <template>
-	<button class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" :("this.pageId" === "this.currentPage" ? "white" : "none")}'>
+	<button class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" : (isCurrent() ? "white" : "none")}'>
 		<img :src="tabIcon" alt="Salut">
 		{{ tabName }}
 	</button>
@@ -8,21 +8,27 @@
 <script lang="ts">
 export default	{
 	props:	{
-		currentPage:	{
-			type:	[Number, String],
-			default:	0
-		},
 		pageId:	{
 			type:	[Number, String],
-			default:	0
+			default:	"0"
+		},
+		currentPage:	{
+			type:	[Number, String],
+			default:	"0"
 		}
 	},
+	emits:	['update:currentPage'],
 	methods:	{
 		changeCurrent:	function(e: event)	{
-			this.$emit('update:currentPage', this.pageId);
 			console.log(this.tabName);
 			console.log(this.pageId);
 			console.log(this.currentPage);
+			this.$emit('update:currentPage', this.pageId);
+		},
+		isCurrent:	function():	Boolean	{
+			if (this.pageId === this.currentPage)
+				return (true);
+			return (false);
 		}
 	},
 	computed:	{
@@ -31,6 +37,7 @@ export default	{
 				"Play",
 				"Chat",
 				"Stats",
+				"Friends",
 				"Profile",
 				"Logout",
 				"Settings"
@@ -39,6 +46,7 @@ export default	{
 		},
 		tabIcon:	function(): string	{
 			const iconNames: Array<string>	=	[
+				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png",
 				"./src/assets/logout-picture.png",
@@ -61,13 +69,12 @@ export default	{
 	text-align:	center;
 	vertical-align:	center;
 	text-align:	center;
-	min-width:	180px;
+	min-width:	142px;
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	font-size:	32px;
 	color: var(--font-blue);
-	background:	none;
 	border:	none;
 }
 

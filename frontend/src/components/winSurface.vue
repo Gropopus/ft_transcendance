@@ -6,8 +6,8 @@ import workSurface from './workSurface.vue'
 
 <template>
 	<div class="winSurface">
-		<navBar v-if="isLogged()" :userId="this.userId" v-on:update:currentPage="this.currentPage = $event "/>
-		<workSurface :userId="this.userId" :currentPage="this.currentPage" v-on:update:userId="this.userId = $event ">
+		<navBar v-if="isLogged()" :userId="this.userId" :currentPage="this.currentPage" v-on:update:currentPage="this.currentPage = $event "/>
+		<workSurface :userId="this.userId" :currentPage="this.currentPage" v-on:update:userId="this.userId = $event " v-on:update:currentPage="this.currentPage = $event ">
 		</workSurface>
 	</div>
 </template>
@@ -16,10 +16,11 @@ import workSurface from './workSurface.vue'
 export default	{
 	data:	function()	{
 		return {
-			userId: 0,
-			currentPage: 0
+			userId: "0",
+			currentPage: "0"
 		}
 	},
+	emits:	['register', 'update:userId', 'update:currentPage'],
 	methods:	{
 		isLogged:	function(): Boolean	{
 			if (this.userId != 0)

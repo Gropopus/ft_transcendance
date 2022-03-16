@@ -1,17 +1,28 @@
 <script setup lang="ts">
 import logPage from './logPage.vue'
+import register from './register.vue'
 import playPage from './playPage.vue'
 import chatPage from './chatPage.vue'
 import statsPage from './statsPage.vue'
+import friendsPage from './friendsPage.vue'
 import profilePage from './profilePage.vue'
 import logoutPage from './logoutPage.vue'
 import settingsPage from './settingsPage.vue'
 </script>
 
 <template>
-	<div class="workSurface" v-bind:style='{"border-top" :(isLogged() ? "hidden" : "solid 3px white")}'>
-		<logPage v-if="!isLogged()" :userId="userId" v-on:update:userId="setId($event)" />
-		<component v-else v-bind:is='contentTag' />
+	<div class="workSurface" v-bind:style='{"border-top" : (isLogged() ? "hidden" : "solid 3px white")}'>
+		<component v-if="!isLogged()"
+				v-bind:is='logOrReg'
+				:userId="this.userId"
+				v-on:update:userId="setId($event)"
+				v-on:register="registerPage()" />
+		<component v-else
+			 	v-bind:is='contentTag'
+				:userId="this.userId"
+			 	:currentPage="this.currentPage"
+				v-on:update:userId="setId($event)"
+				v-on:update:currentPage="changeCurrent($event)" />
 	</div>
 </template>
 
@@ -27,6 +38,12 @@ export default	{
 			default:	0
 		}
 	},
+	data:	function()	{
+		return {
+			regForm:	0
+		}
+	},
+	emits:	['register', 'update:userId', 'update:currentPage'],
 	methods:	{
 		isLogged:	function(): Boolean	{
 			if (this.userId != 0)
@@ -35,6 +52,13 @@ export default	{
 		},
 		setId:	function(rep: event): Void	{
 			this.$emit('update:userId', rep);
+			this.regForm = 0;
+		},
+		changeCurrent:	function(e: event)	{
+			this.$emit('update:currentPage', e);
+		},
+		registerPage:	function()	{
+			this.regForm = 1;
 		}
 	},
 	computed:	{
@@ -43,11 +67,19 @@ export default	{
 							playPage,
 							chatPage,
 							statsPage,
+							friendsPage,
 							profilePage,
 							logoutPage,
 							settingsPage
 						]
 				return Tags[this.currentPage];
+		},
+		logOrReg:	function():	Vue.component	{
+			const	logs: Array<Vue.component> = [
+							playPage,
+							register,
+						]
+				return logs[this.regForm];
 		}
 	}
 }

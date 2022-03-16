@@ -1,4 +1,5 @@
 'use strict';
+import 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js'
 const socket = io("http://localhost:42069", {
 withCredentials: false,
 });
@@ -16,6 +17,10 @@ var matchmaking = 0;
 	//2 wait for confirm
 	//3 wait for opponent
 	//4 you play
+var	button = 0;
+	//0 not using
+	//1 Press to start
+	//2 confirm match
 var confirm_id = -1;
 var ready_usefull = 0;
 var nb_confirm = 0;
@@ -23,6 +28,45 @@ var nb_confirm = 0;
 const PLAYER_HEIGHT = 100;
 const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
+
+var start_buton = {x: 0,  maxX: 0, y: 0, maxY: 0};
+
+function buttonDraw(str, posx_start, posy_start, largeur, hauteur) {
+	var context = canvas.getContext('2d');
+
+
+
+
+	//background 
+	let lineaire = context.createLinearGradient(0, 0 ,canvas.width, canvas.height)
+	lineaire.addColorStop(1, "#ddace2")
+	lineaire.addColorStop(0, "#173dc7")
+	context.fillStyle = lineaire;
+	context.fillRect(0, 0, canvas.width, canvas.height);
+
+	context.fillStyle = 'red';
+	context.clearRect(posx_start, posy_start, largeur, hauteur);
+	start_buton.x = posx_start;
+	start_buton.y = posy_start;
+	start_buton.maxX = posx_start + largeur;
+	start_buton.maxY = posy_start + hauteur
+	context.font = "Myanmar Text";
+	context.fillStyle = "#252E83" //text color;
+	context.textAlign = 'center';
+	context.textBaseLine = 'middle';
+	context.fillText(str, posx_start + largeur / 2, posy_start + hauteur / 2);
+
+	context.strokeStyle = 'white';
+	context.beginPath();
+	context.moveTo(canvas.width / 2, 0);
+	context.lineTo(canvas.width / 2, canvas.height);
+	context.stroke();
+	context.strokeStyle = 'white';
+	context.beginPath();
+	context.moveTo(0, canvas.height / 2);
+	context.lineTo(canvas.width, canvas.height / 2);
+	context.stroke();
+}
 
 function textDraw(str, color) {
 	var context = canvas.getContext('2d');
@@ -63,7 +107,6 @@ function draw() {
 	context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
 	context.fill();
 }
-
 
 //done
 function playerMove(event) {
@@ -319,6 +362,31 @@ function ready() {
 	socket.emit('playerReady', confirm_id);
 }
 
+function playerclick(canvas, event) {
+	const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    console.log("                         x: " + x + "             y: " + y)
+	if (button == 0)
+		return ;
+	if (button == 1) // press to start
+	{
+		console.log("ned to me in ", start_buton);
+		console.log("                 middle  x: " + canvas.width/2 + "             y: " + canvas.height/2)
+		if (x >= start_buton.x && x <= start_buton.maxX &&
+			y >= start_buton.y && y <= start_buton.maxY)
+		{
+			// button = 0;
+			// play();
+		}
+		
+	}
+	if (button == 2) // press to confirm
+	{
+
+	}
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 	canvas = document.getElementById('canvas');
 	game = {
@@ -340,15 +408,22 @@ document.addEventListener('DOMContentLoaded', function () {
 	
 	game.ball.speed.x = 0 ;
 	game.ball.speed.y = 0 ;
-	
+
 	game.computer.score = 0;
 	game.player.score = 0;
 	
 	// Mouse move event
 	canvas.addEventListener('mousemove', playerMove);
+	canvas.addEventListener('mousedown',function(e) {
+
+	playerclick(canvas, e);
+	})
+	buttonDraw("Press here to start", (canvas.width / 2) - 50, (canvas.height / 2) - 50
+									, 100, 100);
+	button = 1;
 
 	// Mouse click event
-	document.querySelector('#start-game').addEventListener('click', play);
+	// document.querySelector('#start-game').addEventListener('click', play);
 	// document.querySelector('#stop-game').addEventListener('click', stop);
-	document.querySelector('#ready').addEventListener('click', ready);
+	// document.querySelector('#ready').addEventListener('click', ready);
 });

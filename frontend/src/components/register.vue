@@ -1,38 +1,27 @@
 <template>
-	<div>
 		<div class="LoginHeader">
 			<img src="../assets/picto-id.png">
 		</div> <!-- LoginHeader end -->
 
-		<div class="LoginForm">
-			<label for="login"> Login </label>	<br>
+		<div class="RegisterForm">
+			<label for="login"> Register </label>	<br>
 			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
 
 			<label for="password"> Password </label>	<br>
 			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
 
+			<label for="email"> email </label>	<br>
+			<input type="text" v-model="userMail" placeholder="email" class="textArea">	<br>
+
 			<div class="submitBar">
 				<button @click="login()" class="submitButton">
-					Log in
-				</button>
-				<button @click="register()" class="submitButton">
 					Register
 				</button>
 			</div> <!-- submitBar end -->
-		</div> <!-- LoginForm end -->
-
-		
-		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
-			<img src="../assets/logo-42_white.png">
-			<div>
-				Log In with<br>
-				Connect
-			</div>
-		</a> <!-- submit42Button end -->
-	</div>
+		</div> <!-- RegisterForm end -->
 </template>
 
-<script lang="ts">
+<script>
 export default	{
 	props:	{
 		userId:	{
@@ -40,19 +29,17 @@ export default	{
 			default:	0
 		}
 	},
+	emits:	['register', 'update:userId'],
 	data:	function()	{
 		return {
 			userLogin:	"",
 			userPass:	"",
+			userMail:	""
 		}
 	},
-	emits:	['register', 'update:userId'],
 	methods:	{
-		login:	function():	Void	{
+		login:	function()	{
 			this.$emit('update:userId', 122);
-		},
-		register:	function():	Void	{
-			this.$emit('register');
 		}
 	}
 }
@@ -60,7 +47,7 @@ export default	{
 
 <style>
 
-.LoginHeader
+.RegisterHeader
 {
 	margin-top:	3%;
 	height:	20%;
@@ -68,12 +55,12 @@ export default	{
 	justify-content:	center;
 }
 
-.LoginHeader > img
+.RegisterHeader > img
 {
 	object-fit: contain;
 }
 
-.LoginForm
+.RegisterForm
 {
 	border-radius: 5px;
 	margin-top:	2%;
@@ -90,7 +77,7 @@ export default	{
 	font-weight:	bold;
 }
 
-.LoginForm > input.textArea
+.RegisterForm > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
@@ -99,7 +86,7 @@ export default	{
 	padding:	6px;
 }
 
-.LoginForm > .submitBar
+.RegisterForm > .submitBar
 {
 	margin-top:	2%;
 	display:	flex;
@@ -108,7 +95,7 @@ export default	{
 	flex-direction:	row;
 }
 
-.LoginForm > .submitBar > .submitButton
+.RegisterForm > .submitBar > .submitButton
 {
 	display:	block;
 	background:	none;
@@ -123,36 +110,6 @@ export default	{
 	font-size:	24px;
 	color:	white;
 	font-family: MyanmarText;
-}
-
-.submit42Button
-{
-	display:	block;
-	background:	none;
-	margin-left:	auto;
-	margin-right:	auto;
-	margin-bottom:	5%;
-	padding-top:	1%;
-	padding-bottom:	1%;
-	width:	20%;
-	border:	solid 3px white;
-	font-size:	24px;
-	color:	white;
-	min-height:	42px;
-	min-width:	280px;
-	justify-content:	center;
-	line-height:	1.5;
-	font-weight:	bold;
-	font-family: MyanmarText;
-	text-decoration:	none;
-}
-
-.submit42Button > img
-{
-	float:	left;
-	margin-left:	10px;
-	margin-right:	10px;
-	object-fit:	contain;
 }
 
 </style>

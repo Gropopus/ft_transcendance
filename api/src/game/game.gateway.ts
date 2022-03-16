@@ -29,21 +29,32 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	handleConnection(client: Socket, ...args: any[]) {
 		console.log('client connected: ', client.id);
 	}
-	handleDisconnect(client: Socket) {
+	async handleDisconnect(client: Socket) {
 		console.log('client disconnected: ', client.id);
 		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
 		let numClient = room ? room.size : 0;
 		if (this.nb_matchmaking != numClient)
 		 --this.nb_matchmaking;
 	}
-	
 	kickAllFrom(room: string) {
 		this.server.socketsLeave(room);
 	}
-
 	afterInit(server: Server) {
 		this.logger.log('Init');
 	}
+	@SubscribeMessage('joinRoom')
+	async handleJoinRoom(client: Socket, room: string) {
+		// console.log("client join room : ", room);
+		client.join(room);
+		this.server.to(room).emit('gameId', room);
+	}
+	@SubscribeMessage('leaveRoom')
+	async handleLeaveRoom(client: Socket, room: string) {
+		client.leave(room);
+		console.log("client leave room");
+	}
+
+
 
 
 	emitScore(gameRoom: string, score_l: number, score_r: number): void {
@@ -55,7 +66,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	emitSpeedUpdate(gameRoom: string, speed_x: number, speed_y: number): void {
 		this.server.to(gameRoom).emit('speed_update', speed_x, speed_y);
 	}
-
 	@SubscribeMessage('player_pos_left')
 	handlePos_left(socket: Socket, data: any): void {
 		this.server.to(data.gameRoom).emit('player_pos_left', data.player_pos_left);
@@ -64,7 +74,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	handlePos_right(socket: Socket, data: any): void {
 		this.server.to(data.gameRoom).emit('player_pos_right', data.player_pos_right);
 	}
-
 	endGame(data: any, score: {r: number, l: number}){
 		//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
 		this.server.to(data.gameRoom).emit('gameEnd');
@@ -72,15 +81,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.games_score.delete(data.gameId);
 		this.gameService.setScore(data.gameId, score.l, score.r);
 	}
-
 	@SubscribeMessage('right_miss')
 	handleright_miss(socket: Socket, data: any) {
 			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
-		console.log('right miss the ball point for left');
 
 		let score: {r: number , l: number};
 		score = this.games_score.get(data.gameId);
-		score.l += 1;
+		if (score == undefined)
+			return ;
+		score.l = data.score_l + 1;
 		this.games_score.set(data.gameId, score);
 		this.emitScore(data.gameRoom, score.l, score.r);
 		if (score.l == 11)
@@ -90,12 +99,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('left_miss')
 	handleLeft_miss(socket: Socket, data: any) {
-			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
-		console.log('left miss the ball point for right');
+			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r;	data.senderSide
 
 		let score: {r: number , l: number};
 		score = this.games_score.get(data.gameId);
-		score.r += 1;
+		if (score == undefined)
+			return ;
+		score.r = data.score_r + 1;
 		this.games_score.set(data.gameId, score);
 		this.emitScore(data.gameRoom, score.l, score.r);
 		if (score.r == 11)
@@ -103,43 +113,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else
 			this.emitResetSpeed(data.gameRoom, 1);
 	}
-
-	@SubscribeMessage('bonce')
-	handleBonce(socket: Socket, data: any): void {
-			//data.gameRoom;	speed_x;	speed_y;
-		this.emitSpeedUpdate(data.gameRoom, data.speed_x, data.speed_y);
-	}
-	
-	@SubscribeMessage('joinRoom')
-	async handleJoinRoom(client: Socket, room: string) {
-		console.log("client join room : ", room);
-		client.join(room);
-		this.server.to(room).emit('gameId', room);
-	}
-
-	@SubscribeMessage('leaveRoom')
-	async handleLeaveRoom(client: Socket, room: string) {
-		client.leave(room);
-		console.log("client disconnect room");
-	}
-	
-	@SubscribeMessage('MatchTimeOut')
-	async handleMatchTimeOut(client: Socket, room: string) {
-		client.leave(room);
-		this.server.to(room).emit('didntRespond');
-		this.kickAllFrom(room);
-	}
-
-	@SubscribeMessage('playerReady')
-	async handlePlayerReady(client: Socket, room: string) {
-		this.server.to(room).emit('playerConfirm');
-	}
-
 	@SubscribeMessage('engage')
 	handleEngage(client: Socket, gameRoom: string) {
 		this.emitResetSpeed(gameRoom, -1);
 	}
 
+
+	//bellow is matchmaking part
 	@SubscribeMessage('startGame')
 	async handleStartGame(client: Socket, room: string) {
 		if (client.rooms.has(room) == true)
@@ -171,7 +151,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else
 			console.log('game already started');
 	}
-
 	@SubscribeMessage('joinMatchmaking')
 	async handleMatchmaking(client: Socket)
 	{
@@ -186,4 +165,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.nb_matchmaking = 0;
 		}
 	}	
+	@SubscribeMessage('playerReady')
+	async handlePlayerReady(client: Socket, room: string) {
+		this.server.to(room).emit('playerConfirm');
+	}
+	@SubscribeMessage('MatchTimeOut')
+	async handleMatchTimeOut(client: Socket, room: string) {
+		client.leave(room);
+		this.server.to(room).emit('didntRespond');
+		this.kickAllFrom(room);
+	}
 }
