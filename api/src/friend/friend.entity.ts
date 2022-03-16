@@ -10,10 +10,13 @@ export class FriendEntity {
 
     @ManyToOne(() => UserEntity, user => user.friends)
     @JoinColumn()
-    user: Iuser;
+    user: UserEntity;
+
+    @ManyToOne(() => UserEntity, user => user.target)
+    @JoinColumn()
+    target: UserEntity;
 
     @Column()
-    targetId: number;
 
     @Column({
         type: "enum",

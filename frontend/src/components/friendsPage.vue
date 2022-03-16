@@ -2,10 +2,9 @@
 <template>
 	<div class="friendsPage">
 		<div  class="friendsArea">
-		 <ul v-if="!loading && data && data.length">
-			<li :key="friend.id" v-for="friend in data">
-				<p> hello </p>
-			</li>
+		 <!-- <ul v-if="!loading && data && data.length"> -->
+		<ul :key="friend.id" v-for="friend in friendList">
+				<li> {{ friend }} </li>
 		</ul>
 		</div>
 		<div class="friendsToolSpace">
@@ -14,9 +13,9 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted } from "vue";
+import { defineComponent } from 'vue'
 
-export default	{
+export default	defineComponent ({
 	name: 'friendsPage',
 	props:	{
 		userId:	{
@@ -28,53 +27,39 @@ export default	{
 			default:	"0"
 		},
 	},
-	setup() {
-		const data = ref(null);
-		const loading = ref(true);
 
-		function fetchData() {
-			return fetch('http://localhost:3000/api/friends/1', {
+	emits: ['save'],
+
+	data() {
+		return {
+				friendList: []
+		}
+	},
+
+	mounted() {
+		this.friendList
+		console.log(`the component is now mounted.`)
+	},
+
+	async created() {
+		this.friendList = await this.fetchData()
+		console.log('friends list created' + this.friendList)
+	},
+
+	methods: {
+		async fetchData() {
+			const res = await fetch(`http://localhost:3000/api/friends/1`, {
     			method: 'get',
     			headers: {
       				'content-type': 'application/json'
-    			}
-  			})
-			  .then(res => { return res.json(); })
-			  .then(json => { data.value = json.data; })
-			  .then(() => { loading.value = false; });
-		}
-
-		onMounted(() => {
-			fetchData();
-		});
-
-		return {
-			data,
-			loading
-		};
+				}
+    		})
+			const data = await res.json()
+			console.log(data)
+			return data
+		},
 	},
-	// data() {
-	// 	return {
-		// 		friendsList: Array
-	// 	}
-	// },
-	// methods: {
-	// 		friendsList: Array
-	// 	mounted() {
-	// 		console.log(`the component is now mounted.`)
-	// 	},
-	// 	async fetchFriends() {
-	// 		const res = await fetch(`http://localhost:3000/api/friends/1`)
-	// 		const data = await res.json()
-	// 		return data
-	// 	},
-	// 	async created() {
-	// 		console.log('friends list created')
-	// 		this.friendsList = await this.fetchFriends()
-	// 	},
-	// },
-	// console: () => console
-}
+})
 </script>
 
 <style lang="css">

@@ -15,12 +15,12 @@ export class FriendService {
     async addFriend(u1: Iuser, u2: Iuser) {
         const u1Relation = {
             user: u1,
-            targetId: u2.id,
+            target: u2,
             status: FriendStatus.PENDING
         }
         const u2Relation = {
             user: u2,
-            targetId: u1.id,
+            target: u1,
             status: FriendStatus.WAITING
         }
         await this.friendRepository.save(this.friendRepository.create(u1Relation));
@@ -28,18 +28,18 @@ export class FriendService {
     }
     
     async unfriends(u1: Iuser, u2: Iuser) {
-        await this.friendRepository.delete({user : u1, targetId :  u2.id});
-        await this.friendRepository.delete({user : u2, targetId :  u1.id});
+        await this.friendRepository.delete({user : u1, target :  u2});
+        await this.friendRepository.delete({user : u2, target :  u1});
     }
     
     async acceptFriendRequest(u1: Iuser, u2: Iuser) {
-        await this.friendRepository.update({user : u2, targetId :  u1.id}, { status: FriendStatus.FRIEND });
-        await this.friendRepository.update({user : u1, targetId :  u2.id}, { status: FriendStatus.FRIEND });
+        await this.friendRepository.update({user : u2, target :  u1}, { status: FriendStatus.FRIEND });
+        await this.friendRepository.update({user : u1, target :  u2}, { status: FriendStatus.FRIEND });
     }
     
     async declineFriendRequest(u1: Iuser, u2: Iuser) {
-        await this.friendRepository.delete({user : u1, targetId :  u2.id});
-        await this.friendRepository.delete({user : u2, targetId :  u1.id});
+        await this.friendRepository.delete({user : u1, target :  u2});
+        await this.friendRepository.delete({user : u2, target :  u1});
     }
     
     async friendsList(u: Iuser): Promise<IFriend[]> {
@@ -51,26 +51,26 @@ export class FriendService {
     }
     
     async friendsStatus(u1: Iuser, u2: Iuser) {
-        return this.friendRepository.findOne({ user: u1, targetId: u2.id});
+        return this.friendRepository.findOne({ user: u1, target: u2});
     }
     
     async blockUser(u1: Iuser, u2: Iuser) {
-        await this.friendRepository.delete({user : u1, targetId :  u2.id});
+        await this.friendRepository.delete({user : u1, target :  u2});
         const relation = {
             user: u1,
-            targetId: u2.id,
+            target: u2,
             status: FriendStatus.BLOCKED
         }
         await this.friendRepository.save(this.friendRepository.create(relation));
     }
 
     async unblockUser(u1: Iuser, u2: Iuser) {
-        await this.friendRepository.delete({user : u1, targetId :  u2.id});
-        if (!this.friendRepository.count({ user: u2, targetId: u1.id, status: FriendStatus.FRIEND}))
+        await this.friendRepository.delete({user : u1, target :  u2});
+        if (!this.friendRepository.count({ user: u2, target: u1, status: FriendStatus.FRIEND}))
             return ;
         const relation = {
             user: u1,
-            targetId: u2.id,
+            target: u2,
             status: FriendStatus.FRIEND
         }
         await this.friendRepository.save(this.friendRepository.create(relation));

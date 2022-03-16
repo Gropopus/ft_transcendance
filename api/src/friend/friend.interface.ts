@@ -3,7 +3,7 @@ import { Iuser } from "src/user/model/user.interface";
 export interface IFriend {
     id?: number,
     user?: Iuser,
-    targetId?: number;
+    target?: Iuser;
     status?: FriendStatus;
 }
 
