@@ -1,5 +1,6 @@
 import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
+import { IFriend } from './friend.interface';
 import { FriendService } from './friend.service'
 
 @Controller('friends')
@@ -43,21 +44,21 @@ export class FriendController {
     }
 
     @Get(':user')
-    async friendsList(@Param() params) {
+    async friendsList(@Param() params): Promise<IFriend[]> {
         return this.friendService.friendsList(
             await this.userService.findOne(params.user)
         );
     }
 
     @Get(':user/received-requests')
-    async friendsRequests(@Param() params) {
+    async friendsRequests(@Param() params): Promise<IFriend[]>  {
         return this.friendService.friendsRequests(
             await this.userService.findOne(params.user)
         );
     }
 
     @Get(':u1/status/:u2')
-    async friendsStatus(@Param() params) {
+    async friendsStatus(@Param() params): Promise<IFriend>  {
         return this.friendService.friendsStatus(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2)

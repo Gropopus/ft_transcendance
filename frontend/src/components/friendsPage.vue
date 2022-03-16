@@ -4,7 +4,7 @@
 		<div  class="friendsArea">
 		 <!-- <ul v-if="!loading && data && data.length"> -->
 		<ul :key="friend.id" v-for="friend in friendList">
-				<li> {{ friend }} </li>
+				<li> {{ friend.target }} </li>
 		</ul>
 		</div>
 		<div class="friendsToolSpace">
@@ -43,7 +43,8 @@ export default	defineComponent ({
 
 	async created() {
 		this.friendList = await this.fetchData()
-		console.log('friends list created' + this.friendList)
+		console.log('in created :')
+		console.log(this.friendList.user.id)
 	},
 
 	methods: {
@@ -54,6 +55,7 @@ export default	defineComponent ({
       				'content-type': 'application/json'
 				}
     		})
+			console.log(res)
 			const data = await res.json()
 			console.log(data)
 			return data
