@@ -2,9 +2,10 @@ import { Iuser } from "src/user/model/user.interface";
 
 export interface IFriend {
     id?: number,
-    user?: Iuser ;
-    reciever?: Iuser ;
-    targetId?: number;
+    user?: Iuser,
+    target?: Iuser,
+    targetName?: string,
+    targetId?: number,
     status?: FriendStatus;
 }
 

@@ -60,13 +60,14 @@ export class AppModule implements NestModule {
 		{path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
     // friends
     {path: 'api/friends/:u1/add/:u2', method: RequestMethod.PUT},
-    {path: 'api/friends/:u1/remove/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/unfriend/:u2', method: RequestMethod.PUT},
     {path: 'api/friends/:u1/accept/:u2', method: RequestMethod.PUT},
     {path: 'api/friends/:u1/decline/:u2', method: RequestMethod.PUT},
     {path: 'api/friends/:u1/status/:u2', method: RequestMethod.GET},
     {path: 'api/friends/:user', method: RequestMethod.GET},
     {path: 'api/friends/:user/received-requests', method: RequestMethod.GET},
     {path: 'api/friends/:u1/block/:u2', method: RequestMethod.PUT},
+    {path: 'api/friends/:u1/unblock/:u2', method: RequestMethod.PUT},
     {path: 'api/friends/:user/blocked-users', method: RequestMethod.GET},
     // history
     {path: 'api/history/player/:playerId', method: RequestMethod.GET},

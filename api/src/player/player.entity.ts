@@ -15,6 +15,9 @@ export class PlayerEntity {
     @Column({default: 0})
     points: number;
 
+    @Column()
+    gameId: number;
+
     @Column({
         type: "enum",
         enum: PlayerStatus,

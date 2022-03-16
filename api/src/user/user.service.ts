@@ -40,7 +40,7 @@ export class UserService {
 			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
 		}
 		} catch {
-		throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
+			throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
 		}
 	}
 

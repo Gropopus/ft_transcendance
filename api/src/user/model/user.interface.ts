@@ -19,6 +19,7 @@ export interface Iuser {
 	twoFactorAuthenticationSecret?: string;
 	chatOwner?: Ichannel[];
     friends?: IFriend[];
+    target?: IFriend[];
     history?: IPlayer[];
 }
 
