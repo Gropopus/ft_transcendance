@@ -31,12 +31,15 @@
 			<br>
 		</div>
 		<div class="chatToolSpace">
+		
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-export default	{
+import { defineComponent } from 'vue'
+
+export default	defineComponent ({
 	props:	{
 		userId:	{
 			type:	[Number, String],
@@ -45,9 +48,37 @@ export default	{
 		currentPage:	{
 			type:	[Number, String],
 			default:	"0"
+		},
+	},
+
+	emits: ['save'],
+
+	data() {
+		return {
+			channelsList: [],
 		}
-	}
-}
+	},
+
+	mounted() {
+		this.channelsList
+	},
+
+	async created() {
+		this.channelsList = await this.fetchChannelsList()
+	},
+
+	methods: {
+		async fetchChannelsList() {
+			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+    		})
+			const data = await res.json()
+			console.log(data)
+			return data
+		},
+	},
+})
 </script>
 
 <style lang="css">

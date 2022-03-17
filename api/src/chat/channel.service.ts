@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { ChannelEntity } from 'src/chat/model/channel.entity';
 import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { Iuser } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/user.service';
 import { Repository, getConnection } from 'typeorm';
 import { MessageService } from './service/message.service';
 
@@ -18,6 +19,7 @@ export class ChannelService {
     private readonly channelRepository: Repository<ChannelEntity>,
 	private authService: AuthService,
 	private messageService: MessageService,
+	private userService: UserService,
   ) { }
 
   async createChannel(channel: Ichannel, creator: Iuser): Promise<Ichannel> {
@@ -27,8 +29,11 @@ export class ChannelService {
 		channel.password = passwordHash;
 	}
 	channel.owner = creator;
+	console.log('chan create')
     const newChannel = await this.addCreatorToChannel(channel, creator);
+	console.log('creator add')
     const newChannelAdmin = await this.addAdminToChannel(newChannel, creator);	
+	console.log(newChannelAdmin)
     return this.channelRepository.save(newChannelAdmin);
   }
 
@@ -69,7 +74,8 @@ export class ChannelService {
   }
 
   async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	
+	  const user = await this.userService.findOne(Iuserid)
+	  console.log(user)
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
 		.leftJoinAndSelect('channel.users', 'users')
@@ -79,6 +85,7 @@ export class ChannelService {
 		.leftJoinAndSelect('channel.muted', 'all_muted')
 		.leftJoinAndSelect('channel.owner', 'onwner')
 		.orderBy('channel.updated_at', 'DESC');
+		console.log(query)
 	
 	return paginate(query, options);
   }

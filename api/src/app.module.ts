@@ -40,6 +40,7 @@ export class AppModule implements NestModule {
         {path: '/api/users/login', method: RequestMethod.POST},
         {path: '/api/users/logout', method: RequestMethod.POST},
         {path: '/api/users/upload', method: RequestMethod.POST},
+        {path: '/api/users/find-by-email/:email', method: RequestMethod.GET},
         {path: '/api/users/:id/role', method: RequestMethod.PUT},
         {path: '/api/users/pictureById/:id', method: RequestMethod.GET},
 		// 2fa 
@@ -54,6 +55,8 @@ export class AppModule implements NestModule {
         {path: '/api/oauth2/school42/callback', method: RequestMethod.GET},
 		// channel
 		{path: '/api/channel/:idChannel', method: RequestMethod.GET},
+		{path: '/api/channel/new', method: RequestMethod.POST},
+		{path: '/api/channel/all/:user', method: RequestMethod.GET},
 		{path: '/api/channel/:id/admin/destroy', method: RequestMethod.PUT},
 		{path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
 		{path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},

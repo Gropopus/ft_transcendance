@@ -53,7 +53,7 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save'],
+	emits: ['save', 'update:currentPage'],
 
 	data() {
 		return {
@@ -74,13 +74,11 @@ export default	defineComponent ({
 		this.friendList = await this.fetchFriends()
 		this.requestList = await this.fetchRequest()
 		this.blockedList = await this.fetchBlocked()
-		console.log('created :')
-		console.log(this.blockedList)
 	},
 
 	methods: {
 		async fetchFriends() {
-			const res = await fetch(`http://localhost:3000/api/friends/1`, {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -89,7 +87,7 @@ export default	defineComponent ({
 		},
 
 		async fetchRequest() {
-			const res = await fetch(`http://localhost:3000/api/friends/1/received-requests`, {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}/received-requests`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -98,7 +96,7 @@ export default	defineComponent ({
 		},
 
 		async fetchBlocked() {
-			const res = await fetch(`http://localhost:3000/api/friends/1/blocked-users`, {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}/blocked-users`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -111,6 +109,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
+			// this.$emit('update:currentPage', "0");
 		},
 		async declineRequest(targetId: number){
 			await fetch(`http://localhost:3000/api/friends/1/decline/${targetId}`, {
@@ -138,7 +137,7 @@ export default	defineComponent ({
 .friendsArea
 {
 	float:	left;
-	width:	30%;
+	width:	32%;
 	min-height:	500px;
 	max-height:	500px;
 	overflow-y:	scroll;
