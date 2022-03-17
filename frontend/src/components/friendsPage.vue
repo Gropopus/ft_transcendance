@@ -74,8 +74,6 @@ export default	defineComponent ({
 		this.friendList = await this.fetchFriends()
 		this.requestList = await this.fetchRequest()
 		this.blockedList = await this.fetchBlocked()
-		console.log('created :')
-		console.log(this.blockedList)
 	},
 
 	methods: {

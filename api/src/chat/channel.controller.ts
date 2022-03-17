@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Get, Put, Post, Query, UseGuards } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { JwtAuthGuard } from '../auth/login/guards/jwt.guard'
 import { RolesGuard } from 'src/auth/login/guards/roles.guards';
@@ -16,12 +16,29 @@ export class ChannelController {
 	private channelService: ChannelService,
   ) { }
 
+	@Post('new')
+	async createChannel(@Body() user : Iuser): Promise<Ichannel> {
+		let channel: Ichannel = {
+			name: "channel test",
+			description: "default",
+			type: ChannelType.PUBLIC,
+			users: [],
+			admin: [],
+			muted: [],
+		};
+		return this.channelService.createChannel(channel, user)
+	}
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Get()
 	async getAllChannelAdmin(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
 	  limit = limit > 100 ? 100 : limit;
 	  return this.channelService.getAllChannelAdmin({ page, limit, route: 'http://localhost:3000/api/channel' });
+	}
+
+	@Get('/all/:user')
+	async getChannelsForUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://localhost:3000/api/channel/all/:user' });
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
