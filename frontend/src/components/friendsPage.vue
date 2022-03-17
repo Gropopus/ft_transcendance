@@ -6,7 +6,7 @@
 			<ul :key="friend.id" v-for="friend in friendList">
 				<li> {{ friend.targetName }}
 					<button @click="unfriend(friend.targetId)">
-						unfriend
+						delete
 					</button>
 				</li>
 			</ul>
@@ -19,7 +19,7 @@
 						accept
 					</button>
 					<button @click="declineRequest(request.targetId)">
-						delete
+						decline
 					</button>
 				</li>
 			</ul>
