@@ -56,6 +56,11 @@ export class UserController {
 	async findAllByUsername(@Query('username') username: string) {	  
 	  return this.userService.findAllByUsername(username);
 	}
+
+	@Get('/find-by-email/:email')
+	async findOneByEmail(@Param() params): Promise<Iuser> {	  
+	  return this.userService.findOneByEmail(params.email);
+	}
   
 	@Get('/find-by-level')
 	async findAllByLevel() {	  
@@ -84,8 +89,8 @@ export class UserController {
   }
   
 	@UseGuards(JwtAuthGuard)
-	@Put('logout')
-	async logout(@Body() user: Iuser): Promise<any> {    
+	@Post('logout')
+	async logout(@Body() user: Iuser): Promise<any> {
 	  return this.userService.logout(user);
 	}
 	

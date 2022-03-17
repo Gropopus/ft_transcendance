@@ -21,7 +21,7 @@
 		</div> <!-- RegisterForm end -->
 </template>
 
-<script>
+<script lang="ts">
 export default	{
 	props:	{
 		userId:	{
@@ -38,8 +38,22 @@ export default	{
 		}
 	},
 	methods:	{
-		login:	function()	{
-			this.$emit('update:userId', 122);
+		async login()	{
+			const res = await fetch(`http://localhost:3000/api/users`, {
+				method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ email: this.userMail, username: this.userLogin, password: this.userPass })
+			})
+			if (res.status != 400 && res.status != 404 && res.status != 409)
+			{
+				const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
+					method: 'get',
+					headers: { 'content-type': 'application/json' },
+				})
+				const data1 = await userRes.json()
+				this.$emit('update:userId', data1.id);
+				// this.$emit('update:currentPage', "0");
+			}
 		}
 	}
 }

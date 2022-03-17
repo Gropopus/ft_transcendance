@@ -86,6 +86,14 @@ export class UserService {
 		})
 	}
 
+	async findOneByEmail(email: string): Promise<Iuser> {
+		return this.userRepository.findOne({
+			where: {
+				email: Like(`%${email.toLowerCase()}%`)
+			}
+		})
+	}
+
 	async findAllByLevel(): Promise<Iuser[]> {
 		return this.userRepository.find({
 			order: {

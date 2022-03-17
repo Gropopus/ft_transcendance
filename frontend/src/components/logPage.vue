@@ -48,10 +48,24 @@ export default	{
 	},
 	emits:	['register', 'update:userId'],
 	methods:	{
-		login:	function():	Void	{
-			this.$emit('update:userId', 122);
+		async login()	{
+				const res = await fetch(`http://localhost:3000/api/users/login`, {
+				method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ email: this.userLogin, password: this.userPass })
+				})
+				if (res.status != 400 && res.status != 404)
+				{
+					const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
+						method: 'get',
+						headers: { 'content-type': 'application/json' },
+					})
+					const data1 = await userRes.json()
+					this.$emit('update:userId', data1.id);
+				}
 		},
-		register:	function():	Void	{
+
+		register: function() {
 			this.$emit('register');
 		}
 	}
