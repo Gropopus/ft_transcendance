@@ -7,7 +7,6 @@ withCredentials: false,
 var canvas;
 var game;
 var anim;
-var init = -1;
 var gameRoom = "-1";
 var gameId;
 var side = "";
@@ -21,9 +20,12 @@ var	button = 0;
 	//0 not using
 	//1 Press to start
 	//2 confirm match
+	//3 play again
 var confirm_id = -1;
 var ready_usefull = 0;
 var nb_confirm = 0;
+
+var lineaire
 
 const PLAYER_HEIGHT = 100;
 const PLAYER_WIDTH = 5;
@@ -31,62 +33,101 @@ const MAX_SPEED = 12;
 
 var start_buton = {x: 0,  maxX: 0, y: 0, maxY: 0};
 
-function buttonDraw(str, posx_start, posy_start, largeur, hauteur) {
+function scoreDraw(){
 	var context = canvas.getContext('2d');
 
-
-
-
-	//background 
-	let lineaire = context.createLinearGradient(0, 0 ,canvas.width, canvas.height)
-	lineaire.addColorStop(1, "#ddace2")
-	lineaire.addColorStop(0, "#173dc7")
-	context.fillStyle = lineaire;
-	context.fillRect(0, 0, canvas.width, canvas.height);
-
-	context.fillStyle = 'red';
-	context.clearRect(posx_start, posy_start, largeur, hauteur);
-	start_buton.x = posx_start;
-	start_buton.y = posy_start;
-	start_buton.maxX = posx_start + largeur;
-	start_buton.maxY = posy_start + hauteur
-	context.font = "Myanmar Text";
-	context.fillStyle = "#252E83" //text color;
+	context.font = "40px Myanmar Text";
+	context.fillStyle = "white" //text color;
 	context.textAlign = 'center';
 	context.textBaseLine = 'middle';
-	context.fillText(str, posx_start + largeur / 2, posy_start + hauteur / 2);
+	context.fillText(game.player.score, canvas.width / 2 - 30, 40);
+	context.fillText(game.computer.score, canvas.width / 2 + 30, 40);
 
+
+	// Draw middle line
 	context.strokeStyle = 'white';
 	context.beginPath();
 	context.moveTo(canvas.width / 2, 0);
 	context.lineTo(canvas.width / 2, canvas.height);
 	context.stroke();
-	context.strokeStyle = 'white';
-	context.beginPath();
-	context.moveTo(0, canvas.height / 2);
-	context.lineTo(canvas.width, canvas.height / 2);
-	context.stroke();
 }
 
-function textDraw(str, color) {
+function buttonDraw(str, offset = 0) {
+	
+	var context = canvas.getContext('2d');
+	if (offset == 0)
+	{
+		//Draw field
+		lineaire = context.createLinearGradient(0, 0 ,canvas.width, canvas.height)
+		lineaire.addColorStop(1, "#ddace2")
+		lineaire.addColorStop(0, "#173dc7")
+		context.fillStyle = lineaire;
+		context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	//Draw button zone
+	context.font = "30px Myanmar Text";
+	var text = { width: context.measureText(str).width + 10, height: 30}
+	
+	context.fillStyle = 'red';
+	context.strokeRect(canvas.width / 2 - text.width / 2, canvas.height / 2 - text.height /2 + offset,
+					 text.width, text.height);
+
+	start_buton.x = canvas.width / 2 - text.width / 2 ;
+	start_buton.y = canvas.height / 2 - text.height / 2 + offset;
+	start_buton.maxX = start_buton.x + text.width;
+	start_buton.maxY = start_buton.y + text.height;
+
+	//Draw button text
+	context.font = "30px Myanmar Text";
+	context.fillStyle = "#252E83" //text color;
+	context.textAlign = 'center';
+	context.textBaseline = 'center';
+	context.fillText(str, canvas.width /2 , canvas.height / 2 + 11 + offset);
+}
+
+function textDraw(str) {
 	var context = canvas.getContext('2d');
 
+
+	if (str == 'Opponent didn\'t respond, Back in matchmaking')
+	{
+		// Draw field
+		context.fillStyle = lineaire;
+		context.fillRect(0, 0, canvas.width, canvas.height);
+	
+		//Draw text
+		context.font = "30px Myanmar Text";
+		context.fillStyle = "#252E83" //text color;
+		context.textAlign = 'center';
+		context.textBaseline = 'center';
+		
+		context.fillText('Opponent didn\'t respond', canvas.width / 2, canvas.height / 2 )
+		context.fillText('Back in matchmaking', canvas.width / 2, canvas.height / 2 + 30)
+		matchmaking = 0;
+		return ;
+	}
 	// Draw field
-	context.fillStyle = color;
+	context.fillStyle = lineaire;
 	context.fillRect(0, 0, canvas.width, canvas.height);
 
-	context.fillStyle = 'white';
+	//Draw text
+	context.font = "30px Myanmar Text";
+	context.fillStyle = "#252E83" //text color;
 	context.textAlign = 'center';
-	context.textBaseLine = 'middle';
-	context.fillText(str, canvas.width / 2, canvas.height / 2)
+	context.textBaseline = 'center';
+	context.fillText(str, canvas.width / 2, canvas.height / 2 + 11)
 	matchmaking = 0;
 }
+
 
 function draw() {
 	var context = canvas.getContext('2d');
 
 	// Draw field
-	context.fillStyle = 'blue';
+	let lineaire = context.createLinearGradient(0, 0 ,canvas.width, canvas.height)
+	lineaire.addColorStop(1, "#ddace2")
+	lineaire.addColorStop(0, "#173dc7")
+	context.fillStyle = lineaire;
 	context.fillRect(0, 0, canvas.width, canvas.height);
 
 	// Draw middle line
@@ -106,6 +147,9 @@ function draw() {
 	context.fillStyle = 'white';
 	context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
 	context.fill();
+
+	// Draw score
+	scoreDraw();
 }
 
 //done
@@ -178,8 +222,10 @@ socket.on('gameID', function(sided, id, gameRoomid) {
 socket.on('AskReady', function(conf_id) {
 	console.log("match found confirm pls")
 
-	textDraw("Please press ready", 'grey');
+	textDraw("Please press ready");
 	ready_usefull = 1;
+	button = 2;
+	buttonDraw("Press here to confirm");
 	matchmaking = 2;
 	confirm_id = conf_id;
 	socket.emit('joinRoom', conf_id);
@@ -190,7 +236,6 @@ socket.on('didntRespond', function() {
 	if (matchmaking == 2)
 	{
 		console.log("You didn't respond :'(")
-		textDraw('Next time accept the match :)', 'red');
 		matchmaking = -1;
 	}
 })
@@ -215,8 +260,23 @@ socket.on('gameEnd', function() {
 	game.ball.y = canvas.height / 2;
 
 	draw();
+	if ((game.player.score == 11 && side == 'left') || 
+		game.computer.score == 11 && side == 'right')
+		textDraw("You win !")
+	else
+		textDraw("You loose !")
+
+	matchmaking = 0;
+	button = 3;
+	buttonDraw('Play again', 50);
 	cancelAnimationFrame(anim);
+	game.player.score = 0;
+	game.computer.score = 0;
+	nb_confirm = 0;
+	side = ' ';
 	gameRoom = "-1";
+	game.computer.y = canvas.width / 2 - PLAYER_HEIGHT / 2;
+	game.player.y = canvas.width / 2 - PLAYER_HEIGHT / 2;
 
 })
 
@@ -258,9 +318,9 @@ function changeDirection(playerPosition) {
 	var ratio = 100 / (PLAYER_HEIGHT / 2);
 
 	// Get a value between 0 and 10
-	// game.ball.speed.y = Math.round(impact * ratio / 10);
+	game.ball.speed.y = Math.round(impact * ratio / 10);
 	if (game.ball.speed.y == 0)
-		game.ball.speed.y = 0.1;
+		game.ball.speed.y = 0.01;
 }
 
 
@@ -284,9 +344,9 @@ function ballMove() {
 function enterMatchMaking(draw)
 {
 	if (draw == 1)
-		textDraw("enter Matchmaking", "black");
+		textDraw("Searching an opponent");
 	else
-		textDraw('opponent didn\'t respond in time\nPut you back in matchmaking', 'black');
+		textDraw('Opponent didn\'t respond, Back in matchmaking');
 	console.log("Entered matchmaking");
 	matchmaking = 1;
 	socket.emit('joinMatchmaking');
@@ -318,35 +378,19 @@ function play() {
 	anim = requestAnimationFrame(play);
 }
 
-function stop() {
-	cancelAnimationFrame(anim);
-
-	// Init score
-	game.computer.score = 0;
-	game.player.score = 0;
-
-	document.querySelector('#computer-score').textContent = game.computer.score;
-	document.querySelector('#player-score').textContent = game.player.score;
-
-	draw();
-}
 
 function waited_to_long()
 {
 	ready_usefull = 0;
 	if (matchmaking == 2)
 	{
-		console.log("you didn't respond in time");
-		textDraw('you didn\'t respond in time', 'red');
+		textDraw('You didn\'t respond in time');
 		socket.emit('MatchTimeOut', confirm_id);
 		matchmaking = -1;
 		nb_confirm = 0;
 	}
 	else if (matchmaking != 4)
 	{
-		console.log("opponent haven't respond go back to matchmaking");
-
-		textDraw('opponent didn\'t respond in time', 'black');
 		socket.emit('MatchTimeOut', confirm_id);
 		enterMatchMaking(0);
 		nb_confirm = 0;
@@ -356,34 +400,51 @@ function waited_to_long()
 function ready() {
 	if (ready_usefull == 0)
 		return ;
-	textDraw('Thanks for confirming waiting opponent', 'grey');
+	textDraw('Thanks for confirming waiting opponent');
 	ready_usefull = 0;
 	matchmaking = 3;
 	socket.emit('playerReady', confirm_id);
 }
 
-function playerclick(canvas, event) {
-	const rect = canvas.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
+function playerclick(canvs, event) {
+
+	var rect = canvas.getBoundingClientRect(); // abs. size of element
+	var scaleX = canvas.width / rect.width;    // relationship bitmap vs. element for X
+	var scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+   var x = (event.clientX - rect.left) * scaleX;   // scale mouse coordinates after they have
+   var y = (event.clientY - rect.top) * scaleY  ;   // been adjusted to be relative to element
     console.log("                         x: " + x + "             y: " + y)
 	if (button == 0)
 		return ;
 	if (button == 1) // press to start
 	{
-		console.log("ned to me in ", start_buton);
-		console.log("                 middle  x: " + canvas.width/2 + "             y: " + canvas.height/2)
 		if (x >= start_buton.x && x <= start_buton.maxX &&
 			y >= start_buton.y && y <= start_buton.maxY)
 		{
-			// button = 0;
-			// play();
+			console.log("clicked buton :D")
+			button = 0;
+			play();
 		}
 		
 	}
 	if (button == 2) // press to confirm
 	{
-
+		if (x >= start_buton.x && x <= start_buton.maxX &&
+			y >= start_buton.y && y <= start_buton.maxY)
+		{
+			button = 0;
+			ready();
+		}
+	}
+	if (button == 3)
+	{
+		if (x >= start_buton.x && x <= start_buton.maxX &&
+			y >= start_buton.y && y <= start_buton.maxY)
+		{
+			button = 0;
+			play();
+		}
 	}
 }
 
@@ -411,15 +472,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	game.computer.score = 0;
 	game.player.score = 0;
+
+	game.computer.y = canvas.height / 2 - PLAYER_HEIGHT / 2;
+	game.player.y   = canvas.height / 2 - PLAYER_HEIGHT / 2;
 	
 	// Mouse move event
 	canvas.addEventListener('mousemove', playerMove);
 	canvas.addEventListener('mousedown',function(e) {
-
-	playerclick(canvas, e);
+		playerclick(canvas, e);
 	})
-	buttonDraw("Press here to start", (canvas.width / 2) - 50, (canvas.height / 2) - 50
-									, 100, 100);
+	buttonDraw("Press here to start");
 	button = 1;
 
 	// Mouse click event
