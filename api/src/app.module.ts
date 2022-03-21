@@ -78,7 +78,6 @@ export class AppModule implements NestModule {
 		{path: 'api/game/delete/:gameID', method: RequestMethod.PUT},
 		{path: 'api/game/stat/:gameID', method: RequestMethod.GET},
 		{path: 'api/game/stat/', method: RequestMethod.GET},
-		{path: 'api/game/hello', method: RequestMethod.GET},
       )
       .forRoutes('')
   }

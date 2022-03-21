@@ -1,4 +1,5 @@
-import './socket.io.js'
+import 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js'
+
 const socket = io("http://localhost:42069", {
 withCredentials: false,
 });
@@ -26,8 +27,6 @@ var nb_confirm = 0;
 
 var lineaire
 
-const PLAYER_HEIGHT = 100;
-const PLAYER_WIDTH = 5;
 const MAX_SPEED = 12;
 
 var start_buton = {x: 0,  maxX: 0, y: 0, maxY: 0};
@@ -65,7 +64,7 @@ function buttonDraw(str, offset = 0) {
 	}
 	//Draw button zone
 	context.font = "30px Myanmar Text";
-	var text = { width: context.measureText(str).width + 10, height: 30}
+	var text = { width: context.measureText(str).width + 10, height: 38}
 	
 	context.fillStyle = 'red';
 	context.strokeRect(canvas.width / 2 - text.width / 2, canvas.height / 2 - text.height /2 + offset,
@@ -155,8 +154,9 @@ function draw() {
 function playerMove(event) {
 	var p_pos;
 	// Get the mouse location in the canvas
-	var canvasLocation = canvas.getBoundingClientRect();
-	var mouseLocation = event.clientY - canvasLocation.y;
+	var rect = canvas.getBoundingClientRect(); // abs. size of element
+	var scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+	var mouseLocation = (event.clientY - rect.top) * scaleY  ;   // been adjusted to be relative to element
 
 	if (mouseLocation < PLAYER_HEIGHT / 2) {
 		p_pos = (0);
@@ -199,8 +199,18 @@ socket.on('speed_update', function(speed_x, speed_y) {
 	game.ball.speed.y = speed_y;
 })
 
+socket.on('observe', function(gameid) {
+	textDraw('Connecting to game id : ' + gameid);
+	side = 'observer'
+})
+
+function emitObserve(id)
+{
+	socket.emit('observe', {gameid: id, gameRoom:'gameRoom' + id})
+}
+
 function engage() {
-	socket.emit('engage', gameRoom);
+	socket.emit('engage', {gameRoom: gameRoom, speed:game.ball.speed.x});
 }
 
 //meta event
@@ -209,10 +219,8 @@ socket.on('gameID', function(sided, id, gameRoomid) {
 	side = sided;
 	gameId = id;
 	socket.emit('joinRoom', gameRoom);
-	if (side == "left")
-	{
-		setTimeout(engage, 2000);
-	}
+	console.log('game id is ', id)
+	setTimeout(engage, 2000);
 })
 
 socket.on('AskReady', function(conf_id) {
@@ -274,8 +282,10 @@ function collide(player) {
 	// The player does not hit the ball
 	if (game.ball.y < player.y || game.ball.y > player.y + PLAYER_HEIGHT) {
 
+		if (side == 'observer')
+			;
 		// Update score
-		if (player == game.player)
+		else if (player == game.player)
 			socket.emit('left_miss', {
 				gameRoom: gameRoom, gameId: gameId,
 				score_l: game.player.score, score_r: game.computer.score, side})
@@ -296,7 +306,7 @@ function collide(player) {
  
 		// Increase speed if it has not reached max speed
 		if (Math.abs(game.ball.speed.x) < MAX_SPEED) {
-			game.ball.speed.x *= 1.2;
+			game.ball.speed.x *= 1.1;
 		}
 	}
 }
@@ -375,6 +385,8 @@ function waited_to_long()
 		socket.emit('MatchTimeOut', confirm_id);
 		matchmaking = -1;
 		nb_confirm = 0;
+		button = 3;
+		buttonDraw('Enter matchmaking again', 50);
 	}
 	else if (matchmaking != 4)
 	{
@@ -422,7 +434,7 @@ function playerclick(canvs, event) {
 			ready();
 		}
 	}
-	if (button == 3)
+	if (button == 3) //play again
 	{
 		if (x >= start_buton.x && x <= start_buton.maxX &&
 			y >= start_buton.y && y <= start_buton.maxY)
@@ -433,7 +445,6 @@ function playerclick(canvs, event) {
 	}
 }
 
-document.addEventListener('DOMContentLoaded', function () {
 	canvas = document.getElementById('canvas');
 	game = {
 		player: {
@@ -448,6 +459,9 @@ document.addEventListener('DOMContentLoaded', function () {
 			speed: {}
 		}
 	};
+
+const PLAYER_HEIGHT = (1/6) * canvas.height;
+const PLAYER_WIDTH = (1/128) * canvas.width;
 
 	game.ball.x = canvas.width / 2;
 	game.ball.y = canvas.height / 2;
@@ -468,9 +482,3 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 	buttonDraw("Press here to start");
 	button = 1;
-
-	// Mouse click event
-	// document.querySelector('#start-game').addEventListener('click', play);
-	// document.querySelector('#stop-game').addEventListener('click', stop);
-	// document.querySelector('#ready').addEventListener('click', ready);
-});

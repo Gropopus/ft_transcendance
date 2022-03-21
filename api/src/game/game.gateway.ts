@@ -78,7 +78,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
 		this.server.to(data.gameRoom).emit('gameEnd');
 		this.kickAllFrom(data.gameRoom);
-		this.games_score.delete(data.gameId);
+		// this.games_score.delete(data.gameId);S
 		this.gameService.setScore(data.gameId, score.l, score.r);
 	}
 	@SubscribeMessage('right_miss')
@@ -99,7 +99,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('left_miss')
 	handleLeft_miss(socket: Socket, data: any) {
-			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r;	data.senderSide
+			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r;	data.side
 
 		let score: {r: number , l: number};
 		score = this.games_score.get(data.gameId);
@@ -114,8 +114,17 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.emitResetSpeed(data.gameRoom, 1);
 	}
 	@SubscribeMessage('engage')
-	handleEngage(client: Socket, gameRoom: string) {
-		this.emitResetSpeed(gameRoom, -1);
+	handleEngage(client: Socket, data: any) {
+		//data.gameRoom; data.speed
+		if (data.speed == 0)
+			this.emitResetSpeed(data.gameRoom, -1);
+	}
+
+	@SubscribeMessage('observe')
+	handleObserve(client: Socket, data:any) {
+		//data.gameRoom; data.gameId;
+		client.emit('observe', data.gameId);
+		client.join(data.gameRoom);
 	}
 
 
