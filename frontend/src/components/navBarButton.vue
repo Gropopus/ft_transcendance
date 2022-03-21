@@ -26,6 +26,8 @@ export default	{
 			this.$emit('update:currentPage', this.pageId);
 		},
 		isCurrent:	function():	Boolean	{
+			if (this.pageId == "1" && this.currentPage == "7")
+				return (true);
 			if (this.pageId === this.currentPage)
 				return (true);
 			return (false);
