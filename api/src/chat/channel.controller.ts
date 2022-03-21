@@ -7,6 +7,7 @@ import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { ChannelService } from 'src/chat/channel.service';
 import { Iuser, UserRole } from 'src/user/model/user.interface';
 import { Observable } from 'rxjs';
+import { UserService } from 'src/user/user.service';
 
 
 @Controller('channel')
@@ -14,10 +15,12 @@ export class ChannelController {
 
   constructor(
 	private channelService: ChannelService,
+	private userService: UserService,
   ) { }
 
-	@Post('new')
-	async createChannel(@Body() user : Iuser): Promise<Ichannel> {
+	@Put('new/:creatorId')
+	async createChannel(@Param() params): Promise<Ichannel> {
+		const creator = await this.userService.findOne(params.userId);
 		let channel: Ichannel = {
 			name: "channel test",
 			description: "default",
@@ -26,9 +29,14 @@ export class ChannelController {
 			admin: [],
 			muted: [],
 		};
-		console.log(channel)
-		return this.channelService.createChannel(channel, user)
+		return this.channelService.createChannel(channel, creator);
 	}
+
+	@Put('delete/:id')
+	async deleteChannel(@Param() params): Promise<any> {
+		return this.channelService.deleteChannel(params.id);
+	}
+
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Get()

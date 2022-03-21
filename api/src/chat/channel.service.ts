@@ -27,17 +27,9 @@ export class ChannelService {
 		channel.password = passwordHash;
 	}
 	channel.owner = creator;
-	console.log('chan create')
     const newChannel = await this.addCreatorToChannel(channel, creator);
-	console.log('creator add')
-    const newChannelAdmin = await this.addAdminToChannel(newChannel, creator);	
-	const chan = await this.channelRepository.findOne({
-		relations: ['owner'],
-		where: [{owner: creator}]
-	});
-	console.log(chan)
+    const newChannelAdmin = await this.addAdminToChannel(newChannel, creator);
 	return this.channelRepository.save(newChannelAdmin);
-	// return chan
   }
 
   async changePasswordChannel(channel: Ichannel, newPassword: string): Promise<Ichannel> {
@@ -219,6 +211,10 @@ export class ChannelService {
   
   async findOne(id: number): Promise<Ichannel> {
 	return this.channelRepository.findOne({ id });
+}
+
+async deleteChannel(id: number): Promise<any> {
+	this.channelRepository.delete(id)
 }
 
 }
