@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
@@ -20,7 +20,9 @@ import { ChannelController } from './channel.controller';
 import { FriendEntity } from 'src/friend/friend.entity';
 
 @Module({
-  imports: [UserModule, FriendModule,
+  imports: [
+    UserModule,
+    FriendModule,
     TypeOrmModule.forFeature([
       ChannelEntity,
       ConnectedUserEntity,
@@ -33,5 +35,6 @@ import { FriendEntity } from 'src/friend/friend.entity';
   ],
   controllers: [ChannelController],
   providers: [ChatGateway, ChannelService, ConnectedUserService, JoinedChannelService, MessageService, UserService, UserHelperService, FriendService],
+  // exports: [ChannelService]
 })
 export class ChatModule { }

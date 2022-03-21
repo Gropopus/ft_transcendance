@@ -12,8 +12,6 @@ import { MessageService } from './service/message.service';
 
 @Injectable()
 export class ChannelService {
-
-
   constructor(
     @InjectRepository(ChannelEntity)
     private readonly channelRepository: Repository<ChannelEntity>,
@@ -33,8 +31,13 @@ export class ChannelService {
     const newChannel = await this.addCreatorToChannel(channel, creator);
 	console.log('creator add')
     const newChannelAdmin = await this.addAdminToChannel(newChannel, creator);	
-	console.log(newChannelAdmin)
-    return this.channelRepository.save(newChannelAdmin);
+	const chan = await this.channelRepository.findOne({
+		relations: ['owner'],
+		where: [{owner: creator}]
+	});
+	console.log(chan)
+	return this.channelRepository.save(newChannelAdmin);
+	// return chan
   }
 
   async changePasswordChannel(channel: Ichannel, newPassword: string): Promise<Ichannel> {
@@ -74,8 +77,15 @@ export class ChannelService {
   }
 
   async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	  const user = await this.userService.findOne(Iuserid)
-	  console.log(user)
+	//   const user = await this.userService.findOne(Iuserid)
+	//   console.log(user)
+	const test = await this.channelRepository.find()
+	// 	{
+	// 	where: {  
+	// 		owner: (await this.userService.findOne(1)),
+	// 	}
+	// })
+	console.log(test)
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
 		.leftJoinAndSelect('channel.users', 'users')
@@ -85,7 +95,7 @@ export class ChannelService {
 		.leftJoinAndSelect('channel.muted', 'all_muted')
 		.leftJoinAndSelect('channel.owner', 'onwner')
 		.orderBy('channel.updated_at', 'DESC');
-		console.log(query)
+		// console.log(query)
 	
 	return paginate(query, options);
   }

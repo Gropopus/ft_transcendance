@@ -12,11 +12,11 @@
 			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
 
 			<div class="submitBar">
-				<button @click="login()" class="submitButton">
-					Log in
-				</button>
 				<button @click="register()" class="submitButton">
 					Register
+				</button>
+				<button @click="login()" class="submitButton">
+					Log in
 				</button>
 			</div> <!-- submitBar end -->
 		</div> <!-- LoginForm end -->

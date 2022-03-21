@@ -105,26 +105,25 @@ export default	defineComponent ({
 		},
 
 		async acceptRequest(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/accept/${targetId}`, {
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/accept/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
-			// this.$emit('update:currentPage', "0");
 		},
 		async declineRequest(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/decline/${targetId}`, {
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/decline/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
 		},
 		async unfriend(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/unfriend/${targetId}`, {
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/unfriend/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
 		},
 		async unblock(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/unblock/${targetId}`, {
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})

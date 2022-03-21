@@ -51,8 +51,7 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 				})
 				const data1 = await userRes.json()
-				this.$emit('update:userId', data1.id);
-				// this.$emit('update:currentPage', "0");
+				location.reload();
 			}
 		}
 	}

@@ -26,6 +26,7 @@ export class ChannelController {
 			admin: [],
 			muted: [],
 		};
+		console.log(channel)
 		return this.channelService.createChannel(channel, user)
 	}
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
