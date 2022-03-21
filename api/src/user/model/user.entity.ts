@@ -71,10 +71,18 @@ export class UserEntity {
 	@OneToMany(() => ChannelEntity, channel => channel.owner)
 	chatOwner: ChannelEntity[];
 
-	@OneToMany(() => FriendEntity, friends => friends.user)
+	@OneToMany(() => FriendEntity, friends => friends.user, {
+		cascade: true,
+		// orphanRemoval: true,
+		// fetch: FetchType.EAGER
+	})
 	friends: FriendEntity[];
 
-	@OneToMany(() => FriendEntity, friends => friends.target)
+	@OneToMany(() => FriendEntity, friends => friends.target, {
+		cascade: true,
+		// orphanRemoval: true,
+		// fetch: FetchType.EAGER
+	})
 	target: FriendEntity[];
 
     @OneToMany(() => PlayerEntity, player => player.user)

@@ -31,7 +31,10 @@ export class ChannelService {
     const newChannel = await this.addCreatorToChannel(channel, creator);
 	console.log('creator add')
     const newChannelAdmin = await this.addAdminToChannel(newChannel, creator);	
-	const chan = await this.channelRepository.find({owner: creator});
+	const chan = await this.channelRepository.findOne({
+		relations: ['owner'],
+		where: [{owner: creator}]
+	});
 	console.log(chan)
 	return this.channelRepository.save(newChannelAdmin);
 	// return chan
