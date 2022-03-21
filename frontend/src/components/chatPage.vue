@@ -1,6 +1,7 @@
 <template>
 	<div class="chatPage">
 		<div class="chatArea">
+			{{ channelsList[channelId] }}
 			<br>
 			<br>
 			<br>
@@ -31,7 +32,12 @@
 			<br>
 		</div>
 		<div class="chatToolSpace">
-		
+		<ul :key="channel.id" v-for="channel in channelsList">
+			<li >
+				<!-- <button class="chanNameButton" @click="changeCurrentChan(channel.name)" v-bind:style='{"background" : (isCurrent() ? "white" : "none")}'></button> -->
+				{{ channel.name }}
+			</li>
+		</ul>
 		</div>
 	</div>
 </template>
@@ -48,6 +54,10 @@ export default	defineComponent ({
 		currentPage:	{
 			type:	[Number, String],
 			default:	"0"
+		},
+		channelId: {
+			type: [Number],
+			default: 0
 		},
 	},
 
@@ -74,9 +84,11 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		})
 			const data = await res.json()
-			console.log(data)
-			return data
+			return data.items
 		},
+		// changeCurrentChan(id: number) {
+		// 	this.channelId = id;
+		// }
 	},
 })
 </script>
