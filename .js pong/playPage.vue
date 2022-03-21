@@ -1,16 +1,19 @@
 <template>
+<ul>
 	<div class="GameArea">
-		<button>Quick Play</button>
-		<button>Customize</button>
-		<button>Watch</button>
+		<canvas id="canvas" width="640" height="500"></canvas>
 	</div>
 	<div class="UserRecap">
+		<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
 	</div>
 	<div class="SocialRecap">
+		<p>Osef</p>
 	</div>
+	</ul>
 </template>
 
 <script lang="ts">
+// import * as pong from '../script/pong.js'
 export default	{
 	props:	{
 		userId:	{
@@ -21,42 +24,29 @@ export default	{
 			type:	[Number, String],
 			default:	"0"
 		}
+	},
+	mounted() { //import socketio
+		let socketio = document.createElement('script')
+		socketio.setAttribute('src', 'src/script/socket.io.js')
+		document.head.appendChild(socketio)
+		let game = document.createElement('script')
+		game.setAttribute('src', 'src/script/pong.js')
+		document.head.appendChild(game);
 	}
 }
 </script>
+
 
 <style lang="css">
 .GameArea
 {
 	float:	left;
 	display:	flex;
-	width:	70%;
+	width:	100%;
 	min-height:	500px;
 	border:	solid 3px white;
 	border-radius: 5px;
 	flex-direction:	column;
-}
-
-.GameArea > button
-{
-	margin-right:	auto;
-	margin-left:	auto;
-	margin-top:	auto;
-	margin-bottom:	auto;
-	background:	none;
-	padding:	15px;
-	padding-bottom: 3px;
-	border:	solid 3px white;
-	border-radius:	5px;
-	font-family:	MyanmarText;
-	font-size:	24px;
-	letter-spacing:	2px;
-	color:	white;
-}
-
-.GameArea > button:hover
-{
-	background:	var(--white-10);
 }
 
 #canvas

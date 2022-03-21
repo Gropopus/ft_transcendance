@@ -35,8 +35,19 @@ export default	{
 	},
 	emits:	['update:currentPage', 'update:userId'],
 	methods:	{
-		logout:	function()	{
-			console.log(this.userID);
+		async logout()	{
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+				method: 'get',
+					headers: { 'content-type': 'application/json' }
+			})
+			const data = await res.json()
+			console.log(data)
+			const res1 = await fetch(`http://localhost:3000/api/users/logout`, {
+				method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify(data)
+			})
+			console.log(res1);
 			this.$emit('update:userId', "0");
 			this.$emit('update:currentPage', "0");
 		},

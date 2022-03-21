@@ -76,7 +76,7 @@ export default	{
 		},
 		logOrReg:	function():	Vue.component	{
 			const	logs: Array<Vue.component> = [
-							playPage,
+							logPage,
 							register,
 						]
 				return logs[this.regForm];

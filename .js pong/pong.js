@@ -388,6 +388,8 @@ function waited_to_long()
 		socket.emit('MatchTimeOut', confirm_id);
 		matchmaking = -1;
 		nb_confirm = 0;
+		button = 3;
+		buttonDraw('Enter matchmaking again', 36);
 	}
 	else if (matchmaking != 4)
 	{
