@@ -4,9 +4,9 @@
 		</div> <!-- LoginHeader end -->
 
 		<div class="RegisterForm">
+			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Register </label>	<br>
 			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
-
 			<label for="password"> Password </label>	<br>
 			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
 
@@ -14,10 +14,13 @@
 			<input type="text" v-model="userMail" placeholder="email" class="textArea">	<br>
 
 			<div class="submitBar">
+		
+				<br>
 				<button @click="login()" class="submitButton">
 					Register
 				</button>
 			</div> <!-- submitBar end -->
+
 		</div> <!-- RegisterForm end -->
 </template>
 
@@ -34,11 +37,30 @@ export default	{
 		return {
 			userLogin:	"",
 			userPass:	"",
-			userMail:	""
+			userMail:	"",
+			error: ""
 		}
 	},
 	methods:	{
+
+		checkForm() {
+	    	if (!this.userLogin) {
+	        	 return "A Username is required.";
+			}
+			if(!this.userPass) {
+        		return "A password is required.";
+			}
+			else if (!this.email) {
+	        	return "Email required.";
+			}
+			else if (!this.validEmail(this.email)) {
+	        	return "A valid email is required.";
+      		}
+			  return "undifined";
+		},
+
 		async login()	{
+			this.error = "";
 			const res = await fetch(`http://localhost:3000/api/users`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
@@ -52,13 +74,26 @@ export default	{
 				})
 				const data1 = await userRes.json()
 				location.reload();
+				return ;
 			}
+			if (res.status == 409)
+			{
+				this.error = "Email or Login already used by another user.";
+				return ;
+			}
+			console.log(res);
+			this.error = this.checkForm();
 		}
 	}
 }
 </script>
 
 <style>
+
+.error {
+	justify-content: top;
+	color: red;
+}
 
 .RegisterHeader
 {
