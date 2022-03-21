@@ -41,6 +41,7 @@ export class AppModule implements NestModule {
         {path: '/api/users/logout', method: RequestMethod.POST},
         {path: '/api/users/upload', method: RequestMethod.POST},
         {path: '/api/users/find-by-email/:email', method: RequestMethod.GET},
+        {path: '/api/users/find-by-username/:name', method: RequestMethod.GET},
         {path: '/api/users/:id/role', method: RequestMethod.PUT},
         {path: '/api/users/pictureById/:id', method: RequestMethod.GET},
 		// 2fa 
@@ -62,6 +63,8 @@ export class AppModule implements NestModule {
 		{path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
 		{path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
 		{path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
+		{path: '/api/channel/:channelId/adduser/:username/:password', method: RequestMethod.PUT},
+		{path: '/api/channel/:channelId/adduser/:username', method: RequestMethod.PUT},
     // friends
     {path: 'api/friends/:u1/add/:u2', method: RequestMethod.PUT},
     {path: 'api/friends/:u1/unfriend/:u2', method: RequestMethod.PUT},

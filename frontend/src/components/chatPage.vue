@@ -1,40 +1,14 @@
 <template>
 	<div class="chatPage">
+	<button @click="createChannel()"> new channel</button>
 		<div class="chatArea">
 			{{ channelsList[channelId] }}
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
 		</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
 			<li >
-				<!-- <button class="chanNameButton" @click="changeCurrentChan(channel.name)" v-bind:style='{"background" : (isCurrent() ? "white" : "none")}'></button> -->
+				<!-- <button class="chanNameButton" @click="changeCurrentChan(channel.name)" v-bind:style='{"background" : (isCurrent() ? "white" : "none")}'>
+				</button> -->
 				{{ channel.name }}
 			</li>
 		</ul>
@@ -61,7 +35,7 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save'],
+	emits: ['save', 'update:currentPage'],
 
 	data() {
 		return {
@@ -84,11 +58,15 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		})
 			const data = await res.json()
+			console.log(data.items)
 			return data.items
 		},
-		// changeCurrentChan(id: number) {
-		// 	this.channelId = id;
-		// }
+		changeCurrentChan(id: number) {
+			this.channelId = id;
+		},
+		createChannel() {
+			this.$emit('update:currentPage', "7")
+		}
 	},
 })
 </script>

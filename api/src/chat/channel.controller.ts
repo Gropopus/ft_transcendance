@@ -8,6 +8,7 @@ import { ChannelService } from 'src/chat/channel.service';
 import { Iuser, UserRole } from 'src/user/model/user.interface';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/user/user.service';
+import { runInNewContext } from 'vm';
 
 
 @Controller('channel')
@@ -19,17 +20,9 @@ export class ChannelController {
   ) { }
 
 	@Put('new/:creatorId')
-	async createChannel(@Param() params): Promise<Ichannel> {
-		const creator = await this.userService.findOne(params.userId);
-		let channel: Ichannel = {
-			name: "channel test",
-			description: "default",
-			type: ChannelType.PUBLIC,
-			users: [],
-			admin: [],
-			muted: [],
-		};
-		return this.channelService.createChannel(channel, creator);
+	async createChannel(@Param() params, @Body() chan: Ichannel): Promise<Ichannel> {
+		const creator = await this.userService.findOne(params.creatorId);
+		return this.channelService.createChannel(chan, creator);
 	}
 
 	@Put('delete/:id')
@@ -86,4 +79,9 @@ export class ChannelController {
 		return this.channelService.getChannel(idChannel);
 	}
 
+	@Put(':channelId/adduser/:username/:password')
+	async addUserToChannel(@Param() params) {
+		const user = (await this.userService.findAllByUsername(params.username))[0];
+		return this.channelService.addUserToChannel(params.channelId, user, params.password);
+	}
 }

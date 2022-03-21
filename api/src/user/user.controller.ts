@@ -52,9 +52,10 @@ export class UserController {
 	  return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' });
 	}
   
-	@Get('/find-by-username')
-	async findAllByUsername(@Query('username') username: string) {	  
-	  return this.userService.findAllByUsername(username);
+	@Get('/find-by-username/:name')
+	// async findAllByUsername(@Query('username') username: string) {	  
+		async findAllByUsername(@Param() params) {	  
+	  return this.userService.findAllByUsername(params.name);
 	}
 
 	@Get('/find-by-email/:email')

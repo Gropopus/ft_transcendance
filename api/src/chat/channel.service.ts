@@ -69,15 +69,6 @@ export class ChannelService {
   }
 
   async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	//   const user = await this.userService.findOne(Iuserid)
-	//   console.log(user)
-	const test = await this.channelRepository.find()
-	// 	{
-	// 	where: {  
-	// 		owner: (await this.userService.findOne(1)),
-	// 	}
-	// })
-	console.log(test)
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
 		.leftJoinAndSelect('channel.users', 'users')
@@ -87,13 +78,11 @@ export class ChannelService {
 		.leftJoinAndSelect('channel.muted', 'all_muted')
 		.leftJoinAndSelect('channel.owner', 'onwner')
 		.orderBy('channel.updated_at', 'DESC');
-		// console.log(query)
-	
+
 	return paginate(query, options);
   }
 
   async getAllChannel(options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
 		.where('channel.type != :p', { p: ChannelType.PRIVATE })
@@ -209,8 +198,8 @@ export class ChannelService {
 	return  (query);
   }
   
-  async findOne(id: number): Promise<Ichannel> {
-	return this.channelRepository.findOne({ id });
+  async findOne(channelId: number): Promise<Ichannel> {
+	return this.channelRepository.findOne(channelId);
 }
 
 async deleteChannel(id: number): Promise<any> {
