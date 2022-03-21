@@ -50,17 +50,20 @@ export default	{
 			if(!this.userPass) {
         		return "A password is required.";
 			}
-			else if (!this.email) {
+			else if (!this.userMail) {
 	        	return "Email required.";
 			}
-			else if (!this.validEmail(this.email)) {
+			else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.userMail))){
 	        	return "A valid email is required.";
       		}
-			  return "undifined";
+			  return "";
 		},
 
 		async login()	{
 			this.error = "";
+			this.error = this.checkForm();
+			if (this.error)
+				return ;
 			const res = await fetch(`http://localhost:3000/api/users`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
@@ -81,8 +84,6 @@ export default	{
 				this.error = "Email or Login already used by another user.";
 				return ;
 			}
-			console.log(res);
-			this.error = this.checkForm();
 		}
 	}
 }

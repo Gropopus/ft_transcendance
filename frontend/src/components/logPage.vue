@@ -5,7 +5,8 @@
 		</div> <!-- LoginHeader end -->
 
 		<div class="LoginForm">
-			<label for="login"> Login </label>	<br>
+			<p class="error" v-if="error"> {{ error }} </p>
+			<label for="login"> Email </label>	<br>
 			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
 
 			<label for="password"> Password </label>	<br>
@@ -16,7 +17,7 @@
 					Register
 				</button>
 				<button @click="login()" class="submitButton">
-					Log in
+					Log-in
 				</button>
 			</div> <!-- submitBar end -->
 		</div> <!-- LoginForm end -->
@@ -44,11 +45,30 @@ export default	{
 		return {
 			userLogin:	"",
 			userPass:	"",
+			error:		"",
 		}
 	},
 	emits:	['register', 'update:userId'],
 	methods:	{
+
+checkForm() {
+	    	if (!this.userLogin) {
+	        	 return "Email address required.";
+			}
+			else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.userLogin))) {
+	        	return "A valid email address is required.";
+      		}
+			else if(!this.userPass) {
+        		return "A password is required.";
+			}
+			return ("");
+		},
+
 		async login()	{
+				this.error = "";
+				this.error = this.checkForm();
+				if (this.error)
+					return ;
 				const res = await fetch(`http://localhost:3000/api/users/login`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
@@ -62,6 +82,11 @@ export default	{
 					})
 					const data1 = await userRes.json()
 					this.$emit('update:userId', data1.id);
+					return ;
+				}
+				else if (res.status == 400 || res.status == 404)
+				{
+					this.error = "User not found, Wrong Email or password.";
 				}
 		},
 
@@ -167,6 +192,11 @@ export default	{
 	margin-left:	10px;
 	margin-right:	10px;
 	object-fit:	contain;
+}
+
+.error {
+	justify-content: top;
+	color: red;
 }
 
 </style>
