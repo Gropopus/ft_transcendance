@@ -1,5 +1,7 @@
 
 <template>
+<input type="text" v-model="search" placeholder="Search a friend" v-on:keyup="searchUser()" class="textArea">
+<p class="friendFound" v-if="found" v-on:click="goToUserPage()"> {{ found }}</p>
 	<div class="friendsPage">
 		<div  class="friendsArea">
 			<h2>FRIENDS LIST</h2>
@@ -57,6 +59,8 @@ export default	defineComponent ({
 
 	data() {
 		return {
+			search: "",
+			found: "",
 			friendList: [],
 			requestList: [],
 			blockedList: []
@@ -128,7 +132,24 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		})
 		},
+		async goToUserPage() {
+			this.$emit('update:currentPage', "4");
+		},
+
+		async searchUser() {
+			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' }
+			})
+			const user = await res.json();
+			console.log(user);
+			if (res.status != 500)
+				this.found = user[0].username;
+			else
+				this.found = "";	
+		}
 	},
+
 })
 </script>
 
@@ -162,5 +183,14 @@ export default	defineComponent ({
 	border:	solid 3px white;
 	border-radius: 5px;
 	margin-bottom:	min(22px);
+}
+
+.textArea
+{
+	border: none;
+	background-color:	var(--input-fields);
+	opacity:	50%;
+	font-size:	24px;
+	padding:	6px;
 }
 </style>

@@ -7,10 +7,10 @@
 		<div class="LoginForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Email </label>	<br>
-			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
+			<input type="text" v-model="userLogin"  class="textArea">	<br>
 
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
+			<input type="password" v-model="userPass"  class="textArea">	<br>
 
 			<div class="submitBar">
 				<button @click="register()" class="submitButton">
@@ -136,6 +136,7 @@ checkForm() {
 	opacity:	50%;
 	font-size:	24px;
 	padding:	6px;
+	width:		81%;
 }
 
 .LoginForm > .submitBar
@@ -149,14 +150,15 @@ checkForm() {
 
 .LoginForm > .submitBar > .submitButton
 {
+	width:		35%;
+	margin-right: 10%;
 	display:	block;
 	background:	none;
-	flex:	0 0 auto;
+	
+	flex:	0 0 center;
 	margin-bottom:	5%;
 	margin-right:	auto;
 	padding-top:	3%;
-	padding-left:	5%;
-	padding-right:	5%;
 	background:	none;
 	border:	solid 3px white;
 	font-size:	24px;
@@ -173,6 +175,7 @@ checkForm() {
 	margin-bottom:	5%;
 	padding-top:	1%;
 	padding-bottom:	1%;
+
 	width:	20%;
 	border:	solid 3px white;
 	font-size:	24px;
