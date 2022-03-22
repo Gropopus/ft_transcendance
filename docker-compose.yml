@@ -27,6 +27,7 @@ services:
     ports:
       - 3000:3000
       - 9229:9229
+      - 42069:42069
   
   frontend:
     build:
