@@ -3,7 +3,7 @@
 		<button @click="createChannel()"> new channel</button>
 		<div class="chatArea">
 			<div class="channelName">
-				{{ channelsList[getChannelIndex(channelId)].name }}
+				<!-- {{ channelsList[getChannelIndex(channelId)].name }} -->
 			</div>
 			{{ channelMessages }}
 		<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
