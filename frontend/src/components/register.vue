@@ -6,11 +6,11 @@
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Register </label>	<br>
-			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
+			<input type="text" v-model="userLogin" class="textArea"> <br>
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
+			<input type="password" v-model="userPass" class="textArea">	<br>
 
-			<label for="email"> email </label>	<br>
+			<label for="email"> Email </label>	<br>
 			<input type="text" v-model="userMail" placeholder="email" class="textArea">	<br>
 
 			<div class="submitBar">
@@ -18,6 +18,9 @@
 				<br>
 				<button @click="login()" class="submitButton">
 					Register
+				</button>
+				<button @click="goBack()" class="submitButton">
+					Cancel
 				</button>
 			</div> <!-- submitBar end -->
 
@@ -84,6 +87,10 @@ export default	{
 				this.error = "Email or Login already used by another user.";
 				return ;
 			}
+		},
+		async goBack()
+		{
+			location.reload();
 		}
 	}
 }
@@ -133,13 +140,14 @@ export default	{
 	opacity:	50%;
 	font-size:	24px;
 	padding:	6px;
+	width:		81%;
 }
 
 .RegisterForm > .submitBar
 {
 	margin-top:	2%;
 	display:	flex;
-	margin-right:	auto;
+	margin-right:	6%;
 	margin-left:	auto;
 	flex-direction:	row;
 }
@@ -158,6 +166,7 @@ export default	{
 	border:	solid 3px white;
 	font-size:	24px;
 	color:	white;
+	width: 40%;
 	font-family: MyanmarText;
 }
 
