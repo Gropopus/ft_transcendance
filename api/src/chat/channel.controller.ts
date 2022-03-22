@@ -9,6 +9,8 @@ import { Iuser, UserRole } from 'src/user/model/user.interface';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/user/user.service';
 import { runInNewContext } from 'vm';
+import { MessageService } from './service/message.service';
+import { Imessage } from './model/message.interface';
 
 
 @Controller('channel')
@@ -17,6 +19,7 @@ export class ChannelController {
   constructor(
 	private channelService: ChannelService,
 	private userService: UserService,
+	private messageService: MessageService,
   ) { }
 
 	@Put('new/:creatorId')
@@ -83,5 +86,20 @@ export class ChannelController {
 	async addUserToChannel(@Param() params) {
 		const user = (await this.userService.findAllByUsername(params.username))[0];
 		return this.channelService.addUserToChannel(params.channelId, user, params.password);
+	}
+
+	@Get(':channelId/messages/:userId')
+	async getMessages(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Imessage>> {
+		const mess = await this.messageService.findMessagesForChannel(
+			params.channelId,
+			params.userId,
+			{
+				page,
+				limit,
+				route: 'http://localhost:3000/api/channel/:channelId/messages/:userId'
+			}
+		);
+		console.log(mess.items);
+		return mess;
 	}
 }

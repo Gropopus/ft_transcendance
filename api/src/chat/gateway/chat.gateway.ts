@@ -245,20 +245,6 @@ export class ChatGateway{
 	}
   }
 
-  /*@SubscribeMessage('gameMessage')
-  async onGameMessage(socket: Socket, data: {message: Imessage, id: number, type: number}) {
-    const createdMessage: Imessage = await this.messageService.create({...data.message, user: socket.data.user});
-    const channel: Ichannel = await this.channelService.getChannel(createdMessage.channel.id);
-    const joinedUsers: IjoinedChanel[] = await this.joinedChannelService.findByChannel(channel);
-    // TODO: Send new Message to all joined Users of the channel (currently online)
-    this.server.to(socket.id).emit('startGame', {channel: channel, u_id: data.id, type: data.type, m_id: createdMessage.id});
-    for(const user of joinedUsers) {
-		//const nu = await this.friendsService.boolIusersBlocked(user.Iuserid, createdMessage.user.id);
-		//if (!nu)
-      await this.server.to(user.socketId).emit('messageAdded', createdMessage);
-    }
-  }*/
-
   private handleIncomingPageRequest(page: Ipage) {
     page.limit = page.limit > 100 ? 100 : page.limit;
     // add page +1 to match angular material paginator

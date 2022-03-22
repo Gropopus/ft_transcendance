@@ -1,5 +1,5 @@
 <template>
-	<button class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" : (isCurrent() ? "white" : "none")}'>
+	<button class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" : (isCurrent() ? "white"/*"#FFE471"*/ : "none")}'>
 		<img :src="tabIcon" alt="Salut">
 		{{ tabName }}
 	</button>
@@ -48,13 +48,13 @@ export default	{
 		},
 		tabIcon:	function(): string	{
 			const iconNames: Array<string>	=	[
+				"./src/assets/game.png",
+				"./src/assets/chat.png",
 				"./src/assets/logout-picture.png",
+				"./src/assets/friends.png",
 				"./src/assets/logout-picture.png",
-				"./src/assets/logout-picture.png",
-				"./src/assets/logout-picture.png",
-				"./src/assets/logout-picture.png",
-				"./src/assets/logout-picture.png",
-				"./src/assets/logout-picture.png"
+				"./src/assets/log-out.png",
+				"./src/assets/settings.png"
 			]
 			return (iconNames[this.pageId]);
 		}
@@ -82,7 +82,7 @@ export default	{
 
 .navBarButton:hover
 {
-	background:	var(--deep-blue-10);
+	background:	white;/*var(--deep-blue-10);*/
 }
 
 .navBarButton > img
