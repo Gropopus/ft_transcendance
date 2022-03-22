@@ -94,6 +94,7 @@ export class ChannelService {
 
   async addUserToChannel(channelId: number, user: Iuser, password: string): Promise<Observable<{ error: string } | { success: string }>> {
 	  const channel = await this.getChannel(channelId);
+	  console.log(channel);
 	const bool: number = await this.boolIusersOnChannel(user.id, channel);
 	if (bool) return of({ error: 'Already on the channel;' }); 
 	if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' }); 
@@ -106,9 +107,10 @@ export class ChannelService {
 	if (channel.type == ChannelType.PROTECTED) {
 		const matches: boolean = await this.validatePassword(password, channel.password);
 		if (matches) {
-			const newChannel = await this.addCreatorToChannel(channel, user);
-			this.channelRepository.save(newChannel);
-			return of({ success: 'Channel joined;' }); 
+			// const newChannel = await this.addCreatorToChannel(channel, user);
+			channel.users.push(user);
+			this.channelRepository.save(channel);
+			return of({ success: 'Channel joined;' });
 		}
 		return of({ error: 'Bad password;' }); 
 	}	

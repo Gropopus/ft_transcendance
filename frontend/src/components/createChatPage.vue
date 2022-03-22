@@ -97,17 +97,29 @@ export default	{
                 `http://localhost:3000/api/channel/${channelId}/adduser/${username}/${this.chatPassword}`, {
                     method: 'put',
                         headers: { 'content-type': 'application/json' },
-                })
+            })
             console.log((await res.json()))
         },
 
-        addUsername() {
+        async addUsername() {
+            this.error = "";
             if (!this.userToAdd)
                 return ;
-            for (let username of this.usernameList)
-                if (username == this.userToAdd)
-                    return ;
-            this.usernameList.push(this.userToAdd);
+            const res = await fetch(
+                `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
+                method: 'get',
+                headers: { 'content-type': 'application/json' },
+            })
+            const user = await res.json();
+            if (user.length > 0)
+            {
+                for (let username of this.usernameList)
+                    if (username == this.userToAdd)
+                        return ;
+                this.usernameList.push(this.userToAdd);
+            }
+            else
+                this.error = "user doesn't exist."
             this.userToAdd = "";
         },
 

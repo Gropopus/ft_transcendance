@@ -1,16 +1,17 @@
 <template>
 	<div class="chatPage">
-	<button @click="createChannel()"> new channel</button>
+		<button @click="createChannel()"> new channel</button>
 		<div class="chatArea">
-			{{ channelsList[channelId] }}
+			{{ channelsList[getChannelIndex(channelId)].name }}
 		</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
-			<li >
-				<!-- <button class="chanNameButton" @click="changeCurrentChan(channel.name)" v-bind:style='{"background" : (isCurrent() ? "white" : "none")}'>
-				</button> -->
+			<div>
+				<button class="chanNameButton" @click="changeCurrentChan(channel.id)" v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
 				{{ channel.name }}
-			</li>
+				</button>
+				<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
+			</div>
 		</ul>
 		</div>
 	</div>
@@ -29,10 +30,6 @@ export default	defineComponent ({
 			type:	[Number, String],
 			default:	"0"
 		},
-		channelId: {
-			type: [Number],
-			default: 0
-		},
 	},
 
 	emits: ['save', 'update:currentPage'],
@@ -40,15 +37,16 @@ export default	defineComponent ({
 	data() {
 		return {
 			channelsList: [],
+			channelId: 0,
 		}
 	},
 
 	mounted() {
-		this.channelsList
+		this.channelsList;
 	},
 
 	async created() {
-		this.channelsList = await this.fetchChannelsList()
+		this.channelsList = await this.fetchChannelsList();
 	},
 
 	methods: {
@@ -56,16 +54,39 @@ export default	defineComponent ({
 			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
 			const data = await res.json()
-			console.log(data.items)
 			return data.items
 		},
+
 		changeCurrentChan(id: number) {
 			this.channelId = id;
 		},
+
+		getChannelIndex(id: number) {
+			for (let i in this.channelsList)
+				if (this.channelsList[i].id == id)
+					return i;
+			if (this.channelsList.length)
+				this.channelId = this.channelsList[0].id;
+			return 0;
+		},
+
+		isCurrent(id: number) {
+			if (this.channelId == id)
+				return true;
+			return false;
+		},
+
 		createChannel() {
 			this.$emit('update:currentPage', "7")
+		},
+
+		async deleteChannel(channelId: number) {
+			const res = await fetch(`http://localhost:3000/api/channel/delete/${channelId}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
 		}
 	},
 })
@@ -102,4 +123,47 @@ export default	defineComponent ({
 	border-radius: 5px;
 	margin-bottom:	min(22px);
 }
+
+.chanNameButton
+{
+	height:	42px;
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	center;
+	min-width:	150px;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	32px;
+	color: var(--font-blue);
+	border:	none;
+}
+
+.deleteButton
+{
+	height:	42px;
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	center;
+	min-width:	50px;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	32px;
+	color: var(--font-blue);
+	border:	none;
+}
+
+.chanNameButton:hover
+{
+	background:	var(--deep-blue-10);
+}
+
+.deleteButton:hover
+{
+	background:	var(--deep-blue-10);
+}
+
 </style>
