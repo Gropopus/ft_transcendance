@@ -11,7 +11,7 @@
 			<input type="password" v-model="userPass" class="textArea">	<br>
 
 			<label for="email"> Email </label>	<br>
-			<input type="text" v-model="userMail" placeholder="email" class="textArea">	<br>
+			<input type="text" v-model="userMail" class="textArea">	<br>
 
 			<div class="submitBar">
 		
