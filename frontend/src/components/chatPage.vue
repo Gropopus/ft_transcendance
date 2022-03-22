@@ -2,13 +2,20 @@
 	<div class="chatPage">
 		<button @click="createChannel()"> new channel</button>
 		<div class="chatArea">
-			{{ channelsList[getChannelIndex(channelId)].name }}
+			<div class="channelName">
+				{{ channelsList[getChannelIndex(channelId)].name }}
+			</div>
+			{{ channelMessages }}
+		<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
+		<button @click="sendMessage(message)" class="sendButton">send</button>
+		<br>
 		</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
 			<div>
-				<button class="chanNameButton" @click="changeCurrentChan(channel.id)" v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
-				{{ channel.name }}
+				<button class="chanNameButton" @click="changeCurrentChan(channel.id)"
+					v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
+				{{ channel.name }} <br>
 				</button>
 				<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
 			</div>
@@ -19,7 +26,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
 export default	defineComponent ({
 	props:	{
 		userId:	{
@@ -32,21 +38,28 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save', 'update:currentPage'],
+	emits: ['save', 'update:currentPage', 'addMessage'],
 
 	data() {
 		return {
 			channelsList: [],
 			channelId: 0,
+			socket: {},
+			channelMessages: [],
+			message: "",
 		}
 	},
 
 	mounted() {
 		this.channelsList;
+		this.channelMessages;
 	},
 
 	async created() {
 		this.channelsList = await this.fetchChannelsList();
+		if (this.channelsList.length > 0)
+			this.channelId = this.channelsList[0].id;
+		this.channelMessages = await this.fetchMessages();
 	},
 
 	methods: {
@@ -82,11 +95,28 @@ export default	defineComponent ({
 			this.$emit('update:currentPage', "7")
 		},
 
-		async deleteChannel(channelId: number) {
-			const res = await fetch(`http://localhost:3000/api/channel/delete/${channelId}`, {
+		async deleteChannel(id: number) {
+			const res = await fetch(`http://localhost:3000/api/channel/delete/${id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
+		},
+
+		async sendMessage(message: string)
+		{
+			this.$emit('addMessage', message);
+		},
+
+		async fetchMessages() {
+			if (!this.channelId)
+				return ;
+			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			const mess = await res.json();
+			console.log(mess.items);
+			return mess.items;
 		}
 	},
 })
@@ -154,6 +184,25 @@ export default	defineComponent ({
 	font-size:	32px;
 	color: var(--font-blue);
 	border:	none;
+}
+
+.messageArea
+{
+	position: relative;
+	bottom: 0;
+	height:	42px;
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	left ;
+	min-width:	450px;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	32px;
+	color: var(--font-blue);
+	border:	none;
+
 }
 
 .chanNameButton:hover
