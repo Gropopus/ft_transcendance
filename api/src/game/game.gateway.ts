@@ -27,10 +27,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
 
 	handleConnection(client: Socket, ...args: any[]) {
-		console.log('client connected: ', client.id);
+		this.logger.log('client connected: ', client.id);
 	}
 	async handleDisconnect(client: Socket) {
-		console.log('client disconnected: ', client.id);
+		this.logger.log('client disconnected: ', client.id);
 		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
 		let numClient = room ? room.size : 0;
 		if (this.nb_matchmaking != numClient)
@@ -44,14 +44,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('joinRoom')
 	async handleJoinRoom(client: Socket, room: string) {
-		// console.log("client join room : ", room);
+		// this.logger.log("client join room : ", room);
 		client.join(room);
 		this.server.to(room).emit('gameId', room);
 	}
 	@SubscribeMessage('leaveRoom')
 	async handleLeaveRoom(client: Socket, room: string) {
 		client.leave(room);
-		console.log("client leave room");
+		this.logger.log("client leave room");
 	}
 
 
@@ -133,7 +133,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleStartGame(client: Socket, room: string) {
 		if (client.rooms.has(room) == true)
 		{	// if client still in room to avoid duplicate game
-			console.log('game start confirm for room', room);
+			this.logger.log('game start confirm for room', room);
 			
 			const players = this.server.sockets.adapter.rooms.get(room).values();
 			const playerss = Array.from(players);
@@ -141,7 +141,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 			// create game
 			let gameid = await this.gameService.createGame();
-			console.log('player in room', playerss[0], ', ' ,playerss[1]);
+			this.logger.log('player in room', playerss[0], ', ' ,playerss[1]);
 
 			if (Math.random() < 0.5)
 			{
@@ -158,7 +158,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.games_score.set(gameid, {r:0, l:0});
 		}
 		else
-			console.log('game already started');
+			this.logger.log('game already started');
 	}
 	@SubscribeMessage('joinMatchmaking')
 	async handleMatchmaking(client: Socket)
