@@ -7,7 +7,13 @@ import { subscribe } from "superagent";
 import { GameService } from "./game.service";
 import { Igame } from './model/game.interface'
 
-@WebSocketGateway(42069, {cors: true})
+@WebSocketGateway(42069, {cors: {
+		origin: "http://localhost:4200",
+		methods: ["GET", "POST"],
+		allowedHeaders: ["my-custom-header"],
+		credentials: true
+		}
+})
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	
 	constructor (
@@ -27,10 +33,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
 
 	handleConnection(client: Socket, ...args: any[]) {
-		this.logger.log('client connected: ', client.id);
+		this.logger.log('client connected: ' + client.id);
 	}
 	async handleDisconnect(client: Socket) {
-		this.logger.log('client disconnected: ', client.id);
+		this.logger.log('client disconnected: ' + client.id);
 		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
 		let numClient = room ? room.size : 0;
 		if (this.nb_matchmaking != numClient)

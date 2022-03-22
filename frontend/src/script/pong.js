@@ -1,7 +1,10 @@
 import 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js'
 
-const socket = io("http://localhost:42069", {
-withCredentials: false,
+const socket = io("http://localhost:42069",{
+	withCredentials: true,
+	extraHeaders: {
+	  "my-custom-header": "pong"
+	}
 });
 
 var canvas;
