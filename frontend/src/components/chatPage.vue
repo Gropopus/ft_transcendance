@@ -2,13 +2,13 @@
 	<div class="chatPage">
 		<button @click="createChannel()"> new channel</button>
 		<div class="chatArea">
-			<div class="channelName">
-				<!-- {{ channelsList[getChannelIndex(channelId)].name }} -->
-			</div>
+			<div class="channelName" v-if="channelsList.length > 0">
+				<h3> {{ channelsList[getChannelIndex(channelId)].name }} </h3>
 			{{ channelMessages }}
 		<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
 		<button @click="sendMessage(message)" class="sendButton">send</button>
 		<br>
+			</div>
 		</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
