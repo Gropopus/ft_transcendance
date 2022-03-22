@@ -1,4 +1,4 @@
-import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { AuthService } from 'src/auth/auth.service';
 import { Socket, Server } from 'socket.io';
 import { Iuser, UserRole } from 'src/user/model/user.interface';
@@ -14,12 +14,21 @@ import { MessageService } from '../service/message.service';
 import { Imessage } from '../model/message.interface';
 import { IjoinedChanel } from '../model/joined-channel.interface';
 import { FriendService } from 'src/friend/friend.service';
+import { Logger } from "@nestjs/common";
 
-@WebSocketGateway({ cors: true })
-export class ChatGateway{
+@WebSocketGateway(42068, {cors: {
+  origin: "http://localhost:4200",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["my-custom-header"],
+  credentials: true
+  }
+})
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 
   @WebSocketServer()
   server: Server;
+
+  private logger: Logger = new Logger('ChatGateway');
 
   constructor(
     private authService: AuthService,
@@ -36,6 +45,7 @@ export class ChatGateway{
   }
 
   async handleConnection(socket: Socket) {
+    this.logger.log('client connected :' + socket.id)
     try {
       const decodedToken = await this.authService.verifyJwt(socket.handshake.headers.authorization);
       const user: Iuser = await this.userService.getOne(decodedToken.user.id);
@@ -65,6 +75,15 @@ export class ChatGateway{
   private disconnect(socket: Socket) {
     socket.emit('Error', new UnauthorizedException());
     socket.disconnect();
+  }
+
+	afterInit(server: Server) {
+		this.logger.log('Init');
+	}
+
+  @SubscribeMessage('yoyo')
+  async onYoyo(socket: Socket) {
+    console.log('yoyo');
   }
 
   @SubscribeMessage('createChannel')

@@ -25,7 +25,7 @@ import { GameModule } from './game/game.module';
     ChatModule,
     FriendModule,
   	PlayerModule,
-    GameModule
+    GameModule 
   ],
   controllers: [AppController],
   providers: [AppService],

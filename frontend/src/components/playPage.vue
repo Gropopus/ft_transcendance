@@ -12,7 +12,7 @@
 	</ul>
 </template>
 
-<script>
+<script lang="ts">
 	export default	{
 		props:	{
 			userId:	{
@@ -29,7 +29,7 @@
 			game.setAttribute('src', 'src/script/pong.js')
 			game.setAttribute('type', 'module')
 			document.head.appendChild(game);	
-		}
+		},
 	}
 </script>
 
