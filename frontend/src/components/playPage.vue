@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { load } from '../script/pong.js'
 	export default	{
 		props:	{
 			userId:	{
@@ -24,12 +25,13 @@
 				default:	"0"
 			}
 		},
-		mounted() {
-			let game = document.createElement('script')
-			game.setAttribute('src', 'src/script/pong.js')
-			game.setAttribute('type', 'module')
-			document.head.appendChild(game);	
+		mounted() {	
+			console.log(userId);
+			// load(userId);
+		},
+		unmounted() {
 		}
+
 	}
 </script>
 

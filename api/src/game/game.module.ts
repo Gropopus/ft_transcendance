@@ -7,12 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlayerModule } from 'src/player/player.module';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
+import { UserEntity } from 'src/user/model/user.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([GameEntity]),
 		UserModule,
-		
+		AuthModule
 	],
 	controllers: [GameController],
 	providers: [GameService, GameGateway,]

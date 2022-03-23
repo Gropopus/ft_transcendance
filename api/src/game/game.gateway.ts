@@ -4,8 +4,12 @@ import { map } from "rxjs";
 import { Socket, Server } from 'socket.io';
 import { PlayerService } from "src/player/player.service";
 import { subscribe } from "superagent";
+import { UnauthorizedException } from '@nestjs/common';
 import { GameService } from "./game.service";
-import { Igame } from './model/game.interface'
+import { Igame } from './model/game.interface';
+import { Iuser } from "src/user/model/user.interface";
+import { AuthService } from "src/auth/auth.service";
+import { UserService } from "src/user/user.service";
 
 @WebSocketGateway(42069, {cors: {
 		origin: "http://localhost:4200",
@@ -17,6 +21,8 @@ import { Igame } from './model/game.interface'
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	
 	constructor (
+		private authService: AuthService,
+		private userService: UserService,
 		// private playerService : PlayerService,
 		private gameService: GameService,
 	) {}
@@ -32,15 +38,36 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	nb_try: number = 0;
 	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
 
-	handleConnection(client: Socket, ...args: any[]) {
+
+	private disconnect(client: Socket) {
+		client.emit('Error', new UnauthorizedException());
+		client.disconnect();
+	  }
+
+	async handleConnection(client: Socket, ...args: any[]) {
 		this.logger.log('client connected: ' + client.id);
+
+		// try {
+		// 	const decodedToken = await this.authService.verifyJwt(client.handshake.headers.authorization);
+		// 	this.logger.log('token ok');
+		// 	const user: Iuser = await this.userService.getOne(decodedToken.user.id);
+		// 	if (!user)
+		// 		return this.disconnect(client);
+		// } catch {
+		// 	this.logger.log('auth fail');
+		// 	return this.disconnect(client);
+		// }
+
 	}
 	async handleDisconnect(client: Socket) {
 		this.logger.log('client disconnected: ' + client.id);
 		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
 		let numClient = room ? room.size : 0;
 		if (this.nb_matchmaking != numClient)
+		{
 		 --this.nb_matchmaking;
+		 console.log("remove nb user in matchmaking")
+		}
 	}
 	kickAllFrom(room: string) {
 		this.server.socketsLeave(room);
@@ -50,9 +77,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('joinRoom')
 	async handleJoinRoom(client: Socket, room: string) {
-		// this.logger.log("client join room : ", room);
+		this.logger.log('client ' + client.id + ' join room ' + room)
 		client.join(room);
-		this.server.to(room).emit('gameId', room);
 	}
 	@SubscribeMessage('leaveRoom')
 	async handleLeaveRoom(client: Socket, room: string) {
@@ -152,14 +178,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			if (Math.random() < 0.5)
 			{
 				await this.gameService.addPlayerToGame(gameid, 1, 0);
-				this.server.to(playerss[1]).emit('gameID', 'left',  gameid, "gameRoom" + gameid);
-				this.server.to(playerss[0]).emit('gameID', 'right', gameid, "gameRoom" + gameid);
+				this.server.to(playerss[1]).emit('gameId', 'left',  gameid, "gameRoom" + gameid);
+				this.server.to(playerss[0]).emit('gameId', 'right', gameid, "gameRoom" + gameid);
 			}
 			else
 			{
 				await this.gameService.addPlayerToGame(gameid, 0, 1);
-				this.server.to(playerss[0]).emit('gameID', 'left', gameid, "gameRoom" + gameid);
-				this.server.to(playerss[1]).emit('gameID', 'right',  gameid, "gameRoom" + gameid);
+				this.server.to(playerss[0]).emit('gameId', 'left', gameid, "gameRoom" + gameid);
+				this.server.to(playerss[1]).emit('gameId', 'right',  gameid, "gameRoom" + gameid);
 			}
 			this.games_score.set(gameid, {r:0, l:0});
 		}
@@ -169,7 +195,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('joinMatchmaking')
 	async handleMatchmaking(client: Socket)
 	{
-
 		this.nb_matchmaking += 1;
 		client.join('MatchMaking');
 		if (this.nb_matchmaking == 2)
