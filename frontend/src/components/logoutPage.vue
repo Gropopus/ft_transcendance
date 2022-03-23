@@ -28,12 +28,8 @@ export default	{
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		}
 	},
-	emits:	['update:currentPage', 'update:userId'],
+	emits:	['update:userId'],
 	methods:	{
 		async logout()	{
 			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
@@ -49,11 +45,10 @@ export default	{
 			})
 			console.log(res1);
 			this.$emit('update:userId', "0");
-			this.$emit('update:currentPage', "0");
+			this.$router.push({name: 'login'});
 		},
 		cancel:	function()	{
-			console.log(this.currentPage);
-			this.$emit('update:currentPage', "0");
+			this.$router.push({name: 'logout'});
 		}
 	}
 }

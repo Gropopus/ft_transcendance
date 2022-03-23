@@ -44,12 +44,7 @@ export default	{
 			type:	[Number, String],
 			default:	0
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		}
 	},
-	emits:	['update:currentPage'],
 	data:	function()	{
 		return {
 			chatName:	"",
@@ -88,7 +83,7 @@ export default	{
                 const chan = await res.json();
                 for (let username of this.usernameList)
                     this.addUserToChannel(chan.id, username);
-                this.$emit('update:currentPage', "1");
+                this.$router.push({name: 'chat'});
             }
 		},
 

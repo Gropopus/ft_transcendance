@@ -83,7 +83,6 @@ export default	{
 				})
 				const data1 = await userRes.json()
 				this.$router.push({name: 'login'})
-				// location.reload();
 
 				return ;
 			}
@@ -95,9 +94,7 @@ export default	{
 		},
 		async goBack()
 		{
-			this.$router.push({name: 'login'})
-			// this.$router.go(-1);
-			// location.reload();
+			this.$router.push({name: 'login'});
 		}
 	}
 }

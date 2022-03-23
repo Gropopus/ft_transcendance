@@ -1,11 +1,8 @@
 <template>
-<div></div>
-	<!-- <div class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" : (isCurrent() ? "white"/*"#FFE471"*/ : "none")}'>
-	<router-link to="/:tabName">
-		{{ tabName }}
+	<button class="navBarButton" @click="changeCurrent($event)" v-bind:style='{"background" : (isCurrent() ? "white"/*"#FFE471"*/ : "none")}'>
 		<img :src="tabIcon" alt="Salut">
-	</router-link>
-	</div> -->
+		{{ tabName }}
+	</button>
 </template>
 
 <script lang="ts">
@@ -15,23 +12,26 @@ export default	{
 			type:	[Number, String],
 			default:	"0"
 		},
+		currentPage:	{
+			type:	[Number, String],
+			default:	"0"
+		}
 	},
-	// emits:	['update:currentPage'],
+	emits:	['update:currentPage'],
 	methods:	{
-		// changeCurrent:	function(e: event)	{
-		// 	console.log(this.tabName);
-		// 	console.log(this.pageId);
-		// 	console.log(this.currentPage);
-			// this.$router.push({name: this.pageName});
-			// this.$emit('update:currentPage', this.pageId);
-		// },
-		// isCurrent:	function():	Boolean	{
-		// 	if (this.pageId == "1" && this.currentPage == "7")
-		// 		return (true);
-		// 	if (this.pageId === this.currentPage)
-		// 		return (true);
-		// 	return (false);
-		// }
+		changeCurrent:	function(e: event)	{
+			console.log(this.tabName);
+			console.log(this.pageId);
+			console.log(this.currentPage);
+			this.$emit('update:currentPage', this.pageId);
+		},
+		isCurrent:	function():	Boolean	{
+			if (this.pageId == "1" && this.currentPage == "7")
+				return (true);
+			if (this.pageId === this.currentPage)
+				return (true);
+			return (false);
+		}
 	},
 	computed:	{
 		tabName:	function(): string	{

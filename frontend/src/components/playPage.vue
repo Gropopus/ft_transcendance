@@ -19,10 +19,6 @@
 				type:	[Number, String],
 				default:	"0"
 			},
-			currentPage:	{
-				type:	[Number, String],
-				default:	"0"
-			}
 		},
 		mounted() {
 			let game = document.createElement('script')

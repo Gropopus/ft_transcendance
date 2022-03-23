@@ -25,13 +25,9 @@ export default	defineComponent ({
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		},
 	},
 
-	emits: ['save', 'update:currentPage'],
+	emits: ['save'],
 
 	data() {
 		return {
