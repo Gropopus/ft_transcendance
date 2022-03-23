@@ -1,7 +1,8 @@
 <template>
-		<div class="LoginHeader">
+<div>
+		<!-- <div class="LoginHeader">
 			<img src="../assets/picto-id.png">
-		</div> <!-- LoginHeader end -->
+		</div> LoginHeader end -->
 
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
@@ -25,17 +26,19 @@
 			</div> <!-- submitBar end -->
 
 		</div> <!-- RegisterForm end -->
+</div>
 </template>
 
 <script lang="ts">
 export default	{
+	name: 'register',
 	props:	{
 		userId:	{
 			type:	[Number, String],
 			default:	0
 		}
 	},
-	emits:	['register', 'update:userId'],
+	emits:	['update:userId'],
 	data:	function()	{
 		return {
 			userLogin:	"",
@@ -79,7 +82,9 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 				})
 				const data1 = await userRes.json()
-				location.reload();
+				this.$router.push({name: 'login'})
+				// location.reload();
+
 				return ;
 			}
 			if (res.status == 409)
@@ -90,7 +95,9 @@ export default	{
 		},
 		async goBack()
 		{
-			location.reload();
+			this.$router.push({name: 'login'})
+			// this.$router.go(-1);
+			// location.reload();
 		}
 	}
 }
@@ -119,18 +126,20 @@ export default	{
 .RegisterForm
 {
 	border-radius: 5px;
-	margin-top:	2%;
+	margin-top:	1%;
 	margin-bottom:	5%;
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
 	padding-left:	5%;
-	width:	30%;
-	height:	40%;
-	border:	solid 3px white;
-	font-size:	24px;
+	width:	50%;
+	height:	50%;
+	border:	solid white;
+	font-size:	150%;
 	font-family: MyanmarText;
 	font-weight:	bold;
+	min-height:	300px;
+	min-width: 548px;
 }
 
 .RegisterForm > input.textArea
@@ -138,7 +147,7 @@ export default	{
 	border: none;
 	background-color:	var(--input-fields);
 	opacity:	50%;
-	font-size:	24px;
+	font-size:	130%;
 	padding:	6px;
 	width:		81%;
 }
@@ -163,7 +172,7 @@ export default	{
 	padding-left:	5%;
 	padding-right:	5%;
 	background:	none;
-	border:	solid 3px white;
+	border:	solid white;
 	font-size:	24px;
 	color:	white;
 	width: 40%;

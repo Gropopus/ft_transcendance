@@ -39,6 +39,7 @@ import { defineComponent } from 'vue'
 import { io, Socket } from "socket.io-client";
 
 export default	defineComponent ({
+	name: 'chatPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
