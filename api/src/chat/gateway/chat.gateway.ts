@@ -248,9 +248,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			await this.channelService.changeTypeChannel(channel, type);
 	}
    }
-
+   
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: Imessage) {
+    console.log('in add message')
 	const bool: number = await this.channelService.boolUserMutedOnChannel(socket.data.user.id, message.channel);
     if (!bool) {
 		const createdMessage: Imessage = await this.messageService.create({...message, user: socket.data.user});

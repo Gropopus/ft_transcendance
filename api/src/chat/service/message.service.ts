@@ -29,8 +29,8 @@ export class MessageService {
 	
     const blocked = await this.userRepository
     .createQueryBuilder("u")
-    .leftJoin('u.friends', 'r')
-    // .leftJoin('u.recvFriendRequest', 'r')
+    .leftJoin('u.friends', 'c')
+    .leftJoin('u.target', 'r')
     .where("r.user = :id")
     .andWhere("r.status = 'user-blocked'")
     .setParameters({ id : user.id })

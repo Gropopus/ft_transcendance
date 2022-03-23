@@ -4,7 +4,16 @@
 		<div class="chatArea">
 			<div class="channelName" v-if="channelsList.length > 0">
 				<h3> {{ channelsList[getChannelIndex(channelId)].name }} </h3>
-			{{ channelMessages }}
+			<ul :key="mess.id" v-for="mess in channelMessages">
+				<p v-if="mess.user.id != userId" class="otherUserMess">
+					{{ mess.user.username }} <br>
+					{{ mess.text }} <br>
+				</p>
+				<p v-else class="currentUserMess">
+					{{ mess.user.username }} <br>
+					{{ mess.text }} <br>
+				</p>
+			</ul>
 		<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
 		<button @click="sendMessage(message)" class="sendButton">send</button>
 		<br>
@@ -26,6 +35,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+// import { Socket, SocketIoConfig } from 'ngx-socket-io';
+import { io, Socket } from "socket.io-client";
+
 export default	defineComponent ({
 	props:	{
 		userId:	{
@@ -44,22 +56,31 @@ export default	defineComponent ({
 		return {
 			channelsList: [],
 			channelId: 0,
-			socket: {},
+			// socket: Socket,
 			channelMessages: [],
 			message: "",
 		}
 	},
 
+	sockets: {
+		connect: function() {
+			console.log('socket connected');
+		},
+	},
+
 	mounted() {
 		this.channelsList;
 		this.channelMessages;
+		// this.socket;
 	},
+
 
 	async created() {
 		this.channelsList = await this.fetchChannelsList();
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
+		// this.socket = io('http://localhost:3000');
 	},
 
 	methods: {
@@ -104,7 +125,8 @@ export default	defineComponent ({
 
 		async sendMessage(message: string)
 		{
-			this.$emit('addMessage', message);
+			// console.log(this.socket);
+			this.$socket.emit('addMessage', message);
 		},
 
 		async fetchMessages() {
@@ -215,4 +237,13 @@ export default	defineComponent ({
 	background:	var(--deep-blue-10);
 }
 
+.otherUserMess
+{
+	text-align: left;
+}
+
+.currentUserMess
+{
+	text-align: right;
+}
 </style>
