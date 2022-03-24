@@ -39,7 +39,7 @@ export default	defineComponent ({
 	mounted() {
 		this.userList
 		this.userData
-		console.log(`the component is now mounted.`)
+		console.log(`the component is now mounted.` + this.userId)
 	},
 
 	async created() {

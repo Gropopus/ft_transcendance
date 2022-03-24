@@ -1,5 +1,5 @@
 <template>
-	<ul>
+	<div>
 		<div class="GameArea">
 			<canvas id="canvas" width="640" height="500"></canvas>
 		</div>
@@ -9,10 +9,10 @@
 		<div class="SocialRecap">
 			<p>Osef</p>
 		</div>
-	</ul>
+	</div>
 </template>
 
-<script>
+<script lang="ts">
 import { load } from '../script/pong.js'
 	export default	{
 		props:	{
@@ -22,11 +22,11 @@ import { load } from '../script/pong.js'
 			},
 		},
 		mounted() {	
-			console.log(userId);
+			console.log('user id: ' + this.userId);
 			// load(userId);
 		},
-		unmounted() {
-		}
+		// unmounted() {
+		// }
 
 	}
 </script>

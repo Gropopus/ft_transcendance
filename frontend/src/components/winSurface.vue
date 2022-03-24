@@ -1,6 +1,10 @@
+<script setup lang="ts">
+import workSurface from './workSurface.vue'
+</script>
+
 <template>
 	<div class="winSurface">
-		<nav v-if="isLogged()" :userId="this.userId">
+		<nav v-if="isLogged()">
 			<div :key="elem.name" v-for="elem in navbuttons" class="navBar">
 				<button @click="goToRoute(elem.path)" class="navButton" v-bind:style='{"border-right": (isCurrent(elem.path) ? "solid 10px yellow"/*"#FFE471"*/ : "none")}'>
 				<!-- <p class="name">
@@ -10,25 +14,12 @@
 				</button>
 			</div>
 		</nav>
-		<div class="vuePage">
-			<router-view/>
-		</div>
-		<!-- <workSurface :userId="this.userId" v-on:update:userId="this.userId = $event ">
-		</workSurface> -->
+		<router-view  :userId="this.userId" @update:userId="this.userId = $event" />
 	</div>
 </template>
 
 <script lang="ts">
 	export default	{
-		props:	{
-			userId:	{
-				type:	[Number, String],
-				default:	"0"
-			},
-	},
-
-	emits:	['update:userId'],
-
 	data() {
 		return {
 			navbuttons: [
@@ -40,6 +31,7 @@
 				{path: '/logout', name: "Logout", icon: "./src/assets/log-out.png"},
 				{path: '/settings', name: "Settings", icon: "./src/assets/settings.png"}
 			],
+			userId: "0"
 		}
 	},
 

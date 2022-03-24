@@ -1,10 +1,8 @@
 <template>
-	<!-- <div> -->
-		<router-view>
+	<div>
 		<!-- <div class="LoginHeader">
 			<img src="../assets/picto-id.png">
 		</div> LoginHeader end -->
-
 		<div class="LoginForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Email </label>	<br>
@@ -30,8 +28,7 @@
 				Connect
 			</div>
 		</a> <!-- submit42Button end -->
-	<!-- </div> -->
-	</router-view>
+	</div>
 </template>
 
 <script lang="ts">
@@ -50,7 +47,7 @@ export default	{
 			error:		"",
 		}
 	},
-	emits:	['register', 'update:userId'],
+	emits:	['update:userId'],
 	methods:	{
 
 checkForm() {

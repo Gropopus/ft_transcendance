@@ -8,7 +8,6 @@ import friendsPage from './friendsPage.vue'
 import profilePage from './profilePage.vue'
 import logoutPage from './logoutPage.vue'
 import settingsPage from './settingsPage.vue'
-import createChatPage from './createChatPage.vue'
 </script>
 
 <template>
@@ -71,8 +70,7 @@ export default	{
 							friendsPage,
 							profilePage,
 							logoutPage,
-							settingsPage,
-							createChatPage
+							settingsPage
 						]
 				return Tags[this.currentPage];
 		},
