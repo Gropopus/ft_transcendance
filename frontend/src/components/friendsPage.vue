@@ -1,7 +1,8 @@
 
 <template>
+<div>
 <input type="text" v-model="search" placeholder="Search a friend" v-on:keyup="searchUser()" class="textArea">
-<p class="friendFound" v-if="found" v-on:click="goToUserPage()"> {{ found }}</p>
+<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
 	<div class="friendsPage">
 		<div  class="friendsArea">
 			<h2>FRIENDS LIST</h2>
@@ -37,6 +38,7 @@
 			</ul>
 		</div>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -49,13 +51,9 @@ export default	defineComponent ({
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		},
 	},
 
-	emits: ['save', 'update:currentPage'],
+	emits: ['save'],
 
 	data() {
 		return {
@@ -82,6 +80,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchFriends() {
+			console.log('user id: ' + this.userId);
 			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
@@ -132,8 +131,8 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		})
 		},
-		async goToUserPage() {
-			this.$emit('update:currentPage', "4");
+		async goToUserPage(username: string) {
+			this.$router.push({name: 'userPage', params: { username } })
 		},
 
 		async searchUser() {

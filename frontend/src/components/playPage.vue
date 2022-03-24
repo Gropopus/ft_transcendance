@@ -20,10 +20,6 @@ import { load } from '../script/pong.js'
 				type:	[Number, String],
 				default:	"0"
 			},
-			currentPage:	{
-				type:	[Number, String],
-				default:	"0"
-			}
 		},
 		mounted() {	
 			console.log(userId);

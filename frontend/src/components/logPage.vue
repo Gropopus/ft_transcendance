@@ -1,8 +1,9 @@
 <template>
-	<div>
-		<div class="LoginHeader">
+	<!-- <div> -->
+		<router-view>
+		<!-- <div class="LoginHeader">
 			<img src="../assets/picto-id.png">
-		</div> <!-- LoginHeader end -->
+		</div> LoginHeader end -->
 
 		<div class="LoginForm">
 			<p class="error" v-if="error"> {{ error }} </p>
@@ -11,11 +12,10 @@
 
 			<label for="password"> Password </label>	<br>
 			<input type="password" v-model="userPass"  class="textArea">	<br>
-
 			<div class="submitBar">
 				<button @click="register()" class="submitButton">
 					Register
-				</button>
+				</button> 
 				<button @click="login()" class="submitButton">
 					Log-in
 				</button>
@@ -30,11 +30,13 @@
 				Connect
 			</div>
 		</a> <!-- submit42Button end -->
-	</div>
+	<!-- </div> -->
+	</router-view>
 </template>
 
 <script lang="ts">
 export default	{
+	name: 'logPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
@@ -82,6 +84,7 @@ checkForm() {
 					})
 					const data1 = await userRes.json()
 					this.$emit('update:userId', data1.id);
+					this.$router.push({name: 'game'})
 					return ;
 				}
 				else if (res.status == 400 || res.status == 404)
@@ -91,48 +94,39 @@ checkForm() {
 		},
 
 		register: function() {
-			this.$emit('register');
+			this.$router.push({name: 'register'});
+			// this.$emit('register');
 		}
 	}
 }
 </script>
 
-<style>
-
-.LoginHeader
-{
-	margin-top:	3%;
-	height:	20%;
-	display:	flex;
-	justify-content:	center;
-}
-
-.LoginHeader > img
-{
-	object-fit: contain;
-}
+<style lang="css" scoped>
 
 .LoginForm
 {
 	border-radius: 5px;
-	margin-top:	2%;
+	margin-top:	1%;
 	margin-bottom:	5%;
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
 	padding-left:	5%;
-	width:	30%;
-	height:	40%;
-	border:	solid 3px white;
-	font-size:	24px;
+	width:	50%;
+	height:	50%;
+	border:	solid white;
+	font-size:	150%;
 	font-family: MyanmarText;
 	font-weight:	bold;
+	min-height:	300px;
+	min-width: 548px;
 }
 
 .LoginForm > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
+	margin-bottom:	3%;
 	opacity:	50%;
 	font-size:	24px;
 	padding:	6px;
@@ -154,14 +148,14 @@ checkForm() {
 	margin-right: 10%;
 	display:	block;
 	background:	none;
-	
 	flex:	0 0 center;
 	margin-bottom:	5%;
 	margin-right:	auto;
 	padding-top:	3%;
+	padding-bottom:	2%;
 	background:	none;
-	border:	solid 3px white;
-	font-size:	24px;
+	border:	solid white;
+	font-size:	100%;
 	color:	white;
 	font-family: MyanmarText;
 }
@@ -170,6 +164,7 @@ checkForm() {
 {
 	display:	block;
 	background:	none;
+	margin-top:	3%;
 	margin-left:	auto;
 	margin-right:	auto;
 	margin-bottom:	5%;
@@ -178,7 +173,7 @@ checkForm() {
 
 	width:	20%;
 	border:	solid 3px white;
-	font-size:	24px;
+	font-size:	150%;
 	color:	white;
 	min-height:	42px;
 	min-width:	280px;

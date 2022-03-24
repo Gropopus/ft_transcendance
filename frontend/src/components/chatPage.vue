@@ -39,18 +39,15 @@ import { defineComponent } from 'vue'
 import { io, Socket } from "socket.io-client";
 
 export default	defineComponent ({
+	name: 'chatPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		},
 	},
 
-	emits: ['save', 'update:currentPage', 'addMessage'],
+	emits: ['save', 'addMessage'],
 
 	data() {
 		return {
@@ -113,7 +110,7 @@ export default	defineComponent ({
 		},
 
 		createChannel() {
-			this.$emit('update:currentPage', "7")
+			this.$router.push({name: 'createChat'});
 		},
 
 		async deleteChannel(id: number) {

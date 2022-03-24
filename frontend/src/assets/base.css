@@ -38,9 +38,11 @@ header
 	background-image: url("./src/assets/header-id.png");
 	background-repeat:	no-repeat;
 	background-position:	center;
-	margin-top:	3%;
+	margin-top:	1%;
 	min-height:	300px;
-	min-width:	1180px;
+	min-width: 548px;
+	height: 100%;
+	width: 100%;
 }
 
 .GameArea

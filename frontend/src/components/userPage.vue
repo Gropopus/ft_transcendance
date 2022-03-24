@@ -19,7 +19,7 @@
 import { defineComponent } from 'vue'
 
 export default	defineComponent ({
-	name: 'profilePage',
+	name: 'userPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
