@@ -3,14 +3,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPlayer } from 'src/player/player.interface';
 import { PlayerService } from 'src/player/player.service';
-import { Iuser } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { GameEntity } from './model/game.entity';
-import { Igame } from './model/game.interface';
+import { Igame, gameStatus } from './model/game.interface';
 
 @Injectable()
 export class GameService {
 	constructor(
+		private playerService: PlayerService,
+		private userService: UserService,
 		@InjectRepository(GameEntity)
 		private gameRepository: Repository<GameEntity>, 
 	) { }
@@ -27,31 +29,47 @@ export class GameService {
 
 	async createGame() : Promise<number> {
 		let igame: Igame = {
-			player_left: -1,
-			player_right: -1,
-
 			score_l: 0,
 			score_r: 0,
+			status: gameStatus.PLAYING,
+			player_right_id: -1,
+			player_left_id: -1,
 		}
 		let game = this.gameRepository.create(igame);
 		await this.gameRepository.save(game);
 		console.log('game id is ', game.id);
 		return game.id;
 	}
-	async addPlayerToGame(pid: number, player_left: number, player_right: number): Promise<number> {
+	async addPlayerToGame(pid: number, left_uid: number, right_uid: number): Promise<number> {
 		let game = await this.findOne(pid);
 		if (!game)
 			return (-1); // game doenst exist
-		game.player_right = player_right;
-		game.player_right = player_left;
+		
+		let ret = await this.playerService.createGame(await this.userService.findOne(left_uid), await this.userService.findOne(right_uid), pid);
+		game.player_left_id = ret.p1.id;
+		game.player_right_id = ret.p2.id;
+		console.log("player left is = " + ret.p1.id);
+		console.log("player right is = " + ret.p2.id);
 		await this.gameRepository.update({id: pid}, game);
 	}
 
-	async setScore(pid: number, score_l: number, score_r: number) {
-		await this.gameRepository.update({id: pid}, {
-			score_l: score_l,
-			score_r: score_r,
-		})
+	async setScore(pid: number, score_l: number, score_r: number, end: boolean) {
+		let game = await this.findOne(pid);
+		
+		game.score_l = score_l;
+		game.score_r = score_r;
+		if (end == true)
+		{
+			game.status = gameStatus.FINISH;
+			await this.gameRepository.update({id: pid}, game)
+			await this.playerService.setFinalScores(game.player_left_id, game.score_l, game.score_r);
+		}
+		else
+		{
+			game.status = gameStatus.CANCEL;
+			await this.gameRepository.update({id: pid}, game);
+			await this.playerService.setFinalScores(game.player_left_id, game.score_l, game.score_r);
+		}
 	}
 	async getScore(pid: number) {
 		let game = await this.findOne(pid);

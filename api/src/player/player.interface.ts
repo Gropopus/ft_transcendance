@@ -1,3 +1,4 @@
+import { CANCELLED } from "dns";
 import { Iuser } from "src/user/model/user.interface";
 
 export interface IPlayer {
@@ -13,7 +14,8 @@ export interface IPlayer {
 export enum PlayerStatus {
     PLAYING = "game-in-progress",
     WINNER = "won-the-game",
-    LOSER = "lost-the-game"
+    LOSER = "lost-the-game",
+    CANCELLED = "cancelled-game"
 }
 
 export enum PlayerSide {

@@ -37,6 +37,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	nb_matchmaking: number = 0;
 	nb_try: number = 0;
 	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
+	player_room: Map<string, string> = new Map<string, string>();
 
 
 	private disconnect(client: Socket) {
@@ -45,12 +46,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	  }
 
 	async handleConnection(client: Socket, ...args: any[]) {
-		this.logger.log('client connected: ' + client.id);
-
+		this.player_room.set(client.id, 'not in a room')
 		// try {
-		// 	const decodedToken = await this.authService.verifyJwt(client.handshake.headers.authorization);
-		// 	this.logger.log('token ok');
-		// 	const user: Iuser = await this.userService.getOne(decodedToken.user.id);
+		// 	const user: Iuser = await this.userService.getOne(client.handshake.auth.userId);
 		// 	if (!user)
 		// 		return this.disconnect(client);
 		// } catch {
@@ -61,6 +59,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	async handleDisconnect(client: Socket) {
 		this.logger.log('client disconnected: ' + client.id);
+		this.logger.log('\t the client was in room : ' + this.player_room.get(client.id));
+
 		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
 		let numClient = room ? room.size : 0;
 		if (this.nb_matchmaking != numClient)
@@ -68,8 +68,18 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		 --this.nb_matchmaking;
 		 console.log("remove nb user in matchmaking")
 		}
+		this.player_room.delete(client.id);
 	}
 	kickAllFrom(room: string) {
+		var client_t = this.server.sockets.adapter.rooms.get(room);
+		if (client_t)
+		{
+			var clients = Array.from(client_t.values());
+			if (clients[0])
+				this.player_room.set(clients[0], 'not in a room')
+			if (clients[1])
+				this.player_room.set(clients[1], 'not in a room')
+		}
 		this.server.socketsLeave(room);
 	}
 	afterInit(server: Server) {
@@ -77,7 +87,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('joinRoom')
 	async handleJoinRoom(client: Socket, room: string) {
-		this.logger.log('client ' + client.id + ' join room ' + room)
+		this,this.player_room.set(client.id, room);
 		client.join(room);
 	}
 	@SubscribeMessage('leaveRoom')
@@ -110,8 +120,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
 		this.server.to(data.gameRoom).emit('gameEnd');
 		this.kickAllFrom(data.gameRoom);
-		// this.games_score.delete(data.gameId);S
-		this.gameService.setScore(data.gameId, score.l, score.r);
+		this.games_score.delete(data.gameId);
+		this.gameService.setScore(data.gameId, score.l, score.r, true);
 	}
 	@SubscribeMessage('right_miss')
 	handleright_miss(socket: Socket, data: any) {
@@ -159,31 +169,32 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		client.join(data.gameRoom);
 	}
 
-
 	//bellow is matchmaking part
 	@SubscribeMessage('startGame')
 	async handleStartGame(client: Socket, room: string) {
 		if (client.rooms.has(room) == true)
 		{	// if client still in room to avoid duplicate game
-			this.logger.log('game start confirm for room', room);
 			
-			const players = this.server.sockets.adapter.rooms.get(room).values();
-			const playerss = Array.from(players);
+			const players = this.server.sockets.adapter.rooms.get(room);
+			const playerss = Array.from(players.values());
 			this.kickAllFrom(room);
 
 			// create game
 			let gameid = await this.gameService.createGame();
-			this.logger.log('player in room', playerss[0], ', ' ,playerss[1]);
-
+			this.logger.log('game ' + gameid + ' start')
+			this.player_room.set(this.server.sockets.sockets.get(playerss[0]).id, 'gameRoom' + gameid);
+			this.player_room.set(this.server.sockets.sockets.get(playerss[1]).id, 'gameRoom' + gameid);
+			let p_zero = this.server.sockets.sockets.get(playerss[0]).handshake.auth.userId;
+			let p_one  = this.server.sockets.sockets.get(playerss[1]).handshake.auth.userId;
 			if (Math.random() < 0.5)
 			{
-				await this.gameService.addPlayerToGame(gameid, 1, 0);
+				await this.gameService.addPlayerToGame(gameid, p_one, p_zero);
 				this.server.to(playerss[1]).emit('gameId', 'left',  gameid, "gameRoom" + gameid);
 				this.server.to(playerss[0]).emit('gameId', 'right', gameid, "gameRoom" + gameid);
 			}
 			else
 			{
-				await this.gameService.addPlayerToGame(gameid, 0, 1);
+				await this.gameService.addPlayerToGame(gameid, p_zero, p_one);
 				this.server.to(playerss[0]).emit('gameId', 'left', gameid, "gameRoom" + gameid);
 				this.server.to(playerss[1]).emit('gameId', 'right',  gameid, "gameRoom" + gameid);
 			}
@@ -197,6 +208,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	{
 		this.nb_matchmaking += 1;
 		client.join('MatchMaking');
+		this.player_room.set(client.id, 'MatchMaking');
 		if (this.nb_matchmaking == 2)
 		{
 			this.nb_try += 1;
@@ -212,6 +224,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('MatchTimeOut')
 	async handleMatchTimeOut(client: Socket, room: string) {
 		client.leave(room);
+		this.player_room.set(client.id, 'not in a room');
 		this.server.to(room).emit('didntRespond');
 		this.kickAllFrom(room);
 	}
