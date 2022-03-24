@@ -2,17 +2,17 @@
 </script>
 
 <template>
-	<div class="winSurface">
-		<nav v-if="isLogged()">
+<nav v-if="isLogged()">
 			<div :key="elem.name" v-for="elem in navbuttons" class="navBar">
-				<button @click="goToRoute(elem.path)" class="navButton" v-bind:style='{"border-right": (isCurrent(elem.path) ? "solid 10px yellow"/*"#FFE471"*/ : "none")}'>
-				<!-- <p class="name">
+				<button @click="goToRoute(elem.path)" class="navButton" v-bind:style='{"border-right": (isCurrent(elem.path) ? "solid 10px rgb(255, 228, 113)" : "none")}'>
 				<img :src="elem.icon" alt="Salut">
 					{{ elem.name }}
-				</p> -->
 				</button>
 			</div>
 		</nav>
+	<div class="winSurface">
+		<div v-if="isLogged() || isCurrent('/register')">
+		</div>
 		<div v-else v-bind:is="goToRoute('/login')"></div>
 		<router-view
 			:userId="this.userId"
@@ -27,11 +27,10 @@
 			navbuttons: [
 				{path: '/game', name: "Play", icon: "./src/assets/game.png"},
 				{path: '/chat', name: "Chat", icon: "./src/assets/chat.png"},
-				{path: '/statistics', name: "Stats", icon: "./src/assets/logout-picture.png"},
 				{path: '/friends', name: "Friends", icon: "./src/assets/friends.png"},
 				{path: '/profile', name: "Profile", icon: "./src/assets/logout-picture.png"},
-				{path: '/logout', name: "Logout", icon: "./src/assets/log-out.png"},
-				{path: '/settings', name: "Settings", icon: "./src/assets/settings.png"}
+				{path: '/settings', name: "Settings", icon: "./src/assets/settings.png"},
+				{path: '/logout', name: "Logout", icon: "./src/assets/log-out.png"}
 			],
 			userId: "0"
 		}
@@ -92,41 +91,43 @@
 	margin-top:	4%;
 	margin-bottom:	4%;
 	height:	2%;
-	width:	15%;
+	width:	12%;
 	object-fit: contain;
 	vertical-align:	center;
+	align-content: left;
 	padding-left: 10%;
 }
 
 nav {
+  background: white;
   float:	left;
-  width:11.5%;
+  width:	6%;
+  display: row;
 }
 
-.navBar {
-  width:5%;
-}
+/*.navBar {
+
+}*/
 
 .navBar > .navButton {
   display: inline;
-	margin-bottom:	10%;
-	margin-top:	0%;
-  height:	100%;
-  width: 100%;
+	margin-bottom:	6%;
+	margin-top:	6%;
+  height:	50%;
+  width: 	100%;
   flex:	1 1 0;
   vertical-align:	center;
-  text-align:	center;
-  min-width:	142px;
-  text-decoration:	none;
-  font-family: MyanmarText;
-  letter-spacing:	1%;
-  color: var(--font-blue);
+  text-align:		center;
+  min-width:		142px;
+  font-family: 		MyanmarText;
+  letter-spacing:	2%;
+  background: white;
   border:	none;
 }
 
   .navButton:hover
   {
-    border-right: solid 10px yellow
+    border-right: solid 20px rgb(255, 228, 113)
   }
 
 .navButton > img

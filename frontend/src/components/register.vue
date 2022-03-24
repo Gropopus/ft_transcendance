@@ -1,4 +1,6 @@
 <template>
+	<header>
+	</header>
 <div>
 		<!-- <div class="LoginHeader">
 			<img src="../assets/picto-id.png">

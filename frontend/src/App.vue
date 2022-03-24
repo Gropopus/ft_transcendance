@@ -3,9 +3,6 @@ import winSurface from './components/winSurface.vue'
 </script>
 
 <template>
-  <header>
-  </header>
-
   <main>
     <winSurface/>
   </main>
