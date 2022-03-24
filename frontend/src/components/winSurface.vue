@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import workSurface from './workSurface.vue'
 </script>
 
 <template>
@@ -14,7 +13,10 @@ import workSurface from './workSurface.vue'
 				</button>
 			</div>
 		</nav>
-		<router-view  :userId="this.userId" @update:userId="this.userId = $event" />
+		<div v-else v-bind:is="goToRoute('/login')"></div>
+		<router-view
+			:userId="this.userId"
+			@update:userId="saveUserId($event)" />
 	</div>
 </template>
 
@@ -43,14 +45,19 @@ import workSurface from './workSurface.vue'
 		},
 
 		goToRoute(path: string) {
-		this.$router.push(path);
+		if (path != this.$route.path)
+			this.$router.replace(path);
 		},
 
 		isCurrent(path: string) {
 		if (path == this.$route.path)
 			return true;
 		return false;
-		}
+		},
+
+		saveUserId(id: string) {
+			this.userId = id;
+		},
 	}
 }
 </script>

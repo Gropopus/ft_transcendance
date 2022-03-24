@@ -81,7 +81,7 @@ checkForm() {
 					})
 					const data1 = await userRes.json()
 					this.$emit('update:userId', data1.id);
-					this.$router.push({name: 'game'})
+					this.$router.replace({name: 'game'})
 					return ;
 				}
 				else if (res.status == 400 || res.status == 404)
@@ -91,7 +91,7 @@ checkForm() {
 		},
 
 		register: function() {
-			this.$router.push({name: 'register'});
+			this.$router.replace({name: 'register'});
 			// this.$emit('register');
 		}
 	}

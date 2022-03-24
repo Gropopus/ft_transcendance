@@ -132,7 +132,7 @@ export default	defineComponent ({
     		})
 		},
 		async goToUserPage(username: string) {
-			this.$router.push({name: 'userPage', params: { username } })
+			this.$router.replace({name: 'userPage', params: { username } })
 		},
 
 		async searchUser() {

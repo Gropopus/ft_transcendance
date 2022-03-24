@@ -110,7 +110,7 @@ export default	defineComponent ({
 		},
 
 		createChannel() {
-			this.$router.push({name: 'createChat'});
+			this.$router.replace({name: 'createChat'});
 		},
 
 		async deleteChannel(id: number) {

@@ -45,10 +45,10 @@ export default	{
 			})
 			console.log(res1);
 			this.$emit('update:userId', "0");
-			this.$router.push({name: 'login'});
+			this.$router.replace({name: 'login'});
 		},
 		cancel:	function()	{
-			this.$router.push({name: 'logout'});
+			this.$router.replace({name: 'logout'});
 		}
 	}
 }
