@@ -6,18 +6,18 @@
 		<nav v-if="isLogged()">
 			<div :key="elem.name" v-for="elem in navbuttons" class="navBar">
 				<button @click="goToRoute(elem.path)" class="navButton" v-bind:style='{"border-right": (isCurrent(elem.path) ? "solid 10px yellow"/*"#FFE471"*/ : "none")}'>
-				<!-- <p class="name">
+				<p class="name">
 				<img :src="elem.icon" alt="Salut">
-					{{ elem.name }}
-				</p> -->
+					<!-- {{ elem.name }} -->
+				</p>
 				</button>
 			</div>
 		</nav>
-		<div v-else v-bind:is="goToRoute('/login')"></div>
-		<router-view
-			:userId="this.userId"
-			@update:userId="saveUserId($event)" />
-	</div>
+		<div v-else v-bind:is="goToRoute('/login')" class="page"></div>
+			<router-view
+				:userId="this.userId"
+				@update:userId="saveUserId($event)" />
+		</div>
 </template>
 
 <script lang="ts">
@@ -145,5 +145,9 @@ nav {
   float: right;
   font-size:	150%;
 	vertical-align:	center;
+}
+
+.page {
+	float: right;
 }
 </style>
