@@ -178,4 +178,10 @@ export default	{
 	font-family: MyanmarText;
 }
 
+.RegisterForm > .submitBar > .submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
 </style>

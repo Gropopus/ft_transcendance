@@ -159,6 +159,14 @@ checkForm() {
 	font-family: MyanmarText;
 }
 
+.LoginForm > .submitBar > .submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
+
+
 .submit42Button
 {
 	display:	block;
