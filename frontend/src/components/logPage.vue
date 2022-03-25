@@ -143,7 +143,7 @@ checkForm() {
 
 .LoginForm > .submitBar > .submitButton
 {
-	width:		40%;
+	width:		35%;
 	margin-right: 10%;
 	display:	block;
 	background:	none;
@@ -156,7 +156,6 @@ checkForm() {
 	border:	solid white;
 	font-size:	100%;
 	color:	white;
-	border-radius: 5px;
 	font-family: MyanmarText;
 }
 
@@ -180,7 +179,7 @@ checkForm() {
 	padding-bottom:	1%;
 	border-radius: 5px;
 
-	width:	20%;
+	width:	15%;
 	border:	solid 3px white;
 	font-size:	150%;
 	color:	white;
