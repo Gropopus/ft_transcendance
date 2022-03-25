@@ -2,7 +2,7 @@
 	<div class="settingsPage">
 		<div class="submitBar">
 			<label for="login"> Change your Login: </label><br>
-			<input type="text" v-model="userLogin" class="textArea">
+			<input type="text" v-model="userLogin" class="textArea simpleline">
 			<button @click="updateLogin()" class="submitButton">
 				Update </button></div>
 		<div class="submitBar">
@@ -11,6 +11,8 @@
 		<button @click="updatePassword()" class="submitButton">
 				Update </button>
 		</div>
+		<input type="file" ref="file" accept="image/x-png,image/gif,image/jpeg" @change="onChangeFileUpload($event)">
+		<button @click="Upload()">Upload</button>
 		<p class="error" v-if="error"> {{ error }} </p>
 		<br>
 		<p>
@@ -18,6 +20,7 @@
 	</div>
 </template>
 <script lang="ts">
+import { ref} from "vue"
 export default	{
 	name: 'register',
 	props:	{
@@ -32,7 +35,8 @@ export default	{
 			userLogin:	"",
 			userPass:	"",
 			userMail:	"",
-			error: ""
+			error: "",
+			file: null,
 		}
 	},
 	methods:	{
@@ -63,9 +67,23 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ password: this.userPass })
 			})
-			console.log(await res.json());
-			
+			console.log(await res.json());	
 		},
+		onChangeFileUpload($event) {
+            const target = $event.target as HTMLInputElement;
+            this.file = target.files[0];
+			if (this.file)
+				console.log(this.file);
+		},
+		async Upload()
+		{
+			let formData = new FormData();
+  			formData.append('file', this.file);
+			const res = await fetch(`http://localhost:3000/api/users/upload`, {
+				method: 'post',
+				body: formData,
+				})
+		}
 	}
 }
 </script>
@@ -77,49 +95,32 @@ export default	{
 	color: red;
 }
 
-.RegisterHeader
+.settingsPage
 {
-	margin-top:	3%;
-	height:	20%;
-	display:	flex;
-	justify-content:	center;
-}
-
-.RegisterHeader > img
-{
-	object-fit: contain;
-}
-
-.RegisterForm
-{
-	border-radius: 5px;
-	margin-top:	1%;
-	margin-bottom:	5%;
-	margin-left:	auto;
-	margin-right:	auto;
-	padding-top:	2%;
-	padding-left:	5%;
-	width:	50%;
-	height:	50%;
-	border:	solid white;
-	font-size:	150%;
+	font-size:	130%;
 	font-family: MyanmarText;
 	font-weight:	bold;
 	min-height:	300px;
 	min-width: 548px;
 }
 
-.RegisterForm > input.textArea
+.settingsPage > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
 	opacity:	50%;
 	font-size:	130%;
 	padding:	6px;
-	width:		81%;
+	width:		20%;
+	size: 10%;
 }
 
-.RegisterForm > .submitBar
+.settingsPage > .simpleline
+{
+	max-height: 60px;
+}
+
+.settingsPage > .submitBar
 {
 	margin-top:	2%;
 	display:	flex;
@@ -128,11 +129,12 @@ export default	{
 	flex-direction:	row;
 }
 
-.RegisterForm > .submitBar > .submitButton
+.settingsPage > .submitBar > .submitButton
 {
-	display:	block;
+	display:	row;
 	background:	none;
-	flex:	0 0 auto;
+	/*flex:	0 0 auto;*/
+	flex-direction: row;
 	margin-bottom:	5%;
 	margin-right:	auto;
 	padding-top:	3%;
@@ -143,11 +145,11 @@ export default	{
 	border:	solid white;
 	font-size:	24px;
 	color:	white;
-	width: 40%;
+	width: 20%;
 	font-family: MyanmarText;
 }
 
-.RegisterForm > .submitBar > .submitButton:hover
+.settingsPage > .submitBar > .submitButton:hover
 {
 	background: rgba(255, 255, 255, 0.5);
 	color: white;

@@ -122,9 +122,9 @@ export class UserController {
 	    const user: Iuser = await this.userService.findOne(req.user.id);
 
 		// Remove old picture
-	    if (fs.existsSync('src/uploads/' + user.picture) && user.picture != "profile-picture.png"){
+	   /* if (fs.existsSync('src/uploads/' + user.picture) && user.picture != "profile-picture.png"){
 			fs.unlinkSync('src/uploads/' + user.picture)
-		}
+		}*/
 	    return this.userService.updateOneOb(user.id, {picture: file.filename}).pipe(
 	        map((user: Iuser) => ({picture: user.picture}))
 	    )
