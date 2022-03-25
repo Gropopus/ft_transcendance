@@ -1,9 +1,12 @@
 
 <template>
 <div>
-<input type="text" v-model="search" placeholder="Search a friend" v-on:keyup="searchUser()" class="textArea">
-<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
+	<img style="width:3%; height:3%; vertical-align: middle;" src="../assets/magnifying-glass.png">
+	<span style="vertical-align:middle; font-size: 20px"> Search for a friend:<br></span>
+	<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea">
+	<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
 	<div class="friendsPage">
+		<br>
 		<div  class="friendsArea">
 			<h2>FRIENDS LIST</h2>
 			<ul :key="friend.id" v-for="friend in friendList">
@@ -186,6 +189,7 @@ export default	defineComponent ({
 
 .textArea
 {
+	margin-top: 1%;
 	border: none;
 	background-color:	var(--input-fields);
 	opacity:	50%;

@@ -48,7 +48,7 @@ export default	{
 			this.$router.replace({name: 'login'});
 		},
 		cancel:	function()	{
-			this.$router.replace({name: 'logout'});
+			this.$router.replace({name: 'game'});
 		}
 	}
 }
@@ -77,7 +77,7 @@ export default	{
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
-	padding-left:	5%;
+	padding-left:	10%;
 	width:	30%;
 	height:	40%;
 	border:	solid 3px white;
@@ -110,45 +110,23 @@ export default	{
 	background:	none;
 	flex:	0 0 auto;
 	margin-bottom:	5%;
-	margin-right:	auto;
+	margin-right:	19%;
 	padding-top:	3%;
 	padding-left:	5%;
 	padding-right:	5%;
 	background:	none;
 	border:	solid 3px white;
+	border-radius: 5px;;
 	font-size:	24px;
 	color:	white;
 	font-family: MyanmarText;
 }
 
-.submit42Button
+.LogoutForm > .submitBar > .submitButton:hover
 {
-	display:	block;
-	background:	none;
-	margin-left:	auto;
-	margin-right:	auto;
-	margin-bottom:	5%;
-	padding-top:	1%;
-	padding-bottom:	1%;
-	width:	20%;
-	border:	solid 3px white;
-	font-size:	24px;
-	color:	white;
-	min-height:	42px;
-	min-width:	280px;
-	justify-content:	center;
-	line-height:	1.5;
-	font-weight:	bold;
-	font-family: MyanmarText;
-	text-decoration:	none;
-}
-
-.submit42Button > img
-{
-	float:	left;
-	margin-left:	10px;
-	margin-right:	10px;
-	object-fit:	contain;
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
 }
 
 </style>
