@@ -8,7 +8,7 @@
 
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
-			<label for="login"> Register </label>	<br>
+			<label for="login"> Login </label>	<br>
 			<input type="text" v-model="userLogin" class="textArea"> <br>
 			<label for="password"> Password </label>	<br>
 			<input type="password" v-model="userPass" class="textArea">	<br>
@@ -170,6 +170,7 @@ export default	{
 	padding-top:	3%;
 	padding-left:	5%;
 	padding-right:	5%;
+	border-radius: 5px;
 	background:	none;
 	border:	solid white;
 	font-size:	24px;

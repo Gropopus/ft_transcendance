@@ -156,6 +156,7 @@ checkForm() {
 	border:	solid white;
 	font-size:	100%;
 	color:	white;
+	border-radius: 5px;
 	font-family: MyanmarText;
 }
 
@@ -177,6 +178,7 @@ checkForm() {
 	margin-bottom:	5%;
 	padding-top:	1%;
 	padding-bottom:	1%;
+	border-radius: 5px;
 
 	width:	20%;
 	border:	solid 3px white;
