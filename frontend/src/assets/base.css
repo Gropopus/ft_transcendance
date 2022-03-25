@@ -45,6 +45,10 @@ header
 	width: 100%;
 }
 
+.app {
+	width: 100;
+	height: 100;
+}
 .GameArea
 {
 	float:	left;
@@ -152,41 +156,6 @@ header
 	max-height:	500px;
 }
 
-.StatsTabs
-{
-	display:	flex;
-	flex-direction:	column;
-	width:	5%;
-	min-height:	500px;
-	border-right:	solid 3px white;
-}
-
-.StatsTabs > button
-{
-	flex:	1 1 0;
-	writing-mode:	vertical-rl;
-	text-align:	center;
-	padding-right:	30%;
-	transform:	rotate(180deg);
-	background:	none;
-	border:	none;
-	font-size:	inherit;
-	font-family: inherit;
-	font-weight:	bold;
-	color:	inherit;
-}
-
-.StatsTabs > button:hover
-{
-	background:	var(--deep-blue-10);
-}
-
-.StatsTabs #CurrentTab
-{
-	background:	white;
-	color:	var(--font-blue);
-	font-weight:	bold;
-}
 
 /* Works on Firefox */
 * {

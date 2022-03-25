@@ -1,4 +1,6 @@
 <template>
+	<header>
+	</header>
 	<div>
 		<!-- <div class="LoginHeader">
 			<img src="../assets/picto-id.png">
@@ -157,6 +159,14 @@ checkForm() {
 	font-family: MyanmarText;
 }
 
+.LoginForm > .submitBar > .submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
+
+
 .submit42Button
 {
 	display:	block;
@@ -167,8 +177,9 @@ checkForm() {
 	margin-bottom:	5%;
 	padding-top:	1%;
 	padding-bottom:	1%;
+	border-radius: 5px;
 
-	width:	20%;
+	width:	15%;
 	border:	solid 3px white;
 	font-size:	150%;
 	color:	white;

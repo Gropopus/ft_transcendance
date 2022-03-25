@@ -1,6 +1,6 @@
-import { PlayerEntity } from "src/player/player.entity";
-import { UserEntity } from "src/user/model/user.entity";
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { gameStatus } from "src/game/model/game.interface"
+import { IPlayer } from "src/player/player.interface";
 
 @Entity()
 export class GameEntity{
@@ -8,14 +8,20 @@ export class GameEntity{
 	id: number;
 
 	@Column()
-	player_left: number;
+	player_left_id?: number;
 
 	@Column()
-	player_right: number;
+	player_right_id?: number;
 
 	@Column()
 	score_l: number;
 
 	@Column()
 	score_r: number;
+
+	@Column({
+		type: "enum",
+		enum: gameStatus,
+	})
+	status: gameStatus;
 }

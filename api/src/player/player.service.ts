@@ -12,9 +12,11 @@ export class PlayerService {
         private playerRepository: Repository<PlayerEntity>)
         {}
 
+    //user1 is left, user2 is right
     async createGame(user1: Iuser, user2: Iuser, gid: number) {
         let iplayer1: IPlayer = {
             user: user1,
+            side: PlayerSide.LEFT,
             gameId: gid
         }
         let iplayer2: IPlayer = {
@@ -35,11 +37,13 @@ export class PlayerService {
 
     async setScores(pid: number, his_score: number, op_score: number) {
         await this.playerRepository.update({id: pid}, {
-                points: his_score
+                points: his_score,
+                status: PlayerStatus.CANCELLED
             });
         const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
         await this.playerRepository.update( {id: op_id}, {
-            points: op_score
+            points: op_score,
+            status: PlayerStatus.CANCELLED
         });
         return this.playerRepository.findOne({ id: pid });
     }

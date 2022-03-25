@@ -12,7 +12,6 @@ import profilePage from './components/profilePage.vue'
 import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
 import settingsPageVue from './components/settingsPage.vue'
-import statsPageVue from './components/statsPage.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -79,12 +78,6 @@ routes: [
         path: '/:username',
         name: 'userProfile',
         component: userPage,
-        props: true
-    },
-    {
-        path: '/statistics',
-        name: 'stat',
-        component: statsPageVue,
         props: true
     },
     ]

@@ -14,6 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
 	imports: [
 		TypeOrmModule.forFeature([GameEntity]),
 		UserModule,
+		PlayerModule,
 		AuthModule
 	],
 	controllers: [GameController],
