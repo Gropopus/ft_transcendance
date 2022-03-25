@@ -78,6 +78,10 @@ export default	defineComponent ({
 		this.blockedList = await this.fetchBlocked()
 	},
 
+	updated() {
+		console.log("updated is call")
+	},
+
 	methods: {
 		async fetchFriends() {
 			console.log('user id: ' + this.userId);
