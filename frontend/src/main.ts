@@ -75,7 +75,7 @@ routes: [
         props: true
     },
     {
-        path: '/:username',
+        path: '/profile/:username',
         name: 'userProfile',
         component: userPage,
         props: true
