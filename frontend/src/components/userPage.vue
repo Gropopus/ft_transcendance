@@ -1,17 +1,18 @@
 <template>
 	<div class="profilePage">
-		<h1> {{ userData.username }} | {{ userData.id }} [{{ userData.status }}]</h1>
-		<h2> Liste de users (Page provisoire)</h2>
-		<ul :key="user.id" v-for="user in userList">
-			<li> {{ user.username }}
-				<button @click="addfriend(user.id)">
-					add
+		<img :src="userData.picture" alt="picture" class="profilePicture">
+		<h1>
+			{{ userData.username }} | {{ userData.id }} [{{ userData.status }}]
+			<img v-if="haveRelation" :src="relationIcon" alt="relation">
+		</h1>
+		<div class="buttons">
+				<button @click="addfriend()" class="relationButton" v-if="!haveRelation">
+					<img :src="friendIcon" alt="Salut">
 				</button>
-				<button @click="blockUser(user.id)">
-					block
+				<button @click="blockUser()" class="relationButton" v-if="!isBlock()">
+					<img :src="blockIcon" alt="Bye">
 				</button>
-			</li>
-		</ul>
+		</div>
 	</div>
 </template>
 
@@ -31,54 +32,87 @@ export default	defineComponent ({
 
 	data() {
 		return {
-			userList: [],
 			userData: [],
+			relation: "",
+			friendIcon: "/src/assets/friends-requests.png",
+			blockIcon: "/src/assets/your-friends.png",
+			relationIcon: "",
+			haveRelation: 0,
 		}
 	},
 
 	mounted() {
-		this.userList
-		this.userData
-		console.log(`the component is now mounted.`)
+		this.userData;
+		this.relation;
 	},
 
 	async created() {
-		this.userList = await this.fetchUsers()
-		this.userData= await this.fetchUserData()
+		this.userData = await this.fetchUserData();
+		this.relation = await this.fetchRelation();
+		if (this.isFriend())
+		{
+			this.relationIcon = "/src/assets/friends.png";
+			this.haveRelation = 1;
+
+		}
+		else if (this.isBlock())
+		{
+			this.haveRelation = 1;
+			this.relationIcon = "/src/assets/your-friends.png";
+		}
 	},
 
 	methods: {
 		async fetchUserData() {
-			
-			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
-			const data = await res.json()
-			return data
+			const data = await res.json();
+			console.log(data);
+			return data[0]
 		},
 
-		async fetchUsers() {
-			const res = await fetch(`http://localhost:3000/api/users`, {
+		async fetchRelation() {
+			return await fetch(`http://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
-			const data = await res.json()
-			return data.items
+			.then(res => {
+				return res.json();}
+			)
+			.then((resJson) => {
+				return resJson.status;
+			})
+			.catch(error => {
+				return "";
+			});
 		},
 
-		async addfriend(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/add/${targetId}`, {
+		async addfriend(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+		},
+
+		async blockUser(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
 		},
 
-		async blockUser(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${targetId}`, {
-    			method: 'put',
-    			headers: { 'content-type': 'application/json' }
-    		})
+		isFriend() {
+			if (this.relation == "friends")
+				return true;
+			return false;
+		},
+
+		isBlock() {
+			if (this.relation == "user-blocked")
+				return true;
+			return false;
 		},
 	},
 })
