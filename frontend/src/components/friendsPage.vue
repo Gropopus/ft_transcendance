@@ -2,7 +2,7 @@
 <template>
 <div>
 	<img style="width:3%; height:3%; vertical-align: middle;" src="../assets/magnifying-glass.png">
-	<span style="vertical-align:middle; font-size: 20px"> Search for a friend:<br></span>
+	<span style="vertical-align:middle; font-size: 25px "> Search for a friend:<br></span>
 	<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea">
 	<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
 	<div class="friendsPage">
@@ -135,7 +135,7 @@ export default	defineComponent ({
     		})
 		},
 		async goToUserPage(username: string) {
-			this.$router.replace({name: 'userPage', params: { username } })
+			this.$router.replace(`/${username}`)
 		},
 
 		async searchUser() {
@@ -160,6 +160,7 @@ export default	defineComponent ({
 {
 	float:	left;
 	width:	32%;
+	margin-left: 2%;
 	min-height:	500px;
 	max-height:	500px;
 	overflow-y:	scroll;

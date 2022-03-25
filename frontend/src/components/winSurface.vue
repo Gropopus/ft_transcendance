@@ -69,8 +69,8 @@
 	margin-left:	auto;
 	margin-right:	auto;
 	margin-bottom:	5%;
-	width:	50%;
-	height:	50%;
+	width:	70%;
+	height:	100%;
 	min-height:	500px;
 	min-width:	1180px;
 }

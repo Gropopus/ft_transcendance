@@ -143,7 +143,7 @@ checkForm() {
 
 .LoginForm > .submitBar > .submitButton
 {
-	width:		35%;
+	width:		40%;
 	margin-right: 10%;
 	display:	block;
 	background:	none;
