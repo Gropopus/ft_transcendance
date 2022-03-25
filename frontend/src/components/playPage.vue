@@ -23,7 +23,7 @@ import { load } from '../script/pong.js'
 		},
 		mounted() {	
 			console.log('user id: ' + this.userId);
-			// load(userId);
+			load(this.userId);
 		},
 		// unmounted() {
 		// }
