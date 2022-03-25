@@ -2,14 +2,14 @@
 </script>
 
 <template>
-<nav v-if="isLogged()">
+	<nav v-if="isLogged()">
 			<div :key="elem.name" v-for="elem in navbuttons" class="navBar">
 				<button @click="goToRoute(elem.path)" class="navButton" v-bind:style='{"border-right": (isCurrent(elem.path) ? "solid 10px rgb(255, 228, 113)" : "none")}'>
 				<img :src="elem.icon" alt="Salut">
 					{{ elem.name }}
 				</button>
 			</div>
-		</nav>
+	</nav>
 	<div class="winSurface">
 		<div v-if="isLogged() || isCurrent('/register')">
 		</div>
@@ -25,12 +25,12 @@
 	data() {
 		return {
 			navbuttons: [
-				{path: '/game', name: "Play", icon: "./src/assets/game.png"},
-				{path: '/chat', name: "Chat", icon: "./src/assets/chat.png"},
-				{path: '/friends', name: "Friends", icon: "./src/assets/friends.png"},
-				{path: '/profile', name: "Profile", icon: "./src/assets/logout-picture.png"},
-				{path: '/settings', name: "Settings", icon: "./src/assets/settings.png"},
-				{path: '/logout', name: "Logout", icon: "./src/assets/log-out.png"}
+				{path: '/game', name: "play", icon: "./src/assets/game.png"},
+				{path: '/chat', name: "chat", icon: "./src/assets/chat.png"},
+				{path: '/friends', name: "friends", icon: "./src/assets/friends.png"},
+				{path: '/profile', name: "profile", icon: "./src/assets/logout-picture.png"},
+				{path: '/settings', name: "settings", icon: "./src/assets/settings.png"},
+				{path: '/logout', name: "logout", icon: "./src/assets/log-out.png"}
 			],
 			userId: "0"
 		}
@@ -99,10 +99,18 @@
 }
 
 nav {
-  background: white;
   float:	left;
   width:	6%;
   display: row;
+  height: 100%;
+  width: 160px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: white;
+  overflow-x: hidden;
+  padding-top: 20px;
 }
 
 /*.navBar {
@@ -120,6 +128,8 @@ nav {
   text-align:		center;
   min-width:		142px;
   font-family: 		MyanmarText;
+  font-size: 		25px;
+  color:			rgb(37, 46, 131);
   letter-spacing:	2%;
   background: white;
   border:	none;
