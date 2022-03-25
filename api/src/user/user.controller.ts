@@ -45,7 +45,7 @@ export class UserController {
 	  const userEntity: Iuser = this.userHelperService.createUserDtoToEntity(createUserDto);
 	  return this.userService.create(userEntity);
 	}
-  
+
 	@Get()
 	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Iuser>> {
 	  limit = limit > 100 ? 100 : limit;
@@ -108,6 +108,12 @@ export class UserController {
 	  return this.userService.updateOne(Number(id), user);
 	}
   
+	@Post('update/:id')
+	async updateUser(@Param() params, @Body() user: Iuser)
+	{
+		return this.userService.updateUser(params.id, user);
+	}
+
 
 	@UseGuards(JwtAuthGuard)
 	@Post('upload')

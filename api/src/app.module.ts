@@ -37,6 +37,7 @@ export class AppModule implements NestModule {
       .exclude(
 		// users
         {path: '/api/users', method: RequestMethod.POST},
+        {path: '/api/users/update/:id', method: RequestMethod.POST},
         {path: '/api/users', method: RequestMethod.GET},
         {path: '/api/users/:id', method: RequestMethod.GET},
         {path: '/api/users/login', method: RequestMethod.POST},
