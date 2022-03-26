@@ -37,6 +37,7 @@ export default	{
 			userMail:	"",
 			error: "",
 			file: null,
+			user: "",
 		}
 	},
 	methods:	{
@@ -69,12 +70,12 @@ export default	{
 			})
 			console.log(await res.json());	
 		},
+
 		onChangeFileUpload($event) {
             const target = $event.target as HTMLInputElement;
             this.file = target.files[0];
-			if (this.file)
-				console.log(this.file);
 		},
+
 		async Upload()
 		{
 			let formData = new FormData();
@@ -83,6 +84,11 @@ export default	{
 				method: 'post',
 				body: formData,
 				})
+			const ret = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
+				method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ picture: this.file.name })
+			})
 		}
 	}
 }

@@ -149,7 +149,7 @@ export default	defineComponent ({
 				headers: { 'content-type': 'application/json' }
 			})
 			const user = await res.json();
-			console.log(user);
+			console.log(user[0]);
 			if (res.status != 500)
 				this.found = user[0].username;
 			else

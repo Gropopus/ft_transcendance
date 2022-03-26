@@ -118,16 +118,7 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	@Post('upload')
 	@UseInterceptors(FileInterceptor('file', storage))
-	async uploadFile(@UploadedFile() file, @Request() req): Promise<Object> {
-	    const user: Iuser = await this.userService.findOne(req.user.id);
-
-		// Remove old picture
-	   /* if (fs.existsSync('src/uploads/' + user.picture) && user.picture != "profile-picture.png"){
-			fs.unlinkSync('src/uploads/' + user.picture)
-		}*/
-	    return this.userService.updateOneOb(user.id, {picture: file.filename}).pipe(
-	        map((user: Iuser) => ({picture: user.picture}))
-	    )
+	async uploadFile(@UploadedFile() file) {
 	}
 
 	@Get('picture/:picturename')
