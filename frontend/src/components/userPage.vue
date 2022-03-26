@@ -1,19 +1,28 @@
 <template>
+<div class="user-profile">
+	<h1 class="username">{{ userData.username }}</h1>
+		<div class="avatar">
+		</div>
+			<img src="/src/assets/profile-picture.png" alt="userDate.username" />
+			<button @click="addfriend()" class="relationButton" v-if="!haveRelation">
+				<img :src="friendIcon.img" alt="Salut" :title="friendIcon.title">
+			</button>
+	<div class="stat">
+		Victories: {{ userData.victory }}
+		Defeats: {{ userData.defeat }}
+    </div>
+
+  </div>
+<!-- Run Pen
+
+Resources
 	<div class="profilePage">
 		<img :src="userData.picture" alt="picture" class="profilePicture">
 		<h1>
 			{{ userData.username }} | {{ userData.id }} [{{ userData.status }}]
 			<img v-if="haveRelation" :src="relationIcon" alt="relation">
 		</h1>
-		<div class="buttons">
-				<button @click="addfriend()" class="relationButton" v-if="!haveRelation">
-					<img :src="friendIcon" alt="Salut">
-				</button>
-				<button @click="blockUser()" class="relationButton" v-if="!isBlock()">
-					<img :src="blockIcon" alt="Bye">
-				</button>
-		</div>
-	</div>
+	</div> -->
 </template>
 
 <script lang="ts">
@@ -34,7 +43,7 @@ export default	defineComponent ({
 		return {
 			userData: [],
 			relation: "",
-			friendIcon: "/src/assets/friends-requests.png",
+			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
 			blockIcon: "/src/assets/your-friends.png",
 			relationIcon: "",
 			haveRelation: 0,
@@ -51,14 +60,9 @@ export default	defineComponent ({
 		this.relation = await this.fetchRelation();
 		if (this.isFriend())
 		{
-			this.relationIcon = "/src/assets/friends.png";
+			this.friendIcon = {img: "/src/assets/your-friends.png", title: "remove"};
 			this.haveRelation = 1;
 
-		}
-		else if (this.isBlock())
-		{
-			this.haveRelation = 1;
-			this.relationIcon = "/src/assets/your-friends.png";
 		}
 	},
 
@@ -120,8 +124,53 @@ export default	defineComponent ({
 
 
 <style lang="css">
-.profilePage
-{
-	background:	green;
+
+	/*** PROFILE STLES ***/
+
+.user-profile {
+	/* font-family: 'Dosis', sans-serif; */
+	text-align: center;
+	/* width: 793px; */
+	/* max-width: 100%; */
+	/* margin: 2rem auto; */
+	margin-right: 5%;
+	margin-left: 5%;
+	margin-bottom: 0%;
 }
+
+.user {
+	float: 
+}
+
+.username {
+	margin-top: 0%;
+	font-family: MyanmarText;
+	font-size: 200%;
+	color:	white;
+	background-color: rgb(23, 61, 199);
+	border: solid 3px white;
+}
+
+.stat {
+
+}
+
+.relationButton {
+	background:	none;
+	border: none;
+}
+
+.relationButton > img {
+	max-width: 80px;
+	max-height: 80px;
+	/* height: 0%;
+	weight: 0%; */
+}
+
+.relationButton:hover { 
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
+
 </style>

@@ -118,21 +118,21 @@ nav {
 }*/
 
 .navBar > .navButton {
-  display: inline;
+	display: inline;
 	margin-bottom:	6%;
 	margin-top:	6%;
-  height:	50%;
-  width: 	100%;
-  flex:	1 1 0;
-  vertical-align:	center;
-  text-align:		center;
-  min-width:		142px;
-  font-family: 		MyanmarText;
-  font-size: 		25px;
-  color:			rgb(37, 46, 131);
-  letter-spacing:	2%;
-  background: white;
-  border:	none;
+	height:	50%;
+	width: 	100%;
+	flex:	1 1 0;
+	vertical-align:	center;
+	text-align:		center;
+	min-width:		142px;
+	font-family: 		MyanmarText;
+	font-size: 		25px;
+	color:			rgb(37, 46, 131);
+	letter-spacing:	2%;
+	background: white;
+	border:	none;
 }
 
   .navButton:hover
