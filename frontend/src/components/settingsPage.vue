@@ -11,7 +11,7 @@
 		<button @click="updatePassword()" class="submitButton">
 				Update </button>
 		</div>
-		<input type="file" ref="file" accept="image/x-png,image/gif,image/jpeg" @change="onChangeFileUpload($event)">
+		<input type="file" accept="image/x-png,image/gif,image/jpeg" @change="onChangeFileUpload($event)">
 		<button @click="Upload()">Upload</button>
 		<p class="error" v-if="error"> {{ error }} </p>
 		<br>
