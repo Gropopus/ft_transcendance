@@ -109,8 +109,7 @@ export class UserController {
 	}
   
 	@Post('update/:id')
-	async updateUser(@Param() params, @Body() user: Iuser)
-	{
+	async updateUser(@Param() params, @Body() user: Iuser) {
 		return this.userService.updateUser(params.id, user);
 	}
 
@@ -119,6 +118,7 @@ export class UserController {
 	@Post('upload')
 	@UseInterceptors(FileInterceptor('file', storage))
 	async uploadFile(@UploadedFile() file) {
+
 	}
 
 	@Get('picture/:picturename')
