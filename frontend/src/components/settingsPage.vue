@@ -1,5 +1,8 @@
 <template>
 	<div class="settingsPage">
+		<div class="profile-image">
+				<img :src="picture" />
+			</div>
 		<div class="submitBar">
 			<label for="login"> Change your Login: </label><br>
 			<input type="text" v-model="userLogin" class="textArea simpleline">
@@ -38,8 +41,15 @@ export default	{
 			error: "",
 			file: null,
 			user: "",
+			filename: "",
+			extension: "",
+			picture: "",
 		}
 	},
+	created(){
+		this.displayPicture();
+	},
+
 	methods:	{
 
 		async updateLogin() {
@@ -78,6 +88,12 @@ export default	{
 
 		async Upload()
 		{
+			this.error = "";
+			if (!this.file)
+			{
+				this.error = "No image to upload."
+				return ;
+			}
 			let formData = new FormData();
   			formData.append('file', this.file);
 			const res = await fetch(`http://localhost:3000/api/users/upload`, {
@@ -89,6 +105,28 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ picture: this.file.name })
 			})
+			this.displayPicture();
+		},
+
+		async displayPicture()
+		{
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
+				method: 'get',
+					headers: { 'responseType': 'blob' },
+			})
+			const blob = await ret.blob();
+    		const newBlob = new Blob([blob]);
+			const blobUrl = window.URL.createObjectURL(newBlob);
+			//const link = document.createElement('a');
+			console.log(blobUrl);
+			this.picture = blobUrl;
+    		return blobUrl;
+    		/*link.setAttribute('download', `${filename}.${extension}`);
+    		document.body.appendChild(link);
+    		link.click();
+    		link.parentNode.removeChild(link);
+    		// clean up Url
+    		window.URL.revokeObjectURL(blobUrl);*/
 		}
 	}
 }
@@ -160,6 +198,26 @@ export default	{
 	background: rgba(255, 255, 255, 0.5);
 	color: white;
 	cursor: pointer; 
+}
+
+.profile-image {
+    /*float: left;*/
+	margin-left: 30%;
+    width: calc(33.333% - 1rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 3rem;
+}
+
+.profile-image > img {
+	border-radius: 50%;
+	overflow: hidden;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+	object-fit:cover;
 }
 
 </style>
