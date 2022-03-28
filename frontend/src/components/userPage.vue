@@ -1,16 +1,34 @@
 <template>
-<div class="user-profile">
-	<h1 class="username">{{ userData.username }}</h1>
-		<div class="avatar">
+	<div class="user-profile">
+		<!-- <button @click="reload()"> reload </button> -->
+		<div class="profile-resume">
+			<div class="picture">
+				<img src="/src/assets/profile-picture.png" alt="userDate.username" />
+			</div>
+			<div class="info">
+				<div class="username"> {{ userData.username }} </div>
+				<div class="status"> {{ userData.status }} </div>
+			</div>
+			<div class="relation">
+				<button @click="addOrRemovefriend()" class="relationButton" :title="friendIcon.title">
+					<img :src="friendIcon.img" />
+				</button>
+			</div>
 		</div>
-			<img src="/src/assets/profile-picture.png" alt="userDate.username" />
-			<button @click="addfriend()" class="relationButton" v-if="!haveRelation">
-				<img :src="friendIcon.img" alt="Salut" :title="friendIcon.title">
-			</button>
-	<div class="stat">
+		<div class="StatsWin">
+			<div class="StatsTabs">
+				<button class="tab" @click="changeCurrent(0)" :id="isCurrentTab(0)"> Achievements </button>
+				<button class="tab"  @click="changeCurrent(1)" :id="isCurrentTab(1)"> Ladder </button>
+				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
+			</div>
+			<div class="StatsArea">
+				<br>
+			</div>
+		</div>
+	<!-- <div class="stat">
 		Victories: {{ userData.victory }}
 		Defeats: {{ userData.defeat }}
-    </div>
+    </div> -->
 
   </div>
 <!-- Run Pen
@@ -47,6 +65,7 @@ export default	defineComponent ({
 			blockIcon: "/src/assets/your-friends.png",
 			relationIcon: "",
 			haveRelation: 0,
+			currentTab: 0,
 		}
 	},
 
@@ -57,12 +76,20 @@ export default	defineComponent ({
 
 	async created() {
 		this.userData = await this.fetchUserData();
+		},
+
+	async updated() {
 		this.relation = await this.fetchRelation();
 		if (this.isFriend())
 		{
-			this.friendIcon = {img: "/src/assets/your-friends.png", title: "remove"};
+			this.friendIcon = {img: "/src/assets/your-friends.png", title: "remove friend"};
 			this.haveRelation = 1;
 
+		}
+		else
+		{
+			this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
+			this.haveRelation = 0;
 		}
 	},
 
@@ -73,7 +100,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const data = await res.json();
-			console.log(data);
 			return data[0]
 		},
 
@@ -93,11 +119,19 @@ export default	defineComponent ({
 			});
 		},
 
-		async addfriend(){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
-    			method: 'put',
-    			headers: { 'content-type': 'application/json' }
-    		});
+		async addOrRemovefriend(){
+			if (this.isFriend()) {
+				await fetch(`http://localhost:3000/api/friends/${this.userId}/unfriend/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+			}
+			else {
+				await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+			}
 		},
 
 		async blockUser(){
@@ -118,6 +152,17 @@ export default	defineComponent ({
 				return true;
 			return false;
 		},
+
+		changeCurrent(index: number) {
+			this.currentTab = index;
+		},
+
+		isCurrentTab(tab: number) {
+			if (this.currentTab == tab)
+				return "CurrentTab";
+			else
+				return "notCurrentTab";
+		},
 	},
 })
 </script>
@@ -125,37 +170,62 @@ export default	defineComponent ({
 
 <style lang="css">
 
-	/*** PROFILE STLES ***/
+	/*** PROFILE STYLES ***/
 
 .user-profile {
-	/* font-family: 'Dosis', sans-serif; */
+	flex-direction:	row;
 	text-align: center;
-	/* width: 793px; */
-	/* max-width: 100%; */
-	/* margin: 2rem auto; */
 	margin-right: 5%;
 	margin-left: 5%;
 	margin-bottom: 0%;
 }
 
-.user {
-	float: 
+.profile-resume {
+	display: flex;
+	flex-direction:	row;
+	gap: 3%;
+	/* flex: 1 1 0; */
+	border: solid 3px white;
+	margin-bottom: 2%;
+	align-content: center;
+}
+
+.info {
+	display: flex;
+	flex-direction:	column;
+	margin-bottom: 2%;
+	margin-top: 2%;
+	height: 50%;
 }
 
 .username {
-	margin-top: 0%;
 	font-family: MyanmarText;
-	font-size: 200%;
-	color:	white;
-	background-color: rgb(23, 61, 199);
-	border: solid 3px white;
+	letter-spacing:	2px;
+	font-size:	300%;
+	color: var(--font-blue);
+	font-weight:	bold;
+	margin-top: 10%;
 }
 
-.stat {
-
+.status {
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	100%;
 }
 
+.picture {
+	margin-left: 2%;
+	margin-bottom: 2%;
+	margin-top: 2%;
+}
+
+.relation {
+	flex:	1 1 0;
+	display: flex;
+	justify-content: right;
+}
 .relationButton {
+	margin-right: 5%;
 	background:	none;
 	border: none;
 }
@@ -163,14 +233,62 @@ export default	defineComponent ({
 .relationButton > img {
 	max-width: 80px;
 	max-height: 80px;
-	/* height: 0%;
-	weight: 0%; */
 }
 
 .relationButton:hover { 
 	background: rgba(255, 255, 255, 0.5);
 	color: white;
 	cursor: pointer; 
+}
+
+/* stat style */
+
+.StatsArea
+{
+	/* width:	100%;
+	min-height:	500px;
+	border-radius: 5px; */
+	overflow-y:	scroll;
+	/* max-height:	500px; */
+}
+
+.StatsTabs
+{
+	display:	flex;
+	flex-direction:	row;
+	border-bottom:	solid 2px white;
+}
+
+.tab
+{
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	center;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	32px;
+	color: var(--font-blue);
+}
+
+.StatsTabs > button
+{
+	background: none;
+	border: none;
+	border-right:	solid 2px white;
+}
+
+.StatsTabs > button:hover
+{
+	background:	var(--deep-blue-10);
+}
+
+.StatsTabs #CurrentTab
+{
+	background:	white;
+	color:	var(--font-blue);
+	font-weight:	bold;
 }
 
 </style>

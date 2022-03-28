@@ -144,7 +144,7 @@ header
 	border:	solid 3px white;
 	border-radius: 5px;
 	display:	flex;
-	flex-direction:	row;
+	flex-direction:	column;
 }
 
 .StatsArea
