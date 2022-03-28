@@ -108,16 +108,15 @@ export default	{
 {
 	display:	block;
 	background:	none;
-	flex:	0 0 auto;
+	flex:	0 0 center;
+	width:			15%;
 	margin-bottom:	5%;
-	margin-right:	19%;
-	padding-top:	3%;
-	padding-left:	5%;
-	padding-right:	5%;
+	margin-right:	auto;
+	padding-top:	3.2%;
+	padding-bottom:	2%;
 	background:	none;
-	border:	solid 3px white;
-	border-radius: 5px;;
-	font-size:	24px;
+	border:	solid white;
+	font-size:	100%;
 	color:	white;
 	font-family: MyanmarText;
 }

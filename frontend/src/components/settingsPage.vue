@@ -2,21 +2,26 @@
 	<div class="settingsPage">
 		<div class="profile-image">
 				<img :src="picture" />
+				<br>
 			</div>
+		<p class="error" v-if="error"> {{ error }} </p>
 		<div class="submitBar">
-			<label for="login"> Change your Login: </label><br>
-			<input type="text" v-model="userLogin" class="textArea simpleline">
+			<div class="title"> Change your Login:</div>
+			<input type="text" v-model="userLogin" class="textArea">
 			<button @click="updateLogin()" class="submitButton">
 				Update </button></div>
 		<div class="submitBar">
-		<label for="password"> Change your Password: </label>	<br>
-		<input type="password" v-model="userPass" class="textArea">	<br>
+		<div class="title"> Change your Password: </div>
+		<input type="password" v-model="userPass" class="textArea">
 		<button @click="updatePassword()" class="submitButton">
 				Update </button>
 		</div>
-		<input type="file" accept="image/x-png,image/gif,image/jpeg" @change="onChangeFileUpload($event)">
-		<button @click="Upload()">Upload</button>
-		<p class="error" v-if="error"> {{ error }} </p>
+		<div class="submitBar">
+			<div class="title"> Change your Picture: </div>
+			<input type="file" accept="image/x-png,image/gif,image/jpeg,image/png" @change="onChangeFileUpload($event)" class="fileArea">
+			<button @click="Upload()" class="submitButton">
+				Upload </button>
+		</div>
 		<br>
 		<p>
 		</p>
@@ -117,16 +122,9 @@ export default	{
 			const blob = await ret.blob();
     		const newBlob = new Blob([blob]);
 			const blobUrl = window.URL.createObjectURL(newBlob);
-			//const link = document.createElement('a');
 			console.log(blobUrl);
 			this.picture = blobUrl;
     		return blobUrl;
-    		/*link.setAttribute('download', `${filename}.${extension}`);
-    		document.body.appendChild(link);
-    		link.click();
-    		link.parentNode.removeChild(link);
-    		// clean up Url
-    		window.URL.revokeObjectURL(blobUrl);*/
 		}
 	}
 }
@@ -156,40 +154,59 @@ export default	{
 	font-size:	130%;
 	padding:	6px;
 	width:		20%;
-	size: 10%;
 }
 
-.settingsPage > .simpleline
+.textArea {
+	height: 20%;
+	vertical-align: center;
+	margin-left: auto;
+    margin-right: auto;
+}
+
+.title {
+	margin-top: 1.5%;
+	width:		20%;
+	font-size: 100%;
+}
+
+/*.settingsPage > input.fileArea
 {
-	max-height: 60px;
-}
+	border: none;
+	background-color:	var(--input-fields);
+	opacity:	50%;
+	font-size:	130%;
+	padding:	6px;
+	width:		20%;
+}*/
 
+.fileArea {
+	justify-content: left;;
+	background:	none;
+	font-size:	100%;
+	font-family: MyanmarText;
+	margin-top: 1.5%;
+	margin-left: auto;
+    margin-right: auto;
+}
 .settingsPage > .submitBar
 {
-	margin-top:	2%;
+	height: 15%;
 	display:	flex;
+	margin-top: 3%;
 	margin-right:	6%;
 	margin-left:	auto;
 	flex-direction:	row;
 }
 
-.settingsPage > .submitBar > .submitButton
+.submitButton
 {
-	display:	row;
-	background:	none;
-	/*flex:	0 0 auto;*/
-	flex-direction: row;
-	margin-bottom:	5%;
-	margin-right:	auto;
-	padding-top:	3%;
-	padding-left:	5%;
-	padding-right:	5%;
-	border-radius: 5px;
+	padding-top: 1%;
+	width: 10%;
 	background:	none;
 	border:	solid white;
-	font-size:	24px;
+	font-size:	100%;
 	color:	white;
-	width: 20%;
+	border-radius: 4px;
 	font-family: MyanmarText;
 }
 
@@ -202,12 +219,14 @@ export default	{
 
 .profile-image {
     /*float: left;*/
-	margin-left: 30%;
+	margin-top: 5%;
+	margin-left: 35%;
     width: calc(33.333% - 1rem);
     display: flex;
     justify-content: center;
     align-items: center;
     margin-right: 3rem;
+	margin-bottom: 15%;
 }
 
 .profile-image > img {
