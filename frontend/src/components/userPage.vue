@@ -84,7 +84,7 @@ export default	defineComponent ({
 		this.relation = await this.fetchRelation();
 		if (this.isFriend())
 		{
-			this.friendIcon = {img: "/src/assets/your-friends.png", title: "remove friend"};
+			this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
 			this.haveRelation = 1;
 
 		}
