@@ -1,13 +1,16 @@
 
 <template>
 <div style="width: 93%; display: flex; flex-direction: column">
-	<div class="searchBar">
-		<div style="display: flex; justify-content: right">
-			<img style="width:3%; height:3%" src="../assets/magnifying-glass.png">
-			<span style="font-size: 25px; text-align: right; margin-left: 1%"> Search a user</span>
+	<div class="header-friends">
+		<img style="width: 20%; margin-left: 10%;" src="/src/assets/header-id.png" />
+		<div class="searchBar">
+			<div style="display: flex; justify-content: right">
+				<img style="width: 3%; min-height: 40px; min-width: 50px" src="../assets/magnifying-glass.png">
+				<span style="font-size: 25px; text-align: right; margin-left: 1%"> Search a user</span>
+			</div>
+			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1">
+			<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
 		</div>
-		<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1">
-		<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
 	</div>
 	<div class="friendsPage">
 		<div :key="relation.type" v-for="relation in all" class="friendsArea">
@@ -166,8 +169,13 @@ export default	defineComponent ({
 	margin-top: 2%;
 }
 
+.header-friends {
+	display: flex;
+}
+
 .searchBar {
 	display: flex;
+	flex: 1 0;
 	flex-direction: column;
 	justify-content: right;
 }
