@@ -3,7 +3,7 @@
 		<!-- <button @click="reload()"> reload </button> -->
 		<div class="profile-resume">
 			<div class="picture">
-				<img src="/src/assets/profile-picture.png" alt="userDate.username" />
+				<img :src="picture" alt="userDate.username" />
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
@@ -66,6 +66,7 @@ export default	defineComponent ({
 			relationIcon: "",
 			haveRelation: 0,
 			currentTab: 0,
+			picture: "",
 		}
 	},
 
@@ -76,7 +77,8 @@ export default	defineComponent ({
 
 	async created() {
 		this.userData = await this.fetchUserData();
-		},
+		this.picture =await this.getPicture();
+	},
 
 	async updated() {
 		this.relation = await this.fetchRelation();
@@ -162,6 +164,19 @@ export default	defineComponent ({
 				return "CurrentTab";
 			else
 				return "notCurrentTab";
+		},
+
+		async getPicture()
+		{
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userData.id}`, {
+				method: 'get',
+					headers: { 'responseType': 'blob' },
+			})
+			const blob = await ret.blob();
+    		const newBlob = new Blob([blob]);
+			const blobUrl = window.URL.createObjectURL(newBlob);
+			console.log(blobUrl);
+    		return blobUrl;
 		},
 	},
 })
