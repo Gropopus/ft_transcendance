@@ -72,7 +72,7 @@
 	margin-left: 160px;
 	margin-right:	auto;
 	margin-bottom:	5%;
-	width:	70%;
+	width:	90%;
 	height:	100%;
 	min-height:	500px;
 	min-width:	600px;

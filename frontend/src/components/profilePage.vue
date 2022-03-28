@@ -3,7 +3,7 @@
 		<!-- <button @click="reload()"> reload </button> -->
 		<div class="profile-resume">
 			<div class="picture">
-				<img src="/src/assets/profile-picture.png" alt="userDate.username" />
+				<img :src="picture" alt="userDate.username" />
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
@@ -38,6 +38,8 @@ export default	defineComponent ({
 	data() {
 		return {
 			userData: [],
+			currentTab: 0,
+			picture: "",
 		}
 	},
 
@@ -47,6 +49,7 @@ export default	defineComponent ({
 
 	async created() {
 		this.userData= await this.fetchUserData();
+		this.picture =await this.getPicture();
 	},
 
 	methods: {
@@ -82,6 +85,19 @@ export default	defineComponent ({
 				return "CurrentTab";
 			else
 				return "notCurrentTab";
+		},
+
+		async getPicture()
+		{
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
+				method: 'get',
+					headers: { 'responseType': 'blob' },
+			})
+			const blob = await ret.blob();
+    		const newBlob = new Blob([blob]);
+			const blobUrl = window.URL.createObjectURL(newBlob);
+			console.log(blobUrl);
+    		return blobUrl;
 		},
 	},
 })
@@ -131,10 +147,12 @@ export default	defineComponent ({
 	font-size:	100%;
 }
 
-.picture {
+.picture > img {
 	margin-left: 2%;
 	margin-bottom: 2%;
 	margin-top: 2%;
+	min-height: 150px;
+	min-width: 150px;
 }
 /* stat style */
 

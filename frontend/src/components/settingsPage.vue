@@ -27,17 +27,19 @@
 		</p>
 	</div>
 </template>
+
 <script lang="ts">
-import { ref} from "vue"
-export default	{
-	name: 'register',
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+	name: 'settingsPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
 			default:	0
 		}
 	},
-	emits:	['update:userId'],
+
 	data:	function()	{
 		return {
 			userLogin:	"",
@@ -51,8 +53,9 @@ export default	{
 			picture: "",
 		}
 	},
-	created(){
-		this.displayPicture();
+	async created(){
+		console.log('helloooo ' + this.userId);
+		this.picture = await this.getPicture();
 	},
 
 	methods:	{
@@ -110,11 +113,12 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ picture: this.file.name })
 			})
-			this.displayPicture();
+			this.getPicture();
 		},
 
-		async displayPicture()
+		async getPicture()
 		{
+			console.log('helloooo ' + this.userId);
 			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
@@ -123,11 +127,10 @@ export default	{
     		const newBlob = new Blob([blob]);
 			const blobUrl = window.URL.createObjectURL(newBlob);
 			console.log(blobUrl);
-			this.picture = blobUrl;
     		return blobUrl;
 		}
 	}
-}
+})
 </script>
 
 <style>
