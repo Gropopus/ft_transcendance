@@ -2,6 +2,7 @@
 </script>
 
 <template>
+<div class="kittyPong">
 	<nav v-if="isLogged()">
 			<div :key="elem.name" v-for="elem in navbuttons" class="navBar">
 				<button @click="goToRoute(elem.path)" class="navButton" v-bind:style='{"border-right": (isCurrent(elem.path) ? "solid 10px rgb(255, 228, 113)" : "none")}'>
@@ -18,6 +19,7 @@
 			:userId="this.userId"
 			@update:userId="saveUserId($event)" />
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -62,40 +64,18 @@
 </script>
 
 <style lang="css" scoped>
+
 .winSurface
 {
 	display:	block;
 	margin-top:	1%;
-	margin-left:	auto;
+	margin-left: 160px;
 	margin-right:	auto;
 	margin-bottom:	5%;
 	width:	70%;
 	height:	100%;
 	min-height:	500px;
-	min-width:	1180px;
-}
-
-
-.vuePage {
-  /* display:flex;
-  flex-direction: row;
-	vertical-align:	center; */
-  float: right;
-	width:	80%;
-}
-
-.navBarButton > img
-{
-  float:	left;
-	margin-right:	0px;
-	margin-top:	4%;
-	margin-bottom:	4%;
-	height:	2%;
-	width:	12%;
-	object-fit: contain;
-	vertical-align:	center;
-	align-content: left;
-	padding-left: 10%;
+	min-width:	600px;
 }
 
 nav {
@@ -113,32 +93,29 @@ nav {
   padding-top: 20px;
 }
 
-/*.navBar {
-
-}*/
 
 .navBar > .navButton {
-  display: inline;
+	display: inline;
 	margin-bottom:	6%;
 	margin-top:	6%;
-  height:	50%;
-  width: 	100%;
-  flex:	1 1 0;
-  vertical-align:	center;
-  text-align:		center;
-  min-width:		142px;
-  font-family: 		MyanmarText;
-  font-size: 		25px;
-  color:			rgb(37, 46, 131);
-  letter-spacing:	2%;
-  background: white;
-  border:	none;
+	height:	50%;
+	width: 	100%;
+	flex:	1 1 0;
+	vertical-align:	center;
+	text-align:		center;
+	min-width:		142px;
+	font-family: 		MyanmarText;
+	font-size: 		25px;
+	color:			rgb(37, 46, 131);
+	letter-spacing:	2%;
+	background: white;
+	border:	none;
 }
 
-  .navButton:hover
-  {
-    border-right: solid 20px rgb(255, 228, 113)
-  }
+.navButton:hover
+{
+border-right: solid 20px rgb(255, 228, 113)
+}
 
 .navButton > img
 {
@@ -152,13 +129,4 @@ nav {
 	padding-left: 10%;
 }
 
-.name {
-  float: right;
-  font-size:	150%;
-	vertical-align:	center;
-}
-
-.page {
-	float: right;
-}
 </style>
