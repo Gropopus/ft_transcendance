@@ -96,7 +96,6 @@ export default	defineComponent ({
 			const blob = await ret.blob();
     		const newBlob = new Blob([blob]);
 			const blobUrl = window.URL.createObjectURL(newBlob);
-			console.log(blobUrl);
     		return blobUrl;
 		},
 	},
