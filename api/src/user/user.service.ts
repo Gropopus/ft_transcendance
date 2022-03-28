@@ -106,6 +106,11 @@ export class UserService {
 		return this.userRepository.findOne({ id });
 	}
 
+	async updateUser(id: number, user: Iuser)
+	{
+		return this.userRepository.update(id, user);
+	}
+
 	async updateOne(id: number, user: Iuser): Promise<any> {
 		//delete user.email;
 		delete user.password;

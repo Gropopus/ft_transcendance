@@ -23,13 +23,14 @@
 		</div> <!-- LoginForm end -->
 
 		
-		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
+		<!-- <a class="submit42Button" href="http://localhost:3000/api/oauth2/school42" v-bind:is="loginWith42()"> -->
+		<button class="submit42Button" @click="loginWith42()">
 			<img src="../assets/logo-42_white.png">
 			<div>
 				Log In with<br>
 				Connect
 			</div>
-		</a> <!-- submit42Button end -->
+		</button> <!-- submit42Button end -->
 	</div>
 </template>
 
@@ -90,6 +91,20 @@ checkForm() {
 				{
 					this.error = "User not found, Wrong Email or password.";
 				}
+		},
+
+		async	loginWith42(){
+			const res = await fetch(`http://localhost:3000/api/oauth2/school42`, {
+						method: 'get',
+						mode: 'no-cors',
+						headers: { 'content-type': 'application/json' },
+			});
+			const data = await  res.json();
+			console.log(data);
+			// this.$emit('update:userId', data1.id);
+			// console.log(this.$router.query.page)
+			// console.log(this.$router.params)
+			// this.$router.replace('/game');
 		},
 
 		register: function() {
@@ -159,6 +174,14 @@ checkForm() {
 	font-family: MyanmarText;
 }
 
+.LoginForm > .submitBar > .submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
+
+
 .submit42Button
 {
 	display:	block;
@@ -169,8 +192,9 @@ checkForm() {
 	margin-bottom:	5%;
 	padding-top:	1%;
 	padding-bottom:	1%;
+	border-radius: 5px;
 
-	width:	20%;
+	width:	15%;
 	border:	solid 3px white;
 	font-size:	150%;
 	color:	white;

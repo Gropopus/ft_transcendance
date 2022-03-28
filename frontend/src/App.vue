@@ -4,7 +4,7 @@ import winSurface from './components/winSurface.vue'
 
 <template>
   <main>
-    <winSurface/>
+    <winSurface />
   </main>
 </template>
 

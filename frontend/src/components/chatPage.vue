@@ -118,6 +118,15 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
+			const i = this.getChannelIndex(id);
+			this.channelsList = await this.fetchChannelsList();
+			if (this.channelId == id) {
+				if (i >= this.channelsList.length)
+					this.channelId = this.channelsList[i - 1].id;
+				else
+					this.channelId = this.channelsList[i].id;
+				this.channelMessages = await this.fetchMessages();
+			}
 		},
 
 		async sendMessage(message: string)

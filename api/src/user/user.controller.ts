@@ -23,9 +23,8 @@ export const storage = {
   storage: diskStorage({
       destination: './src/uploads/',
       filename: (req, file, cb) => {
-          const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+          const filename: string = path.parse(file.originalname).name.replace(/\s/g, '');
           const extension: string = path.parse(file.originalname).ext;
-
           cb(null, `${filename}${extension}`)
       }
   })
@@ -45,7 +44,7 @@ export class UserController {
 	  const userEntity: Iuser = this.userHelperService.createUserDtoToEntity(createUserDto);
 	  return this.userService.create(userEntity);
 	}
-  
+
 	@Get()
 	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Iuser>> {
 	  limit = limit > 100 ? 100 : limit;
@@ -108,20 +107,17 @@ export class UserController {
 	  return this.userService.updateOne(Number(id), user);
 	}
   
+	@Post('update/:id')
+	async updateUser(@Param() params, @Body() user: Iuser) {
+		return this.userService.updateUser(params.id, user);
+	}
+
 
 	@UseGuards(JwtAuthGuard)
 	@Post('upload')
 	@UseInterceptors(FileInterceptor('file', storage))
-	async uploadFile(@UploadedFile() file, @Request() req): Promise<Object> {
-	    const user: Iuser = await this.userService.findOne(req.user.id);
+	async uploadFile(@UploadedFile() file) {
 
-		// Remove old picture
-	    if (fs.existsSync('src/uploads/' + user.picture) && user.picture != "profile-picture.png"){
-			fs.unlinkSync('src/uploads/' + user.picture)
-		}
-	    return this.userService.updateOneOb(user.id, {picture: file.filename}).pipe(
-	        map((user: Iuser) => ({picture: user.picture}))
-	    )
 	}
 
 	@Get('picture/:picturename')
@@ -132,6 +128,7 @@ export class UserController {
 	@Get('pictureById/:id')
 	async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
 	    const user = await this.userService.findOne(id);
+		console.log(user.picture);
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/' + user.picture)));
 	}
 

@@ -1,9 +1,12 @@
 
 <template>
 <div>
-<input type="text" v-model="search" placeholder="Search a friend" v-on:keyup="searchUser()" class="textArea">
-<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
+	<img style="width:3%; height:3%; vertical-align: middle;" src="../assets/magnifying-glass.png">
+	<span style="vertical-align:middle; font-size: 25px "> Search for a friend:<br></span>
+	<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea">
+	<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
 	<div class="friendsPage">
+		<br>
 		<div  class="friendsArea">
 			<h2>FRIENDS LIST</h2>
 			<ul :key="friend.id" v-for="friend in friendList">
@@ -69,7 +72,6 @@ export default	defineComponent ({
 		this.friendList
 		this.requestList
 		this.blockedList
-		console.log(`the component is now mounted.`)
 	},
 
 	async created() {
@@ -111,28 +113,34 @@ export default	defineComponent ({
 			await fetch(`http://localhost:3000/api/friends/${this.userId}/accept/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.friendList = await this.fetchFriends();
+			this.requestList = await this.fetchRequest();
 		},
 		async declineRequest(targetId: number){
 			await fetch(`http://localhost:3000/api/friends/${this.userId}/decline/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.requestList = await this.fetchRequest();
 		},
 		async unfriend(targetId: number){
 			await fetch(`http://localhost:3000/api/friends/${this.userId}/unfriend/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.friendList = await this.fetchFriends();
 		},
 		async unblock(targetId: number){
 			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.friendList = await this.fetchFriends();
+			this.blockedList = await this.fetchBlocked();
 		},
 		async goToUserPage(username: string) {
-			this.$router.replace({name: 'userPage', params: { username } })
+			this.$router.replace(`/profile/${username}`)
 		},
 
 		async searchUser() {
@@ -141,7 +149,7 @@ export default	defineComponent ({
 				headers: { 'content-type': 'application/json' }
 			})
 			const user = await res.json();
-			console.log(user);
+			console.log(user[0]);
 			if (res.status != 500)
 				this.found = user[0].username;
 			else
@@ -157,6 +165,7 @@ export default	defineComponent ({
 {
 	float:	left;
 	width:	32%;
+	margin-left: 2%;
 	min-height:	500px;
 	max-height:	500px;
 	overflow-y:	scroll;
@@ -186,6 +195,7 @@ export default	defineComponent ({
 
 .textArea
 {
+	margin-top: 1%;
 	border: none;
 	background-color:	var(--input-fields);
 	opacity:	50%;
