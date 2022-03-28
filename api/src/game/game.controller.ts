@@ -30,6 +30,10 @@ export class GameController {
 	async allStat() {
 		return this.gameService.findAll();
 	}
+	@Get('playinglist/')
+	async playingStat() {
+		return this.gameService.findAllPlaying();
+	}
 
 	@Get('hello')
 	hello() {

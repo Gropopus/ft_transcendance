@@ -518,20 +518,50 @@ function load(userId)
 	game.button = 1;
 }
 
+function unload(userId)
+{
+	if (game.socket)
+	{
+		if (game.socket.connected == true)
+			game.socket.disconnect();
+		cancelAnimationFrame(game.anim);
+		game.ball.speed.x = 0;
+		game.ball.speed.y = 0;
+
+		game.ball.x = game.canvas.width / 2;
+		game.ball.y = game.canvas.height / 2;
+
+		draw(game);
+		if ((game.player.score == 11 && game.side == 'left') || 
+			game.computer.score == 11 && game.side == 'right')
+			textDraw("You win !", game)
+		else
+			textDraw("You loose !", game)
+
+
+		game.matchmaking = 0;
+		game.button = 3;
+		buttonDraw('Play again', 50, game);
+		cancelAnimationFrame(game.anim);
+		game.player.score = 0;
+		game.computer.score = 0;
+		game.nb_confirm = 0;
+		game.side = ' ';
+		game.gameRoom = "-1";
+		game.computer.y = game.canvas.width / 2 - game.player_height / 2;
+		game.player.y = game.canvas.width / 2 - game.player_height / 2;
+	}
+}
 
 function emitObserve(id)
 {
 	game.socket.emit('observe', {gameId: id, gameRoom:'gameRoom' + id})
 }
-game.socket.on('observe', function(gameId) {
-	textDraw('Connecting to game id : ' + game.gameId);
-	game.side = 'observer'
-})
 
 function observe(userId, gameId) 
 {
 	socket_init();
-	game.canvas = document.getElementById('canvasObs'),
+	game.canvas = document.getElementById('canvas'),
 
 	game.player_height = (1/6) * game.canvas.height;
 	game.player_width = (1/128) * game.canvas.width;
@@ -550,4 +580,4 @@ function observe(userId, gameId)
 }
 
 
-export { load, observe }
+export { load, observe, unload }

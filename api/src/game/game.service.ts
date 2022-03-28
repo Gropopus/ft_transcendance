@@ -20,6 +20,9 @@ export class GameService {
 	findAll(): Promise<GameEntity[]> {
 		return this.gameRepository.find();
 	}
+	async findAllPlaying(): Promise<any[]> {
+		return await this.gameRepository.find({where: { status: "playing" }});
+	}
 	findOne(id: number): Promise<GameEntity> {
 		return this.gameRepository.findOne(id);
 	}
@@ -32,8 +35,6 @@ export class GameService {
 			score_l: 0,
 			score_r: 0,
 			status: gameStatus.PLAYING,
-			player_right_id: -1,
-			player_left_id: -1,
 		}
 		let game = this.gameRepository.create(igame);
 		await this.gameRepository.save(game);
@@ -46,10 +47,8 @@ export class GameService {
 			return (-1); // game doenst exist
 		
 		let ret = await this.playerService.createGame(await this.userService.findOne(left_uid), await this.userService.findOne(right_uid), pid);
-		game.player_left_id = ret.p1.id;
-		game.player_right_id = ret.p2.id;
-		console.log("player left is = " + ret.p1.id);
-		console.log("player right is = " + ret.p2.id);
+		game.player_left_id = ret.p1;
+		game.player_right_id = ret.p2;
 		await this.gameRepository.update({id: pid}, game);
 	}
 
@@ -62,13 +61,13 @@ export class GameService {
 		{
 			game.status = gameStatus.FINISH;
 			await this.gameRepository.update({id: pid}, game)
-			await this.playerService.setFinalScores(game.player_left_id, game.score_l, game.score_r);
+			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
 		}
 		else
 		{
 			game.status = gameStatus.CANCEL;
 			await this.gameRepository.update({id: pid}, game);
-			await this.playerService.setFinalScores(game.player_left_id, game.score_l, game.score_r);
+			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
 		}
 	}
 	async getScore(pid: number) {

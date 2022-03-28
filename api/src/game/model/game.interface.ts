@@ -4,8 +4,8 @@ import { Iuser } from "src/user/model/user.interface";
 export interface Igame {
 	id?: number;
 	
-	player_left_id?: number;
-	player_right_id?: number;
+	player_left_id?: IPlayer;
+	player_right_id?: IPlayer;
 
 	score_l?: number;
 	score_r?: number;

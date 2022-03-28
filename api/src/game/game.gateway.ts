@@ -27,8 +27,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		private gameService: GameService,
 	) {}
 
-	MAX_SPEED = 12;
-
 	@WebSocketServer()
 	server: Server;
 	
@@ -76,7 +74,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else if (room.substring(0, 8) == 'gameRoom') 
 		{
 			let score = this.games_score.get(+ room.substring(8))
-			this.gameService.setScore(+ room.substring(8), score.l, score.r, false);
+			if (score)
+				this.gameService.setScore(+ room.substring(8), score.l, score.r, false);
+			else
+				this.logger.log('no score for room id:' + room.substring(8));
 			this.server.to(room).emit('playerLeave');
 		}
 		this.player_room.delete(client.id);
