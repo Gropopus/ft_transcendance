@@ -20,6 +20,12 @@
 					Log-in
 				</button>
 			</div> <!-- submitBar end -->
+			<div class="secret" v-if="twofa">
+			Please enter the 6 digit code from Google Authenticator: <br>
+			<input type="googlecode" v-model="googlecode" class="textArea">
+			<button @click="twoFACheck()" class="submitButton">
+				Log-in </button>
+		</div>
 		</div> <!-- LoginForm end -->
 
 		
@@ -45,6 +51,8 @@ export default	{
 	},
 	data:	function()	{
 		return {
+			twofa: "",
+			googlecode: "",
 			userLogin:	"",
 			userPass:	"",
 			error:		"",
@@ -83,16 +91,52 @@ checkForm() {
 						headers: { 'content-type': 'application/json' },
 					})
 					const data1 = await userRes.json()
-					this.$emit('update:userId', data1.id);
-					this.$router.replace({name: 'game'})
-					return ;
+					if (data1.twoFactorAuthEnabled == true)
+					{
+						this.twofa = "oui";
+					}
+					else
+					{
+						this.$emit('update:userId', data1.id);
+						this.$router.replace({name: 'game'})
+						return ;
+					}
 				}
 				else if (res.status == 400 || res.status == 404)
 				{
 					this.error = "User not found, Wrong Email or password.";
+					return ;
 				}
 		},
+		async 	twoFACheck()
+		{
+			this.error = "";
+			const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' },
+			})
+			const data1 = await userRes.json()
+			if (!this.googlecode)
+			{
+				this.error = "No code to submit"
+				return ;
+			}
+			const res = await fetch('http://localhost:3000/api/2fa/authenticate', {
+				method: 'post',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({code: this.googlecode, user: data1}),
+				})
+			const ret =	await res;
+			console.log(ret.status);
+			if (ret.status == 401)
+			{
+				this.error = "Wrong identification code."
+				return ;
+			}
+			this.$emit('update:userId', data1.id);
+			this.$router.replace({name: 'game'})
 
+		},
 		async	loginWith42(){
 			const res = await fetch(`http://localhost:3000/api/oauth2/school42`, {
 						method: 'get',
@@ -213,6 +257,10 @@ checkForm() {
 	margin-left:	10px;
 	margin-right:	10px;
 	object-fit:	contain;
+}
+
+.secret {
+	margin-bottom: 5%;
 }
 
 .error {
