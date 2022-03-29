@@ -22,7 +22,7 @@
 				<div v-if="currentTab==0" class="stat">
 					<div class="statElem">
 						<h3>Ladder level</h3>
-						<p>?</p>
+						<p> {{ ladder.level }} / {{ ladder.total }} </p>
 					</div>
 					<div class="statElem">
 						<h3>Victories</h3>
@@ -55,6 +55,7 @@ export default	defineComponent ({
 			userData: [],
 			currentTab: 0,
 			picture: "",
+			ladder: 0,
 		}
 	},
 
@@ -63,8 +64,9 @@ export default	defineComponent ({
 	},
 
 	async created() {
-		this.userData= await this.fetchUserData();
-		this.picture =await this.getPicture();
+		this.userData = await this.fetchUserData();
+		this.picture = await this.getPicture();
+		this.ladder = await this.fetchLadderLevel();
 	},
 
 	methods: {
@@ -72,9 +74,18 @@ export default	defineComponent ({
 			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
+			});
+			const data = await res.json();
+			return data;
+		},
+
+		async fetchLadderLevel() {
+			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
 			})
-			const data = await res.json()
-			return data
+			const ladder = await res.json();
+			return ladder;
 		},
 
 		async addfriend(targetId: number){
