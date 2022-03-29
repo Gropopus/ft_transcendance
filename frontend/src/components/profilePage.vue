@@ -121,6 +121,7 @@ export default	defineComponent ({
 <style lang="css">
 .profilePage
 {
+	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
 	margin-right: 5%;
@@ -217,5 +218,7 @@ export default	defineComponent ({
 	color:	var(--font-blue);
 	font-weight:	bold;
 }
+
+
 
 </style>
