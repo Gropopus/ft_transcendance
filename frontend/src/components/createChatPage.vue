@@ -199,6 +199,10 @@ export default	{
     width: 20%;
 }
 
+.chatForm > .submitButton:hover {
+	background:	var(--deep-blue-10);
+}
+
 .error
 {
     color:red;
