@@ -4,7 +4,7 @@ import App from './App.vue'
 import * as VueRouter from 'vue-router'
 import logPage from './components/logPage.vue'
 import register from './components/register.vue'
-import playPageVue from './components/playPage.vue'
+import playPage from './components/playPage.vue'
 import chatPage from './components/chatPage.vue'
 import friendsPage from './components/friendsPage.vue'
 import createChatPageVue from './components/createChatPage.vue'
@@ -13,6 +13,7 @@ import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
 import settingsPage from './components/settingsPage.vue'
 import observePage from './components/observePage.vue'
+import watchPage from './components/watchPage.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -36,11 +37,17 @@ routes: [
     {
         path: '/game',
         name: 'game',
-        component: playPageVue,
+        component: playPage,
         props: true
     },
     {
-        path: '/observe/:gameId',
+        path: '/watch',
+        name: 'watch',
+        component: watchPage,
+        props: true
+    },
+    {
+        path: '/watch/:gameId',
         name: 'observe',
         component: observePage,
         props: true

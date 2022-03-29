@@ -57,7 +57,7 @@ export default	defineComponent ({
 	methods: {
 		goToRoute(id) {
 			console.log('redirect to /game/' + id)
-			this.$router.replace(`/game/observe/${id}`);
+			this.$router.replace(`/watch/${id}`);
 		},
 		run() {
 			load(this.userId);

@@ -196,7 +196,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		// data.gameId;		data.gameRoom
 		// data.pos_x;		data.pos_y
 		// data.speed_x;	data.speed_y
-		this.server.to(data.gameRoom).emit('observer_data', data.pos_x, data.pos_y, data.speed_x, data.speed_y);
+		// data.left_pos;	data.right_pos;
+		this.server.to(data.gameRoom).emit('observer_data', data.pos_x, data.pos_y,
+									data.speed_x, data.speed_y, data.left_pos, data.right_pos);
 	}
 
 	//bellow is matchmaking part

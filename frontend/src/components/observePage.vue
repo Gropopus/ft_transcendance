@@ -9,15 +9,8 @@
 		</div>
 
 		<div class="SocialRecap">
-			<p>Live game :
-				<button @click="fectGameList()" >Refresh</button>
+			<p>mhh
 			</p>
-		<ul id="v-for-object" class="gameList">
-			<li v-for="value in gameList">
-				{{ value.player_left_id.username }} vs {{ value.player_right_id.username }}
-				<button @click="obs(value)"> Observe </button>
-			</li>
-		</ul>
 		</div>
 	</div>
 </template>
@@ -36,8 +29,8 @@ export default	defineComponent ({
     mounted() {	
         this.gameList;
         this.gameListPlaying;
-        console.log(`---${this.$route.params.username}`);
-        // load(this.userId);
+        console.log(`---${this.$route.params.gameId}`);
+        this.obs(this.userId, this.$route.params.gameId)
     },
     unmounted() {
         unload(this.userId);
@@ -48,9 +41,9 @@ export default	defineComponent ({
         run() {
             load(this.userId);
         },
-        obs(game) {
-            console.log("go observe game id " + game.id);
-            observe(this.userId, game.id);
+        obs(userId, gameId) {
+            console.log("go observe game id " + gameId);
+            observe(userId, gameId);
         },
     },
 })
