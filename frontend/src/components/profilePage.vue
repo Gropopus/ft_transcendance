@@ -7,17 +7,32 @@
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
-				<div class="status"> {{ userData.status }} </div>
+				<div class="status"> {{ userData.email }} </div>
+			</div>
+			<div class="perso-info">
 			</div>
 		</div>
 		<div class="StatsWin">
 			<div class="StatsTabs">
-				<button class="tab" @click="changeCurrent(0)" :id="isCurrentTab(0)"> Achievements </button>
-				<button class="tab"  @click="changeCurrent(1)" :id="isCurrentTab(1)"> Ladder </button>
+				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
+				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
-				<br>
+				<div v-if="currentTab==0" class="stat">
+					<div class="statElem">
+						<h3>Ladder level</h3>
+						<p>?</p>
+					</div>
+					<div class="statElem">
+						<h3>Victories</h3>
+						<p>{{ userData.victory }}</p>
+					</div>
+					<div class="statElem">
+						<h3>Defeats</h3>
+						<p>{{ userData.defeat }}</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
