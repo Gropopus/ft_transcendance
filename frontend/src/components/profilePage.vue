@@ -61,6 +61,8 @@ export default	defineComponent ({
 
 	mounted() {
 		this.userData;
+		this.picture;
+		this.ladder;
 	},
 
 	async created() {
