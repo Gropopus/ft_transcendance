@@ -32,7 +32,12 @@ export class TwoFactorService {
 	  toFile('src/uploads/qrcode.png',otpauthUrl);
   }
 
-  public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: UserEntity) {
+  public async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: Iuser) {
+    console.log(twoFactorAuthenticationCode);
+    console.log(user.twoFactorAuthenticationSecret);
+    console.log(user);
+    const u1 = await this.usersService.findOne(user.id);
+    console.log(u1);
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
       secret: user.twoFactorAuthenticationSecret

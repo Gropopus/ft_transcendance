@@ -32,14 +32,13 @@
 		<div class="secret" v-if="secret">
 			Please keep this secret code: {{ secret}}
 			<br>
-			<div class="qr-code">
-				<img :src="qrcode" />
-				<br>
-				If you are unable to scan the QR code in the google authentificator application , please enter this code manually into the app.<br>
-				To finish security verification and enable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
-				<button @click="updatePassword()" class="submitButton">
+			<img :src="qrcode" />
+			<br>
+			If you are unable to scan the QR code in the google authentificator application , please enter this code manually into the app.<br>
+			To finish security verification and enable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
+			<input type="googlecode" v-model="googlecode" class="textArea">
+			<button @click="turnOn2FA()" class="submitButton">
 				Submit </button>
-			</div>
 		</div>
 		<br>
 		<p>
@@ -69,6 +68,7 @@ export default	{
 			twofa: 	"",
 			secret: "",
 			qrcode: "",
+			googlecode: "",
 		}
 	},
 	created(){
@@ -207,6 +207,27 @@ export default	{
 				this.twofa = false;
 			}
 		},
+
+		async turnOn2FA()
+		{
+			this.error = "";
+			if (!this.googlecode)
+			{
+				this.error = "No code to submit"
+				return ;
+			}
+			const res = await fetch('http://localhost:3000/api/2fa/turn-on', {
+				method: 'post',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({code: this.googlecode, user: this.user}),
+				})
+			const ret =	await res;
+			if (ret.status == 401)
+			{
+				this.error = "Wrong identification code."
+				return ;
+			}
+		},
 	}
 }
 </script>
@@ -240,13 +261,22 @@ export default	{
 	width:		20%;
 }
 
+.secret > input.textArea 
+{
+	border: none;
+	background-color:	var(--input-fields);
+	opacity:	50%;
+	font-size:	130%;
+	padding:	6px;
+	width:		20%;
+	margin-right: 5%;
+}
 .textArea {
 	height: 20%;
 	vertical-align: center;
 	margin-left: auto;
     margin-right: auto;
 }
-
 
 .title {
 	margin-top: 1.5%;
@@ -266,14 +296,14 @@ export default	{
 	font-family: MyanmarText;
 }
 
-.fileArea {
+.submitBar > .fileArea {
 	padding-left: 0.5%;
 	justify-content: left;;
 	background:	none;
 	font-size:	100%;
 	font-family: MyanmarText;
 	margin-top: 1.5%;
-	margin-left: auto;
+	margin-left: 19.2%;
     margin-right: auto;
 }
 .settingsPage > .submitBar
