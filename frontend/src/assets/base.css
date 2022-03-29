@@ -153,7 +153,7 @@ header
 	min-height:	500px;
 	border-radius: 5px;
 	overflow-y:	scroll;
-	max-height:	500px;
+	/* max-height:	px; */
 }
 
 
