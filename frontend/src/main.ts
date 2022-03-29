@@ -14,6 +14,7 @@ import logoutPageVue from './components/logoutPage.vue'
 import settingsPage from './components/settingsPage.vue'
 import observePage from './components/observePage.vue'
 import watchPage from './components/watchPage.vue'
+import NotFound from './components/404.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -93,7 +94,13 @@ routes: [
         name: 'userProfile',
         component: userPage,
         props: true
-    },
+    }, 
+    { path: '/404', component: NotFound }, 
+    {
+        path: "/:catchAll(.*)",
+        name: "NotFound",
+        component: NotFound,
+    }
     ]
 })
     

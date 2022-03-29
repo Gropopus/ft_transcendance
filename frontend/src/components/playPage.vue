@@ -56,14 +56,12 @@ export default	defineComponent ({
 
 	methods: {
 		goToRoute(id) {
-			console.log('redirect to /game/' + id)
 			this.$router.replace(`/watch/${id}`);
 		},
 		run() {
 			load(this.userId);
 		},
 		obs(game) {
-			console.log("go observe game id " + game.id);
 			observe(this.userId, game.id);
 		},
 		async formatGameList() {

@@ -26,15 +26,24 @@ export default	defineComponent ({
             default:	"0"
         },
     },
-    mounted() {	
+    async mounted() {	
         this.gameList;
         this.gameListPlaying;
-        console.log(`---${this.$route.params.gameId}`);
-        this.obs(this.userId, this.$route.params.gameId)
+        const h = await fetch('http://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
+            method: 'get',
+        });
+        try {
+            const test = await h.json();
+            this.obs(this.userId, this.$route.params.gameId)
+        }
+        catch {
+            console.log('test fail to json')
+            this.$router.replace('/404');
+        }
+
     },
     unmounted() {
         unload(this.userId);
-        console.log('unmounted');
     },
 
     methods: {
@@ -42,7 +51,6 @@ export default	defineComponent ({
             load(this.userId);
         },
         obs(userId, gameId) {
-            console.log("go observe game id " + gameId);
             observe(userId, gameId);
         },
     },

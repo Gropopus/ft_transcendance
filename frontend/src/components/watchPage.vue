@@ -55,12 +55,10 @@ export default	defineComponent ({
 
 	methods: {
 		goToRoute() {
-			console.log('redirect to /game/' + this.actualSelect.id)
 			this.$router.replace(`/watch/${this.actualSelect.id}`);
 		},
         Select(game) {
             this.actualSelect = game;
-            console.log(game);
         },
 		async formatGameList() {
 			var i = 0;
