@@ -9,10 +9,10 @@
 				<div class="username"> {{ userData.username }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
-			<div class="challengeButton">
+			<div v-if="userId != userData.id" class="challengeButton">
 				<p @click="challenge()" >challenge</p>
 			</div>
-			<div class="relation">
+			<div v-if="userId != userData.id" class="relation">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton"/>
 				<p v-else-if="relation=='resquest-pending'" class="pending">request in <br> pending...</p>
 				<div v-else class="replyButton">
@@ -87,12 +87,15 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchUserData() {
+			console.log(`---${this.$route.params.username}`);
 			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
 			const data = await res.json();
-			return data[0]
+			for (let elem of data)
+				if (this.$route.params.username == elem.username)
+					return elem;
 		},
 
 		async fetchRelation() {
