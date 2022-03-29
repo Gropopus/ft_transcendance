@@ -156,21 +156,25 @@ export default	{
 			this.user = await res.json();
 			console.log(this.user);
 			if (this.user.twoFactorAuthEnabled == false)
-				this.twofa == false;
+				this.twofa = false;
 			else
-				this.twofa == true;
+				this.twofa = true;
 		},
 
 		isDisable()
 		{
 			if (this.twofa == false)
-				return "selected";
+				return 1;
+			else 
+				return 0;
 		},
 
 		isEnable()
 		{
 			if (this.twofa == true)
-				return "selected";
+				return 1;
+			else
+			return 0;
 		},
 
 		async handleTwoFA()
