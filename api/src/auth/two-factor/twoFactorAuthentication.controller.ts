@@ -19,8 +19,9 @@ import RequestWithUser from '../requestWithUser.interface';
 import { UserService } from 'src/user/user.service';
 import { TwoFactorAuthenticationCodeDto } from './twoFactor.dto';
 import { JwtAuthGuard } from 'src/auth/login/guards/jwt.guard';
+import { Iuser } from 'src/user/model/user.interface';
 import { UserEntity } from 'src/user/model/user.entity';
-   
+
   @Controller('2fa')
   export class TwoFactorAuthenticationController {
 	constructor(
@@ -84,8 +85,8 @@ import { UserEntity } from 'src/user/model/user.entity';
 
 	@Post('generate')
 	@UseGuards(JwtAuthGuard)
-	async generate(@Req() request: RequestWithUser) : Promise<string>{		
-		const otpauth = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(request.body);
+	async generate(@Body() user : Iuser){
+		const otpauth = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user);
 		this.twoFactorAuthenticationService.pipeQrCodeStream(otpauth.otpauthUrl);
 		return (JSON.stringify(otpauth.secret));
 	}
