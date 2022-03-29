@@ -37,7 +37,6 @@
 				<br>
 				If you are unable to scan the QR code in the google authentificator application , please enter this code manually into the app.<br>
 				To finish security verification and enable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
-				<input type="password" v-model="userPass" class="textArea"> <br>
 				<button @click="updatePassword()" class="submitButton">
 				Submit </button>
 			</div>
@@ -231,7 +230,7 @@ export default	{
 	min-width: 548px;
 }
 
-.settingsPage > input.textArea
+.submitBar > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);

@@ -11,7 +11,7 @@ import createChatPageVue from './components/createChatPage.vue'
 import profilePage from './components/profilePage.vue'
 import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
-import settingsPageVue from './components/settingsPage.vue'
+import settingsPage from './components/settingsPage.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -65,7 +65,7 @@ routes: [
     {
         path: '/settings',
         name: 'settings',
-        component: settingsPageVue,
+        component: settingsPage,
         props: true
     },
     {

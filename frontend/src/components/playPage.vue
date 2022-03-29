@@ -1,19 +1,29 @@
 <template>
-	<ul>
+	<div>
+		<button @click="run()" >Play</button> 
+		<button @click="fectGameList()" >test</button> 
+
 		<div class="GameArea">
 			<canvas id="canvas" width="640" height="500"></canvas>
 		</div>
+
 		<div class="UserRecap">
 			<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
 		</div>
+
 		<div class="SocialRecap">
-			<p>Osef</p>
+			<p>Live game :</p>
+		<ul id="v-for-object" class="gameListPlaying">
+			<li v-for="value in gameListPlaying">
+				{{ value }}
+			</li>
+		</ul>
 		</div>
-	</ul>
+	</div>
 </template>
 
 <script lang="ts">
-import { load } from '../script/pong.js'
+import { load, unload, observe } from '../script/pong.js'
 	export default	{
 		props:	{
 			userId:	{
@@ -21,12 +31,50 @@ import { load } from '../script/pong.js'
 				default:	"0"
 			},
 		},
-		mounted() {	
-			console.log('user id: ' + this.userId);
-			load(this.userId);
+
+		data() {
+			return {
+				gameList: [],
+				gameListPlaying: [],
+			}
 		},
-		// unmounted() {
-		// }
+
+		mounted() {	
+			this.gameList;
+			this.gameListPlaying;
+			console.log('user id: ' + this.userId);
+			// load(this.userId);
+		},
+		unmounted() {
+			unload(this.userId);
+			console.log('unmounted');
+		},
+
+		methods: {
+			run() {
+				load(this.userId);
+			},
+			obs() {
+				observe(this.userId, 1);
+			},
+			async formatGameList() {
+				var i = 0;
+				while (this.gameList[i])
+				{
+					this.gameListPlaying.push(	this.gameList[i].player_left_id.username + ' vs ' + 
+											this.gameList[i].player_right_id.username + ' room: ' + this.gameList[i].id);
+					++i;
+				}
+			},
+			async fectGameList() {
+				const res = await fetch('http://localhost:3000/api/game/playinglist/', {
+					method: 'get',
+				});
+				this.gameList = await res.json();
+				await this.formatGameList()
+			},
+
+		}
 
 	}
 </script>

@@ -27,8 +27,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		private gameService: GameService,
 	) {}
 
-	MAX_SPEED = 12;
-
 	@WebSocketServer()
 	server: Server;
 	
@@ -61,12 +59,26 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.logger.log('client disconnected: ' + client.id);
 		this.logger.log('\t the client was in room : ' + this.player_room.get(client.id));
 
-		let room = this.server.sockets.adapter.rooms.get('MatchMaking');
-		let numClient = room ? room.size : 0;
-		if (this.nb_matchmaking != numClient)
+		let room = this.player_room.get(client.id);
+
+		if (room == "MatchMaking")
 		{
-		 --this.nb_matchmaking;
-		 console.log("remove nb user in matchmaking")
+			--this.nb_matchmaking;
+			this.logger.log("reduce number of player in matchmaking")
+		}
+		else if (room.substring(0, 7) == 'Confirm' )
+		{
+			this.logger.log("was in confirm room send unconfirm");
+			this.server.to(room).emit('playerUnconfirm');
+		}
+		else if (room.substring(0, 8) == 'gameRoom') 
+		{
+			let score = this.games_score.get(+ room.substring(8))
+			if (score)
+				this.gameService.setScore(+ room.substring(8), score.l, score.r, false);
+			else
+				this.logger.log('no score for room id:' + room.substring(8));
+			this.server.to(room).emit('playerLeave');
 		}
 		this.player_room.delete(client.id);
 	}
@@ -87,7 +99,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('joinRoom')
 	async handleJoinRoom(client: Socket, room: string) {
-		this,this.player_room.set(client.id, room);
+		this.player_room.set(client.id, room);
 		client.join(room);
 	}
 	@SubscribeMessage('leaveRoom')
@@ -123,6 +135,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.games_score.delete(data.gameId);
 		this.gameService.setScore(data.gameId, score.l, score.r, true);
 	}
+
+	@SubscribeMessage('playerLeave')
+	handlePlayerLeave(socket: Socket, data:any): void {
+		//data.side;	data.gameId;	data.score_l;	data.score_r
+		
+		this.kickAllFrom(data.gameRoom);
+		this.games_score.delete(data.gameId);
+		this.gameService.setScore(data.gameId, data.score_l, data.score_r, true);
+	}
+
 	@SubscribeMessage('right_miss')
 	handleright_miss(socket: Socket, data: any) {
 			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
@@ -212,7 +234,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (this.nb_matchmaking == 2)
 		{
 			this.nb_try += 1;
-			this.server.to('MatchMaking').emit('AskReady', this.nb_try.toString());
+			this.server.to('MatchMaking').emit('AskReady', 'Confirm' + this.nb_try.toString());
 			this.kickAllFrom('MatchMaking');
 			this.nb_matchmaking = 0;
 		}

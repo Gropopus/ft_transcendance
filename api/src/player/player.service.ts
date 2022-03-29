@@ -16,11 +16,13 @@ export class PlayerService {
     async createGame(user1: Iuser, user2: Iuser, gid: number) {
         let iplayer1: IPlayer = {
             user: user1,
+            username: user1.username,
             side: PlayerSide.LEFT,
             gameId: gid
         }
         let iplayer2: IPlayer = {
             user: user2,
+            username: user2.username,
             side: PlayerSide.RIGHT,
             gameId: gid
         }
