@@ -1,42 +1,42 @@
-<script setup lang="ts">
-import { router } from '../main.ts'
-</script>
 <template>
+	<header>
+	</header>
 	<div>
-		<div class="LoginHeader">
+		<!-- <div class="LoginHeader">
 			<img src="../assets/picto-id.png">
-		</div> <!-- LoginHeader end -->
-
+		</div> LoginHeader end -->
 		<div class="LoginForm">
-			<label for="login"> Login </label>	<br>
-			<input type="text" v-model="userLogin" placeholder="username" class="textArea">	<br>
+			<p class="error" v-if="error"> {{ error }} </p>
+			<label for="login"> Email </label>	<br>
+			<input type="text" v-model="userLogin"  class="textArea">	<br>
 
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass" placeholder="password" class="textArea">	<br>
-
+			<input type="password" v-model="userPass"  class="textArea">	<br>
 			<div class="submitBar">
-				<button @click="login()" class="submitButton">
-					Log in
-				</button>
 				<button @click="register()" class="submitButton">
 					Register
+				</button> 
+				<button @click="login()" class="submitButton">
+					Log-in
 				</button>
 			</div> <!-- submitBar end -->
 		</div> <!-- LoginForm end -->
 
 		
-		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
+		<!-- <a class="submit42Button" href="http://localhost:3000/api/oauth2/school42" v-bind:is="loginWith42()"> -->
+		<button class="submit42Button" @click="loginWith42()">
 			<img src="../assets/logo-42_white.png">
 			<div>
 				Log In with<br>
 				Connect
 			</div>
-		</a> <!-- submit42Button end -->
+		</button> <!-- submit42Button end -->
 	</div>
 </template>
 
 <script lang="ts">
 export default	{
+	name: 'logPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
@@ -47,61 +47,104 @@ export default	{
 		return {
 			userLogin:	"",
 			userPass:	"",
+			error:		"",
 		}
 	},
-	emits:	['register', 'update:userId'],
+	emits:	['update:userId'],
 	methods:	{
-		login:	function():	Void	{
-			this.$emit('update:userId', 122);
-			router.push('/');
+
+checkForm() {
+	    	if (!this.userLogin) {
+	        	 return "Email address required.";
+			}
+			else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.userLogin))) {
+	        	return "A valid email address is required.";
+      		}
+			else if(!this.userPass) {
+        		return "A password is required.";
+			}
+			return ("");
 		},
-		register:	function():	Void	{
-			this.$emit('register');
-			router.push('/register');
+
+		async login()	{
+				this.error = "";
+				this.error = this.checkForm();
+				if (this.error)
+					return ;
+				const res = await fetch(`http://localhost:3000/api/users/login`, {
+				method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ email: this.userLogin, password: this.userPass })
+				})
+				if (res.status != 400 && res.status != 404)
+				{
+					const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
+						method: 'get',
+						headers: { 'content-type': 'application/json' },
+					})
+					const data1 = await userRes.json()
+					this.$emit('update:userId', data1.id);
+					this.$router.replace({name: 'game'})
+					return ;
+				}
+				else if (res.status == 400 || res.status == 404)
+				{
+					this.error = "User not found, Wrong Email or password.";
+				}
+		},
+
+		async	loginWith42(){
+			const res = await fetch(`http://localhost:3000/api/oauth2/school42`, {
+						method: 'get',
+						mode: 'no-cors',
+						headers: { 'content-type': 'application/json' },
+			});
+			const data = await  res.json();
+			console.log(data);
+			// this.$emit('update:userId', data1.id);
+			// console.log(this.$router.query.page)
+			// console.log(this.$router.params)
+			// this.$router.replace('/game');
+		},
+
+		register: function() {
+			this.$router.replace({name: 'register'});
+			// this.$emit('register');
 		}
 	}
 }
 </script>
 
-<style>
-
-.LoginHeader
-{
-	margin-top:	3%;
-	height:	20%;
-	display:	flex;
-	justify-content:	center;
-}
-
-.LoginHeader > img
-{
-	object-fit: contain;
-}
+<style lang="css" scoped>
 
 .LoginForm
 {
 	border-radius: 5px;
-	margin-top:	2%;
+	margin-top:	1%;
 	margin-bottom:	5%;
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
 	padding-left:	5%;
-	width:	30%;
-	height:	40%;
-	border:	solid 3px white;
-	font-size:	24px;
+	width:	50%;
+	height:	50%;
+	border:	solid white;
+	font-size:	150%;
 	font-family: MyanmarText;
 	font-weight:	bold;
+	min-height:	300px;
+	min-width: 548px;
 }
 
 .LoginForm > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
+	margin-bottom:	3%;
 	opacity:	50%;
 	font-size:	24px;
 	padding:	6px;
+	width:		81%;
 }
 
 .LoginForm > .submitBar
@@ -115,33 +158,45 @@ export default	{
 
 .LoginForm > .submitBar > .submitButton
 {
+	width:		35%;
+	margin-right: 10%;
 	display:	block;
 	background:	none;
-	flex:	0 0 auto;
+	flex:	0 0 center;
 	margin-bottom:	5%;
 	margin-right:	auto;
 	padding-top:	3%;
-	padding-left:	5%;
-	padding-right:	5%;
+	padding-bottom:	2%;
 	background:	none;
-	border:	solid 3px white;
-	font-size:	24px;
+	border:	solid white;
+	font-size:	100%;
 	color:	white;
 	font-family: MyanmarText;
 }
+
+.LoginForm > .submitBar > .submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
+
 
 .submit42Button
 {
 	display:	block;
 	background:	none;
+	margin-top:	3%;
 	margin-left:	auto;
 	margin-right:	auto;
 	margin-bottom:	5%;
 	padding-top:	1%;
 	padding-bottom:	1%;
-	width:	20%;
+	border-radius: 5px;
+
+	width:	15%;
 	border:	solid 3px white;
-	font-size:	24px;
+	font-size:	150%;
 	color:	white;
 	min-height:	42px;
 	min-width:	280px;
@@ -158,6 +213,11 @@ export default	{
 	margin-left:	10px;
 	margin-right:	10px;
 	object-fit:	contain;
+}
+
+.error {
+	justify-content: top;
+	color: red;
 }
 
 </style>

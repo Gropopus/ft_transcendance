@@ -38,9 +38,122 @@ header
 	background-image: url("./src/assets/header-id.png");
 	background-repeat:	no-repeat;
 	background-position:	center;
-	margin-top:	3%;
+	margin-top:	1%;
 	min-height:	300px;
-	min-width:	1180px;
+	min-width: 548px;
+	height: 100%;
+	width: 100%;
+}
+
+.app {
+	width: 100;
+	height: 100;
+}
+.GameArea
+{
+	float:	left;
+	display:	flex;
+	width:	70%;
+	min-height:	500px;
+	border:	solid 3px white;
+	border-radius: 5px;
+	flex-direction:	column;
+}
+
+.GameArea > button
+{
+	margin-right:	auto;
+	margin-left:	auto;
+	margin-top:	auto;
+	margin-bottom:	auto;
+	background:	none;
+	padding:	15px;
+	padding-bottom: 3px;
+	border:	solid 3px white;
+	border-radius:	5px;
+	font-family:	MyanmarText;
+	font-size:	24px;
+	letter-spacing:	2px;
+	color:	white;
+}
+
+.GameArea > button:hover
+{
+	background:	var(--white-10);
+}
+
+#canvas
+{
+	width:	100%;
+	height:	100%;
+}
+
+.UserRecap
+{
+	float:	right;
+	width:	25%;
+	min-height:	225px;
+	border:	solid 3px white;
+	border-radius: 5px;
+	margin-bottom:	min(22px);
+}
+
+.SocialRecap
+{
+	float:	right;
+	width:	25%;
+	min-height:	225px;
+	border:	solid 3px white;
+	border-radius: 5px;
+	margin-top:	min(22px);
+}
+
+.ChatArea
+{
+	float:	left;
+	width:	70%;
+	min-height:	500px;
+	border:	solid 3px white;
+	border-radius: 5px;
+}
+
+.ChatToolsSpace
+{
+	float:	right;
+	width:	25%;
+	min-height:	500px;
+	border:	solid 3px white;
+	border-radius: 5px;
+	margin-bottom:	min(22px);
+}
+
+.ChatToolsNav
+{
+	float:	right;
+	width:	25%;
+	min-height:	225px;
+	border:	solid 3px white;
+	border-radius: 5px;
+	margin-bottom:	min(22px);
+}
+
+.StatsWin
+{
+	width:	100%;
+	min-height:	500px;
+	border:	solid 3px white;
+	border-radius: 5px;
+	display:	flex;
+	flex-direction:	column;
+}
+
+.StatsArea
+{
+	width:	100%;
+	min-height:	500px;
+	border-radius: 5px;
+	overflow-y:	scroll;
+	/* max-height:	px; */
 }
 
 
@@ -64,3 +177,4 @@ header
   border-radius: 20px;
   border: 3px solid white;
 }
+

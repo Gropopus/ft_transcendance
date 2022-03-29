@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { router } from '../main.ts'
-</script>
-
 <template>
 	<div>
 		<div class="LogoutHeader">
@@ -32,23 +28,27 @@ export default	{
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		}
 	},
-	emits:	['update:currentPage', 'update:userId'],
+	emits:	['update:userId'],
 	methods:	{
-		logout:	function()	{
-			console.log(this.userID);
+		async logout()	{
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+				method: 'get',
+					headers: { 'content-type': 'application/json' }
+			})
+			const data = await res.json()
+			console.log(data)
+			const res1 = await fetch(`http://localhost:3000/api/users/logout`, {
+				method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify(data)
+			})
+			console.log(res1);
 			this.$emit('update:userId', "0");
-			this.$emit('update:currentPage', "0");
-			router.push("/");
+			this.$router.replace({name: 'login'});
 		},
 		cancel:	function()	{
-			console.log(this.currentPage);
-			router.push("/");
-			this.$emit('update:currentPage', "0");
+			this.$router.replace({name: 'game'});
 		}
 	}
 }
@@ -77,7 +77,7 @@ export default	{
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
-	padding-left:	5%;
+	padding-left:	15%;
 	width:	30%;
 	height:	40%;
 	border:	solid 3px white;
@@ -108,47 +108,24 @@ export default	{
 {
 	display:	block;
 	background:	none;
-	flex:	0 0 auto;
+	flex:	0 0 center;
+	width:			15%;
 	margin-bottom:	5%;
 	margin-right:	auto;
-	padding-top:	3%;
-	padding-left:	5%;
-	padding-right:	5%;
+	padding-top:	3.2%;
+	padding-bottom:	2%;
 	background:	none;
-	border:	solid 3px white;
-	font-size:	24px;
+	border:	solid white;
+	font-size:	100%;
 	color:	white;
 	font-family: MyanmarText;
 }
 
-.submit42Button
+.LogoutForm > .submitBar > .submitButton:hover
 {
-	display:	block;
-	background:	none;
-	margin-left:	auto;
-	margin-right:	auto;
-	margin-bottom:	5%;
-	padding-top:	1%;
-	padding-bottom:	1%;
-	width:	20%;
-	border:	solid 3px white;
-	font-size:	24px;
-	color:	white;
-	min-height:	42px;
-	min-width:	280px;
-	justify-content:	center;
-	line-height:	1.5;
-	font-weight:	bold;
-	font-family: MyanmarText;
-	text-decoration:	none;
-}
-
-.submit42Button > img
-{
-	float:	left;
-	margin-left:	10px;
-	margin-right:	10px;
-	object-fit:	contain;
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
 }
 
 </style>

@@ -1,87 +1,111 @@
 <template>
-	<div class="GameArea">
-		<button>Quick Play</button>
-		<button>Customize</button>
-		<button>Watch</button>
-	</div>
-	<div class="UserRecap">
-	</div>
-	<div class="SocialRecap">
+	<div>
+		<button @click="run()" >Play</button> 
+		<button @click="fectGameList()" >test</button> 
+
+		<div class="GameArea">
+			<canvas id="canvas" width="640" height="500"></canvas>
+		</div>
+
+		<div class="UserRecap">
+			<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
+		</div>
+
+		<div class="SocialRecap">
+			<p>Live game :</p>
+		<ul id="v-for-object" class="gameListPlaying">
+			<li v-for="value in gameListPlaying">
+				{{ value }}
+			</li>
+		</ul>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-export default	{
-	props:	{
-		userId:	{
-			type:	[Number, String],
-			default:	"0"
+import { load, unload, observe } from '../script/pong.js'
+	export default	{
+		props:	{
+			userId:	{
+				type:	[Number, String],
+				default:	"0"
+			},
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
+
+		data() {
+			return {
+				gameList: [],
+				gameListPlaying: [],
+			}
+		},
+
+		mounted() {	
+			this.gameList;
+			this.gameListPlaying;
+			console.log('user id: ' + this.userId);
+			// load(this.userId);
+		},
+		unmounted() {
+			unload(this.userId);
+			console.log('unmounted');
+		},
+
+		methods: {
+			run() {
+				load(this.userId);
+			},
+			obs() {
+				observe(this.userId, 1);
+			},
+			async formatGameList() {
+				var i = 0;
+				while (this.gameList[i])
+				{
+					this.gameListPlaying.push(	this.gameList[i].player_left_id.username + ' vs ' + 
+											this.gameList[i].player_right_id.username + ' room: ' + this.gameList[i].id);
+					++i;
+				}
+			},
+			async fectGameList() {
+				const res = await fetch('http://localhost:3000/api/game/playinglist/', {
+					method: 'get',
+				});
+				this.gameList = await res.json();
+				await this.formatGameList()
+			},
+
 		}
+
 	}
-}
 </script>
 
+
 <style lang="css">
-.GameArea
-{
-	float:	left;
-	display:	flex;
-	width:	70%;
-	min-height:	500px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	flex-direction:	column;
-}
+	.GameArea
+	{
+	}
 
-.GameArea > button
-{
-	margin-right:	auto;
-	margin-left:	auto;
-	margin-top:	auto;
-	margin-bottom:	auto;
-	background:	none;
-	padding:	15px;
-	padding-bottom: 3px;
-	border:	solid 3px white;
-	border-radius:	5px;
-	font-family:	MyanmarText;
-	font-size:	24px;
-	letter-spacing:	2px;
-	color:	white;
-}
+	#canvas
+	{
+	}
 
-.GameArea > button:hover
-{
-	background:	var(--white-10);
-}
+	.UserRecap
+	{
+		float:	right;
+		width:	25%;
+		min-height:	225px;
+		border:	solid 3px white;
+		border-radius: 5px;
+		margin-bottom:	min(22px);
+	}
 
-#canvas
-{
-	width:	100%;
-	height:	100%;
-}
-
-.UserRecap
-{
-	float:	right;
-	width:	25%;
-	min-height:	225px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	margin-bottom:	min(22px);
-}
-
-.SocialRecap
-{
-	float:	right;
-	width:	25%;
-	min-height:	225px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	margin-top:	min(22px);
-}
+	.SocialRecap
+	{
+		float:	right;
+		width:	25%;
+		min-height:	225px;
+		border:	solid 3px white;
+		border-radius: 5px;
+		margin-top:	min(22px);
+	}
 </style>
