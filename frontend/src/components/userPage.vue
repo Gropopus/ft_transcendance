@@ -14,7 +14,7 @@
 			</div>
 			<div v-if="userId != userData.id" class="relation">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton"/>
-				<p v-else-if="relation=='resquest-pending'" class="pending">request in <br> pending...</p>
+				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
 				<div v-else class="replyButton">
 					<button @click="acceptRequest()">accept</button>
 					<button @click="declineRequest()">decline</button>
@@ -23,18 +23,27 @@
 		</div>
 		<div class="StatsWin">
 			<div class="StatsTabs">
-				<button class="tab" @click="changeCurrent(0)" :id="isCurrentTab(0)"> Achievements </button>
-				<button class="tab"  @click="changeCurrent(1)" :id="isCurrentTab(1)"> Ladder </button>
+				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
+				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
-				<br>
+				<div v-if="currentTab==0" class="stat">
+					<div class="statElem">
+						<h3>Ladder level</h3>
+						<p>?</p>
+					</div>
+					<div class="statElem">
+						<h3>Victories</h3>
+						<p>{{ userData.victory }}</p>
+					</div>
+					<div class="statElem">
+						<h3>Defeats</h3>
+						<p>{{ userData.defeat }}</p>
+					</div>
+				</div>
 			</div>
 		</div>
-	<!-- <div class="stat">
-		Victories: {{ userData.victory }}
-		Defeats: {{ userData.defeat }}
-    </div> -->
 
   </div>
 </template>
@@ -361,6 +370,38 @@ export default	defineComponent ({
 	background:	white;
 	color:	var(--font-blue);
 	font-weight:	bold;
+}
+
+.stat {
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+}
+
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+.stat > .statElem > h3 {
+	flex: 1 0;
+	margin-bottom:6%;
+	margin-top: 6%;
+	height: 100%;
+	background: rgb(203, 177, 233, 0.2);
+}
+
+.stat > .statElem > p {
+	flex: 1 0;
+	height: 100%;
+	margin-top: 6%;
+	margin-bottom:6%;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
+
 }
 
 .replyButton {
