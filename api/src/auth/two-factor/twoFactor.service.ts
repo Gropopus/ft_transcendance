@@ -8,7 +8,7 @@ import { toFileStream } from 'qrcode';
 import { toFile } from 'qrcode';
 import { Response } from 'express';
 import { Iuser } from 'src/user/model/user.interface';
- 
+
 @Injectable()
 export class TwoFactorService {
   constructor (
@@ -18,7 +18,6 @@ export class TwoFactorService {
   ) {}
  
   public async generateTwoFactorAuthenticationSecret(user: Iuser) {
-    console.log(user);
     const secret = authenticator.generateSecret();
     const otpauthUrl = authenticator.keyuri(user.email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'), secret);
     await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id);
@@ -33,14 +32,13 @@ export class TwoFactorService {
   }
 
   public async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: Iuser) {
-    console.log(twoFactorAuthenticationCode);
-    console.log(user.twoFactorAuthenticationSecret);
-    console.log(user);
     const u1 = await this.usersService.findOne(user.id);
-    console.log(u1);
+    authenticator.options = {
+      window: 1,
+    };
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
-      secret: user.twoFactorAuthenticationSecret
+      secret: u1.twoFactorAuthenticationSecret
     })
   }
 
