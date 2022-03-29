@@ -187,8 +187,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('observe')
 	handleObserve(client: Socket, data:any) {
 		//data.gameRoom; data.gameId;
-		client.emit('observe', data.gameId);
 		client.join(data.gameRoom);
+		console.log('gameroom observer is = ', data.gameRoom)
+		this.server.to(data.gameRoom).emit('ask_pos')
+	}
+	@SubscribeMessage('for_observer')
+	async handleForObserver(client: Socket, data:any) {
+		// data.gameId;		data.gameRoom
+		// data.pos_x;		data.pos_y
+		// data.speed_x;	data.speed_y
+		this.server.to(data.gameRoom).emit('observer_data', data.pos_x, data.pos_y, data.speed_x, data.speed_y);
 	}
 
 	//bellow is matchmaking part
@@ -203,7 +211,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 			// create game
 			let gameid = await this.gameService.createGame();
-			this.logger.log('game ' + gameid + ' start')
+			this.logger.log('game ' + gameid + ' start');
+			console.log("gameroom is : ", 'gameRoom' + gameid)
 			this.player_room.set(this.server.sockets.sockets.get(playerss[0]).id, 'gameRoom' + gameid);
 			this.player_room.set(this.server.sockets.sockets.get(playerss[1]).id, 'gameRoom' + gameid);
 			let p_zero = this.server.sockets.sockets.get(playerss[0]).handshake.auth.userId;

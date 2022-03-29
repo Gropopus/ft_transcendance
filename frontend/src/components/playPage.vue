@@ -1,7 +1,6 @@
 <template>
 	<div>
-		<button @click="run()" >Play</button> 
-		<button @click="fectGameList()" >test</button> 
+		<button @click="run()" >Play</button>
 
 		<div class="GameArea">
 			<canvas id="canvas" width="640" height="500"></canvas>
@@ -12,10 +11,13 @@
 		</div>
 
 		<div class="SocialRecap">
-			<p>Live game :</p>
-		<ul id="v-for-object" class="gameListPlaying">
-			<li v-for="value in gameListPlaying">
-				{{ value }}
+			<p>Live game :
+				<button @click="fectGameList()" >Refresh</button>
+			</p>
+		<ul id="v-for-object" class="gameList">
+			<li v-for="value in gameList">
+				{{ value.player_left_id.username }} vs {{ value.player_right_id.username }}
+				<button @click="obs(value)"> Observe </button>
 			</li>
 		</ul>
 		</div>
@@ -54,8 +56,9 @@ import { load, unload, observe } from '../script/pong.js'
 			run() {
 				load(this.userId);
 			},
-			obs() {
-				observe(this.userId, 1);
+			obs(game) {
+				console.log("go observe game id " + game.id);
+				observe(this.userId, game.id);
 			},
 			async formatGameList() {
 				var i = 0;
