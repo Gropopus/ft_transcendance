@@ -40,6 +40,12 @@
 			<button @click="turnOn2FA()" class="submitButton">
 				Submit </button>
 		</div>
+		<div class="secret" v-if="turnoff">
+			Finish this security verification to disable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
+			<input type="googlecode" v-model="googlecode" class="textArea">
+			<button @click="turnOff2FA()" class="submitButton">
+				Submit </button>
+		</div>
 		<br>
 		<p>
 		</p>
@@ -69,6 +75,7 @@ export default	{
 			secret: "",
 			qrcode: "",
 			googlecode: "",
+			turnoff: "",
 		}
 	},
 	created(){
@@ -203,11 +210,7 @@ export default	{
 			}
 			else if (this.twofa == true)
 			{
-
-				const res = await fetch('http://localhost:3000/api/2fa/turn-off', {
-					method: 'post',
-					headers: { 'content-type': 'application/json' }
-				})
+				this.turnoff = "oui";
 				this.twofa = false;
 			}
 		},
@@ -221,6 +224,27 @@ export default	{
 				return ;
 			}
 			const res = await fetch('http://localhost:3000/api/2fa/turn-on', {
+				method: 'post',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({code: this.googlecode, user: this.user}),
+				})
+			const ret =	await res;
+			if (ret.status == 401)
+			{
+				this.error = "Wrong identification code."
+				return ;
+			}
+		},
+
+		async turnOff2FA()
+		{
+			this.error = "";
+			if (!this.googlecode)
+			{
+				this.error = "No code to submit"
+				return ;
+			}
+			const res = await fetch('http://localhost:3000/api/2fa/turn-off', {
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
