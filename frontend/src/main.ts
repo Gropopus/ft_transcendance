@@ -12,6 +12,7 @@ import profilePage from './components/profilePage.vue'
 import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
 import settingsPage from './components/settingsPage.vue'
+import observePage from './components/observePage.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -36,6 +37,12 @@ routes: [
         path: '/game',
         name: 'game',
         component: playPageVue,
+        props: true
+    },
+    {
+        path: '/observe/:gameId',
+        name: 'observe',
+        component: observePage,
         props: true
     },
     {
