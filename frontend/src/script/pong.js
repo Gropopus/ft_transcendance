@@ -1,5 +1,41 @@
 import 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js'
 
+var game = {
+	player: {
+		score: 0
+	},
+	computer: {
+		score: 0
+	},
+	ball: {
+		r: 5,
+		speed: {
+			x: 0,
+			y: 0
+		}
+	},
+	gameRoom: "-1",
+	side: "",
+	matchmaking: 0,
+			//0 not using
+			//1 in search
+			//2 wait for confirm
+			//3 wait for opponent
+			//4 you play
+	button: 0,
+			//0 not using
+			//1 Press to start
+			//2 confirm match
+			//3 play again
+	confirm_id: -1,
+	ready_usefull: 0,
+	nb_confirm: 0,
+	start_buton: {
+			x: 0, maxX: 0,
+			y: 0, maxY: 0
+	}
+}
+
 function scoreDraw(){
 	var context = game.canvas.getContext('2d');
 
@@ -143,8 +179,9 @@ function playerMove(event, ) {
 }
 
 
-function engage() {
-	game.socket.emit('engage', {gameRoom: game.gameRoom, speed:game.ball.speed.x});
+function engage(pid) {
+	if (game.socket && game.socket.connected == true)
+		game.socket.emit('engage', {gameRoom: game.gameRoom, speed:game.ball.speed.x});
 }
 
 //game action
@@ -203,7 +240,6 @@ function ballMove() {
 	else if (game.ball.x < game.player_width) {
 		collide(game.player, game);
 	}
-
 	game.ball.x += game.ball.speed.x;
 	game.ball.y += game.ball.speed.y;
 }
@@ -215,7 +251,6 @@ function entermatchmaking(draw)
 	else
 		textDraw('Opponent didn\'t respond, Back in the matchmaking', game);
 	game.matchmaking = 1;
-	console.log('joinMatchmaking send ')
 	game.socket.emit('joinMatchmaking');
 }
 
@@ -226,28 +261,19 @@ function play() {
 		cancelAnimationFrame(game.anim);
 		return ;
 	}
-	else if (game.matchmaking == 0)
-		entermatchmaking(1, game);
-	else if (game.matchmaking == 1)
-		; // console.log("searching a game");
-	else if (game.matchmaking == 2)
-		; // console.log("waiting for confirm");
-	else if (game.matchmaking == 3)
-		; // console.log("waiting for opponent");
-	else {
-		if (game.gameRoom != "-1")
-		{
-			draw(game);
-			ballMove(game);
-		}
+	else if (game.gameRoom != "-1")
+	{
+		draw(game);
+		ballMove(game);
 	}
 	game.anim = requestAnimationFrame(function() {
 		play(game);
 	});
 }
 
-function waited_to_long()
+async function waited_to_long(pid)
 {
+	console.log("TIME OUT IS NOW")
 	game.ready_usefull = 0;
 	if (game.matchmaking == 2)
 	{
@@ -258,11 +284,13 @@ function waited_to_long()
 		game.button = 3;
 		buttonDraw('Enter the matchmaking again', 50, game);
 	}
-	else if (game.matchmaking != 4)
+	else if (game.matchmaking == 5)
+	;
+	else if (game.matchmaking == 5)
 	{
 		game.socket.emit('MatchTimeOut', game.confirm_id);
-		entermatchmaking(0, game);
 		game.nb_confirm = 0;
+		entermatchmaking(0, game);
 	}
 }
 
@@ -291,7 +319,7 @@ function playerclick(event, ) {
 			y >= game.start_buton.y && y <= game.start_buton.maxY)
 		{
 			game.button = 0;
-			play();
+			entermatchmaking(1, game);
 		}
 		
 	}
@@ -309,47 +337,15 @@ function playerclick(event, ) {
 		if (x >= game.start_buton.x && x <= game.start_buton.maxX &&
 			y >= game.start_buton.y && y <= game.start_buton.maxY)
 		{
+			game.computer.y = game.canvas.height / 2 - game.player_height / 2;
+			game.player.y = game.canvas.height / 2 - game.player_height / 2;
 			game.button = 0;
-			play();
+			game.matchmaking = 1
+			entermatchmaking(1, game);
 		}
 	}
 }
 
-var game = {
-	player: {
-		score: 0
-	},
-	computer: {
-		score: 0
-	},
-	ball: {
-		r: 5,
-		speed: {
-			x: 0,
-			y: 0
-		}
-	},
-	gameRoom: "-1",
-	side: "",
-	matchmaking: 0,
-			//0 not using
-			//1 in search
-			//2 wait for confirm
-			//3 wait for opponent
-			//4 you play
-	button: 0,
-			//0 not using
-			//1 Press to start
-			//2 confirm match
-			//3 play again
-	confirm_id: -1,
-	ready_usefull: 0,
-	nb_confirm: 0,
-	start_buton: {
-			x: 0, maxX: 0,
-			y: 0, maxY: 0
-	}
-}
 function socket_init()
 {
 	game.socket = io("http://localhost:42069",{
@@ -393,9 +389,8 @@ function socket_init()
 		game.side = sided;
 		game.gameId = id;
 		game.socket.emit('joinRoom', game.gameRoom);
-		console.log('game id is ', id)
 		setTimeout(function() {
-			engage(game)
+			engage(game.id)
 		}, 2000);
 	})
 
@@ -408,7 +403,7 @@ function socket_init()
 		game.confirm_id = conf_id;
 		game.socket.emit('joinRoom', conf_id);
 		setTimeout(function() {
-			waited_to_long(game)
+			waited_to_long(game.id)
 		}, 5000);
 	})
 
@@ -421,9 +416,9 @@ function socket_init()
 		game.nb_confirm += 1;
 		if (game.nb_confirm == 2)
 		{
-			game.matchmaking = 4;
+			game.matchmaking = 5;
 			game.socket.emit('startGame', game.confirm_id);
-			console.log('start game')
+			play();
 		}
 	})
 	game.socket.on('playerUnconfirm', function() {
@@ -437,26 +432,40 @@ function socket_init()
 
 		game.ball.x = game.canvas.width / 2;
 		game.ball.y = game.canvas.height / 2;
+		game.computer.y = game.canvas.height / 2 - game.player_height / 2;
+		game.player.y = game.canvas.height / 2 - game.player_height / 2;
 
 		draw(game);
-		if ((game.player.score == 11 && game.side == 'left') || 
+		if (game.side == 'observer')
+		{
+			if (game.player.score > game.computer.score)
+				textDraw("Game end, left player win !")
+			else 
+				textDraw("Game end, right player win !")
+				cancelAnimationFrame(game.anim);
+			return;
+		}
+		else if ((game.player.score == 11 && game.side == 'left') || 
 			game.computer.score == 11 && game.side == 'right')
 			textDraw("You win !", game)
 		else
 			textDraw("You loose !", game)
 
+			console.log ('pos p = ', game.player.y)
+			console.log('should be ', game.canvas.width / 2 - game.player_height / 2);
 
 		game.matchmaking = 0;
 		game.button = 3;
 		buttonDraw('Play again', 50, game);
-		cancelAnimationFrame(game.anim);
 		game.player.score = 0;
 		game.computer.score = 0;
 		game.nb_confirm = 0;
 		game.side = ' ';
 		game.gameRoom = "-1";
-		game.computer.y = game.canvas.width / 2 - game.player_height / 2;
-		game.player.y = game.canvas.width / 2 - game.player_height / 2;
+		game.ball.speed.x = 0;
+		game.ball.speed.y = 0;
+		game.ball.x = game.canvas.width / 2;
+		game.ball.y = game.canvas.height / 2;
 	})
 	game.socket.on('playerLeave', function() {
 		if (game.side == 'observer')
@@ -483,8 +492,33 @@ function socket_init()
 			game.nb_confirm = 0;
 			game.side = ' ';
 			game.gameRoom = "-1";
-			game.computer.y = game.canvas.width / 2 - game.player_height / 2;
-			game.player.y = game.canvas.width / 2 - game.player_height / 2;
+			game.computer.y = game.canvas.height / 2 - game.player_height / 2;
+			game.player.y = game.canvas.height / 2 - game.player_height / 2;
+			game.ball.speed.x = 0;
+			game.ball.speed.y = 0;
+			game.ball.x = game.canvas.width / 2;
+			game.ball.y = game.canvas.height / 2;
+		}
+	})
+	game.socket.on('ask_pos', function() {
+		if (game.side == 'right')
+			game.socket.emit('for_observer', {gameId: game.id, gameRoom: game.gameRoom, 
+												pos_x: game.ball.x, pos_y: game.ball.y,
+												speed_x: game.ball.speed.x, speed_y: game.ball.speed.y,
+												left_pos: game.player.y, right_pos: game.computer.y})
+	})
+	game.socket.on('observer_data', function(ball_x, ball_y, speed_x, speed_y, left_pos, right_pos) {
+		//add player pos
+		if (game.side == 'observer')
+		{
+			game.ball.x = ball_x;
+			game.ball.y = ball_y;
+			game.ball.speed.x = speed_x;
+			game.ball.speed.y = speed_y;
+			game.matchmaking = 4;
+			game.player.y = left_pos;
+			game.computer.y = right_pos;
+			play();
 		}
 	})
 }
@@ -494,8 +528,8 @@ function load(userId)
 	socket_init();
 	game.canvas = document.getElementById('canvas'),
 
-	game.player_height = game.canvas.height * (1/6)  ;
-	game.player_width  = game.canvas.width  * (1/128);
+	game.player_height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+	game.player_width = (1/128) * game.canvas.width; // base is 1/128
 
 	game.player.y = game.canvas.height / 2 - game.player_height / 2;
 	game.computer.y = game.canvas.height / 2 - game.player_height / 2;
@@ -503,6 +537,7 @@ function load(userId)
 	game.ball.x = game.canvas.width / 2;
 	game.ball.y = game.canvas.height / 2;
 
+	console.log ('start pos p = ', game.player.y)
 	
 	// Mouse move event
 	game.canvas.addEventListener('mousemove', function(e) {
@@ -514,6 +549,7 @@ function load(userId)
 	})
 	game.socket.auth = {userId};
 	game.socket.connect();
+	draw();
 	buttonDraw("Press here to start", 0, game);
 	game.button = 1;
 }
@@ -530,6 +566,8 @@ function unload(userId)
 
 		game.ball.x = game.canvas.width / 2;
 		game.ball.y = game.canvas.height / 2;
+		game.computer.y = game.canvas.height / 2 - game.player_height / 2;
+		game.player.y = game.canvas.height / 2 - game.player_height / 2;
 
 		draw(game);
 		if ((game.player.score == 11 && game.side == 'left') || 
@@ -537,19 +575,45 @@ function unload(userId)
 			textDraw("You win !", game)
 		else
 			textDraw("You loose !", game)
-
-
 		game.matchmaking = 0;
 		game.button = 3;
 		buttonDraw('Play again', 50, game);
 		cancelAnimationFrame(game.anim);
-		game.player.score = 0;
-		game.computer.score = 0;
-		game.nb_confirm = 0;
-		game.side = ' ';
-		game.gameRoom = "-1";
-		game.computer.y = game.canvas.width / 2 - game.player_height / 2;
-		game.player.y = game.canvas.width / 2 - game.player_height / 2;
+		game = {
+			player: {
+				score: 0
+			},
+			computer: {
+				score: 0
+			},
+			ball: {
+				r: 5,
+				speed: {
+					x: 0,
+					y: 0
+				}
+			},
+			gameRoom: "-1",
+			side: "",
+			matchmaking: 0,
+					//0 not using
+					//1 in search
+					//2 wait for confirm
+					//3 wait for opponent
+					//4 you play
+			button: 0,
+					//0 not using
+					//1 Press to start
+					//2 confirm match
+					//3 play again
+			confirm_id: -1,
+			ready_usefull: 0,
+			nb_confirm: 0,
+			start_buton: {
+					x: 0, maxX: 0,
+					y: 0, maxY: 0
+			}
+		}
 	}
 }
 
@@ -563,11 +627,8 @@ function observe(userId, gameId)
 	socket_init();
 	game.canvas = document.getElementById('canvas'),
 
-	game.player_height = (1/6) * game.canvas.height;
-	game.player_width = (1/128) * game.canvas.width;
-
-	game.player.y = game.canvas.height / 2 - game.player_height / 2;
-	game.computer.y = game.canvas.height / 2 - game.player_height / 2;
+	game.player_height = (1/6) * game.canvas.height; // base is 1/6
+	game.player_width = (1/128) * game.canvas.width; // base is 1/128
 
 	game.ball.x = game.canvas.width / 2;
 	game.ball.y = game.canvas.height / 2;
@@ -575,8 +636,12 @@ function observe(userId, gameId)
 	
 	game.socket.auth = {userId};
 	game.socket.connect();
-	buttonDraw("Connecting to game", 0);
-	game.button = -49;
+	game.side = "observer";
+	game.gameRoom = "gameRoom" + gameId;
+	game.matchmaking = -1;
+	draw();
+	textDraw("Connecting to game");
+	emitObserve(gameId);
 }
 
 

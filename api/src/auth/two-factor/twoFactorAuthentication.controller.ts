@@ -31,33 +31,22 @@ import { UserEntity } from 'src/user/model/user.entity';
 
 	@Post('authenticate')
 	@UseGuards(JwtAuthGuard)
-	async authenticate(
-	  @Req() request: RequestWithUser,
-	  @Body() { twoFactorAuthenticationCode } : TwoFactorAuthenticationCodeDto) : Promise<string>{
-		
-		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-		twoFactorAuthenticationCode, request.body
-		);
+	async authenticate(@Body() bod: any) {
+		//console.log(bod.user);
+		const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		  bod.code, await this.usersService.findOne(bod.user.id));	  
 		if (!isCodeValid) {
+			console.log("NOPE");
 		  throw new UnauthorizedException('Wrong authentication code');
 		}
-		
-		const user = await this.usersService.findOne(request.body.id);
-		if (user.ban) {
-		  throw new UnauthorizedException('You\'re banned');
-		}
-
-		const accessTokenCookie = this.twoFactorAuthenticationService.getCookieWithJwtToken(request.body.id, true);
-		request.res.setHeader('Set-Cookie', [accessTokenCookie.cookie]);
-
-		return JSON.stringify(accessTokenCookie.token);
+		return ;
 	}
 
 	@Post('turn-on')
 	@UseGuards(JwtAuthGuard)
 	async turnOnTwoFactorAuthentication(@Body() bod: any) {
-	  const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-		bod.code, await this.usersService.findOne(bod.user.id));	  
+	  const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		bod.code, await this.usersService.findOne(bod.user.id));  
 	  if (!isCodeValid) {
 		throw new UnauthorizedException('Wrong authentication code');
 	  }
@@ -67,14 +56,14 @@ import { UserEntity } from 'src/user/model/user.entity';
 	@Post('turn-off')
 	@UseGuards(JwtAuthGuard)
 	async turnOffTwoFactorAuthentication(@Body() bod: any) {
-		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
 		  bod.code, await this.usersService.findOne(bod.user.id));	  
 		if (!isCodeValid) {
 		  throw new UnauthorizedException('Wrong authentication code');
 		}
 		await this.usersService.turnOffTwoFactorAuthentication(bod.user.id);
 	}
-	
+
 	@Post('generate')
 	@UseGuards(JwtAuthGuard)
 	async generate(@Body() user : Iuser){

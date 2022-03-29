@@ -1,7 +1,6 @@
 <template>
 	<div>
-		<button @click="run()" >Play</button> 
-		<button @click="fectGameList()" >test</button> 
+		<button @click="run()" >Play</button>
 
 		<div class="GameArea">
 			<canvas id="canvas" width="640" height="500"></canvas>
@@ -12,10 +11,13 @@
 		</div>
 
 		<div class="SocialRecap">
-			<p>Live game :</p>
-		<ul id="v-for-object" class="gameListPlaying">
-			<li v-for="value in gameListPlaying">
-				{{ value }}
+			<p>Live game :
+				<button @click="fectGameList()" >Refresh</button>
+			</p>
+		<ul id="v-for-object" class="gameList">
+			<li v-for="value in gameList">
+				{{ value.player_left_id.username }} vs {{ value.player_right_id.username }}
+				<button @click="goToRoute(value.id)"> Observe </button>
 			</li>
 		</ul>
 		</div>
@@ -23,60 +25,67 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
 import { load, unload, observe } from '../script/pong.js'
-	export default	{
-		props:	{
-			userId:	{
-				type:	[Number, String],
-				default:	"0"
-			},
+export default	defineComponent ({
+	name: 'gamePage',
+	props:	{
+		userId:	{
+			type:	[Number, String],
+			default:	"0"
 		},
+	},
 
-		data() {
-			return {
-				gameList: [],
-				gameListPlaying: [],
+	data() {
+		return {
+			gameList: [],
+			gameListPlaying: [],
+		}
+	},
+
+	mounted() {	
+		this.gameList;
+		this.gameListPlaying;
+		console.log('user id: ' + this.userId);
+		// load(this.userId);
+	},
+	unmounted() {
+		unload(this.userId);
+		console.log('unmounted');
+	},
+
+	methods: {
+		goToRoute(id) {
+			console.log('redirect to /game/' + id)
+			this.$router.replace(`/watch/${id}`);
+		},
+		run() {
+			load(this.userId);
+		},
+		obs(game) {
+			console.log("go observe game id " + game.id);
+			observe(this.userId, game.id);
+		},
+		async formatGameList() {
+			var i = 0;
+			while (this.gameList[i])
+			{
+				this.gameListPlaying.push(	this.gameList[i].player_left_id.username + ' vs ' + 
+										this.gameList[i].player_right_id.username + ' room: ' + this.gameList[i].id);
+				++i;
 			}
 		},
-
-		mounted() {	
-			this.gameList;
-			this.gameListPlaying;
-			console.log('user id: ' + this.userId);
-			// load(this.userId);
+		async fectGameList() {
+			const res = await fetch('http://localhost:3000/api/game/playinglist/', {
+				method: 'get',
+			});
+			this.gameList = await res.json();
+			await this.formatGameList()
 		},
-		unmounted() {
-			unload(this.userId);
-			console.log('unmounted');
-		},
-
-		methods: {
-			run() {
-				load(this.userId);
-			},
-			obs() {
-				observe(this.userId, 1);
-			},
-			async formatGameList() {
-				var i = 0;
-				while (this.gameList[i])
-				{
-					this.gameListPlaying.push(	this.gameList[i].player_left_id.username + ' vs ' + 
-											this.gameList[i].player_right_id.username + ' room: ' + this.gameList[i].id);
-					++i;
-				}
-			},
-			async fectGameList() {
-				const res = await fetch('http://localhost:3000/api/game/playinglist/', {
-					method: 'get',
-				});
-				this.gameList = await res.json();
-				await this.formatGameList()
-			},
-
-		}
 
 	}
+
+})
 </script>
 
 

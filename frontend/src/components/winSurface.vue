@@ -28,11 +28,12 @@
 		return {
 			navbuttons: [
 				{path: '/game', name: "play", icon: "./src/assets/game.png"},
+				{path: '/watch', name: "watch", icon: "./src/assets/game.png"},
 				{path: '/chat', name: "chat", icon: "./src/assets/chat.png"},
 				{path: '/friends', name: "friends", icon: "./src/assets/friends.png"},
 				{path: '/profile', name: "profile", icon: "./src/assets/profile-picture.png"},
 				{path: '/settings', name: "settings", icon: "./src/assets/settings.png"},
-				{path: '/logout', name: "logout", icon: "./src/assets/log-out.png"}
+				{path: '/logout', name: "logout", icon: "./src/assets/log-out.png"},
 			],
 			userId: "0"
 		}
