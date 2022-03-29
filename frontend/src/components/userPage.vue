@@ -13,7 +13,7 @@
 				<p @click="challenge()" >challenge</p>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton"/>
+				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
 				<div v-else class="replyButton">
 					<button @click="acceptRequest()">accept</button>
@@ -268,10 +268,10 @@ export default	defineComponent ({
 
 .challengeButton > p {
 	appearance: none;
-	background-color: #FFFFFF;
+	background-color: rgb(255, 228, 113);
+	box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
 	border-radius: 40em;
 	border-style: none;
-	box-shadow: #ADCFFF 0 -12px 6px inset;
 	box-sizing: border-box;
 	color: var(--font-blue);
 	cursor: pointer;
@@ -293,9 +293,9 @@ export default	defineComponent ({
 }
 
 .challengeButton > p:hover {
-  background-color: rgb(255, 228, 113);
-  box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
-  transform: scale(1.125);
+	background-color: white;
+	box-shadow: rgb(225, 198, 228) 0 -12px 6px inset;
+	transform: scale(1.125);
 }
 
 .challengeButton > p:active {
