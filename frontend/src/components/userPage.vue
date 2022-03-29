@@ -31,7 +31,7 @@
 				<div v-if="currentTab==0" class="stat">
 					<div class="statElem">
 						<h3>Ladder level</h3>
-						<p>?</p>
+						<p>{{ ladder.level }} / {{ ladder.total }}</p>
 					</div>
 					<div class="statElem">
 						<h3>Victories</h3>
@@ -71,17 +71,20 @@ export default	defineComponent ({
 			relationIcon: "",
 			currentTab: 0,
 			picture: "",
+			ladder: 0,
 		}
 	},
 
 	mounted() {
 		this.userData;
 		this.relation;
+		this.ladder;
 	},
 
 	async created() {
 		this.userData = await this.fetchUserData();
-		this.picture =await this.getPicture();
+		this.picture = await this.getPicture();
+		this.ladder = await this.fetchLadderLevel();
 	},
 
 	async updated() {
@@ -121,6 +124,15 @@ export default	defineComponent ({
 			.catch(error => {
 				return "";
 			});
+		},
+
+		async fetchLadderLevel() {
+			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userData.id}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			})
+			const ladder = await res.json();
+			return ladder;
 		},
 
 		async addOrRemovefriend(){
@@ -268,9 +280,9 @@ export default	defineComponent ({
 
 .challengeButton > p {
 	appearance: none;
-	background-color: rgb(255, 228, 113);
-	box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
 	border-radius: 40em;
+	background-color: white;
+	box-shadow: rgb(225, 198, 228) 0 -12px 6px inset;
 	border-style: none;
 	box-sizing: border-box;
 	color: var(--font-blue);
@@ -293,8 +305,8 @@ export default	defineComponent ({
 }
 
 .challengeButton > p:hover {
-	background-color: white;
-	box-shadow: rgb(225, 198, 228) 0 -12px 6px inset;
+	background-color: rgb(255, 228, 113);
+	box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
 	transform: scale(1.125);
 }
 
@@ -313,6 +325,7 @@ export default	defineComponent ({
 	border-radius: 8px;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
 	height: 70px;
+	border: solid 3px white
 }
 
 .relationButton:hover {

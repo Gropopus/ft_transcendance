@@ -296,7 +296,6 @@ export default	defineComponent ({
 
 .listArea > .elem > .friend-username:hover {
 	background:	var(--deep-blue-10);
-	cursor: pointer;
 }
 
 .listArea > .elem > .friend-username {

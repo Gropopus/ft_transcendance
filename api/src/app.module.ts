@@ -47,6 +47,7 @@ export class AppModule implements NestModule {
         {path: '/api/users/find-by-username/:name', method: RequestMethod.GET},
         {path: '/api/users/:id/role', method: RequestMethod.PUT},
         {path: '/api/users/pictureById/:id', method: RequestMethod.GET},
+        {path: '/api/users/ladder-level/:id', method: RequestMethod.GET},
 		// 2fa 
         {path: '/api/2fa/generate', method: RequestMethod.POST},
         {path: '/api/2fa/authenticate', method: RequestMethod.POST},
