@@ -5,6 +5,7 @@ import { urlencoded, json } from 'body-parser';
 
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -16,6 +17,7 @@ import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
 import { PlayerModule } from './player/player.module';
 import { GameModule } from './game/game.module';
+
 
 async function bootstrap() {
 
@@ -47,7 +49,7 @@ async function bootstrap() {
 				ChatModule,
 				FriendModule,
 				PlayerModule,
-				GameModule
+				GameModule,
 			  ]});
 
   SwaggerModule.setup('swagger', app, document);
