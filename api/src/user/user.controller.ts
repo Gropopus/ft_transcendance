@@ -87,6 +87,11 @@ export class UserController {
       id: login.payload.id,
     };
   }
+
+  @Get('ladder-level/:id')
+  async getLadderLevel(@Param() params) {
+	  return this.userService.getLadderLevel(params.id);
+  }
   
 	@UseGuards(JwtAuthGuard)
 	@Post('logout')

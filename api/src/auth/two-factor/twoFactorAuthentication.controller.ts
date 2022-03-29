@@ -56,7 +56,6 @@ import { UserEntity } from 'src/user/model/user.entity';
 	@Post('turn-on')
 	@UseGuards(JwtAuthGuard)
 	async turnOnTwoFactorAuthentication(@Body() bod: any) {
-	console.log("Code->" + bod.code);
 	  const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
 		bod.code, await this.usersService.findOne(bod.user.id));	  
 	  if (!isCodeValid) {
@@ -65,6 +64,17 @@ import { UserEntity } from 'src/user/model/user.entity';
 	  await this.usersService.turnOnTwoFactorAuthentication(bod.user.id);
 	}
 
+	@Post('turn-off')
+	@UseGuards(JwtAuthGuard)
+	async turnOffTwoFactorAuthentication(@Body() bod: any) {
+		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		  bod.code, await this.usersService.findOne(bod.user.id));	  
+		if (!isCodeValid) {
+		  throw new UnauthorizedException('Wrong authentication code');
+		}
+		await this.usersService.turnOffTwoFactorAuthentication(bod.user.id);
+	}
+	
 	@Post('generate')
 	@UseGuards(JwtAuthGuard)
 	async generate(@Body() user : Iuser){

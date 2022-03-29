@@ -4,12 +4,14 @@ import { Repository } from 'typeorm';
 import { PlayerEntity } from 'src/player/player.entity'
 import { IPlayer, PlayerStatus, PlayerSide } from 'src/player/player.interface'
 import { Iuser } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class PlayerService {
     constructor(
         @InjectRepository(PlayerEntity)
-        private playerRepository: Repository<PlayerEntity>)
+        private playerRepository: Repository<PlayerEntity>,
+        private userService: UserService)
         {}
 
     //user1 is left, user2 is right
@@ -49,20 +51,24 @@ export class PlayerService {
         });
         return this.playerRepository.findOne({ id: pid });
     }
-
+    
     async setFinalScores(pid: number, his_score: number, op_score: number) {
         await this.playerRepository.update({id: pid}, {
-                points: his_score,
+            points: his_score,
                 status: (his_score > op_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
             });
-        const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
-        await this.playerRepository.update( {id: op_id}, {
-            points: op_score,
+            const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
+            await this.playerRepository.update( {id: op_id}, {
+                points: op_score,
             status:  (op_score > his_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
         });
+        const p1 = await this.getPlayer(pid);
+        const p2 = await this.getPlayer(op_id);
+        await this.userService.updateStat(p1.user.id, (p1.status == PlayerStatus.WINNER));
+        await this.userService.updateStat(p2.user.id, (p2.status == PlayerStatus.WINNER));
         // return this.playerRepository.findOne({ id: pid });
     }
-
+    
     async getPlayer(pid: number) {
         return this.playerRepository.findOne({ id: pid });
     }
