@@ -2,14 +2,16 @@
 <template>
 <div style="width: 93%; display: flex; flex-direction: column">
 	<div class="header-friends">
-		<img style="width: 20%; margin-left: 10%;" src="/src/assets/header-id.png" />
+		<img style="width: 280px; height: 150px; margin-left: 5%; margin-top: 10px" src="/src/assets/header-id.png" />
 		<div class="searchBar">
 			<div style="display: flex; justify-content: right">
 				<img style="width: 3%; min-height: 40px; min-width: 50px" src="../assets/magnifying-glass.png">
 				<span style="font-size: 25px; text-align: right; margin-left: 1%"> Search a user</span>
 			</div>
 			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1">
-			<p class="friendFound" v-if="found" v-on:click="goToUserPage(found)"> {{ found }}</p>
+			<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
+				<p v-on:click="goToUserPage(elem.username)"> {{ elem.username }}</p>
+			</div>
 		</div>
 	</div>
 	<div class="friendsPage">
@@ -56,7 +58,7 @@ export default	defineComponent ({
 	data() {
 		return {
 			search: "",
-			found: "",
+			found: [],
 			all: [
 				{type: "Your friends", icon: "/src/assets/friends.png", list: [], status: 0},
 				{type: "Friends requests", icon: "/src/assets/friends-requests.png", list: [], status: 0},
@@ -139,16 +141,26 @@ export default	defineComponent ({
 		},
 
 		async searchUser() {
+			if (!this.search)
+			{
+				this.found = [];
+				return [];
+			}
 			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
-			const user = await res.json();
-			console.log(user[0]);
-			if (res.status != 500)
-				this.found = user[0].username;
-			else
-				this.found = "";	
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				this.found = resJson;
+				return resJson;
+			})
+			.catch(error => {
+				this.found = [];
+				return [];
+			});
 		},
 
 		setDiplayState(type: string) {
