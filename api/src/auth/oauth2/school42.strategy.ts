@@ -14,7 +14,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 			tokenURL: "https://api.intra.42.fr/oauth/token",
 			clientID: process.env.OAUTH_42_UID,
 			clientSecret: process.env.OAUTH_42_SECRET,
-			callbackURL: "http://localhost:4200/public/callback",
+			callbackURL: "http://localhost:4200/callback",
 			scope: 'public',
 			proxy: true
 		});
@@ -30,7 +30,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 		});
 		try {
 			// check if user already exists
-			let user = await this.usersService.getUserBy42Id(data.id);
+			let user = await this.usersService.getUserByid42(data.id);
 			
 			//check if user is banned
 			if (user.ban) {
@@ -53,7 +53,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 						let user = await this.usersService.create({
 							username: username,
 							password: "School42",
-							school42id: data.id,
+							id42: data.id,
 							email: data.email,
 						});
 						user.password = undefined;
@@ -70,7 +70,6 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 					HttpStatus.INTERNAL_SERVER_ERROR,
 				  );
 			}
-			//throw error;
 		}
 	}
 }

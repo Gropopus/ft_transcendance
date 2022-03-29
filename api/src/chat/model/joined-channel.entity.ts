@@ -16,7 +16,7 @@ export class JoinedChannelEntity {
   user: UserEntity;
 
   @Column()
-  userId: number;
+  Iuserid: number;
 
   @ManyToOne(() => ChannelEntity, channel => channel.joinedUsers)
   @JoinColumn()

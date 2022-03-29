@@ -1,7 +1,6 @@
-import { JoinColumn, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { JoinColumn, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FriendStatus } from "./friend.interface";
 import { UserEntity } from "src/user/model/user.entity";
-import { UserI } from "src/user/model/user.interface";
 
 @Entity()
 export class FriendEntity {
@@ -10,9 +9,16 @@ export class FriendEntity {
 
     @ManyToOne(() => UserEntity, user => user.friends)
     @JoinColumn()
-    user: UserI;
+    user: UserEntity;
 
-    @Column()
+    @ManyToOne(() => UserEntity, user => user.target)
+    @JoinColumn()
+    target: UserEntity;
+
+    @Column({ nullable: true })
+    targetName: string;
+
+    @Column({ nullable: true })
     targetId: number;
 
     @Column({

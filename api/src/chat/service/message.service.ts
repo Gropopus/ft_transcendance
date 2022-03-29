@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { MessageEntity } from 'src/chat/model/message.entity';
-import { MessageI } from 'src/chat/model/message.interface';
+import { Imessage } from 'src/chat/model/message.interface';
 import { Ichannel } from 'src/chat/model/channel.interface';
-
 import { UserEntity } from 'src/user/model/user.entity';
-import { UserI } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 import { Repository } from 'typeorm';
-
+import { FriendEntity } from 'src/friend/friend.entity';
 @Injectable()
 export class MessageService {
 
@@ -16,29 +15,31 @@ export class MessageService {
   constructor(
     @InjectRepository(MessageEntity)
     private readonly messageRepository: Repository<MessageEntity>,
+    @InjectRepository(FriendEntity)
+	  private readonly friendRequestRepository: Repository<FriendEntity>,
     @InjectRepository(UserEntity)
 	private readonly userRepository: Repository<UserEntity>,
   ) { }
 
-  async create(message: MessageI): Promise<MessageI> {
+  async create(message: Imessage): Promise<Imessage> {
     return this.messageRepository.save(this.messageRepository.create(message));
   }
 
-  async findMessagesForChannel(channel: Ichannel, user: UserI, options: IPaginationOptions): Promise<Pagination<MessageI>> {
+  async findMessagesForChannel(channel: Ichannel, user: Iuser, options: IPaginationOptions): Promise<Pagination<Imessage>> {
 	
-	const blocked = this.userRepository
-        .createQueryBuilder("u")
-        .leftJoin('u.sentFriendRequests', 'c')
-        .leftJoin('u.receivedFriendRequests', 'r')
-        .where("r.creator = :id")
-        .andWhere("r.status = 'blocked'")
-        .setParameters({ id : user.id })
-        .getMany();
+    const blocked = await this.userRepository
+    .createQueryBuilder("u")
+    .leftJoin('u.friends', 'c')
+    .leftJoin('u.target', 'r')
+    .where("r.user = :id")
+    .andWhere("r.status = 'user-blocked'")
+    .setParameters({ id : user.id })
+    .getMany();
 
     const blockedIds = (await blocked).map(b => b.id);
-	if (blockedIds.length != 0) {
-		// query for messages excluding blocked users
-		const query = this.messageRepository
+    if (blockedIds.length != 0) {
+    // query for messages excluding blocked users
+    const query = this.messageRepository
         .createQueryBuilder('message')
         .leftJoin('message.channel', 'channel')
         .leftJoinAndSelect('message.user', 'u')
@@ -47,8 +48,9 @@ export class MessageService {
         .setParameters({ blockedIds: blockedIds })
         .orderBy('message.created_at', 'DESC');
 
-		return paginate(query, options);
-	}
+    return paginate(query, options);
+  } 
+
 	const query = this.messageRepository
 	.createQueryBuilder('message')
 	.leftJoin('message.channel', 'channel')

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
-import { UserI, UserRole, UserStatus } from 'src/user/model/user.interface';
+import { Iuser, UserRole, UserStatus } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Observable, from, throwError } from 'rxjs';
@@ -19,38 +19,38 @@ export class UserService {
 		private authService: AuthService
 	) { }
 
-	async create(newUser: UserI): Promise<UserI> {
+	async create(newUser: Iuser): Promise<Iuser> {
 		try {
 		const exists: boolean = await this.mailExists(newUser.email);
 		if (!exists) {
 			const passwordHash: string = await this.hashPassword(newUser.password);
 			newUser.password = passwordHash;
 			newUser.level = 0;
-			newUser.nbLoss = 0;
-			newUser.nbWin = 0;
+			newUser.defeat = 0;
+			newUser.victory = 0;
 			newUser.twoFactorAuthEnabled = false;
-			newUser.avatar = "user.png";
+			newUser.picture = "profile-picture.png";
 			const user = await this.userRepository.save(this.userRepository.create(newUser));
-			if (user.id == 1) {
-			user.role = UserRole.OWNER;
-			await this.userRepository.save(user);
-			}
+			//if (user.id == 0) {
+			//user.role = UserRole.OWNER;
+			//await this.userRepository.save(user);
+			//}
 			return this.findOne(user.id);
 		} else {
 			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
 		}
 		} catch {
-		throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
+			throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
 		}
 	}
 
-	async login(user: UserI): Promise<any> {
+	async login(user: Iuser): Promise<any> {
 		try {
-			const foundUser: UserI = await this.findByEmail(user.email.toLowerCase());
+			const foundUser: Iuser = await this.findByEmail(user.email.toLowerCase());
 			if (foundUser) {
 				const matches: boolean = await this.validatePassword(user.password, foundUser.password);
 				if (matches) {
-					const payload: UserI = await this.findOne(foundUser.id);
+					const payload: Iuser = await this.findOne(foundUser.id);
 					if (payload.ban)
 						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);
 					const jwt: string = await this.authService.generateJwt(payload);
@@ -70,15 +70,15 @@ export class UserService {
 		}
 	}
 
-	async logout(user:UserI): Promise<any> {
+	async logout(user:Iuser): Promise<any> {
 		this.updateStatusOfUser(user.id, {"status": UserStatus.OFF});
 	}
 
-	async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
+	async findAll(options: IPaginationOptions): Promise<Pagination<Iuser>> {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
-	async findAllByUsername(username: string): Promise<UserI[]> {
+	async findAllByUsername(username: string): Promise<Iuser[]> {
 		return this.userRepository.find({
 			where: {
 				username: Like(`%${username.toLowerCase()}%`)
@@ -86,7 +86,15 @@ export class UserService {
 		})
 	}
 
-	async findAllByLevel(): Promise<UserI[]> {
+	async findOneByEmail(email: string): Promise<Iuser> {
+		return this.userRepository.findOne({
+			where: {
+				email: Like(`%${email.toLowerCase()}%`)
+			}
+		})
+	}
+
+	async findAllByLevel(): Promise<Iuser[]> {
 		return this.userRepository.find({
 			order: {
 				level: "DESC"
@@ -94,11 +102,16 @@ export class UserService {
 		})
 	}
 
-	async findOne(id: number): Promise<UserI> {
+	async findOne(id: number): Promise<Iuser> {
 		return this.userRepository.findOne({ id });
 	}
 
-	async updateOne(id: number, user: UserI): Promise<any> {
+	async updateUser(id: number, user: Iuser)
+	{
+		return this.userRepository.update(id, user);
+	}
+
+	async updateOne(id: number, user: Iuser): Promise<any> {
 		//delete user.email;
 		delete user.password;
 		delete user.role;
@@ -108,7 +121,7 @@ export class UserService {
 			);
 	}
 
-    async updateRoleOfUser(id: number, user: UserI): Promise<any> {
+    async  updateUserRole(id: number, user: Iuser): Promise<any> {
 		const temp = await this.userRepository.findOne({
 			where: {
 			  id: id,
@@ -121,7 +134,7 @@ export class UserService {
 		);
     }
 
-    async updateBanOfUser(id: number, user: UserI): Promise<any> {
+    async updateBanOfUser(id: number, user: Iuser): Promise<any> {
 		const temp = await this.userRepository.findOne({
 			where: {
 			  id: id,
@@ -133,11 +146,11 @@ export class UserService {
 		);
     }
 
-    updateStatusOfUser(id: number, user: UserI): Observable<any> {
+    updateStatusOfUser(id: number, user: Iuser): Observable<any> {
       	return from(this.userRepository.update(id, user))
     }
 
-	updateOneOb(id: number, user: UserI): Observable<any> {
+	updateOneOb(id: number, user: Iuser): Observable<any> {
 		delete user.email;
 		delete user.password;
 		
@@ -146,7 +159,7 @@ export class UserService {
 		);
 	}
 
-	private async findByEmail(email: string): Promise<UserI> {
+	private async findByEmail(email: string): Promise<Iuser> {
 		return this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] });
 	}
 
@@ -158,7 +171,7 @@ export class UserService {
 		return this.authService.comparePasswords(password, storedPasswordHash);
 	}
 
-	public getOne(id: number): Promise<UserI> {
+	public getOne(id: number): Promise<Iuser> {
 		return this.userRepository.findOneOrFail({ id });
 	}
 
@@ -169,28 +182,28 @@ export class UserService {
 		return false;
 	}
 
-	async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
-		return this.userRepository.update(userId, {
+	async setTwoFactorAuthenticationSecret(secret: string, Iuserid: number) {
+		return this.userRepository.update(Iuserid, {
 		twoFactorAuthenticationSecret: secret
 		});
 	}
 
-	async turnOnTwoFactorAuthentication(userId: number) {
-		return this.userRepository.update(userId, {
+	async turnOnTwoFactorAuthentication(Iuserid: number) {
+		return this.userRepository.update(Iuserid, {
 			twoFactorAuthEnabled: true
 		});
 	}
 
-	async turnOffTwoFactorAuthentication(userId: number) {
-		return this.userRepository.update(userId, {
+	async turnOffTwoFactorAuthentication(Iuserid: number) {
+		return this.userRepository.update(Iuserid, {
 			twoFactorAuthEnabled: false
 		});
   	}
 
-	async getUserBy42Id(id: number): Promise<UserI> {
+	async getUserByid42(id: number): Promise<Iuser> {
 		const user = await this.userRepository.findOne({
 		where: {
-			school42id: id,
+			id42: id,
 		},
 		});
 		if (user) return user;

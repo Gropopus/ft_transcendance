@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlayerEntity } from 'src/player/player.entity'
 import { IPlayer, PlayerStatus, PlayerSide } from 'src/player/player.interface'
-import { UserI } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 
 @Injectable()
 export class PlayerService {
@@ -12,13 +12,19 @@ export class PlayerService {
         private playerRepository: Repository<PlayerEntity>)
         {}
 
-    async create(user1: UserI, user2: UserI) {
+    //user1 is left, user2 is right
+    async createGame(user1: Iuser, user2: Iuser, gid: number) {
         let iplayer1: IPlayer = {
             user: user1,
+            username: user1.username,
+            side: PlayerSide.LEFT,
+            gameId: gid
         }
         let iplayer2: IPlayer = {
             user: user2,
-            side: PlayerSide.RIGHT
+            username: user2.username,
+            side: PlayerSide.RIGHT,
+            gameId: gid
         }
         let player1 = this.playerRepository.create(iplayer1);
         let player2 = this.playerRepository.create(iplayer2);
@@ -28,16 +34,18 @@ export class PlayerService {
         player2.opponentId = player1.id;
         await this.playerRepository.save(player1);
         await this.playerRepository.save(player2);
-        return player1;
+        return { p1: player1, p2: player2 };
     }
 
     async setScores(pid: number, his_score: number, op_score: number) {
         await this.playerRepository.update({id: pid}, {
-                points: his_score
+                points: his_score,
+                status: PlayerStatus.CANCELLED
             });
         const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
         await this.playerRepository.update( {id: op_id}, {
-            points: op_score
+            points: op_score,
+            status: PlayerStatus.CANCELLED
         });
         return this.playerRepository.findOne({ id: pid });
     }
@@ -59,7 +67,8 @@ export class PlayerService {
         return this.playerRepository.findOne({ id: pid });
     }
 
-    async getUserHistory(user: UserI) {
+    async getUserHistory(user: Iuser) {
         return this.playerRepository.find({ user: user })
     }
+
 }

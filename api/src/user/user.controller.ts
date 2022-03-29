@@ -4,7 +4,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './model/dto/create-user.dto';
 import { LoginUserDto } from './model/dto/login-user.dto';
 import { LoginResponseI } from './model/login-response.interface';
-import { UserI, UserRole } from './model/user.interface';
+import { Iuser, UserRole } from './model/user.interface';
 import { map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { UserHelperService } from './user-helper/user-helper.service';
@@ -21,11 +21,10 @@ import * as fs from 'fs';
 
 export const storage = {
   storage: diskStorage({
-      destination: './src/uploads/avatar',
+      destination: './src/uploads/',
       filename: (req, file, cb) => {
-          const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+          const filename: string = path.parse(file.originalname).name.replace(/\s/g, '');
           const extension: string = path.parse(file.originalname).ext;
-
           cb(null, `${filename}${extension}`)
       }
   })
@@ -41,20 +40,26 @@ export class UserController {
   ) { }
 
 	@Post()
-	async create(@Body() createUserDto: CreateUserDto): Promise<UserI> {
-	  const userEntity: UserI = this.userHelperService.createUserDtoToEntity(createUserDto);
+	async create(@Body() createUserDto: CreateUserDto): Promise<Iuser> {
+	  const userEntity: Iuser = this.userHelperService.createUserDtoToEntity(createUserDto);
 	  return this.userService.create(userEntity);
 	}
-  
+
 	@Get()
-	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<UserI>> {
+	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Iuser>> {
 	  limit = limit > 100 ? 100 : limit;
 	  return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' });
 	}
   
-	@Get('/find-by-username')
-	async findAllByUsername(@Query('username') username: string) {	  
-	  return this.userService.findAllByUsername(username);
+	@Get('/find-by-username/:name')
+	// async findAllByUsername(@Query('username') username: string) {	  
+		async findAllByUsername(@Param() params) {	  
+	  return this.userService.findAllByUsername(params.name);
+	}
+
+	@Get('/find-by-email/:email')
+	async findOneByEmail(@Param() params): Promise<Iuser> {	  
+	  return this.userService.findOneByEmail(params.email);
 	}
   
 	@Get('/find-by-level')
@@ -63,13 +68,13 @@ export class UserController {
 	}
   
 	@Get(':id')
-	async findOne(@Param() params): Promise<UserI>{    
+	async findOne(@Param() params): Promise<Iuser>{    
 		  return this.userService.findOne(params.id);
 	}
 
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponseI> {
-    const userEntity: UserI = this.userHelperService.loginUserDtoToEntity(loginUserDto);
+    const userEntity: Iuser = this.userHelperService.loginUserDtoToEntity(loginUserDto);
     const login = await this.userService.login(userEntity);
     let expiresIn = 10000;
     if (login.payload.twoFactorAuthEnabled)
@@ -84,55 +89,53 @@ export class UserController {
   }
   
 	@UseGuards(JwtAuthGuard)
-	@Put('logout')
-	async logout(@Body() user: UserI): Promise<any> {    
+	@Post('logout')
+	async logout(@Body() user: Iuser): Promise<any> {
 	  return this.userService.logout(user);
 	}
 	
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/role')
-	async updateRoleOfUser(@Param('id') id: string, @Body() user: UserI): Promise<UserI> {
-	  return this.userService.updateRoleOfUser(Number(id), user);
+	async  updateUserRole(@Param('id') id: string, @Body() user: Iuser): Promise<Iuser> {
+	  return this.userService. updateUserRole(Number(id), user);
 	}
 	
 	@UseGuards(JwtAuthGuard)
 	@Put(':id')
-	async updateOne(@Param('id') id: string, @Body() user: UserI): Promise<any> {    
+	async updateOne(@Param('id') id: string, @Body() user: Iuser): Promise<any> {    
 	  return this.userService.updateOne(Number(id), user);
 	}
   
+	@Post('update/:id')
+	async updateUser(@Param() params, @Body() user: Iuser) {
+		return this.userService.updateUser(params.id, user);
+	}
+
 
 	@UseGuards(JwtAuthGuard)
 	@Post('upload')
 	@UseInterceptors(FileInterceptor('file', storage))
-	async uploadFile(@UploadedFile() file, @Request() req): Promise<Object> {
-	    const user: UserI = await this.userService.findOne(req.user.id);
+	async uploadFile(@UploadedFile() file) {
 
-		// Remove old avatar
-	    if (fs.existsSync('src/uploads/avatar/' + user.avatar) && user.avatar != "user.png"){
-			fs.unlinkSync('src/uploads/avatar/' + user.avatar)
-		}
-	    return this.userService.updateOneOb(user.id, {avatar: file.filename}).pipe(
-	        map((user: UserI) => ({avatar: user.avatar}))
-	    )
 	}
 
-	@Get('avatar/:imagename')
-	findProfileImage(@Param('imagename') imagename, @Res() res): Observable<Object> {
-	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + imagename)));
+	@Get('picture/:picturename')
+	findProfileImage(@Param('picturename') picturename, @Res() res): Observable<Object> {
+	    return of(res.sendFile(join(process.cwd(), 'src/uploads/' + picturename)));
 	}
 
-	@Get('avatarById/:id')
+	@Get('pictureById/:id')
 	async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
 	    const user = await this.userService.findOne(id);
-	    return of(res.sendFile(join(process.cwd(), 'src/uploads/avatar/' + user.avatar)));
+		console.log(user.picture);
+	    return of(res.sendFile(join(process.cwd(), 'src/uploads/' + user.picture)));
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put('ban/:id')
-	async updateBanOfUser(@Param('id') id: string, @Body() user: UserI): Promise<UserI> {		
+	async updateBanOfUser(@Param('id') id: string, @Body() user: Iuser): Promise<Iuser> {		
 	  return this.userService.updateBanOfUser(Number(id), user);
 	}
 

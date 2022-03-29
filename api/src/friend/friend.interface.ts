@@ -1,14 +1,17 @@
-import { UserI } from "src/user/model/user.interface";
+import { Iuser } from "src/user/model/user.interface";
 
 export interface IFriend {
     id?: number,
-    user?: UserI,
-    targetId?: number;
+    user?: Iuser,
+    target?: Iuser,
+    targetName?: string,
+    targetId?: number,
     status?: FriendStatus;
 }
 
 export enum FriendStatus {
-    WAITING = 'waiting-for-a-response',
-    PENDING = 'pending-(no-response)',
-    FRIEND = 'friends'
+    WAITING = 'user-waiting-for-a-response',
+    PENDING = 'resquest-pending',
+    FRIEND = 'friends',
+    BLOCKED= 'user-blocked'
 }
