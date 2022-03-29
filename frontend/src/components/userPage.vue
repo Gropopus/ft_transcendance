@@ -9,38 +9,43 @@
 				<div class="username"> {{ userData.username }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
-			<div class="relation">
-				<button @click="addOrRemovefriend()" class="relationButton" :title="friendIcon.title">
-					<img :src="friendIcon.img" />
-				</button>
+			<div v-if="userId != userData.id" class="challengeButton">
+				<p @click="challenge()" >challenge</p>
+			</div>
+			<div v-if="userId != userData.id" class="relation">
+				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
+				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
+				<div v-else class="replyButton">
+					<button @click="acceptRequest()">accept</button>
+					<button @click="declineRequest()">decline</button>
+				</div>
 			</div>
 		</div>
 		<div class="StatsWin">
 			<div class="StatsTabs">
-				<button class="tab" @click="changeCurrent(0)" :id="isCurrentTab(0)"> Achievements </button>
-				<button class="tab"  @click="changeCurrent(1)" :id="isCurrentTab(1)"> Ladder </button>
+				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
+				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
-				<br>
+				<div v-if="currentTab==0" class="stat">
+					<div class="statElem">
+						<h3>Ladder level</h3>
+						<p>?</p>
+					</div>
+					<div class="statElem">
+						<h3>Victories</h3>
+						<p>{{ userData.victory }}</p>
+					</div>
+					<div class="statElem">
+						<h3>Defeats</h3>
+						<p>{{ userData.defeat }}</p>
+					</div>
+				</div>
 			</div>
 		</div>
-	<!-- <div class="stat">
-		Victories: {{ userData.victory }}
-		Defeats: {{ userData.defeat }}
-    </div> -->
 
   </div>
-<!-- Run Pen
-
-Resources
-	<div class="profilePage">
-		<img :src="userData.picture" alt="picture" class="profilePicture">
-		<h1>
-			{{ userData.username }} | {{ userData.id }} [{{ userData.status }}]
-			<img v-if="haveRelation" :src="relationIcon" alt="relation">
-		</h1>
-	</div> -->
 </template>
 
 <script lang="ts">
@@ -64,7 +69,6 @@ export default	defineComponent ({
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
 			blockIcon: "/src/assets/your-friends.png",
 			relationIcon: "",
-			haveRelation: 0,
 			currentTab: 0,
 			picture: "",
 		}
@@ -83,26 +87,24 @@ export default	defineComponent ({
 	async updated() {
 		this.relation = await this.fetchRelation();
 		if (this.isFriend())
-		{
-			this.friendIcon = {img: "/src/assets/your-friends.png", title: "remove friend"};
-			this.haveRelation = 1;
-
-		}
-		else
-		{
+			this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
+		else if (!this.relation)
 			this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
-			this.haveRelation = 0;
-		}
+		else
+			this.friendIcon = {img: "", title: this.relation};
 	},
 
 	methods: {
 		async fetchUserData() {
+			console.log(`---${this.$route.params.username}`);
 			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
 			const data = await res.json();
-			return data[0]
+			for (let elem of data)
+				if (this.$route.params.username == elem.username)
+					return elem;
 		},
 
 		async fetchRelation() {
@@ -128,7 +130,7 @@ export default	defineComponent ({
 					headers: { 'content-type': 'application/json' }
 				});
 			}
-			else {
+			else if (!this.relation) {
 				await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
@@ -141,6 +143,20 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
+		},
+
+		async acceptRequest(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/accept/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+		},
+
+		async declineRequest(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/decline/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
 		},
 
 		isFriend() {
@@ -177,6 +193,10 @@ export default	defineComponent ({
 			const blobUrl = window.URL.createObjectURL(newBlob);
 			console.log(blobUrl);
     		return blobUrl;
+		},
+
+		async challenge() {
+			return "";
 		},
 	},
 })
@@ -229,31 +249,77 @@ export default	defineComponent ({
 }
 
 .picture {
-	margin-left: 2%;
+	margin-left: 4%;
 	margin-bottom: 2%;
 	margin-top: 2%;
 }
 
 .relation {
-	flex:	1 1 0;
 	display: flex;
 	justify-content: right;
 }
-.relationButton {
+
+.challengeButton {
+	flex:	1 1 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.challengeButton > p {
+	appearance: none;
+	background-color: rgb(255, 228, 113);
+	box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
+	border-radius: 40em;
+	border-style: none;
+	box-sizing: border-box;
+	color: var(--font-blue);
+	cursor: pointer;
+	display: inline-block;
+	font-family: -apple-system,sans-serif;
+	font-size: 1.2rem;
+	font-weight: 700;
+	letter-spacing: -.24px;
+	margin: 0;
+	outline: none;
+	padding: 1rem 1.3rem;
+	quotes: auto;
+	text-align: center;
+	text-decoration: none;
+	transition: all .15s;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+}
+
+.challengeButton > p:hover {
+	background-color: white;
+	box-shadow: rgb(225, 198, 228) 0 -12px 6px inset;
+	transform: scale(1.125);
+}
+
+.challengeButton > p:active {
+  transform: scale(1.025);
+}
+
+
+.relation {
 	margin-right: 5%;
-	background:	none;
-	border: none;
+	display: flex;
+	align-items: center;
 }
 
-.relationButton > img {
-	max-width: 80px;
-	max-height: 80px;
+.relationButton {
+	border-radius: 8px;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	height: 70px;
 }
 
-.relationButton:hover { 
-	background: rgba(255, 255, 255, 0.5);
+.relationButton:hover {
+	background:	var(--deep-blue-10);
 	color: white;
-	cursor: pointer; 
+	cursor: pointer;
+
 }
 
 /* stat style */
@@ -304,6 +370,58 @@ export default	defineComponent ({
 	background:	white;
 	color:	var(--font-blue);
 	font-weight:	bold;
+}
+
+.stat {
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+}
+
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+.stat > .statElem > h3 {
+	flex: 1 0;
+	margin-bottom:6%;
+	margin-top: 6%;
+	height: 100%;
+	background: rgb(203, 177, 233, 0.2);
+}
+
+.stat > .statElem > p {
+	flex: 1 0;
+	height: 100%;
+	margin-top: 6%;
+	margin-bottom:6%;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
+
+}
+
+.replyButton {
+	display: flex;
+	flex-direction: column;
+	justify-content: right;
+}
+
+.replyButton > button {
+	background:	none;
+	border: none;
+	border: solid 2px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	color: white;
+	margin-top: 5%;
+}
+.replyButton > button:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
 }
 
 </style>

@@ -18,12 +18,10 @@ export class TwoFactorService {
   ) {}
  
   public async generateTwoFactorAuthenticationSecret(user: Iuser) {
+    console.log(user);
     const secret = authenticator.generateSecret();
-	
     const otpauthUrl = authenticator.keyuri(user.email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'), secret);
-	
     await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id);
- 
     return {
       secret,
       otpauthUrl
@@ -34,7 +32,12 @@ export class TwoFactorService {
 	  toFile('src/uploads/qrcode.png',otpauthUrl);
   }
 
-  public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: UserEntity) {
+  public async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: Iuser) {
+    console.log(twoFactorAuthenticationCode);
+    console.log(user.twoFactorAuthenticationSecret);
+    console.log(user);
+    const u1 = await this.usersService.findOne(user.id);
+    console.log(u1);
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
       secret: user.twoFactorAuthenticationSecret
