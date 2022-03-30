@@ -9,10 +9,13 @@
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Login </label>	<br>
-			<input type="text" v-model="userLogin" class="textArea"> <br>
+			<input type="text" v-model="userLogin" class="textArea">
+			<br>
+			<br>
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass" class="textArea">	<br>
-
+			<input type="password" v-model="userPass" class="textArea">
+			<br>
+			<br>
 			<label for="email"> Email </label>	<br>
 			<input type="text" v-model="userMail" class="textArea">	<br>
 
@@ -155,7 +158,7 @@ export default	{
 {
 	margin-top:	2%;
 	display:	flex;
-	margin-right:	6%;
+	/*margin-right:	6%;*/
 	margin-left:	auto;
 	flex-direction:	row;
 }
@@ -166,8 +169,9 @@ export default	{
 	background:	none;
 	flex:	0 0 auto;
 	margin-bottom:	5%;
-	margin-right:	auto;
+	margin-right:	22%;	
 	padding-top:	3%;
+	padding-bottom: 3%;
 	padding-left:	5%;
 	padding-right:	5%;
 	border-radius: 5px;
@@ -175,7 +179,7 @@ export default	{
 	border:	solid white;
 	font-size:	24px;
 	color:	white;
-	width: 40%;
+	width: 30%;
 	font-family: MyanmarText;
 }
 

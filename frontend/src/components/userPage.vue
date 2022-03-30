@@ -9,13 +9,13 @@
 				<div class="username"> {{ userData.username }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
-			<div v-if="userId != userData.id" class="challengeButton">
+			<div v-if="userId != userData.id && !isBlocked()" class="challengeButton">
 				<p @click="challenge()" >challenge</p>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
-				<div v-else class="replyButton">
+				<div v-else-if="!isBlocked()" class="replyButton">
 					<button @click="acceptRequest()">accept</button>
 					<button @click="declineRequest()">decline</button>
 				</div>
@@ -44,7 +44,12 @@
 				</div>
 			</div>
 		</div>
-
+		<div v-if="!isBlocked()" @click="blockUser()" class="blockButton">
+			block {{ userData.username}}
+		</div>
+		<div v-else @click="unblock()" class="blockButton">
+			unblock {{ userData.username}}
+		</div>
   </div>
 </template>
 
@@ -154,7 +159,16 @@ export default	defineComponent ({
 			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.userData = await this.fetchUserData();
+		},
+
+		async unblock(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			this.userData = await this.fetchUserData();
 		},
 
 		async acceptRequest(){
@@ -177,7 +191,7 @@ export default	defineComponent ({
 			return false;
 		},
 
-		isBlock() {
+		isBlocked() {
 			if (this.relation == "user-blocked")
 				return true;
 			return false;
@@ -260,10 +274,35 @@ export default	defineComponent ({
 	font-size:	100%;
 }
 
-.picture {
+/*.picture {
 	margin-left: 4%;
 	margin-bottom: 2%;
 	margin-top: 2%;
+}*/
+
+.picture {
+	margin-top: 2%;
+	width: calc(33.333% - 1rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 3rem;
+	margin-bottom: 15%;
+}
+
+.picture > img {
+	/*margin-left: 2%;
+	margin-bottom: 2%;
+	margin-top: 2%;
+	min-height: 150px;
+	min-width: 150px;*/
+	border-radius: 50%;
+	overflow: hidden;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+	object-fit:cover;
 }
 
 .relation {
@@ -310,10 +349,6 @@ export default	defineComponent ({
 	transform: scale(1.125);
 }
 
-.challengeButton > p:active {
-  transform: scale(1.025);
-}
-
 
 .relation {
 	margin-right: 5%;
@@ -325,7 +360,7 @@ export default	defineComponent ({
 	border-radius: 8px;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
 	height: 70px;
-	border: solid 3px white
+	border: solid 2px white
 }
 
 .relationButton:hover {
@@ -424,6 +459,7 @@ export default	defineComponent ({
 }
 
 .replyButton > button {
+	border-radius: 8px;
 	background:	none;
 	border: none;
 	border: solid 2px white;
@@ -432,8 +468,22 @@ export default	defineComponent ({
 	color: white;
 	margin-top: 5%;
 }
+
 .replyButton > button:hover {
 	background:	var(--deep-blue-10);
+	cursor: pointer;
+}
+
+.blockButton {
+	display: flex;
+	justify-content: center;
+	margin-top: 5%;
+	color: red;
+	border: solid 3px white;
+}
+
+.blockButton:hover {
+	text-decoration: underline;
 	cursor: pointer;
 }
 

@@ -21,8 +21,8 @@ html
 @font-face
 {
 	font-family: MyanmarText;
-	src: local('/transcendance/frontend/src/app/src/assets/myanmar-text.woff') format('woff');
-	src: local('/transcendance/frontend/src/app/src/assets/myanmar-text.ttf') format('ttf');
+	src: url('./src/assets/myanmar-text.woff') format('woff');
+	src: url('./src/assets/myanmar-text.ttf') format('truetype');
 }
 
 body

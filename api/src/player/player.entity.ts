@@ -8,7 +8,7 @@ export class PlayerEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => UserEntity, user => user.history)
+    @ManyToOne(() => UserEntity, user => user.history, {eager: true})
     @JoinColumn()
     user: UserEntity;
 

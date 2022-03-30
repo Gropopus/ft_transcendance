@@ -532,7 +532,7 @@ function load(userId)
 	socket_init();
 	game.canvas = document.getElementById('canvas'),
 
-	game.player_height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+	game.player_height = (6/6) * game.canvas.height; // base is 1/6 min for alt is 18
 	game.player_width = (1/128) * game.canvas.width; // base is 1/128
 
 	game.player.y = game.canvas.height / 2 - game.player_height / 2;

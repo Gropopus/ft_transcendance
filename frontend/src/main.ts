@@ -13,6 +13,7 @@ import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
 import settingsPage from './components/settingsPage.vue'
 import observePage from './components/observePage.vue'
+import callback from './components/callback.vue'
 import watchPage from './components/watchPage.vue'
 import NotFound from './components/404.vue'
 
@@ -94,15 +95,14 @@ routes: [
         name: 'userProfile',
         component: userPage,
         props: true
-    }, 
-    { path: '/404', component: NotFound }, 
+    },
     {
-        path: "/:catchAll(.*)",
-        name: "NotFound",
-        component: NotFound,
-    }
+        path: '/:unknown',
+        name: 'callback',
+        component: callback,
+        props: true
+    },
     ]
-})
-    
+});
 
 createApp(App).use(router).mount('#app')

@@ -316,10 +316,10 @@ export default	{
     margin-left: 19.8%;
 	padding-top: 1%;
 	width: 10%;
-	background:	none;
-	border:	solid white;
+	background:	white;
+	border:	solid rgb(238, 220, 220);
 	font-size:	100%;
-	color:	white;
+	color:	rgb(236, 100, 151);
 	border-radius: 4px;
 	font-family: MyanmarText;
 }
