@@ -324,10 +324,6 @@ export default	defineComponent ({
 	transform: scale(1.125);
 }
 
-.challengeButton > p:active {
-  transform: scale(1.025);
-}
-
 
 .relation {
 	margin-right: 5%;
