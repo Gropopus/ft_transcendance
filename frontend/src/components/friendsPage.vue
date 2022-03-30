@@ -282,7 +282,7 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	border:	solid 2px white;
-	border-top: none;
+	/* border-top: none; */
 }
 
 .listArea > .elem {
