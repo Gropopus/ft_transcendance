@@ -13,7 +13,7 @@ import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
 import settingsPage from './components/settingsPage.vue'
 import observePage from './components/observePage.vue'
-
+import callback from './components/callback.vue'
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
 routes: [
@@ -87,8 +87,13 @@ routes: [
         component: userPage,
         props: true
     },
+    {
+        path: '/:unknown',
+        name: 'callback',
+        component: callback,
+        props: true
+    },
     ]
-})
-    
+});
 
 createApp(App).use(router).mount('#app')

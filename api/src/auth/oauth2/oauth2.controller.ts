@@ -10,7 +10,7 @@ import { Iuser } from 'src/user/model/user.interface';
 @Controller('oauth2')
 export class Oauth2Controller {
   constructor(
-    private twofactorService: TwoFactorService,
+    //private twofactorService: TwoFactorService,
     @Inject(forwardRef(() => UserService))
     private readonly usersService: UserService,) { }
 
@@ -18,15 +18,17 @@ export class Oauth2Controller {
   @UseGuards(School42AuthenticationGuard)
   @HttpCode(200)
   async school42Callback(@Req() request: any, @Res() response: Response) {
-    const { user } = request;
-	const userEntity: Iuser = {email: user.email, password: 'School42'};
+  const { user } = request;
+  console.log(user);
+  const userEntity: Iuser = {email: user.email, password: 'School42'};
 	const login = await this.usersService.login(userEntity);
-	const resp = {id : user.id ,two_factor: user.twoFactorAuthEnabled , token: login.jwt};
+	const resp = {id : user.id42 ,two_factor: user.twoFactorAuthEnabled , token: login.jwt};
     try {
-		response.send(JSON.stringify(resp));
+		 await response.send(user);
     } catch (error) {
       response.redirect('http://localhost:4200');
     }
+    console.log("OK");
   }
 
   @Get('school42')

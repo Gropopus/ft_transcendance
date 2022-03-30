@@ -27,20 +27,18 @@
 				Log-in </button>
 		</div>
 		</div> <!-- LoginForm end -->
-
-		
-		<!-- <a class="submit42Button" href="http://localhost:3000/api/oauth2/school42" v-bind:is="loginWith42()"> -->
-		<button class="submit42Button" @click="loginWith42()">
+		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
 			<img src="../assets/logo-42_white.png">
 			<div>
 				Log In with<br>
 				Connect
-			</div>
-		</button> <!-- submit42Button end -->
+			</div></a>
+	<!--	</button> submit42Button end -->
 	</div>
 </template>
 
 <script lang="ts">
+//<!-- <button class="submit42Button" @click="loginWith42()"> -->
 export default	{
 	name: 'logPage',
 	props:	{
@@ -138,24 +136,48 @@ checkForm() {
 
 		},
 		async	loginWith42(){
-			const res = await fetch(`http://localhost:3000/api/oauth2/school42`, {
+			return await fetch(`http://localhost:3000/api/oauth2/school42`, {
 						method: 'get',
 						mode: 'no-cors',
 						headers: { 'content-type': 'application/json' },
+			})
+			.then(res => {
+				return res.json(); })
+			.then (data => {
+				console.log(data);
+				return data;
+			})
+			.catch(error => {
+				return "error";
 			});
-			const data = await  res.json();
-			console.log(data);
+			// const data = await  res.json();
+			// console.log(data);
 			// this.$emit('update:userId', data1.id);
 			// console.log(this.$router.query.page)
 			// console.log(this.$router.params)
-			// this.$router.replace('/game');
+			// this.$router.replace('/game');*/
+			/*const uri = window.location.href;
+	
+			let auth = "/api/oauth2/school42",
+			const output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
+			uri = output;
+    		this.apiService.getToken(uri).subscribe(
+			(result: any) =>{
+        	localStorage.setItem('auth-token', result.token);        
+		    if (result.two_factor) this.router.navigate(['../../public/two-factor'])
+			{
+				console.log("non non");
+			}
+		    else this.router.navigate(['../../private/profile/']) {
+				console.log("lol");
+			}*/
 		},
 
 		register: function() {
 			this.$router.replace({name: 'register'});
 			// this.$emit('register');
 		}
-	}
+}
 }
 </script>
 
@@ -237,7 +259,7 @@ checkForm() {
 	padding-top:	1%;
 	padding-bottom:	1%;
 	border-radius: 5px;
-
+	cursor: pointer; 
 	width:	15%;
 	border:	solid 3px white;
 	font-size:	150%;
