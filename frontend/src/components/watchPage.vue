@@ -192,6 +192,10 @@ export default	defineComponent ({
 	border-radius: 30px;
 	width: 30%;
 	height: 75%;
+	max-height: 500px;
+	max-width: 800px;
+	min-height: 100px;
+	min-width: 100px;
 	display: flex;
 	flex-direction: column;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
