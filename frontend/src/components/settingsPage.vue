@@ -47,8 +47,7 @@
 				Submit </button>
 		</div>
 		<br>
-		<p>
-		</p>
+		<p class="alert" v-if="finish"> {{ finish }} </p>
 	</div>
 </template>
 <script lang="ts">
@@ -76,6 +75,7 @@ export default	{
 			qrcode: "",
 			googlecode: "",
 			turnoff: "",
+			finish: "",
 		}
 	},
 	created(){
@@ -234,6 +234,7 @@ export default	{
 				this.error = "Wrong identification code."
 				return ;
 			}
+			this.finish = "Two factor authentication activated."
 		},
 
 		async turnOff2FA()
@@ -255,6 +256,7 @@ export default	{
 				this.error = "Wrong identification code."
 				return ;
 			}
+			this.finish = "Two factor authentication desactivated."
 		},
 	}
 }
@@ -267,6 +269,9 @@ export default	{
 	color: red;
 }
 
+.alert {
+	color: green;
+}
 .secret {
 	margin-top: 3%;
 }
@@ -356,6 +361,12 @@ export default	{
 	font-family: MyanmarText;
 }
 
+.submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
 .settingsPage > .submitBar > .submitButton:hover
 {
 	background: rgba(255, 255, 255, 0.5);
