@@ -175,12 +175,28 @@ export default	defineComponent ({
 	font-size:	100%;
 }
 
+.picture {
+	width: calc(33.333% - 1rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 3rem;
+	margin-bottom: 15%;
+}
+
 .picture > img {
-	margin-left: 2%;
+	/*margin-left: 2%;
 	margin-bottom: 2%;
 	margin-top: 2%;
 	min-height: 150px;
-	min-width: 150px;
+	min-width: 150px;*/
+	border-radius: 50%;
+	overflow: hidden;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+	object-fit:cover;
 }
 /* stat style */
 
