@@ -45,28 +45,29 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   async handleConnection(socket: Socket) {
-    this.logger.log('client connected :' + socket.id)
-    try {
-      const decodedToken = await this.authService.verifyJwt(socket.handshake.headers.authorization);
-      const user: Iuser = await this.userService.getOne(decodedToken.user.id);
-      if (!user) {
-        return this.disconnect(socket);
-      } else {
-        socket.data.user = user;
-        const channels = await this.channelService.getChannelsForUser(user.id, { page: 1, limit: 10 });
-        // substract page -1 to match the angular material paginator
-        channels.meta.currentPage = channels.meta.currentPage - 1;
-        // Save connection to DB
-        await this.connectedUserService.create({ socketId: socket.id, user });
-        // Only emit channels to the specific connected client
-        return this.server.to(socket.id).emit('channels', channels);
-      }
-    } catch {
-      return this.disconnect(socket);
-    }
+    this.logger.log('client connected : ' + socket.id)
+    // try {
+    //   const decodedToken = await this.authService.verifyJwt(socket.handshake.headers.authorization);
+    //   const user: Iuser = await this.userService.getOne(decodedToken.user.id);
+    //   if (!user) {
+    //     return this.disconnect(socket);
+    //   } else {
+    //     socket.data.user = user;
+    //     const channels = await this.channelService.getChannelsForUser(user.id, { page: 1, limit: 10 });
+    //     // substract page -1 to match the angular material paginator
+    //     channels.meta.currentPage = channels.meta.currentPage - 1;
+    //     // Save connection to DB
+    //     await this.connectedUserService.create({ socketId: socket.id, user });
+    //     // Only emit channels to the specific connected client
+    //     return this.server.to(socket.id).emit('channels', channels);
+    //   }
+    // } catch {
+    //   return this.disconnect(socket);
+    // }
   }
 
   async handleDisconnect(socket: Socket) {
+    this.logger.log('clien disconnect : ' + socket.id)
     // remove connection from DB
     await this.connectedUserService.deleteBySocketId(socket.id);
     socket.disconnect();
@@ -250,19 +251,22 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
    }
    
   @SubscribeMessage('addMessage')
-  async onAddMessage(socket: Socket, message: Imessage) {
-    console.log('in add message')
-	const bool: number = await this.channelService.boolUserMutedOnChannel(socket.data.user.id, message.channel);
-    if (!bool) {
-		const createdMessage: Imessage = await this.messageService.create({...message, user: socket.data.user});
-		const channel: Ichannel = await this.channelService.getChannel(createdMessage.channel.id);
-		const joinedUsers: IjoinedChanel[] = await this.joinedChannelService.findByChannel(channel);
-		for(const user of joinedUsers) {
-			const nu = null //await this.friendsService.boolIusersBlocked(user.Iuserid, createdMessage.user.id);
-			if (!nu) 
-        await this.server.to(user.socketId).emit('messageAdded', createdMessage);
-		}
-	}
+  async onAddMessage(socket: Socket, message: {msg: string, channelId: number}) {
+    this.logger.log('in add message')
+    this.logger.log('rcv msg : [' + message.msg + '] from socket : ' + socket.id + ' to room id ' + message.channelId)
+    this.logger.log(socket.data)
+
+	// const bool: number = await this.channelService.boolUserMutedOnChannel(socket.data.user.id, message.channel);
+  //   if (!bool) {
+	// 	const createdMessage: Imessage = await this.messageService.create({...message, user: socket.data.user});
+	// 	const channel: Ichannel = await this.channelService.getChannel(createdMessage.channel.id);
+	// 	const joinedUsers: IjoinedChanel[] = await this.joinedChannelService.findByChannel(channel);
+	// 	for(const user of joinedUsers) {
+	// 		const nu = null //await this.friendsService.boolIusersBlocked(user.Iuserid, createdMessage.user.id);
+	// 		if (!nu) 
+  //       await this.server.to(user.socketId).emit('messageAdded', createdMessage);
+	// 	}
+	// }
   }
 
   private handleIncomingPageRequest(page: Ipage) {

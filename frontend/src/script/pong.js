@@ -88,7 +88,7 @@ function buttonDraw(str, offset, ) {
 	context.fillText(str, game.canvas.width /2 , game.canvas.height / 2 + 11 + offset);
 }
 
-function textDraw(str, ) {
+function textDraw(str, offset = 0) {
 	var context = game.canvas.getContext('2d');
 
 
@@ -109,19 +109,20 @@ function textDraw(str, ) {
 		game.matchmaking = 0;
 		return ;
 	}
-	// Draw field
-	context.fillStyle = game.lineaire;
-	context.fillRect(0, 0, game.canvas.width, game.canvas.height);
-
+	if (offset == 0)
+	{
+		// Draw field
+		context.fillStyle = game.lineaire;
+		context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+	}
 	//Draw text
 	context.font = "30px Myanmar Text";
 	context.fillStyle = "#252E83" //text color;
 	context.textAlign = 'center';
 	context.textBaseline = 'center';
-	context.fillText(str, game.canvas.width / 2, game.canvas.height / 2 + 11)
+	context.fillText(str, game.canvas.width / 2, game.canvas.height / 2 + 11 + offset)
 	game.matchmaking = 0;
 }
-
 
 function draw() {
 	var context = game.canvas.getContext('2d');
@@ -155,7 +156,6 @@ function draw() {
 	scoreDraw(game);
 }
 
-//done
 function playerMove(event, ) {
 	if (game.side == "")
 		return ;
@@ -177,7 +177,6 @@ function playerMove(event, ) {
 	else if (game.side == "left")
 		game.socket.emit('player_pos_left',  { gameRoom: game.gameRoom, gameId: game.gameId, player_pos_left: p_pos })
 }
-
 
 function engage(pid) {
 	if (game.socket && game.socket.connected == true)
@@ -247,9 +246,9 @@ function ballMove() {
 function entermatchmaking(draw)
 {
 	if (draw == 1)
-		textDraw("Searching an opponent", game);
+		textDraw("Searching an opponent", 0);
 	else
-		textDraw('Opponent didn\'t respond, Back in the matchmaking', game);
+		textDraw('Opponent didn\'t respond, Back in the matchmaking', 0);
 	game.matchmaking = 1;
 	game.socket.emit('joinMatchmaking');
 }
@@ -277,7 +276,7 @@ async function waited_to_long(pid)
 	game.ready_usefull = 0;
 	if (game.matchmaking == 2)
 	{
-		textDraw('You didn\'t respond in time', game);
+		textDraw('You didn\'t respond in time', 0);
 		game.socket.emit('MatchTimeOut', game.confirm_id);
 		game.matchmaking = -1;
 		game.nb_confirm = 0;
@@ -297,7 +296,7 @@ async function waited_to_long(pid)
 function ready() {
 	if (game.ready_usefull == 0)
 		return ;
-	textDraw('Thanks for confirming waiting opponent', game);
+	textDraw('Thanks for confirming waiting opponent', 0);
 	game.ready_usefull = 0;
 	game.matchmaking = 3;
 	game.socket.emit('playerReady', game.confirm_id);
@@ -395,7 +394,7 @@ function socket_init()
 	})
 
 	game.socket.on('AskReady', function(conf_id) {
-		textDraw("Please press ready", game);
+		textDraw("Please press ready", 0);
 		game.ready_usefull = 1;
 		game.button = 2;
 		buttonDraw("Press here to confirm", 0, game);
@@ -439,17 +438,17 @@ function socket_init()
 		if (game.side == 'observer')
 		{
 			if (game.player.score > game.computer.score)
-				textDraw("Game end, left player win !")
+				textDraw("Game end, left player win !", 0)
 			else 
-				textDraw("Game end, right player win !")
+				textDraw("Game end, right player win !", 0)
 				cancelAnimationFrame(game.anim);
 			return;
 		}
 		else if ((game.player.score == 11 && game.side == 'left') || 
 			game.computer.score == 11 && game.side == 'right')
-			textDraw("You win !", game)
+			textDraw("You win !", 0)
 		else
-			textDraw("You loose !", game)
+			textDraw("You loose !", 0)
 
 			console.log ('pos p = ', game.player.y)
 			console.log('should be ', game.canvas.width / 2 - game.player_height / 2);
@@ -471,7 +470,7 @@ function socket_init()
 		if (game.side == 'observer')
 		{
 			cancelAnimationFrame(game.anim);
-			textDraw("A player leave the game");
+			textDraw("A player leave the game", 0);
 		}
 		else
 		{
@@ -520,6 +519,11 @@ function socket_init()
 			game.computer.y = right_pos;
 			play();
 		}
+	})
+	game.socket.on('already_in_matchmaking', function() {
+		textDraw('', 0)
+		textDraw('You are already in matchmaking.', -17);
+		textDraw('You can leave this page.', 17);
 	})
 }
 
@@ -572,9 +576,9 @@ function unload(userId)
 		draw(game);
 		if ((game.player.score == 11 && game.side == 'left') || 
 			game.computer.score == 11 && game.side == 'right')
-			textDraw("You win !", game)
+			textDraw("You win !", 0)
 		else
-			textDraw("You loose !", game)
+			textDraw("You loose !", 0)
 		game.matchmaking = 0;
 		game.button = 3;
 		buttonDraw('Play again', 50, game);
@@ -640,7 +644,7 @@ function observe(userId, gameId)
 	game.gameRoom = "gameRoom" + gameId;
 	game.matchmaking = -1;
 	draw();
-	textDraw("Connecting to game");
+	textDraw("Connecting to game", 0);
 	emitObserve(gameId);
 }
 

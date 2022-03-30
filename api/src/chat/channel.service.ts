@@ -94,7 +94,6 @@ export class ChannelService {
 
   async addUserToChannel(channelId: number, user: Iuser, password: string): Promise<Observable<{ error: string } | { success: string }>> {
 	  const channel = await this.getChannel(channelId);
-	  console.log(channel);
 	const bool: number = await this.boolIusersOnChannel(user.id, channel);
 	if (bool) return of({ error: 'Already on the channel;' }); 
 	if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' }); 

@@ -99,7 +99,6 @@ export class ChannelController {
 				route: 'http://localhost:3000/api/channel/:channelId/messages/:userId'
 			}
 		);
-		console.log(mess.items);
 		return mess;
 	}
 }

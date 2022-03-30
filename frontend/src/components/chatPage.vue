@@ -53,11 +53,11 @@ export default	defineComponent ({
 		return {
 			channelsList: [],
 			channelId: 0,
-			// socket: Socket,
+			socket: Socket,
 			channelMessages: [],
 			message: "",
 		}
-	},
+	}, 
 
 	sockets: {
 		connect: function() {
@@ -65,20 +65,32 @@ export default	defineComponent ({
 		},
 	},
 
-	mounted() {
+	async mounted() {
 		this.channelsList;
 		this.channelMessages;
-		// this.socket;
-	},
-
-
-	async created() {
 		this.channelsList = await this.fetchChannelsList();
+
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
-		// this.socket = io('http://localhost:3000');
+		this.socket.connect();
+		this.socket.data.user = {id: this.userId};
 	},
+
+	unmounted() {
+		this.socket.disconnect();
+	},
+
+	created() {
+		console.log('create')
+		this.socket = io('http://localhost:42068', {
+			withCredentials: true,
+			extraHeaders: {
+			"my-custom-header": "chat"
+			},
+			autoConnect: false})
+	},
+
 
 	methods: {
 		async fetchChannelsList() {
@@ -127,12 +139,14 @@ export default	defineComponent ({
 					this.channelId = this.channelsList[i].id;
 				this.channelMessages = await this.fetchMessages();
 			}
+		this.channelsList = await this.fetchChannelsList();
 		},
 
 		async sendMessage(message: string)
 		{
-			// console.log(this.socket);
-			this.$socket.emit('addMessage', message);
+			console.log('try to send msg [', message, '] to room id : ', this.channelId)
+			console.log(this.socket);
+			this.socket.emit('addMessage', {msg: message, channelId: this.channelId});
 		},
 
 		async fetchMessages() {

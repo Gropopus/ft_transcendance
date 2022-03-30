@@ -23,8 +23,15 @@ export class GameController {
 	}
 
 	@Get('stat/:gameID')
-	async gameStat(@Param('gameID') gameID: number) {
-		return this.gameService.findOne(gameID);
+	async gameStat(@Param('gameID') gameID: any) {
+		try {
+			let test: number = gameID;
+			return this.gameService.findOne(gameID);
+		}
+		catch
+		{
+			return
+		}
 	}
 	@Get('stat/')
 	async allStat() {
