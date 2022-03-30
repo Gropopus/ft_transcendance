@@ -22,7 +22,7 @@ html
 {
 	font-family: MyanmarText;
 	src: url('./src/assets/myanmar-text.woff') format('woff');
-	src: url('./src/assets/myanmar-text.ttf') format('ttf');
+	src: url('./src/assets/myanmar-text.ttf') format('truetype');
 }
 
 body
