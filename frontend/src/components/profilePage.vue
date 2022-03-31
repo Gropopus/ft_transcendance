@@ -159,7 +159,7 @@ export default	defineComponent ({
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 35px;
+	border-radius: 20px;
 }
 
 .info {
@@ -221,8 +221,8 @@ export default	defineComponent ({
 	border: solid white 3px;
 	overflow-y:	scroll;
 	border-top: none;
-	border-bottom-left-radius: 35px;
-	border-bottom-right-radius: 35px;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
 }
 
 .stat {
@@ -254,8 +254,8 @@ export default	defineComponent ({
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
-	border-top-right-radius: 35px;
-	border-top-left-radius: 35px;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
 	width: 100%;
 	overflow: hidden;
 }

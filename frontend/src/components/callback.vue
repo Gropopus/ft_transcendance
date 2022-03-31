@@ -1,7 +1,5 @@
 <template>
-	<header>
-	</header>
-
+<div>
     <div class="callback" v-if="twofa">
             <p class="error" v-if="error"> {{ error }} </p>
 			Please enter the 6 digit code from Google Authenticator: <br>
@@ -9,6 +7,7 @@
 			<button @click="twoFACheck()"  class="submitButton">
 				Log-in </button>
     </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -36,7 +35,6 @@ export default	{
     },
 	methods:	{
 
-
 		async 	twoFACheck()
 		{
 			this.error = "";
@@ -57,36 +55,28 @@ export default	{
 
 		},
 		async	loginWith42(){
-			console.log(`${this.$route.params.unknown}` + "->uri");
-
-            let uri = `${this.$route.params.unknown}`;
-            if (uri == 'callback')
-            {
-                uri = window.location.href
-                console.log(uri + "window");
-                let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
-	            let auth = "/api/oauth2/school42";
-                let test= uri.slice(30);
-                backadrr += test;
-                console.log(backadrr + "backaddr");
-	            let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
-	            uri = output;
-                console.log(uri);
-                const res = await fetch(backadrr, {
-					method: 'get',
-					headers: { 'content-type': 'application/json' },
-			    })
-                this.user =	await res.json();
-                if (this.user.twoFactorAuthEnabled == false)
-                {
-                    this.$emit('update:userId', this.user.id);
-                    this.$router.replace({name: 'game'})
-                }
-                else
-                {
-                    this.twofa = "oui";
-                }
-            }
+			let uri = window.location.href
+			console.log(uri + "window");
+			let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
+			let auth = "/api/oauth2/school42";
+			let test= uri.slice(30);
+			backadrr += test;
+			console.log(backadrr + "backaddr");
+			let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
+			uri = output;
+			console.log(uri);
+			const res = await fetch(backadrr, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' },
+			})
+			this.user =	await res.json();
+			if (this.user.twoFactorAuthEnabled == false)
+			{
+				this.$emit('update:userId', this.user.id);
+				this.$router.replace({name: 'game'})
+			}
+			else
+				this.twofa = "oui";
 		},
 
 }

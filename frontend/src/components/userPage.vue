@@ -45,10 +45,10 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="!isBlocked()" @click="blockUser()" class="blockButton">
+		<div v-if="userId != userData.id && !isBlocked()" @click="blockUser()" class="blockButton">
 			block {{ userData.username}}
 		</div>
-		<div v-else @click="unblock()" class="blockButton">
+		<div v-else-if="userId != userData.id" @click="unblock()" class="blockButton">
 			unblock {{ userData.username}}
 		</div>
   </div>
@@ -387,8 +387,8 @@ export default	defineComponent ({
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
-	border-top-right-radius: 35px;
-	border-top-left-radius: 35px;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
 	width: 100%;
 	overflow: hidden;
 }

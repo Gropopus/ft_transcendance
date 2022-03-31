@@ -16,7 +16,7 @@ import observePage from './components/observePage.vue'
 import callback from './components/callback.vue'
 import watchPage from './components/watchPage.vue'
 import channelsetting from './components/chat-setting.vue'
-import NotFound from './components/404.vue'
+import NotFound from './components/NotFound.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -104,10 +104,15 @@ routes: [
         props: true
     },
     {
-        path: '/:unknown',
+        path: '/callback',
         name: 'callback',
         component: callback,
         props: true
+    },
+    {
+        path: "/:catchAll(.*)",
+        name: 'NotFound',
+        component: NotFound,
     },
     ]
 });
