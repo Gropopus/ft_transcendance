@@ -166,14 +166,13 @@ export class ChannelService {
 	return this.channelRepository.save(channel);
   }
 
-  boolUserMutedOnChannel(Iuserid: number, channel: Ichannel): Promise<number> {
+  boolUserMutedOnChannel(Iuserid: number, channel_id: number): Promise<number> {
 	const query = this.channelRepository
 	.createQueryBuilder('channel')
     .leftJoinAndSelect('channel.muted', 'muted')
     .where('muted.id = :Iuserid', { Iuserid })
-	.andWhere("channel.id = :rid", { rid: channel.id })
+	.andWhere("channel.id = :rid", { rid: channel_id })
 	.getCount();
-
 	return  (query);
   }
 

@@ -73,8 +73,13 @@ export default	defineComponent ({
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
+		this.socket.auth = {userId: this.userId};
 		this.socket.connect();
-		this.socket.data.user = {id: this.userId};
+		if (this.channelId)
+			this.socket.emit('joinChannel', this.channelId);
+		this.socket.on('messageAdded', async () =>  {
+			this.channelMessages = await this.fetchMessages();
+		});
 	},
 
 	unmounted() {
@@ -82,13 +87,13 @@ export default	defineComponent ({
 	},
 
 	created() {
-		console.log('create')
+		console.log('create');
 		this.socket = io('http://localhost:42068', {
 			withCredentials: true,
 			extraHeaders: {
 			"my-custom-header": "chat"
 			},
-			autoConnect: false})
+			autoConnect: false});
 	},
 
 
@@ -102,8 +107,14 @@ export default	defineComponent ({
 			return data.items
 		},
 
-		changeCurrentChan(id: number) {
-			this.channelId = id;
+		async changeCurrentChan(id: number) {
+			if (this.channelId != id)
+			{
+				this.socket.emit('leaveJoinChannel');
+				this.channelId = id;
+				this.socket.emit('joinChannel', this.channelId);
+				this.channelMessages = await this.fetchMessages();
+			}
 		},
 
 		getChannelIndex(id: number) {
@@ -144,12 +155,11 @@ export default	defineComponent ({
 
 		async sendMessage(message: string)
 		{
-			console.log('try to send msg [', message, '] to room id : ', this.channelId)
-			console.log(this.socket);
 			this.socket.emit('addMessage', {msg: message, channelId: this.channelId});
 		},
 
 		async fetchMessages() {
+			console.log('fetch message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
@@ -157,7 +167,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			const mess = await res.json();
-			console.log(mess.items);
 			return mess.items;
 		}
 	},

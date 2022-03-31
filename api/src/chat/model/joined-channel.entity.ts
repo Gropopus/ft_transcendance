@@ -22,4 +22,6 @@ export class JoinedChannelEntity {
   @JoinColumn()
   channel: ChannelEntity;
 
+  @Column()
+  channelId: number;
 }
