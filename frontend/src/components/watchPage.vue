@@ -42,7 +42,7 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" scoped>
 // import { throwStatement } from '@babel/types';
 import { defineComponent } from 'vue'
 export default	defineComponent ({
@@ -134,7 +134,7 @@ export default	defineComponent ({
 </script>
 
 
-<style>
+<style lang="css" scoped>
 .watchPage
 {
 	display: flex;
@@ -176,6 +176,7 @@ export default	defineComponent ({
 .gameInfo {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 	width: 100%;
 	height: 80%;
 	gap: 2%;
@@ -186,16 +187,12 @@ export default	defineComponent ({
 	display: flex;
 	align-items: center;
 	margin-top: 2%;
-	width: 3%;
-	height: auto;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .vs > h1 {
 	margin-bottom: 4%;
-	width: 40%;
-	height: 20%;
 	text-align: center;
 	color: rgb(23,61,199);
 	font-size: 300%;
@@ -267,37 +264,48 @@ export default	defineComponent ({
 	margin-bottom: 10px;
 }
 
+
 .watchButton > p {
-	appearance: none;
-	border-radius: 40em;
-	background-color: white;
-	box-shadow: rgb(225, 198, 228) 0 -12px 6px inset;
-	border-style: none;
-	box-sizing: border-box;
-	color: var(--font-blue);
-	cursor: pointer;
-	display: inline-block;
-	font-family: -apple-system,sans-serif;
-	font-size: 2rem;
-	font-weight: 700;
-	letter-spacing: -.24px;
-	margin: 0;
-	outline: none;
-	padding: 1rem 1.3rem;
-	quotes: auto;
-	text-align: center;
-	text-decoration: none;
-	transition: all .15s;
-	user-select: none;
-	-webkit-user-select: none;
-	touch-action: manipulation;
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, rgb(221, 172, 226) 0, rgb(73, 105, 219) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono",monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s,transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow,transform;
+  font-size: 18px;
 }
 
 .watchButton > p:hover {
-	background-color: rgb(255, 228, 113);
-	box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
-	transform: scale(1.125);
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  transform: translateY(-2px);
 }
+
+.watchButton > p:active {
+  box-shadow: rgb(23, 61, 199) 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
 
 .gameName {
 	width: 100%;
