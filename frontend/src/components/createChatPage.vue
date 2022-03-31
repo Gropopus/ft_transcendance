@@ -13,16 +13,15 @@
 
             <div class="formElem">
                 <label for="type"> Type </label>	<br>
-                <select class="chatType">
-                    <option>public</option>
+                <select class="chatType" v-model="chatType">
+                    <option selected>public</option>
                     <option>protected</option>
                     <option>private</option>
                 </select> <br>
-                <!-- <input type="checkbox" v-model="chatType" placeholder="type" class="textArea">	<br> -->
             </div>
             
 
-            <div class="formElem">
+            <div v-if="chatType=='protected'" class="formElem">
                 <label for="password"> Password </label>	<br>
                 <input type="password" v-model="chatPassword" placeholder="password" class="textArea">
             </div>
@@ -35,7 +34,7 @@
                     </button> <br>
                 <div :key="username" v-for="username in usernameList">
                     {{ username }}
-                    <button @click="deleteUsername(username)" class="deleleButton">
+                    <button @click="deleteUsername(username)" class="deleteButton1">
                         x
                     </button>
                 </div>
@@ -76,7 +75,11 @@ export default	{
             if (!this.chatName || !this.chatDescription)
                 this.error = "incomplete.";
             else if (this.chatType != "public" && !this.chatPassword)
+            {
                 this.error = "Password needed.";
+                console.log("tyyyype")
+                console.log(this.chatType);
+            }
             else
             {
                 const req = {
@@ -110,24 +113,35 @@ export default	{
         },
 
         async addUsername() {
+            let found = 0;
             this.error = "";
             if (!this.userToAdd)
                 return ;
             const res = await fetch(
                 `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
-                method: 'get',
+                    method: 'get',
                headers: { 'content-type': 'application/json' },
             })
             const user = await res.json();
-            if (user.length > 0)
+            for (let elem of user)
+            {
+                if (elem.username == this.userToAdd)
+                {
+                    if (elem.id == this.userId)
+                        this.error = "You are already in the channel.";
+                    else
+                        found = 1;
+                }
+            }
+            if (found)
             {
                 for (let username of this.usernameList)
                     if (username == this.userToAdd)
                         return ;
                 this.usernameList.push(this.userToAdd);
             }
-            else
-                this.error = "user doesn't exist."
+            else if (!this.error)
+                this.error = "user doesn't exist.";
             this.userToAdd = "";
         },
 
@@ -220,6 +234,17 @@ export default	{
 .addButton:hover {
 	background:	var(--deep-blue-10);
 
+}
+
+.deleteButton1 {
+    background: none;
+    border: solid 2px rgb(236, 100, 151);
+    background: white;
+    color: rgb(236, 100, 151);
+}
+
+.deleteButton1:hover {
+	background:	var(--deep-blue-10);
 }
 
 .chatType {

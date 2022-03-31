@@ -1,14 +1,13 @@
 <template>
-	<header>
-	</header>
-
+<div>
     <div class="callback" v-if="twofa">
             <p class="error" v-if="error"> {{ error }} </p>
 			Please enter the 6 digit code from Google Authenticator: <br>
-			<input type="googlecode" v-model="googlecode" class="textArea">
-			<button @click="twoFACheck()" class="submitButton">
+			<input type="googlecode" v-model="googlecode" class="textArea" v-on:keyup.enter="twoFACheck()">
+			<button @click="twoFACheck()"  class="submitButton">
 				Log-in </button>
     </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -36,7 +35,6 @@ export default	{
     },
 	methods:	{
 
-
 		async 	twoFACheck()
 		{
 			this.error = "";
@@ -57,36 +55,28 @@ export default	{
 
 		},
 		async	loginWith42(){
-			console.log(`${this.$route.params.unknown}` + "->uri");
-
-            let uri = `${this.$route.params.unknown}`;
-            if (uri == 'callback')
-            {
-                uri = window.location.href
-                console.log(uri + "window");
-                let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
-	            let auth = "/api/oauth2/school42";
-                let test= uri.slice(30);
-                backadrr += test;
-                console.log(backadrr + "backaddr");
-	            let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
-	            uri = output;
-                console.log(uri);
-                const res = await fetch(backadrr, {
-					method: 'get',
-					headers: { 'content-type': 'application/json' },
-			    })
-                this.user =	await res.json();
-                if (this.user.twoFactorAuthEnabled == false)
-                {
-                    this.$emit('update:userId', this.user.id);
-                    this.$router.replace({name: 'game'})
-                }
-                else
-                {
-                    this.twofa = "oui";
-                }
-            }
+			let uri = window.location.href
+			console.log(uri + "window");
+			let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
+			let auth = "/api/oauth2/school42";
+			let test= uri.slice(30);
+			backadrr += test;
+			console.log(backadrr + "backaddr");
+			let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
+			uri = output;
+			console.log(uri);
+			const res = await fetch(backadrr, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' },
+			})
+			this.user =	await res.json();
+			if (this.user.twoFactorAuthEnabled == false)
+			{
+				this.$emit('update:userId', this.user.id);
+				this.$router.replace({name: 'game'})
+			}
+			else
+				this.twofa = "oui";
 		},
 
 }
@@ -97,26 +87,28 @@ export default	{
 
 .callback > input.textArea
 {
-    margin-left: 5%;
+	text-align:	center;
 	border: none;
 	background-color:	var(--input-fields);
-	margin-bottom:	3%;
+	margin-top:	2%;
+	margin-bottom:	5%;
 	opacity:	50%;
 	font-size:	24px;
+	letter-spacing: 10px;
 	padding:	6px;
 	width:		25%;
 }
 
 .callback > .submitButton
 {
-    margin-left: 5%;
 	display:	block;
+	width:	18%;
 	background:	none;
-	flex:	0 0 center;
 	margin-bottom:	5%;
 	margin-right:	auto;
-	padding-top:	3%;
-	padding-bottom:	2%;
+	margin-left:	auto;
+	padding-top:	2%;
+	padding-bottom:	1%;
 	background:	none;
 	border:	solid white;
 	font-size:	100%;
@@ -132,12 +124,23 @@ export default	{
 }
 
 .callback {
+	border-radius: 5px;
+	width:	50%;
+	height:	50%;
+	font-size:	150%;
+	font-family: MyanmarText;
+	font-weight:	bold;
+	min-height:	300px;
+	min-width: 548px;
     border: solid white;
     margin-right:   auto;
     margin-left:    auto;
+	padding-top:	5%;
+	text-align: center;
 }
 
 .error {
+	text-align: center;
 	justify-content: top;
 	color: red;
 }

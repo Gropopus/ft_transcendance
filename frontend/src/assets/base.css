@@ -21,8 +21,8 @@ html
 @font-face
 {
 	font-family: MyanmarText;
-	src: url('./src/assets/myanmar-text.woff') format('woff');
-	src: url('./src/assets/myanmar-text.ttf') format('truetype');
+	src: url('/src/assets/myanmar-text.woff') format('woff');
+	src: url('/src/assets/myanmar-text.ttf') format('truetype');
 }
 
 body
@@ -35,7 +35,7 @@ body
 
 header
 {
-	background-image: url("./src/assets/header-id.png");
+	background-image: url("/src/assets/header-id.png");
 	background-repeat:	no-repeat;
 	background-position:	center;
 	margin-top:	1%;
@@ -135,25 +135,6 @@ header
 	border:	solid 3px white;
 	border-radius: 5px;
 	margin-bottom:	min(22px);
-}
-
-.StatsWin
-{
-	width:	100%;
-	min-height:	500px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	display:	flex;
-	flex-direction:	column;
-}
-
-.StatsArea
-{
-	width:	100%;
-	min-height:	500px;
-	border-radius: 5px;
-	overflow-y:	scroll;
-	/* max-height:	px; */
 }
 
 

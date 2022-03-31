@@ -7,6 +7,7 @@
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
+				<div class="usermail"> {{userData.email }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id && !isBlocked()" class="challengeButton">
@@ -24,7 +25,7 @@
 		<div class="StatsWin">
 			<div class="StatsTabs">
 				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
-				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
+				<button class="tab middle" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
@@ -44,10 +45,10 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="!isBlocked()" @click="blockUser()" class="blockButton">
+		<div v-if="userId != userData.id && !isBlocked()" @click="blockUser()" class="blockButton">
 			block {{ userData.username}}
 		</div>
-		<div v-else @click="unblock()" class="blockButton">
+		<div v-else-if="userId != userData.id" @click="unblock()" class="blockButton">
 			unblock {{ userData.username}}
 		</div>
   </div>
@@ -229,7 +230,7 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
+<style lang="css" scoped>
 
 	/*** PROFILE STYLES ***/
 
@@ -385,11 +386,17 @@ export default	defineComponent ({
 {
 	display:	flex;
 	flex-direction:	row;
-	border-bottom:	solid 2px white;
+	border:	solid 3px white;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
+	width: 100%;
+	overflow: hidden;
 }
 
-.tab
+.StatsTabs > button
 {
+	background: none;
+	border: none;
 	flex:	1 1 0;
 	text-align:	center;
 	vertical-align:	center;
@@ -401,11 +408,10 @@ export default	defineComponent ({
 	color: var(--font-blue);
 }
 
-.StatsTabs > button
+.middle
 {
-	background: none;
-	border: none;
-	border-right:	solid 2px white;
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
 }
 
 .StatsTabs > button:hover
