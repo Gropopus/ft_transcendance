@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div v-if="actualSelect" @click="goToRoute()" class="watchButton">
-				<p>Watch now ! :}</p>
+				<p>Watch now !</p>
 			</div>
 			<div v-if="!actualSelect"> No game selected. </div>
         </div>
