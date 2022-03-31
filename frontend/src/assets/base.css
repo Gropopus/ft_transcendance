@@ -144,6 +144,7 @@ header
 	border:	solid 3px white;
 	border-radius: 5px;
 	display:	flex;
+	border-radius: 35px;
 	flex-direction:	column;
 }
 

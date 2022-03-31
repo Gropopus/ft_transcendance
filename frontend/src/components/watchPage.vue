@@ -1,7 +1,10 @@
 <template>
+<div>
+	<h1 class="watchTitle"> Game {{ index + 1 }} / {{ gameList.length }} </h1>
 	<div class="watchPage">
-		<div class="changeButton">
-			<img src="/src/assets/arrow-whitedown.png" class="rotateimg90">
+		<div class="changeButton" >
+			<img v-if="index > 0" @click="changeSelectGame(-1)" src="/src/assets/arrow-whitedown.png" class="rotateimg90">
+			<img v-else style="opacity: 0%" src="/src/assets/arrow-whitedown.png" class="rotateimg90">
 		</div>
         <div v-if="actualSelect" class="selectArea">
 			<div  v-if="actualSelect" class="gameInfo">
@@ -26,14 +29,16 @@
 				</div>
 			</div>
 			<div v-if="actualSelect" @click="goToRoute()" class="watchButton">
-				<p>Watch the game</p>
+				<p>Watch now ! :}</p>
 			</div>
 			<div v-if="!actualSelect"> No game selected. </div>
         </div>
 		<div class="changeButton">
-			<img src="/src/assets/arrow-white-up.png" class="rotateimg90">
+			<img v-if="index < gameList.length - 1"  @click="changeSelectGame(1)" src="/src/assets/arrow-white-up.png" class="rotateimg90">
+			<img v-else style="opacity: 0%" src="/src/assets/arrow-white-up.png" class="rotateimg90">
 		</div>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -54,20 +59,24 @@ export default	defineComponent ({
 			gameListPlaying: [],
             actualSelect: 0,
 			picture: {"left": "", "right": ""},
+			index: 0,
 		}
 	},
 
-	mounted() {	
-        this.actualSelect;
+	async mounted() {	
 		this.gameList;
 		this.gameListPlaying;
-        this.fectGameList();
+        await this.fectGameList();
+		console.log(this.gameList)
+		if (this.gameList.length)
+			await this.Select(this.gameList[0]);
 		this.picture;
-	},
+		console.log("mounted")
+	}, 
 
 	created() {
 		console.log("created");
-		this.actualSelect = this.gameList[0];
+		// console.log(this.actualSelect)
 	},
 
 	methods: {
@@ -113,6 +122,12 @@ export default	defineComponent ({
 			this.gameList = await res.json();
 			await this.formatGameList()
 		},
+
+		async changeSelectGame(n: number) {
+			console.log("tg")
+			this.index += n;
+			await this.Select(this.gameList[this.index]);
+		}
 	}
 })
 </script>
@@ -171,7 +186,7 @@ export default	defineComponent ({
 	align-items: center;
 	margin-top: 2%;
 	width: 3%;
-	height: 65%;
+	height: auto;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -184,6 +199,16 @@ export default	defineComponent ({
 	color: rgb(23,61,199);
 	font-size: 300%;
 	text-shadow: 2px 0 0 rgb(255, 228, 113), -2px 0 0 rgb(255, 228, 113), 0 2px 0 rgb(255, 228, 113), 0 -2px 0 rgb(255, 228, 113), 1px 1px rgb(255, 228, 113), -1px -1px 0 rgb(255, 228, 113), 1px -1px 0 rgb(255, 228, 113), -1px 1px 0 rgb(255, 228, 113);
+}
+
+.watchTitle {
+	/* margin-bottom: 4%;
+	width: 40%;
+	height: 20%; */
+	text-align: center;
+	color: rgb(255, 255, 255, 0.8);
+	font-size: 300%;
+	text-shadow: 2px 0 0 rgb(236, 100, 151), -2px 0 0 rgb(236, 100, 151), 0 2px 0 rgb(236, 100, 151), 0 -2px 0 rgb(236, 100, 151), 1px 1px rgb(236, 100, 151), -1px -1px 0 rgb(236, 100, 151), 1px -1px 0 rgb(236, 100, 151), -1px 1px 0 rgb(236, 100, 151);
 }
 
 .playerInfo {
@@ -280,6 +305,14 @@ export default	defineComponent ({
 	background:	var(--deep-blue-10);
 }
 
+.changeButton {
+	display: flex;
+	align-items: center;
+}
+
+.changeButton > img:hover {
+	cursor: pointer;
+}
 .rotateimg90 {
   -webkit-transform:rotate(90deg);
   -moz-transform: rotate(90deg);
@@ -287,4 +320,5 @@ export default	defineComponent ({
   -o-transform: rotate(90deg);
   transform: rotate(90deg);
 }
+
 </style>
