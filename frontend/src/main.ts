@@ -15,6 +15,7 @@ import settingsPage from './components/settingsPage.vue'
 import observePage from './components/observePage.vue'
 import callback from './components/callback.vue'
 import watchPage from './components/watchPage.vue'
+import channelsetting from './components/chat-setting.vue'
 import NotFound from './components/404.vue'
 
 const router = VueRouter.createRouter({
@@ -70,6 +71,12 @@ routes: [
         path: '/createChat',
         name: 'createChat',
         component: createChatPageVue,
+        props: true
+    },
+    {
+        path: '/channel-setting',
+        name: 'channel-setting',
+        component: channelsetting,
         props: true
     },
     {
