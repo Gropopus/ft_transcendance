@@ -150,6 +150,7 @@ export default	defineComponent ({
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
+	border-radius: 30px;
 }
 
 .info {
@@ -214,10 +215,12 @@ export default	defineComponent ({
 	display:	flex;
 	flex-direction:	row;
 	border-bottom:	solid 2px white;
+	border-radius: 35px;
 }
 
 .tab
 {
+	border-radius: 35px;
 	flex:	1 1 0;
 	text-align:	center;
 	vertical-align:	center;
