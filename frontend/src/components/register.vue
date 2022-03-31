@@ -9,15 +9,15 @@
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Login </label>	<br>
-			<input type="text" v-model="userLogin" class="textArea">
+			<input type="text" @keyup.enter="login()" v-model="userLogin" class="textArea">
 			<br>
 			<br>
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass" class="textArea">
+			<input type="password" @keyup.enter="login()" v-model="userPass" class="textArea">
 			<br>
 			<br>
 			<label for="email"> Email </label>	<br>
-			<input type="text" v-model="userMail" class="textArea">	<br>
+			<input type="text" @keyup.enter="login()" v-model="userMail" class="textArea">	<br>
 
 			<div class="submitBar">
 		
