@@ -8,10 +8,10 @@
 		<div class="LoginForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Email </label>	<br>
-			<input type="text" v-model="userLogin"  class="textArea">	<br>
+			<input type="text" v-model="userLogin"  class="textArea" v-on:keyup.enter="login()">	<br>
 
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass"  class="textArea">	<br>
+			<input type="password" v-model="userPass"  class="textArea" v-on:keyup.enter="login()">	<br>
 			<div class="submitBar">
 				<button @click="register()" class="submitButton">
 					Register

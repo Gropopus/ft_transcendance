@@ -1,6 +1,7 @@
 <template>
 <div>
-	<h1 class="watchTitle"> Game {{ index + 1 }} / {{ gameList.length }} </h1>
+	<h1 v-if="actualSelect" class="watchTitle"> Game {{ index + 1 }} / {{ gameList.length }} </h1>
+	<h1 v-else class="watchTitle"> No game in progress. </h1>
 	<div class="watchPage">
 		<div class="changeButton" >
 			<img v-if="index > 0" @click="changeSelectGame(-1)" src="/src/assets/arrow-whitedown.png" class="rotateimg90">

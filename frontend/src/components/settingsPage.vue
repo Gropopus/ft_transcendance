@@ -4,6 +4,7 @@
 				<img :src="picture" />
 				<br>
 			</div>
+		<div class="settings">
 		<p class="error" v-if="error"> {{ error }} </p>
 		<div class="submitBar">
 			<div class="title"> Change your Login:</div>
@@ -30,25 +31,27 @@
             </select>
 		</div>
 		<div class="secret" v-if="secret">
-			Please keep this secret code: {{ secret}}
-			<br>
-			<img :src="qrcode" />
-			<br>
-			If you are unable to scan the QR code in the google authentificator application , please enter this code manually into the app.<br>
-			To finish security verification and enable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
-			<input type="googlecode" v-model="googlecode" class="textArea">
-			<button @click="turnOn2FA()" class="submitButton">
-				Submit </button>
+			<div class= "secret-content">
+				Please keep this secret code: {{ secret}}
+				<br>
+				<img :src="qrcode" />
+				<br>
+				If you are unable to scan the QR code in the google authentificator application , please enter this code manually into the app.<br>
+				To finish security verification and enable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
+				</div>
+				<input type="googlecode" v-model="googlecode" class="textArea">
+				<button @click="turnOn2FA()" class="submitButton">
+					Submit </button>
 		</div>
 		<div class="secret" v-if="turnoff">
-			Finish this security verification to disable Google Authenticator, please enter the 6 digit code from Google Authenticator: <br>
+			<div class="desactived"> Finish this security verification to disable Google Authenticator, please enter the 6 digit code from Google Authenticator:</div> <br>
 			<input type="googlecode" v-model="googlecode" class="textArea">
 			<button @click="turnOff2FA()" class="submitButton">
 				Submit </button>
 		</div>
-		<br>
-		<p>
-		</p>
+			<br>
+			<p class="alert" v-if="finish"> {{ finish }} </p>
+		</div>
 	</div>
 </template>
 <script lang="ts">
@@ -76,6 +79,7 @@ export default	{
 			qrcode: "",
 			googlecode: "",
 			turnoff: "",
+			finish: "",
 		}
 	},
 	created(){
@@ -234,6 +238,7 @@ export default	{
 				this.error = "Wrong identification code."
 				return ;
 			}
+			this.finish = "Two factor authentication activated."
 		},
 
 		async turnOff2FA()
@@ -255,18 +260,24 @@ export default	{
 				this.error = "Wrong identification code."
 				return ;
 			}
+			this.finish = "Two factor authentication desactivated."
 		},
 	}
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .error {
 	justify-content: top;
 	color: red;
+	margin-left: 10%;
 }
 
+.alert {
+	margin-left: 10%;
+	color: green;
+}
 .secret {
 	margin-top: 3%;
 }
@@ -279,6 +290,15 @@ export default	{
 	min-width: 548px;
 }
 
+.settings {
+	display: block;
+	border: solid white 2px;
+	margin-right: auto;
+	margin-left: auto;
+	width: 80%;
+	padding-top: 5%;
+	padding-bottom: 5%;
+}
 .submitBar > input.textArea
 {
 	border: none;
@@ -287,6 +307,7 @@ export default	{
 	font-size:	130%;
 	padding:	6px;
 	width:		20%;
+	margin-left: 10%;
 }
 
 .secret > input.textArea 
@@ -297,7 +318,17 @@ export default	{
 	font-size:	130%;
 	padding:	6px;
 	width:		20%;
-	margin-right: 5%;
+	margin-left: 10%;
+}
+
+.secret > .secret-content
+{
+	margin-left:	10%;
+}
+
+.secret > .desactived
+{
+	margin-left: 10%;
 }
 .textArea {
 	height: 20%;
@@ -310,10 +341,11 @@ export default	{
 	margin-top: 1.5%;
 	width:		30%;
 	font-size: 100%;
+	margin-left: 10%;
 }
 
 .selector {
-    margin-left: 19.8%;
+    margin-left: 10%;
 	padding-top: 1%;
 	width: 10%;
 	background:	white;
@@ -325,14 +357,14 @@ export default	{
 }
 
 .submitBar > .fileArea {
-	padding-left: 0.5%;
 	justify-content: left;;
 	background:	none;
 	font-size:	100%;
 	font-family: MyanmarText;
 	margin-top: 1.5%;
-	margin-left: 19.2%;
+	margin-left: 10%;
     margin-right: auto;
+	width:		20.8%;
 }
 .settingsPage > .submitBar
 {
@@ -346,6 +378,7 @@ export default	{
 
 .submitButton
 {
+	margin-left: 40%;
 	padding-top: 1%;
 	width: 10%;
 	background:	none;
@@ -356,6 +389,12 @@ export default	{
 	font-family: MyanmarText;
 }
 
+.submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
 .settingsPage > .submitBar > .submitButton:hover
 {
 	background: rgba(255, 255, 255, 0.5);
@@ -365,14 +404,14 @@ export default	{
 
 .profile-image {
     /*float: left;*/
-	margin-top: 5%;
-	margin-left: 35%;
-    width: calc(33.333% - 1rem);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 3rem;
-	margin-bottom: 15%;
+	margin-top: 		5%;
+	margin-left: 		35%;
+    width: 				calc(33.333% - 1rem);
+    display: 			flex;
+    justify-content: 	center;
+    align-items: 		center;
+    margin-right:		3rem;
+	margin-bottom:		5%;
 }
 
 .profile-image > img {

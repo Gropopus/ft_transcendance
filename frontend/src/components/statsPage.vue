@@ -45,6 +45,7 @@
 </template>
 
 <style lang="css">
+
 .StatsWin
 {
 	width:	100%;
