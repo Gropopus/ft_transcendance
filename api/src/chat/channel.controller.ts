@@ -89,17 +89,18 @@ export class ChannelController {
 	}
 
 	@Get(':channelId/messages/:userId')
-	async getMessages(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Imessage>> {
+	async getMessages(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 1000): Promise<Pagination<Imessage>> {
+		const user = await this.userService.findOne(params.userId);
+		const channel = await this.channelService.findOne(params.channelId);
 		const mess = await this.messageService.findMessagesForChannel(
-			params.channelId,
-			params.userId,
+			channel,
+			user,
 			{
 				page,
 				limit,
 				route: 'http://localhost:3000/api/channel/:channelId/messages/:userId'
 			}
 		);
-		console.log(mess.items);
 		return mess;
 	}
 }

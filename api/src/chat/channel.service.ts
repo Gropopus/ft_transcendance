@@ -94,7 +94,6 @@ export class ChannelService {
 
   async addUserToChannel(channelId: number, user: Iuser, password: string): Promise<Observable<{ error: string } | { success: string }>> {
 	  const channel = await this.getChannel(channelId);
-	  console.log(channel);
 	const bool: number = await this.boolIusersOnChannel(user.id, channel);
 	if (bool) return of({ error: 'Already on the channel;' }); 
 	if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' }); 
@@ -167,14 +166,13 @@ export class ChannelService {
 	return this.channelRepository.save(channel);
   }
 
-  boolUserMutedOnChannel(Iuserid: number, channel: Ichannel): Promise<number> {
+  boolUserMutedOnChannel(Iuserid: number, channel_id: number): Promise<number> {
 	const query = this.channelRepository
 	.createQueryBuilder('channel')
     .leftJoinAndSelect('channel.muted', 'muted')
     .where('muted.id = :Iuserid', { Iuserid })
-	.andWhere("channel.id = :rid", { rid: channel.id })
+	.andWhere("channel.id = :rid", { rid: channel_id })
 	.getCount();
-
 	return  (query);
   }
 

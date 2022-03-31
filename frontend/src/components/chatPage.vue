@@ -53,11 +53,11 @@ export default	defineComponent ({
 		return {
 			channelsList: [],
 			channelId: 0,
-			// socket: Socket,
+			socket: Socket,
 			channelMessages: [],
 			message: "",
 		}
-	},
+	}, 
 
 	sockets: {
 		connect: function() {
@@ -65,20 +65,37 @@ export default	defineComponent ({
 		},
 	},
 
-	mounted() {
+	async mounted() {
 		this.channelsList;
 		this.channelMessages;
-		// this.socket;
-	},
-
-
-	async created() {
 		this.channelsList = await this.fetchChannelsList();
+
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
-		// this.socket = io('http://localhost:3000');
+		this.socket.auth = {userId: this.userId};
+		this.socket.connect();
+		if (this.channelId)
+			this.socket.emit('joinChannel', this.channelId);
+		this.socket.on('messageAdded', async () =>  {
+			this.channelMessages = await this.fetchMessages();
+		});
 	},
+
+	unmounted() {
+		this.socket.disconnect();
+	},
+
+	created() {
+		console.log('create');
+		this.socket = io('http://localhost:42068', {
+			withCredentials: true,
+			extraHeaders: {
+			"my-custom-header": "chat"
+			},
+			autoConnect: false});
+	},
+
 
 	methods: {
 		async fetchChannelsList() {
@@ -90,8 +107,14 @@ export default	defineComponent ({
 			return data.items
 		},
 
-		changeCurrentChan(id: number) {
-			this.channelId = id;
+		async changeCurrentChan(id: number) {
+			if (this.channelId != id)
+			{
+				this.socket.emit('leaveJoinChannel');
+				this.channelId = id;
+				this.socket.emit('joinChannel', this.channelId);
+				this.channelMessages = await this.fetchMessages();
+			}
 		},
 
 		getChannelIndex(id: number) {
@@ -127,15 +150,16 @@ export default	defineComponent ({
 					this.channelId = this.channelsList[i].id;
 				this.channelMessages = await this.fetchMessages();
 			}
+		this.channelsList = await this.fetchChannelsList();
 		},
 
 		async sendMessage(message: string)
 		{
-			// console.log(this.socket);
-			this.$socket.emit('addMessage', message);
+			this.socket.emit('addMessage', {msg: message, channelId: this.channelId});
 		},
 
 		async fetchMessages() {
+			console.log('fetch message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
@@ -143,7 +167,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			const mess = await res.json();
-			console.log(mess.items);
 			return mess.items;
 		}
 	},

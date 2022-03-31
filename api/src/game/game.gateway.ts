@@ -36,7 +36,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	nb_try: number = 0;
 	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
 	player_room: Map<string, string> = new Map<string, string>();
-
+	matchmaking_id: string[] = [];
 
 	private disconnect(client: Socket) {
 		client.emit('Error', new UnauthorizedException());
@@ -63,6 +63,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		if (room == "MatchMaking")
 		{
+			this.matchmaking_id = [];
 			--this.nb_matchmaking;
 			this.logger.log("reduce number of player in matchmaking")
 		}
@@ -239,11 +240,18 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('joinMatchmaking')
 	async handleMatchmaking(client: Socket)
 	{
+		if (this.matchmaking_id && this.matchmaking_id[0] == client.handshake.auth.userId)	//already in matchmacking
+		{
+			this.server.to(client.id).emit('already_in_matchmaking');
+			return ;
+		}
+		this.matchmaking_id.push(client.handshake.auth.userId);
 		this.nb_matchmaking += 1;
 		client.join('MatchMaking');
 		this.player_room.set(client.id, 'MatchMaking');
 		if (this.nb_matchmaking == 2)
 		{
+			this.matchmaking_id = [];
 			this.nb_try += 1;
 			this.server.to('MatchMaking').emit('AskReady', 'Confirm' + this.nb_try.toString());
 			this.kickAllFrom('MatchMaking');

@@ -6,6 +6,7 @@ export interface Imessage {
   id?: number;
   type: number;
   user: Iuser;
+  username: string;
   text: string;
   channel: Ichannel;
   created_at: Date;
