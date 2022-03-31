@@ -7,6 +7,7 @@
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
+				<div class="usermail"> {{userData.email }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id && !isBlocked()" class="challengeButton">

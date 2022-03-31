@@ -7,7 +7,8 @@
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
-				<div class="status"> {{ userData.email }} </div>
+				<div class="usermail"> {{ userData.email }} </div>
+				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div class="perso-info">
 			</div>
@@ -167,6 +168,11 @@ export default	defineComponent ({
 	color: var(--font-blue);
 	font-weight:	bold;
 	margin-top: 10%;
+}
+. usermail{
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	100%;
 }
 
 .status {
