@@ -16,7 +16,7 @@
 		<div class="StatsWin">
 			<div class="StatsTabs">
 				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
-				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
+				<button class="tab middle" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
@@ -132,7 +132,15 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
+<style lang="css" scoped>
+.StatsWin
+{
+	width:	100%;
+	min-height:	500px;
+	display:	flex;
+	flex-direction:	column;
+}
+
 .profilePage
 {
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
@@ -151,6 +159,7 @@ export default	defineComponent ({
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
+	border-radius: 35px;
 }
 
 .info {
@@ -187,7 +196,6 @@ export default	defineComponent ({
     justify-content: center;
     align-items: center;
     margin-right: 3rem;
-	margin-bottom: 15%;
 }
 
 .picture > img {
@@ -208,22 +216,60 @@ export default	defineComponent ({
 
 .StatsArea
 {
-	/* width:	100%;
+	width:	100%;
 	min-height:	500px;
-	border-radius: 5px; */
+	border: solid white 3px;
 	overflow-y:	scroll;
-	/* max-height:	500px; */
+	border-top: none;
+	border-bottom-left-radius: 35px;
+	border-bottom-right-radius: 35px;
 }
 
+.stat {
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+}
+
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+}
+
+.stat > .statElem > h3 {
+	flex: 1 0;
+	background: rgb(203, 177, 233, 0.2);
+}
+
+.stat > .statElem > p {
+	flex: 1 0;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
+
+}
 .StatsTabs
 {
 	display:	flex;
 	flex-direction:	row;
-	border-bottom:	solid 2px white;
+	border:	solid 3px white;
+	border-top-right-radius: 35px;
+	border-top-left-radius: 35px;
+	width: 100%;
+	overflow: hidden;
 }
 
-.tab
+.middle
 {
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
+}
+
+.StatsTabs > button
+{
+	background: none;
+	border: none;
 	flex:	1 1 0;
 	text-align:	center;
 	vertical-align:	center;
@@ -233,13 +279,8 @@ export default	defineComponent ({
 	letter-spacing:	2px;
 	font-size:	32px;
 	color: var(--font-blue);
-}
-
-.StatsTabs > button
-{
-	background: none;
-	border: none;
-	border-right:	solid 2px white;
+	padding-top: 1%;
+	font-weight:	bold;
 }
 
 .StatsTabs > button:hover
@@ -251,9 +292,6 @@ export default	defineComponent ({
 {
 	background:	white;
 	color:	var(--font-blue);
-	font-weight:	bold;
 }
-
-
 
 </style>

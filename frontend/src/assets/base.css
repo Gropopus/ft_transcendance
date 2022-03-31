@@ -137,26 +137,6 @@ header
 	margin-bottom:	min(22px);
 }
 
-.StatsWin
-{
-	width:	100%;
-	min-height:	500px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	display:	flex;
-	border-radius: 5px;
-	flex-direction:	column;
-}
-
-.StatsArea
-{
-	width:	100%;
-	min-height:	500px;
-	border-radius: 5px;
-	overflow-y:	scroll;
-	/* max-height:	px; */
-}
-
 
 /* Works on Firefox */
 * {

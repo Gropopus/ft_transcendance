@@ -25,7 +25,7 @@
 		<div class="StatsWin">
 			<div class="StatsTabs">
 				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
-				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
+				<button class="tab middle" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
@@ -230,7 +230,7 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
+<style lang="css" scoped>
 
 	/*** PROFILE STYLES ***/
 
@@ -386,11 +386,17 @@ export default	defineComponent ({
 {
 	display:	flex;
 	flex-direction:	row;
-	border-bottom:	solid 2px white;
+	border:	solid 3px white;
+	border-top-right-radius: 35px;
+	border-top-left-radius: 35px;
+	width: 100%;
+	overflow: hidden;
 }
 
-.tab
+.StatsTabs > button
 {
+	background: none;
+	border: none;
 	flex:	1 1 0;
 	text-align:	center;
 	vertical-align:	center;
@@ -402,11 +408,10 @@ export default	defineComponent ({
 	color: var(--font-blue);
 }
 
-.StatsTabs > button
+.middle
 {
-	background: none;
-	border: none;
-	border-right:	solid 2px white;
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
 }
 
 .StatsTabs > button:hover
