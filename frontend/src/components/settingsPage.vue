@@ -293,6 +293,7 @@ export default	{
 .settings {
 	display: block;
 	border: solid white 2px;
+	border-radius: 5px;
 	margin-right: auto;
 	margin-left: auto;
 	width: 80%;
