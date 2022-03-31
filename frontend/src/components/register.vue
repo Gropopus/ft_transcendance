@@ -105,7 +105,7 @@ export default	{
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .error {
 	justify-content: top;

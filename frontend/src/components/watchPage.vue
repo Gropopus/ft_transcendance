@@ -134,7 +134,7 @@ export default	defineComponent ({
 </script>
 
 
-<style>
+<style lang="css" scoped>
 .watchPage
 {
 	display: flex;

@@ -19,7 +19,7 @@
 					<button @click="declineRequest()">decline</button>
 				</div>
 				<img v-if="blockIcon.img && !isBlocked()" :src="blockIcon.img" @click="blockUser()" class="blockButton" :title="blockIcon.title">
-				<img v-else v-if="blockIcon.img" :src="blockIcon.img" @click="unblockUser()" class="unblockButton" :title="blockIcon.title">
+				<img v-else v-if="unblockIcon.img" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
 		<div class="StatsWin">
@@ -69,6 +69,7 @@ export default	defineComponent ({
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
 			challengeIcon: {img: "/src/assets/challenge.png", title:"challenge"},
 			blockIcon: {img: "/src/assets/plain-cat.png", title:"block this.userData.username"},
+			unblockIcon: {img: "/src/assets/plain-cat.png", title:"unblock this.userData.username"},
 			relationIcon: "",
 			currentTab: 0,
 			picture: "",
@@ -430,14 +431,16 @@ export default	defineComponent ({
 
 .relation {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	justify-content: center;
-	margin-right: 3%;
+	margin-right: 5%;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 .challengeButton {
-	margin-top: 3%;
-	margin-bottom: 3%;
+	margin-right: 3%;
+	margin-left: 3%;
 	flex: auto;
 	display: flex;
 	align-items: center;
@@ -461,8 +464,8 @@ export default	defineComponent ({
 }
 
 .relationButton {
-	margin-top: 3%;
-	margin-bottom: 3%;
+	margin-right: 3%;
+	margin-left: 3%;
 	flex: auto;
 	border-radius: 50%;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
@@ -511,8 +514,8 @@ export default	defineComponent ({
 }
 
 .blockButton {
-	margin-top: 3%;
-	margin-bottom: 3%;
+	margin-right: 3%;
+	margin-left: 3%;
 	flex: auto;
 	border-radius: 50%;
 	max-height: 70px;
@@ -525,9 +528,28 @@ export default	defineComponent ({
 }
 
 .blockButton:hover {
-	text-decoration: underline;
+	background:	var(--deep-blue-10);
 	cursor: pointer;
 	background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
+}
+
+
+.unblockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	padding: 3%;
+	border: solid 2px white
+}
+
+.unblockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
 }
 
 </style>
