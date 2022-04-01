@@ -68,6 +68,15 @@ export class ChannelService {
     return paginate(query, options);
   }
 
+  async getUsersList(channelId: number) {
+	const query = this.channelRepository
+	.createQueryBuilder('channel')
+	.leftJoinAndSelect('channel.users', 'users')
+	.orderBy('users.username', 'DESC');
+	console.log(query);
+	return query;
+  }
+
   async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
