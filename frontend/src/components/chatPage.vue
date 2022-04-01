@@ -3,7 +3,10 @@
 		<div class="chatSide">
 		<div class="chatArea">
 			<div class="channelName" v-if="channelsList.length > 0">
-				<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
+				<h2>
+					{{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}
+					<button @click="goToSettings(channelId)"> settings </button>
+				</h2>
 			</div>
 			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
@@ -177,6 +180,10 @@ export default	defineComponent ({
 			const mess = await res.json();
 			return mess.items;
 		},
+
+		goToSettings(id: number) {
+			this.$router.replace(`/channel-setting/${id}`)
+		}
 	},
 })
 </script>

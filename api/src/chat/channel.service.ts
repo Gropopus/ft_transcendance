@@ -68,13 +68,16 @@ export class ChannelService {
     return paginate(query, options);
   }
 
-  async getUsersList(channelId: number) {
-	const query = this.channelRepository
-	.createQueryBuilder('channel')
-	.leftJoinAndSelect('channel.users', 'users')
-	.orderBy('users.username', 'DESC');
-	console.log(query);
-	return query;
+  async getChannelInfo(channelId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
+	  const query = this.channelRepository
+      .createQueryBuilder('channel')
+      .leftJoinAndSelect('channel.users', 'users')
+      .leftJoinAndSelect('channel.admin', 'all_admin')
+      .leftJoinAndSelect('channel.muted', 'all_muted')
+      .leftJoinAndSelect('channel.owner', 'onwner')
+	  .where('channel.id = :id', { id: channelId })
+      .orderBy('channel.updated_at', 'DESC');
+	return paginate(query, options);
   }
 
   async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
@@ -130,12 +133,13 @@ export class ChannelService {
   }
 
   async addAdminToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
-    channel.admin.push(user);
-    return channel;
-  }
-
-  async addMutedToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
-    channel.muted.push(user);
+	  channel.admin.push(user);
+	  return channel;
+	}
+	
+	async muteUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
+	  console.log(user);
+	//   channel.muted.push(user);
     return channel;
   }
 
