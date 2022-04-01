@@ -143,8 +143,8 @@ function draw() {
 
 	// Draw players
 	context.fillStyle = 'white';
-	context.fillRect(0, game.player.y, game.player_width, game.player_height);
-	context.fillRect(game.canvas.width - game.player_width, game.computer.y, game.player_width, game.player_height);
+	context.fillRect(0, game.player.y, game.player_width, game.player.height);
+	context.fillRect(game.canvas.width - game.player_width, game.computer.y, game.player_width, game.computer.height);
 
 	// Draw ball
 	context.beginPath();
@@ -164,13 +164,17 @@ function playerMove(event, ) {
 	var rect = game.canvas.getBoundingClientRect(); // abs. size of element
 	var scaleY = game.canvas.height / rect.height;  // relationship bitmap vs. element for Y
 	var mouseLocation = (event.clientY - rect.top) * scaleY  ;   // been adjusted to be relative to element
+	if (game.side == "left")
+		var p_height = game.player.height
+	else
+		var p_height = game.computer.height;
 
-	if (mouseLocation < game.player_height / 2) {
+	if (mouseLocation < p_height / 2) {
 		p_pos = (0);
-	} else if (mouseLocation > game.canvas.height - game.player_height / 2) {
-		p_pos = (game.canvas.height - game.player_height);
+	} else if (mouseLocation > game.canvas.height - p_height / 2) {
+		p_pos = (game.canvas.height - p_height);
 	} else {
-		p_pos = (mouseLocation - game.player_height / 2);
+		p_pos = (mouseLocation - p_height / 2);
 	}
 	p_pos = p_pos / game.canvas.height * 100;
 	if (game.side == "right")
@@ -182,66 +186,6 @@ function playerMove(event, ) {
 function engage(pid) {
 	if (game.socket && game.socket.connected == true)
 		game.socket.emit('engage', {gameRoom: game.gameRoom, gameId:game.gameId, speed:game.ball.speed.x});
-}
-
-//game action
-function collide(player, ) {
-	// The player does not hit the ball
-	if (game.ball.y < player.y || game.ball.y > player.y + game.player_height) {
-
-		if (game.side == 'observer')
-			;
-		// Update score
-		else if (player == game.player)
-			game.socket.emit('left_miss', {
-				gameRoom: game.gameRoom, gameId: game.gameId,
-				score_l: game.player.score, score_r: game.computer.score})
-		else if (player == game.computer)
-			game.socket.emit('right_miss', {
-				gameRoom: game.gameRoom, gameId: game.gameId,
-				score_l: game.player.score, score_r: game.computer.score})
-		
-		game.ball.x = game.canvas.width / 2;
-		game.ball.y = game.canvas.height / 2;
-		
-		game.ball.speed.x = 0 ;
-		game.ball.speed.y = 0 ;
-	} else {
-		// Change direction
-		game.ball.speed.x *= -1;
-		changeDirection(player.y, game);
-
-		// Increase speed if it has not reached max speed
-		if (Math.abs(game.ball.speed.x) < 12) {
-			game.ball.speed.x *= 1.1;
-		}
-	}
-}
-
-function changeDirection(playerPosition, ) {
-	var impact = game.ball.y - playerPosition - game.player_height / 2;
-	var ratio = 100 / (game.player_height / 2);
-
-	// Get a value between 0 and 10
-	game.ball.speed.y = Math.round(impact * ratio / 10);
-	if (game.ball.speed.y == 0)
-		game.ball.speed.y = 0.01;
-}
-
-function ballMove() {
-	// Rebounds on top and bottom
-	if (game.ball.y > game.canvas.height || game.ball.y < 0) {
-		game.ball.speed.y *= -1;
-	}
-
-	if (game.ball.x > game.canvas.width - game.player_width) {
-		collide(game.computer, game);
-	}
-	else if (game.ball.x < game.player_width) {
-		collide(game.player, game);
-	}
-	// game.ball.x += game.ball.speed.x;
-	// game.ball.y += game.ball.speed.y;
 }
 
 function entermatchmaking(draw)
@@ -336,8 +280,10 @@ function playerclick(event, ) {
 		if (x >= game.start_buton.x && x <= game.start_buton.maxX &&
 			y >= game.start_buton.y && y <= game.start_buton.maxY)
 		{
-			game.computer.y = game.canvas.height / 2 - game.player_height / 2;
-			game.player.y = game.canvas.height / 2 - game.player_height / 2;
+			game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+			game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+			game.computer.y = game.canvas.height / 2 - game.player.height / 2;
+			game.player.y = game.canvas.height / 2 - game.computer.height / 2;
 			game.button = 0;
 			game.matchmaking = 1
 			entermatchmaking(1, game);
@@ -374,18 +320,12 @@ function socket_init()
 		document.querySelector('#player-score').textContent = game.player.score;
 	})
 
-	game.socket.on('reset', function(speed_x, speed_y) {
-		game.ball.x = game.canvas.width / 2;
-		game.ball.y = game.canvas.height / 2;
-		
-		game.ball.speed.x = speed_x ;
-		game.ball.speed.y = speed_y ;
+	game.socket.on('player_size', function(l, r) {
+		console.log('rcv player height l: ' + l + ' r : ' + r);
+		game.player.height   = (r / 100) * game.canvas.height;
+		game.computer.height = (l / 100) * game.canvas.height;
 	})
 
-	game.socket.on('speed_update', function(speed_x, speed_y) {
-		game.ball.speed.x = speed_x;
-		game.ball.speed.y = speed_y;
-	})
 
 	//meta event
 	game.socket.on('gameId', function(sided, id, gameRoomid) {
@@ -436,8 +376,10 @@ function socket_init()
 
 		game.ball.x = game.canvas.width / 2;
 		game.ball.y = game.canvas.height / 2;
-		game.computer.y = game.canvas.height / 2 - game.player_height / 2;
-		game.player.y = game.canvas.height / 2 - game.player_height / 2;
+		game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+		game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+		game.computer.y = game.canvas.height / 2 - game.player.height / 2;
+		game.player.y = game.canvas.height / 2 - game.computer.height / 2;
 
 		draw(game);
 		if (game.side == 'observer')
@@ -492,8 +434,10 @@ function socket_init()
 			game.nb_confirm = 0;
 			game.side = ' ';
 			game.gameRoom = "-1";
-			game.computer.y = game.canvas.height / 2 - game.player_height / 2;
-			game.player.y = game.canvas.height / 2 - game.player_height / 2;
+			game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+			game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+			game.computer.y = game.canvas.height / 2 - game.player.height / 2;
+			game.player.y = game.canvas.height / 2 - game.computer.height / 2;
 			game.ball.speed.x = 0;
 			game.ball.speed.y = 0;
 			game.ball.x = game.canvas.width / 2;
@@ -531,11 +475,12 @@ function socket_init()
 function canvas_init(mode){
 	game.canvas = document.getElementById('canvas'),
 
-	game.player_height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+	game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+	game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
 	game.player_width = (1/128) * game.canvas.width; // base is 1/128
 
-	game.player.y = game.canvas.height / 2 - game.player_height / 2;
-	game.computer.y = game.canvas.height / 2 - game.player_height / 2;
+	game.player.y = game.canvas.height / 2 - game.player.height / 2;
+	game.computer.y = game.canvas.height / 2 - game.computer.height / 2;
 
 	game.ball.x = game.canvas.width / 2;
 	game.ball.y = game.canvas.height / 2;
@@ -578,8 +523,10 @@ function unload(userId)
 
 		game.ball.x = game.canvas.width / 2;
 		game.ball.y = game.canvas.height / 2;
-		game.computer.y = game.canvas.height / 2 - game.player_height / 2;
-		game.player.y = game.canvas.height / 2 - game.player_height / 2;
+		game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+		game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+		game.computer.y = game.canvas.height / 2 - game.player.height / 2;
+		game.player.y = game.canvas.height / 2 - game.computer.height / 2;
 
 		draw(game);
 		if ((game.player.score == 11 && game.side == 'left') || 
