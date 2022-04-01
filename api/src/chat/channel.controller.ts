@@ -46,6 +46,11 @@ export class ChannelController {
 	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://localhost:3000/api/channel/all/:user' });
 	}
 
+	@Get('/:id/users')
+	async getUsersList(@Param() params) {
+		return this.channelService.getUsersList(params.id);
+	}
+
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/destroy')

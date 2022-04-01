@@ -11,7 +11,7 @@
 					<img v-else src="/src/assets/arrow-white-up.png" />
 				</button>
 			</div>
-            <div class="formElem" v-if="protected">
+            <!-- <div class="formElem" v-if="protected">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
                 <button @click="changePassword()" class="addButton">
@@ -44,38 +44,47 @@
                         x
                     </button>
                 </div>
-            </div>
-            <div class="formElem" v-if="owner" >
+            </div> -->
+            <!-- <div class="formElem" v-if="owner" >
                 <label for="users">Delete channel: </label>
                     <button @click="deleteChannel()" class="addButton">
                         delete
                     </button> <br>
-            </div>
+            </div> -->
             <p class="error"> {{ error }} </p>
 		</div> <!-- RegisterForm end -->
 </template>
 
 <script lang="ts">
-export default	{
+
+import { defineComponent } from 'vue';
+
+export default defineComponent ({
 	props:	{
-		userId:	{
-			type:	[Number, String],
-			default:	0
-		},
+		// userId:	{
+		// 	type:	[Number, String],
+		// 	default:	0
+		// },
 	},
 	data:	function()	{
 		return {
             channelId: 0,
             channel: [],
             listStatus: 0,
+            userToMute: "",
+            userToAdmin: "",
             error: "",
 		}
 	},
 
+    mounted() {
+        this.channel;
+    },
+
     async created() {
-        this.channelId = this.$router.params.id;
+        this.channelId = this.$route.params.id;
         this.channel = await fetchChannel();
-        this.users = await fetchusers();
+        // this.users = await fetchusers();
     },
 
 	methods:	{
@@ -100,34 +109,34 @@ export default	{
         },
 
         async muteUser() {
-            this.error = "";
-            if (!this.userToMute)
-                return ;
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${this.userToMute}`, {
-                method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-            if (user.length > 0)
-            {
-                for (let username of this.userMutedList)
-                    if (username == this.userToMute)
-                        return ;
-                this.userMutedList.push(this.userToMute);
-            }
-            else
-                this.error = "user doesn't exist."
-            this.userToMute = "";
+            // this.error = "";
+            // if (!this.userToMute)
+            //     return ;
+            // const res = await fetch(
+            //     `http://localhost:3000/api/users/find-by-username/${this.userToMute}`, {
+            //     method: 'get',
+            //    headers: { 'content-type': 'application/json' },
+            // })
+            // const user = await res.json();
+            // if (user.length > 0)
+            // {
+            //     for (let username of this.userMutedList)
+            //         if (username == this.userToMute)
+            //             return ;
+            //     this.userMutedList.push(this.userToMute);
+            // }
+            // else
+            //     this.error = "user doesn't exist."
+            // this.userToMute = "";
         },
 
         unmute(username: string) {
-            console.log(this.userMutedList[0])
-            for (let i in this.userMutedList)
-            {
-                if (this.userMutedList[i] == username)
-                    this.userMutedList.splice(i, 1);
-            }
+            // console.log(this.userMutedList[0])
+            // for (let i in this.userMutedList)
+            // {
+            //     if (this.userMutedList[i] == username)
+            //         this.userMutedList.splice(i, 1);
+            // }
                     
         },
 
@@ -135,7 +144,7 @@ export default	{
             this.listStatus = 1 - this.listStatus;
 		},
 	}
-}
+})
 </script>
 
 <style lang="css" scoped>

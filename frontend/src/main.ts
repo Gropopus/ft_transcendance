@@ -74,7 +74,7 @@ routes: [
         props: true
     },
     {
-        path: '/channel-setting',
+        path: '/channel-setting/:id',
         name: 'channel-setting',
         component: channelsetting,
         props: true

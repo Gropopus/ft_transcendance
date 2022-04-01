@@ -88,7 +88,7 @@ export default	defineComponent ({
 
 	created() {
 		console.log('create');
-		this.socket = io('http://localhost:42068', {
+		this.socket = io('http://localhost:42070', {
 			withCredentials: true,
 			extraHeaders: {
 			"my-custom-header": "chat"
