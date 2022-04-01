@@ -46,9 +46,16 @@ export class ChannelController {
 	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://localhost:3000/api/channel/all/:user' });
 	}
 
-	@Get('/:id/users')
-	async getUsersList(@Param() params) {
-		return this.channelService.getUsersList(params.id);
+	@Get('/:id/info')
+	async getChannelData(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+		limit = limit > 100 ? 100 : limit;
+		return this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+	}
+
+	@Put(':id/mute/:userId')
+	async muteUser(@Param() params) {
+		return this.channelService.muteUser(params.id, 
+			await this.userService.findOne(params.userId));
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)

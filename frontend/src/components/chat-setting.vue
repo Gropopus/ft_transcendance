@@ -11,6 +11,21 @@
 					<img v-else src="/src/assets/arrow-white-up.png" />
 				</button>
 			</div>
+            <div v-if="listStatus">
+                <div :key="user.id" v-for="user in channelData.users">
+                    <div class="displayUser">
+                        {{ user.username }}
+                        <div v-if="isOwner(user.id)"> owner </div>
+                        <div v-else-if="isAdmin(user.id)"> admin </div>
+                        <div v-else-if="isMute(user.id)"> mute </div>
+                        <div v-if="role=='owner' && userId != user.id">
+                            <button v-if="!isMute(user.id)" @click="muteUser(user.id)">mute</button>
+                            <button v-else @click="unmuteUser(user.id)">unmute</button>
+                            <button>x</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- <div class="formElem" v-if="protected">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
@@ -60,19 +75,22 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent ({
+    name: 'channelSetting',
 	props:	{
-		// userId:	{
-		// 	type:	[Number, String],
-		// 	default:	0
-		// },
+		userId:	{
+			type:	[Number, String],
+			default:	0
+		},
 	},
 	data:	function()	{
 		return {
             channelId: 0,
-            channel: [],
+            channelData: {},
             listStatus: 0,
             userToMute: "",
             userToAdmin: "",
+            users: [],
+            role: "",
             error: "",
 		}
 	},
@@ -83,61 +101,62 @@ export default defineComponent ({
 
     async created() {
         this.channelId = this.$route.params.id;
-        this.channel = await fetchChannel();
-        // this.users = await fetchusers();
+        this.channelData = await this.fetchChannel();
+        this.setRole();
     },
 
 	methods:	{
 
         async fetchChannel() {
-            const res = await fetch(`http://localhost:4200/api/channel/${this.channelId}/users`, {
-                method: 'get',
-                headers: { 'content-type': 'application/json' },
-            });
-            const data = await res.json();
-            return data;
-        },
-
-        async fetchUsers() {
             const res = await fetch(
-                `http://localhost:4200/api/channel/${this.channelId}/users`, {
+                `http://localhost:3000/api/channel/${this.channelId}/info`, {
                 method: 'get',
                 headers: { 'content-type': 'application/json' },
             });
             const data = await res.json();
-            return data;
+            console.log(data.items[0])
+            return data.items[0];
         },
 
-        async muteUser() {
-            // this.error = "";
-            // if (!this.userToMute)
-            //     return ;
-            // const res = await fetch(
-            //     `http://localhost:3000/api/users/find-by-username/${this.userToMute}`, {
-            //     method: 'get',
-            //    headers: { 'content-type': 'application/json' },
-            // })
-            // const user = await res.json();
-            // if (user.length > 0)
-            // {
-            //     for (let username of this.userMutedList)
-            //         if (username == this.userToMute)
-            //             return ;
-            //     this.userMutedList.push(this.userToMute);
-            // }
-            // else
-            //     this.error = "user doesn't exist."
-            // this.userToMute = "";
+        setRole() {
+            if (this.isOwner(this.userId))
+                this.role = "owner";
+            else if (this.isAdmin(this.userId))
+                this.role = "admin";
         },
 
-        unmute(username: string) {
-            // console.log(this.userMutedList[0])
-            // for (let i in this.userMutedList)
-            // {
-            //     if (this.userMutedList[i] == username)
-            //         this.userMutedList.splice(i, 1);
-            // }
-                    
+        isAdmin(id: number) {
+            for (let user of this.channelData.admin)
+                if (user.id == id)
+                    return true;
+            return false;
+        },
+
+        isMute(id: number) {
+            for (let user of this.channelData.muted)
+                if (user.id == id)
+                    return true;
+            return false;
+        },
+
+        isOwner(id: number) {
+            return (id == this.channelData.owner.id);
+        },
+
+        async muteUser(id: number) {
+            const res = await fetch(
+                `http://localhost:3000/api/channel/:id/mute/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
+        },
+
+        async unmuteUser(id: number) { 
+            const res = await fetch(
+                `http://localhost:3000/api/channel/:id/unmute/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
         },
 
 		setDiplayState() {
@@ -168,6 +187,10 @@ export default defineComponent ({
 	font-weight:	bold;
 }
 
+.displayUser {
+    display: flex;
+    gap: 2%;
+}
 .chatForm > .listName {
     display:flex;
     flex-direction: row;
