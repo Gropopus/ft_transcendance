@@ -97,11 +97,10 @@ export default	{
 					return ;
 				}
 				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
-				method: 'post',
+					method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ username: this.userLogin })
-			})
-			
+				})
 		},
 		async updatePassword()	{
 				this.error = "";
