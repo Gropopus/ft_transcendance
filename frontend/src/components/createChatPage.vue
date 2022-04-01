@@ -77,8 +77,9 @@ export default	{
             else if (this.chatType == "protected" && !this.chatPassword)
             {
                 this.error = "Password needed.";
-                console.log("tyyyype")
+                console.log("type")
                 console.log(this.chatType);
+                return ;
             }
             else
             {
