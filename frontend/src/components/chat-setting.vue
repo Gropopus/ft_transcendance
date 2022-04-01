@@ -1,6 +1,16 @@
 <template>
 		<div class="chatForm">
             <h1> Channel settings </h1>
+			<div class="listName">
+				List of users
+				<!-- <div class="icon">
+					<img :src="relation.icon"/>
+				</div> -->
+				<button @click="setDiplayState()"  class="arrow">
+					<img v-if="listStatus == 0" src="/src/assets/arrow-whitedown.png"/>
+					<img v-else src="/src/assets/arrow-white-up.png" />
+				</button>
+			</div>
             <div class="formElem" v-if="protected">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
@@ -55,20 +65,40 @@ export default	{
 	},
 	data:	function()	{
 		return {
-            owner:      "lo",
-            protected: "ll",
-			chatName:	"",
-			chatPassword:	"",
-            chatType: "",
-            userMutedList: [],
-            userToMute: "",
-            adminList: [],
-            userToAdmin: "",
+            channelId: 0,
+            channel: [],
+            listStatus: 0,
             error: "",
 		}
 	},
 
+    async created() {
+        this.channelId = this.$router.params.id;
+        this.channel = await fetchChannel();
+        this.users = await fetchusers();
+    },
+
 	methods:	{
+
+        async fetchChannel() {
+            const res = await fetch(`http://localhost:4200/api/channel/${this.channelId}/users`, {
+                method: 'get',
+                headers: { 'content-type': 'application/json' },
+            });
+            const data = await res.json();
+            return data;
+        },
+
+        async fetchUsers() {
+            const res = await fetch(
+                `http://localhost:4200/api/channel/${this.channelId}/users`, {
+                method: 'get',
+                headers: { 'content-type': 'application/json' },
+            });
+            const data = await res.json();
+            return data;
+        },
+
         async muteUser() {
             this.error = "";
             if (!this.userToMute)
@@ -100,6 +130,10 @@ export default	{
             }
                     
         },
+
+		setDiplayState() {
+            this.listStatus = 1 - this.listStatus;
+		},
 	}
 }
 </script>
@@ -123,6 +157,16 @@ export default	{
 	font-size:	20px;
 	font-family: MyanmarText;
 	font-weight:	bold;
+}
+
+.chatForm > .listName {
+    display:flex;
+    flex-direction: row;
+    text-align: left;
+    border-bottom: solid 2px white;
+    margin-bottom: 0px;
+    font-size: 30px;
+    gap: 2%;
 }
 
 .chatForm > h1 {

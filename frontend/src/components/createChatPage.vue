@@ -72,8 +72,10 @@ export default	{
 	methods:	{
 		async createChat()	{
             this.error = "";
-            if (!this.chatName || !this.chatDescription)
+            if (!this.chatName || !this.chatDescription || !this.chatType)
                 this.error = "incomplete.";
+            else if (!this.usernameList.length)
+                this.error = "No user added."
             else if (this.chatType != "public" && !this.chatPassword)
             {
                 this.error = "Password needed.";
