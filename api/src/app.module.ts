@@ -67,7 +67,7 @@ export class AppModule implements NestModule {
       {path: '/api/channel/:id/admin/give', method: RequestMethod.PUT},
       {path: '/api/channel/:id/admin/remove', method: RequestMethod.PUT},
       {path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
-      {path: '/api/channel/:channelId/adduser/:username/:password', method: RequestMethod.PUT},
+      {path: '/api/channel/:channelId/adduser/:username', method: RequestMethod.PUT},
       {path: '/api/channel/:channelId/adduser/:username', method: RequestMethod.PUT},
       {path: '/api/channel/:channelId/messages/:userId', method: RequestMethod.GET},
     // friends

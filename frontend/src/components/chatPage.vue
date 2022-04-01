@@ -1,24 +1,28 @@
 <template>
 	<div class="chatPage">
-		<button @click="createChannel()"> new channel</button>
 		<div class="chatArea">
+			<div>
 			<div class="channelName" v-if="channelsList.length > 0">
-				<h3> {{ channelsList[getChannelIndex(channelId)].name }} </h3>
+				<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
 			<ul :key="mess.id" v-for="mess in channelMessages">
-				<p v-if="mess.user.id != userId" class="otherUserMess">
-					{{ mess.user.username }} <br>
+				<div v-if="mess.user.id != userId" class="otherUserMess">
+					{{ mess.user.username}}: <br>
 					{{ mess.text }} <br>
-				</p>
-				<p v-else class="currentUserMess">
+				</div>
+				<div v-else class="currentUserMess">
+					<p class="currentUserText">
 					{{ mess.user.username }} <br>
-					{{ mess.text }} <br>
-				</p>
+					{{ mess.text }}
+					</p>
+				</div>
 			</ul>
-		<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
-		<button @click="sendMessage(message)" class="sendButton">send</button>
-		<br>
 			</div>
 		</div>
+		<div class="writing-zone">
+			<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
+			<button @click="sendMessage(message)" class="sendButton">send</button>
+		</div>
+			</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
 			<div>
@@ -29,6 +33,7 @@
 				<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
 			</div>
 		</ul>
+		<button @click="createChannel()"> new channel</button>
 		</div>
 	</div>
 </template>
@@ -66,7 +71,7 @@ export default	defineComponent ({
 	},
 
 	async mounted() {
-		this.channelsList;
+		/*this.channelsList;*/
 		this.channelMessages;
 		this.channelsList = await this.fetchChannelsList();
 
@@ -94,6 +99,7 @@ export default	defineComponent ({
 			"my-custom-header": "chat"
 			},
 			autoConnect: false});
+			this.channelsList = this.fetchChannelsList();
 	},
 
 
@@ -104,6 +110,7 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			const data = await res.json()
+			console.log(data.items);
 			return data.items
 		},
 
@@ -156,10 +163,11 @@ export default	defineComponent ({
 		async sendMessage(message: string)
 		{
 			this.socket.emit('addMessage', {msg: message, channelId: this.channelId});
+			this.message = "";
 		},
 
 		async fetchMessages() {
-			console.log('fetch message')
+			//console.log('fetch message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
@@ -168,7 +176,7 @@ export default	defineComponent ({
     		});
 			const mess = await res.json();
 			return mess.items;
-		}
+		},
 	},
 })
 </script>
@@ -268,11 +276,47 @@ export default	defineComponent ({
 
 .otherUserMess
 {
+	display: inline-block;
 	text-align: left;
+	overflow-x: hidden;
+	padding-right: 2%;
+	padding-left: 2%;
+	padding-top: 	1%;
+	padding-bottom: 1%;
+	font-size: 130%;
+	margin-right: 4%;
+	border-radius: 20px;
+	height: auto;
+	max-width: 80%;
+	background-color:	rgba(255, 255, 255, 0.24);
 }
 
 .currentUserMess
 {
-	text-align: right;
+	display: flex;
+	justify-content: right;
+}
+
+.currentUserText
+{
+	display: inline-block;
+	text-align: left;
+	overflow-x: hidden;
+	padding-right: 2%;
+	padding-left: 2%;
+	padding-top: 	1%;
+	padding-bottom: 1%;
+	font-size: 130%;
+	margin-right: 4%;
+	border-radius: 20px;
+	height: auto;
+	max-width: 80%;
+	background-color:	rgba(255, 255, 255, 0.24);
+
+}
+
+.writing-zone
+{
+	display: row;
 }
 </style>
