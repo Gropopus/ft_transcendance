@@ -1,71 +1,39 @@
 <template>
 		<div class="chatForm">
             <h1> Channel settings </h1>
+            <div class="userList">
 			<div class="listName">
 				List of users
-				<!-- <div class="icon">
-					<img :src="relation.icon"/>
-				</div> -->
-				<button @click="setDiplayState()"  class="arrow">
-					<img v-if="listStatus == 0" src="/src/assets/arrow-whitedown.png"/>
-					<img v-else src="/src/assets/arrow-white-up.png" />
-				</button>
 			</div>
-            <div v-if="listStatus">
                 <div :key="user.id" v-for="user in channelData.users">
                     <div class="displayUser">
-                        {{ user.username }}
+                        <div>{{ user.username }}</div>
                         <div v-if="isOwner(user.id)"> owner </div>
                         <div v-else-if="isAdmin(user.id)"> admin </div>
-                        <div v-else-if="isMute(user.id)"> mute </div>
-                        <div v-if="role=='owner' && userId != user.id">
+                        <div v-if="isMute(user.id)"> mute </div>
+                        <div v-if="role=='owner' && userId != user.id" class="buts">
+                            <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)">set admin</button>
+                            <button v-else @click="unsetAdmin(user.id)"> unset admin</button>
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)">mute</button>
                             <button v-else @click="unmuteUser(user.id)">unmute</button>
-                            <button>x</button>
+                            <button @click="removeUser(user.id)">remove</button>
+                        </div>
+                        <div v-if="role=='admin' && userId != user.id && !isOwner(user.id)">
+                            <button v-if="!isMute(user.id)" @click="muteUser(user.id)">mute</button>
+                            <button v-else @click="unmuteUser(user.id)">unmute</button>
+                            <button>remove</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- <div class="formElem" v-if="protected">
+            <div class="formElem" v-if="channelData.type == 'protected'">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
                 <button @click="changePassword()" class="addButton">
                         update
                     </button> <br>
             </div>
-            
-            <div class="formElem">
-                <label for="users">mute users:</label> <br>
-                <input type="text" v-model="userToMute" class="textArea">
-                    <button @click="muteUser()" class="addButton">
-                        Mute
-                    </button> <br>
-                <div :key="userToMute" v-for="userToMute in userMutedList">
-                    {{ userToMute }}
-                    <button @click="unmute(userToMute)" class="deleleButton">
-                        x
-                    </button>
-                </div>
-            </div>
-            <div class="formElem">
-                <label for="users">manage administrators: </label> <br>
-                <input type="text" v-model="userToAdmin" class="textArea">
-                    <button @click="promoteAdmin()" class="addButton">
-                        add
-                    </button> <br>
-                <div :key="username" v-for="username in adminList">
-                    {{ username }}
-                    <button @click="fireAdmin(username)" class="deleleButton">
-                        x
-                    </button>
-                </div>
-            </div> -->
-            <!-- <div class="formElem" v-if="owner" >
-                <label for="users">Delete channel: </label>
-                    <button @click="deleteChannel()" class="addButton">
-                        delete
-                    </button> <br>
-            </div> -->
+            <button v-if="role='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
             <p class="error"> {{ error }} </p>
 		</div> <!-- RegisterForm end -->
 </template>
@@ -89,6 +57,7 @@ export default defineComponent ({
             listStatus: 0,
             userToMute: "",
             userToAdmin: "",
+            chatPassword: "",
             users: [],
             role: "",
             error: "",
@@ -145,7 +114,7 @@ export default defineComponent ({
 
         async muteUser(id: number) {
             const res = await fetch(
-                `http://localhost:3000/api/channel/:id/mute/${id}`, {
+                `http://localhost:3000/api/channel/${this.channelId}/mute/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -153,10 +122,36 @@ export default defineComponent ({
 
         async unmuteUser(id: number) { 
             const res = await fetch(
-                `http://localhost:3000/api/channel/:id/unmute/${id}`, {
+                `http://localhost:3000/api/channel/${this.channelId}/unmute/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
+        },
+
+        async removeUser(id: number) {
+
+        },
+
+        async setAdmin(id: number) {
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/admin/give/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
+            console.log('admin set');
+            this.channelData = await this.fetchChannel();
+        },
+
+        async unsetAdmin(id: number) {
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/admin/remove/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
+        },
+
+        async deleteChannel() {
+
         },
 
 		setDiplayState() {
@@ -191,7 +186,11 @@ export default defineComponent ({
     display: flex;
     gap: 2%;
 }
-.chatForm > .listName {
+
+.displayUser > .buts {
+    float: right;
+}
+.chatForm > .userList > .listName {
     display:flex;
     flex-direction: row;
     text-align: left;

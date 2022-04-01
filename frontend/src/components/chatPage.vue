@@ -1,13 +1,11 @@
 <template>
 	<div class="chatPage">
 		<div class="chatSide">
+		<div class="channelName" v-if="channelsList.length > 0">
+			<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
+			<button @click="goToSettings(channelId)"> settings </button>
+		</div>
 		<div class="chatArea">
-			<div class="channelName" v-if="channelsList.length > 0">
-				<h2>
-					{{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}
-					<button @click="goToSettings(channelId)"> settings </button>
-				</h2>
-			</div>
 			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					{{ mess.user.username}}: <br>
@@ -22,7 +20,7 @@
 			</ul>
 		</div>
 		<div class="writing-zone">
-			<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
+			<input type="text" v-model="message" class="messageArea">
 			<button @click="sendMessage(message)" class="sendButton">send</button>
 		</div>
 		</div>
@@ -183,7 +181,7 @@ export default	defineComponent ({
 
 		goToSettings(id: number) {
 			this.$router.replace(`/channel-setting/${id}`)
-		}
+		},
 	},
 })
 </script>
@@ -197,7 +195,7 @@ export default	defineComponent ({
 	max-height:	500px;
 	overflow-y:	scroll;
 	border:	solid 3px white;
-	border-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 .chatSide {
@@ -224,10 +222,17 @@ export default	defineComponent ({
 	border-radius: 5px;
 	margin-bottom:	min(22px);
 }
-/*.channelname
+.channelName
 {
-
-}*/
+	text-align: center;
+	border-top: solid white 3px;
+	border-right: solid white 3px;
+	border-left: solid white 3px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	float:	left;
+	width:	70%;
+}
 .chanNameButton
 {
 	height:	42px;
@@ -264,6 +269,7 @@ export default	defineComponent ({
 {
 	position: relative;
 	bottom: 0;
+	width: 90%;
 	height:	42px;
 	flex:	1 1 0;
 	text-align:	center;
@@ -332,6 +338,13 @@ export default	defineComponent ({
 
 .writing-zone
 {
-	display: row;
+	display:	row;
+	width:		70%;
+}
+
+.sendButton
+{
+	width: 9%;
+	height:	42px;
 }
 </style>

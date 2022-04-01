@@ -66,19 +66,19 @@ export class ChannelController {
 	  return this.channelService.changeTypeChannel(channel, ChannelType.CLOSE);
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put(':id/admin/give')
-	async updateChannelUserForAdmin(@Param('id') id: string, @Body() user: Iuser): Promise<Ichannel> {  
-	  var channel: Ichannel = await this.channelService.getChannel(Number(id));
-	  return this.channelService.addAdminToChannel(channel, user);
+	// @hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	// @UseGuards(JwtAuthGuard, RolesGuard)
+	@Put(':id/admin/give/:userId')
+	async updateChannelUserForAdmin(@Param() params): Promise<Ichannel> {  
+	  var channel: Ichannel = await this.channelService.getChannel(Number(params.id));
+	  return this.channelService.addAdminToChannel(channel, params.userId);
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put(':id/admin/remove')
-	async updateChannelAdminForAdmin(@Param('id') id: string, @Body() user: Iuser): Promise<Ichannel> {
-	  return this.channelService.deleteAUserAdminFromChannel(Number(id), user.id);
+	// @hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	// @UseGuards(JwtAuthGuard, RolesGuard)
+	@Put(':id/admin/remove/:userId')
+	async updateChannelAdminForAdmin(@Param() params): Promise<Ichannel> {
+	  return this.channelService.deleteAUserAdminFromChannel(Number(params.id), params.userId);
 	}
 	
 	@UseGuards(JwtAuthGuard)
