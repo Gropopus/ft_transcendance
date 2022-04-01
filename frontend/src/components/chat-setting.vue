@@ -1,23 +1,23 @@
 <template>
 		<div class="chatForm">
-            <h1> Channel settings </h1>
+            <h1> {{ channelData.name }}: settings </h1>
             <div class="userList">
-			<div class="listName">
-				List of users
-			</div>
+                <div class="listName">
+                    List of users
+                </div>
                 <div :key="user.id" v-for="user in channelData.users">
                     <div class="displayUser">
-                        <div>{{ user.username }}</div>
-                        <div v-if="isOwner(user.id)"> owner </div>
-                        <div v-else-if="isAdmin(user.id)"> admin </div>
-                        <div v-if="isMute(user.id)"> mute </div>
+                        <div class="username">{{ user.username }}</div>
                         <div v-if="role=='owner' && userId != user.id" class="buts">
-                            <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)">set admin</button>
-                            <button v-else @click="unsetAdmin(user.id)"> unset admin</button>
-                            <button v-if="!isMute(user.id)" @click="muteUser(user.id)">mute</button>
-                            <button v-else @click="unmuteUser(user.id)">unmute</button>
-                            <button @click="removeUser(user.id)">remove</button>
+                            <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)" class="addButton">set admin</button>
+                            <button v-else @click="unsetAdmin(user.id)" class="addButton"> unset admin</button>
+                            <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
+                            <button v-else @click="unmuteUser(user.id)" class="addButton">unmute</button>
+                            <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
+                        <div v-if="isOwner(user.id)" class="role"> owner </div>
+                        <div v-else-if="isAdmin(user.id)" class="role"> admin </div>
+                        <div v-if="isMute(user.id)"> mute </div>
                         <div v-if="role=='admin' && userId != user.id && !isOwner(user.id)">
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)">mute</button>
                             <button v-else @click="unmuteUser(user.id)">unmute</button>
@@ -182,13 +182,35 @@ export default defineComponent ({
 	font-weight:	bold;
 }
 
+.userList {
+    margin-bottom: 5%;
+
+}
 .displayUser {
     display: flex;
     gap: 2%;
+    border-bottom: solid 1px white;
 }
 
+.displayUser > .username {
+    margin-left: 2%;
+    margin-top: 2%;
+    margin-bottom: 2%;    
+    width: 25%;
+    /* color:rgb(37, 46, 131) */
+}
+
+.role {
+    margin-right: 2%;
+    font-size: 15px;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    color: rgb(255, 255, 255, 0.6);
+}
 .displayUser > .buts {
-    float: right;
+    flex: 1 1 0;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 .chatForm > .userList > .listName {
     display:flex;
@@ -266,5 +288,21 @@ export default defineComponent ({
 	color:	rgb(236, 100, 151);
 	border-radius: 4px;
 	font-family: MyanmarText;
+}
+
+.delButton {
+    padding: 6px;
+	font-size:	20px;
+    margin-left: 1%;
+	border:	solid 1px red;
+    background: rgb(255,255,255, 0.2);
+    color: white;
+    color: red;
+
+}
+
+.delButton:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 </style>
