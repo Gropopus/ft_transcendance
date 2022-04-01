@@ -108,8 +108,8 @@ export class ChannelService {
 	/*if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' });*/
 	if (channel.type == ChannelType.CLOSE) return of({ error: 'Can\'t join channel closed;' }); 
 	if (channel.type == ChannelType.PUBLIC) {
-		const newChannel = await this.addCreatorToChannel(channel, user);		
-		this.channelRepository.save(newChannel);
+		channel.users.push(user);
+		this.channelRepository.save(channel);
 		return of({ success: 'Channel joined;' });
 	}
 	if (channel.type == ChannelType.PROTECTED) {
