@@ -25,15 +25,17 @@
 		</div>
 		</div>
 		<div class="chatToolSpace">
-		<ul :key="channel.id" v-for="channel in channelsList">
-			<div>
-				<button class="chanNameButton" @click="changeCurrentChan(channel.id)"
-					v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
-				{{ channel.name }} <br>
-				</button>
-				<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
-			</div>
-		</ul>
+		<div class="chanList">
+			<ul :key="channel.id" v-for="channel in channelsList">
+				<div>
+					<button class="chanNameButton" @click="changeCurrentChan(channel.id)"
+						v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
+					{{ channel.name }} <br>
+					</button>
+					<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
+				</div>
+			</ul>
+		</div>
 		<button @click="createChannel()"> new channel</button>
 	</div>
 	</div>
@@ -145,9 +147,13 @@ export default	defineComponent ({
 			this.$router.replace({name: 'createChat'});
 		},
 
-		async resetScroll()	{
+		resetScroll()	{
 			let lastMsg = document.getElementsByClassName("chatArea")[0];
+			if (typeof lastMsg === 'undefined')
+				return ;
 			lastMsg = lastMsg.children[lastMsg.children.length - 1];
+			if (typeof lastMsg === 'undefined')
+				return ;
 			lastMsg.scrollIntoView(false, {block: "end", inline: "end"});
 		},
 
@@ -219,6 +225,7 @@ export default	defineComponent ({
 	overflow-y:	scroll;
 	border:	solid 3px white;
 	width: 100%;
+	min-height:	300px;
 }
 
 .chatToolSpace
@@ -248,6 +255,12 @@ export default	defineComponent ({
 {
 	cursor: pointer;
 	background: rgb(255, 255, 255, 0.5);
+}
+
+.chanList
+{
+	overflow-y: scroll;
+	max-height:	45em;
 }
 
 .chatToolNav

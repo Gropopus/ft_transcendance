@@ -42,7 +42,7 @@ export class ChannelController {
 	}
 
 	@Get('/all/:user')
-	async getChannelsForUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+	async getChannelsForUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 100): Promise<Pagination<Ichannel>> {
 	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://localhost:3000/api/channel/all/:user' });
 	}
 
