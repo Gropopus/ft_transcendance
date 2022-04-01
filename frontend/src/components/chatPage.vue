@@ -1,28 +1,28 @@
 <template>
 	<div class="chatPage">
+		<div class="chatSide">
 		<div class="chatArea">
-			<div>
 			<div class="channelName" v-if="channelsList.length > 0">
 				<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
-			<ul :key="mess.id" v-for="mess in channelMessages">
+			</div>
+			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					{{ mess.user.username}}: <br>
 					{{ mess.text }} <br>
 				</div>
 				<div v-else class="currentUserMess">
 					<p class="currentUserText">
-					{{ mess.user.username }} <br>
+					{{ mess.user.username }}: <br>
 					{{ mess.text }}
 					</p>
 				</div>
 			</ul>
-			</div>
 		</div>
 		<div class="writing-zone">
 			<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
 			<button @click="sendMessage(message)" class="sendButton">send</button>
 		</div>
-			</div>
+		</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
 			<div>
@@ -34,7 +34,7 @@
 			</div>
 		</ul>
 		<button @click="createChannel()"> new channel</button>
-		</div>
+	</div>
 	</div>
 </template>
 
@@ -193,6 +193,11 @@ export default	defineComponent ({
 	border-radius: 5px;
 }
 
+.chatSide {
+	display: flex;
+	flex-direction: column;
+}
+
 .chatToolSpace
 {
 	float:	right;
@@ -212,7 +217,10 @@ export default	defineComponent ({
 	border-radius: 5px;
 	margin-bottom:	min(22px);
 }
+/*.channelname
+{
 
+}*/
 .chanNameButton
 {
 	height:	42px;
@@ -288,7 +296,7 @@ export default	defineComponent ({
 	border-radius: 20px;
 	height: auto;
 	max-width: 80%;
-	background-color:	rgba(255, 255, 255, 0.24);
+	background-color:	rgba(23, 61, 199, 0.103);
 }
 
 .currentUserMess
