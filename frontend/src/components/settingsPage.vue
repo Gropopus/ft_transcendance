@@ -96,15 +96,6 @@ export default	{
 	        	 	this.error = "Unable to update login with an empty login.";
 					return ;
 				}
-				const userRes = await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
-					method: 'get',
-					headers: { 'content-type': 'application/json' },
-				})
-				if (userRes.status == 201 || userRes.status == 200)
-				{
-					this.error = "This login already belongs to another user. Please, choose another one."
-					return ;
-				}
 				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
 					method: 'post',
 					headers: { 'content-type': 'application/json' },
