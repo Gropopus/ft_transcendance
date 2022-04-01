@@ -38,6 +38,10 @@ export class PlayerService {
         await this.playerRepository.save(player2);
         return { p1: player1, p2: player2 };
     }
+    async changeScore(pid: number, score: number)
+    {
+        await this.playerRepository.update({id: pid}, {points: score})
+    }
 
     async setScores(pid: number, his_score: number, op_score: number) {
         await this.playerRepository.update({id: pid}, {

@@ -42,7 +42,7 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" scoped>
 // import { throwStatement } from '@babel/types';
 import { defineComponent } from 'vue'
 export default	defineComponent ({
@@ -134,7 +134,7 @@ export default	defineComponent ({
 </script>
 
 
-<style>
+<style lang="css" scoped>
 .watchPage
 {
 	display: flex;
@@ -176,6 +176,7 @@ export default	defineComponent ({
 .gameInfo {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 	width: 100%;
 	height: 80%;
 	gap: 2%;
@@ -186,16 +187,12 @@ export default	defineComponent ({
 	display: flex;
 	align-items: center;
 	margin-top: 2%;
-	width: 3%;
-	height: auto;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .vs > h1 {
 	margin-bottom: 4%;
-	width: 40%;
-	height: 20%;
 	text-align: center;
 	color: rgb(23,61,199);
 	font-size: 300%;

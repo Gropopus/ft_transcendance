@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<button @click="run()" >Play</button>
-
 		<div class="GameArea">
 			<canvas id="canvas" width="640" height="500"></canvas>
 		</div>
@@ -46,12 +44,10 @@ export default	defineComponent ({
 	mounted() {	
 		this.gameList;
 		this.gameListPlaying;
-		console.log('user id: ' + this.userId);
-		// load(this.userId);
+		load(this.userId);
 	},
 	unmounted() {
 		unload(this.userId);
-		console.log('unmounted');
 	},
 
 	methods: {

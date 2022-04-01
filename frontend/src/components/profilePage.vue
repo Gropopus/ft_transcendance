@@ -11,6 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div class="perso-info">
+				<button @click="goToRoute('/settings')" title="settings"> Edit </button>
 			</div>
 		</div>
 		<div class="StatsWin">
@@ -127,6 +128,10 @@ export default	defineComponent ({
 			const blobUrl = window.URL.createObjectURL(newBlob);
     		return blobUrl;
 		},
+
+		goToRoute(path: string) {
+			this.$router.replace(path);
+		},
 	},
 })
 </script>
@@ -153,7 +158,7 @@ export default	defineComponent ({
 
 .profile-resume {
 	display: flex;
-	flex-direction:	row;
+	flex-direction: row;
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
@@ -162,12 +167,15 @@ export default	defineComponent ({
 	border-radius: 20px;
 }
 
-.info {
+.info
+{
+	flex: 4;
 	display: flex;
 	flex-direction:	column;
+	margin-top: 4%;
 	margin-bottom: 2%;
-	margin-top: 2%;
-	height: 50%;
+	text-align: left;
+	vertical-align: center;
 }
 
 .username {
@@ -176,26 +184,60 @@ export default	defineComponent ({
 	font-size:	300%;
 	color: var(--font-blue);
 	font-weight:	bold;
-	margin-top: 10%;
 }
+
 .usermail{
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	100%;
+	font-size:	150%;
+}
+
+.perso-info
+{
+	flex: 1;
+	margin-right: 3%;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	vertical-align: center;
 }
 
 .status {
+	flex: 1;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	100%;
+	font-size:	150%;
+	color: green;
+}
+
+.perso-info > button
+{
+	flex: 5;
+	background: none;
+	border: solid 3px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: white;
+	padding-top: 2%;
+	margin: 20%;
+	margin-top: 30%;
+}
+
+.perso-info > button:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
 }
 
 .picture {
+	flex: 1;
 	width: calc(33.333% - 1rem);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 3rem;
+    vertical-align: center;
+	margin-left: 3%;
+	margin-top: 2%;
+	margin-bottom: 2%;
 }
 
 .picture > img {
@@ -286,6 +328,7 @@ export default	defineComponent ({
 .StatsTabs > button:hover
 {
 	background:	var(--deep-blue-10);
+	cursor: pointer; 
 }
 
 .StatsTabs #CurrentTab

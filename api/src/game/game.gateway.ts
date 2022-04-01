@@ -23,7 +23,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	constructor (
 		private authService: AuthService,
 		private userService: UserService,
-		// private playerService : PlayerService,
+		private playerService : PlayerService,
 		private gameService: GameService,
 	) {}
 
@@ -34,7 +34,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	
 	nb_matchmaking: number = 0;
 	nb_try: number = 0;
-	games_score: Map<number, {r:number, l:number}> = new Map<number, {r:number, l:number}>();
+	games_score: Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number}> = 
+				new Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number}>();
 	player_room: Map<string, string> = new Map<string, string>();
 	matchmaking_id: string[] = [];
 
@@ -123,11 +124,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 	@SubscribeMessage('player_pos_left')
 	handlePos_left(socket: Socket, data: any): void {
-		this.server.to(data.gameRoom).emit('player_pos_left', data.player_pos_left);
+		let score = this.games_score.get(data.gameId);
+		score.pos_l = data.pos;
+		this.server.to(data.gameRoom).emit('player_pos_left', score.pos_l);
 	}
 	@SubscribeMessage('player_pos_right')
 	handlePos_right(socket: Socket, data: any): void {
-		this.server.to(data.gameRoom).emit('player_pos_right', data.player_pos_right);
+		let score = this.games_score.get(data.gameId);
+		score.pos_r = data.pos;
+		this.server.to(data.gameRoom).emit('player_pos_right', score.pos_r);
 	}
 	endGame(data: any, score: {r: number, l: number}){
 		//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
@@ -150,11 +155,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	handleright_miss(socket: Socket, data: any) {
 			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r
 
-		let score: {r: number , l: number};
-		score = this.games_score.get(data.gameId);
+		let score = this.games_score.get(data.gameId);
 		if (score == undefined)
 			return ;
 		score.l = data.score_l + 1;
+		// this.playerService.changeScore()
 		this.games_score.set(data.gameId, score);
 		this.emitScore(data.gameRoom, score.l, score.r);
 		if (score.l == 11)
@@ -166,8 +171,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	handleLeft_miss(socket: Socket, data: any) {
 			//data.gameRoom;	data.gameId;	data.score_l;	data.score_r;	data.side
 
-		let score: {r: number , l: number};
-		score = this.games_score.get(data.gameId);
+		let score = this.games_score.get(data.gameId);
 		if (score == undefined)
 			return ;
 		score.r = data.score_r + 1;
@@ -178,18 +182,47 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else
 			this.emitResetSpeed(data.gameRoom, 1);
 	}
+
+	sendBall(gameId:number, pos_x: number, pos_y: number) {
+		this.server.to('gameRoom' + gameId).emit('ball_pos', pos_x, pos_y)
+	}
+	async sleep(ms: number) {
+		return new Promise((resolve) => {
+						setTimeout(resolve, ms);
+					});
+	}
+	async actualiseBall(gameId: number) {
+		let score = this.games_score.get(gameId);
+		if (!score)
+			return;
+		if (score.ball_y > 100 || score.ball_y < 0)
+			score.speed_y *= -1;
+		if (score.ball_x > 100 || score.ball_x < 0)
+			score.speed_x *= -1;
+		//check colission here
+		score.ball_x += score.speed_x;
+		score.ball_y += score.speed_y;
+
+		this.games_score.set(gameId, score);
+		this.sendBall(gameId, score.ball_x, score.ball_y)
+		await this.sleep(16);
+		this.actualiseBall(gameId);
+	}
+
 	@SubscribeMessage('engage')
 	handleEngage(client: Socket, data: any) {
 		//data.gameRoom; data.speed
 		if (data.speed == 0)
+		{
 			this.emitResetSpeed(data.gameRoom, -1);
+			this.actualiseBall(data.gameId);
+		}
 	}
 
 	@SubscribeMessage('observe')
 	handleObserve(client: Socket, data:any) {
 		//data.gameRoom; data.gameId;
 		client.join(data.gameRoom);
-		console.log('gameroom observer is = ', data.gameRoom)
 		this.server.to(data.gameRoom).emit('ask_pos')
 	}
 	@SubscribeMessage('for_observer')
@@ -215,7 +248,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			// create game
 			let gameid = await this.gameService.createGame();
 			this.logger.log('game ' + gameid + ' start');
-			console.log("gameroom is : ", 'gameRoom' + gameid)
 			this.player_room.set(this.server.sockets.sockets.get(playerss[0]).id, 'gameRoom' + gameid);
 			this.player_room.set(this.server.sockets.sockets.get(playerss[1]).id, 'gameRoom' + gameid);
 			let p_zero = this.server.sockets.sockets.get(playerss[0]).handshake.auth.userId;
@@ -232,10 +264,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				this.server.to(playerss[0]).emit('gameId', 'left', gameid, "gameRoom" + gameid);
 				this.server.to(playerss[1]).emit('gameId', 'right',  gameid, "gameRoom" + gameid);
 			}
-			this.games_score.set(gameid, {r:0, l:0});
+			this.games_score.set(gameid, {r:0, l:0, speed_x: 0.25, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50, pos_r: 50});
 		}
-		else
-			this.logger.log('game already started');
 	}
 	@SubscribeMessage('joinMatchmaking')
 	async handleMatchmaking(client: Socket)

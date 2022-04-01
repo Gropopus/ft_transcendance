@@ -10,16 +10,16 @@
 				<div class="usermail"> {{userData.email }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
-			<div v-if="userId != userData.id && !isBlocked()" class="challengeButton">
-				<p @click="challenge()" >challenge</p>
-			</div>
 			<div v-if="userId != userData.id" class="relation">
+				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
 				<div v-else-if="!isBlocked()" class="replyButton">
 					<button @click="acceptRequest()">accept</button>
 					<button @click="declineRequest()">decline</button>
 				</div>
+				<img v-if="blockIcon.img && !isBlocked()" :src="blockIcon.img" @click="blockUser()" class="blockButton" :title="blockIcon.title">
+				<img v-else v-if="unblockIcon.img" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
 		<div class="StatsWin">
@@ -45,12 +45,6 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="userId != userData.id && !isBlocked()" @click="blockUser()" class="blockButton">
-			block {{ userData.username}}
-		</div>
-		<div v-else-if="userId != userData.id" @click="unblock()" class="blockButton">
-			unblock {{ userData.username}}
-		</div>
   </div>
 </template>
 
@@ -73,7 +67,9 @@ export default	defineComponent ({
 			userData: [],
 			relation: "",
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
-			blockIcon: "/src/assets/your-friends.png",
+			challengeIcon: {img: "/src/assets/challenge.png", title:"challenge"},
+			blockIcon: {img: "/src/assets/plain-cat.png", title:"block this.userData.username"},
+			unblockIcon: {img: "/src/assets/plain-cat.png", title:"unblock this.userData.username"},
 			relationIcon: "",
 			currentTab: 0,
 			picture: "",
@@ -233,8 +229,17 @@ export default	defineComponent ({
 <style lang="css" scoped>
 
 	/*** PROFILE STYLES ***/
+.StatsWin
+{
+	width:	100%;
+	min-height:	500px;
+	display:	flex;
+	flex-direction:	column;
+}
 
-.user-profile {
+.profilePage
+{
+	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
 	margin-right: 5%;
@@ -244,21 +249,24 @@ export default	defineComponent ({
 
 .profile-resume {
 	display: flex;
-	flex-direction:	row;
+	flex-direction: row;
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 25px;
+	border-radius: 35px;
 }
 
-.info {
+.info
+{
+	flex: 4;
 	display: flex;
 	flex-direction:	column;
+	margin-top: 4%;
 	margin-bottom: 2%;
-	margin-top: 2%;
-	height: 50%;
+	text-align: left;
+	vertical-align: center;
 }
 
 .username {
@@ -267,29 +275,60 @@ export default	defineComponent ({
 	font-size:	300%;
 	color: var(--font-blue);
 	font-weight:	bold;
-	margin-top: 10%;
+}
+
+.usermail{
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+}
+
+.perso-info
+{
+	flex: 1;
+	margin-right: 3%;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	vertical-align: center;
 }
 
 .status {
+	flex: 1;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	100%;
+	font-size:	150%;
+	color: green;
 }
 
-/*.picture {
-	margin-left: 4%;
-	margin-bottom: 2%;
-	margin-top: 2%;
-}*/
+.perso-info > button
+{
+	flex: 5;
+	background: none;
+	border: solid 3px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: white;
+	padding-top: 2%;
+	margin: 20%;
+	margin-top: 30%;
+}
+
+.perso-info > button:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
+}
 
 .picture {
-	margin-top: 2%;
+	flex: 1;
 	width: calc(33.333% - 1rem);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 3rem;
-	margin-bottom: 15%;
+    vertical-align: center;
+	margin-left: 3%;
+	margin-top: 2%;
+	margin-bottom: 2%;
 }
 
 .picture > img {
@@ -306,100 +345,58 @@ export default	defineComponent ({
     max-height: 200px;
 	object-fit:cover;
 }
-
-.relation {
-	display: flex;
-	justify-content: right;
-}
-
-.challengeButton {
-	flex:	1 1 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.challengeButton > p {
-  align-items: center;
-  appearance: none;
-  background-image: radial-gradient(100% 100% at 100% 0, rgb(221, 172, 226) 0, rgb(73, 105, 219) 100%);
-  border: 0;
-  border-radius: 6px;
-  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  font-family: "JetBrains Mono",monospace;
-  height: 48px;
-  justify-content: center;
-  line-height: 1;
-  list-style: none;
-  overflow: hidden;
-  padding-left: 16px;
-  padding-right: 16px;
-  position: relative;
-  text-align: left;
-  text-decoration: none;
-  transition: box-shadow .15s,transform .15s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  white-space: nowrap;
-  will-change: box-shadow,transform;
-  font-size: 18px;
-}
-
-.challengeButton > p:hover {
-  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
-  transform: translateY(-2px);
-}
-
-.challengeButton > p:active {
-  box-shadow: rgb(23, 61, 199) 0 3px 7px inset;
-  transform: translateY(2px);
-}
-
-.relation {
-	margin-right: 5%;
-	display: flex;
-	align-items: center;
-}
-
-.relationButton {
-	border-radius: 8px;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	height: 70px;
-	border: solid 2px white
-}
-
-.relationButton:hover {
-	background:	var(--deep-blue-10);
-	color: white;
-	cursor: pointer;
-
-}
-
 /* stat style */
 
 .StatsArea
 {
-	/* width:	100%;
+	width:	100%;
 	min-height:	500px;
-	border-radius: 5px; */
+	border: solid white 3px;
 	overflow-y:	scroll;
-	/* max-height:	500px; */
+	border-top: none;
+	border-bottom-left-radius: 35px;
+	border-bottom-right-radius: 35px;
 }
 
+.stat {
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+}
+
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+}
+
+.stat > .statElem > h3 {
+	flex: 1 0;
+	background: rgb(203, 177, 233, 0.2);
+}
+
+.stat > .statElem > p {
+	flex: 1 0;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
+
+}
 .StatsTabs
 {
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
-	border-top-right-radius: 20px;
-	border-top-left-radius: 20px;
+	border-top-right-radius: 35px;
+	border-top-left-radius: 35px;
 	width: 100%;
 	overflow: hidden;
+}
+
+.middle
+{
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
 }
 
 .StatsTabs > button
@@ -415,56 +412,83 @@ export default	defineComponent ({
 	letter-spacing:	2px;
 	font-size:	32px;
 	color: var(--font-blue);
-}
-
-.middle
-{
-	border-right: solid 3px white !important;
-	border-left: solid 3px white !important;
+	padding-top: 1%;
+	font-weight:	bold;
 }
 
 .StatsTabs > button:hover
 {
 	background:	var(--deep-blue-10);
+	cursor: pointer; 
 }
 
 .StatsTabs #CurrentTab
 {
 	background:	white;
 	color:	var(--font-blue);
-	font-weight:	bold;
 }
 
-.stat {
-	display: flex;
-	flex-direction: column;
-	font-size: 150%;
-}
 
-.stat > .statElem {
+.relation {
 	display: flex;
-	gap: 4%;
-	text-align: center;
-	align-items: center;
-	margin-left: 5%;
+	flex-direction: row;
+	justify-content: center;
 	margin-right: 5%;
-}
-.stat > .statElem > h3 {
-	flex: 1 0;
-	margin-bottom:6%;
-	margin-top: 6%;
-	height: 100%;
-	background: rgb(203, 177, 233, 0.2);
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
-.stat > .statElem > p {
-	flex: 1 0;
-	height: 100%;
-	margin-top: 6%;
-	margin-bottom:6%;
-	font-size: 1.17em;
-	background: rgb(203, 177, 233, 0.2);
+.challengeButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	display: flex;
+	align-items: center;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+}
 
+.challengeButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
+}
+
+.relationButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white
+}
+
+.relationButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
+
+}
+
+.user-profile {
+	flex-direction:	row;
+	text-align: center;
+	margin-right: 5%;
+	margin-left: 5%;
+	margin-bottom: 0%;
 }
 
 .replyButton {
@@ -490,15 +514,41 @@ export default	defineComponent ({
 }
 
 .blockButton {
-	display: flex;
-	justify-content: center;
-	margin-top: 5%;
-	color: red;
-	border: solid 3px white;
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
+	padding: 3%;
+	border: solid 2px white
 }
 
 .blockButton:hover {
-	text-decoration: underline;
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+	background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
+}
+
+
+.unblockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	padding: 3%;
+	border: solid 2px white
+}
+
+.unblockButton:hover {
+	background:	var(--deep-blue-10);
 	cursor: pointer;
 }
 
