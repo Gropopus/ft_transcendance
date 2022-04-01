@@ -1,7 +1,17 @@
 <template>
 		<div class="chatForm">
             <h1> Channel settings </h1>
-            <div class="formElem" v-if="protected">
+			<div class="listName">
+				List of users
+				<!-- <div class="icon">
+					<img :src="relation.icon"/>
+				</div> -->
+				<button @click="setDiplayState()"  class="arrow">
+					<img v-if="listStatus == 0" src="/src/assets/arrow-whitedown.png"/>
+					<img v-else src="/src/assets/arrow-white-up.png" />
+				</button>
+			</div>
+            <!-- <div class="formElem" v-if="protected">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
                 <button @click="changePassword()" class="addButton">
@@ -34,74 +44,107 @@
                         x
                     </button>
                 </div>
-            </div>
-            <div class="formElem" v-if="owner" >
+            </div> -->
+            <!-- <div class="formElem" v-if="owner" >
                 <label for="users">Delete channel: </label>
                     <button @click="deleteChannel()" class="addButton">
                         delete
                     </button> <br>
-            </div>
+            </div> -->
             <p class="error"> {{ error }} </p>
 		</div> <!-- RegisterForm end -->
 </template>
 
 <script lang="ts">
-export default	{
+
+import { defineComponent } from 'vue';
+
+export default defineComponent ({
 	props:	{
-		userId:	{
-			type:	[Number, String],
-			default:	0
-		},
+		// userId:	{
+		// 	type:	[Number, String],
+		// 	default:	0
+		// },
 	},
 	data:	function()	{
 		return {
-            owner:      "lo",
-            protected: "ll",
-			chatName:	"",
-			chatPassword:	"",
-            chatType: "",
-            userMutedList: [],
+            channelId: 0,
+            channel: [],
+            listStatus: 0,
             userToMute: "",
-            adminList: [],
             userToAdmin: "",
             error: "",
 		}
 	},
 
+    mounted() {
+        this.channel;
+    },
+
+    async created() {
+        this.channelId = this.$route.params.id;
+        this.channel = await fetchChannel();
+        // this.users = await fetchusers();
+    },
+
 	methods:	{
-        async muteUser() {
-            this.error = "";
-            if (!this.userToMute)
-                return ;
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${this.userToMute}`, {
+
+        async fetchChannel() {
+            const res = await fetch(`http://localhost:4200/api/channel/${this.channelId}/users`, {
                 method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-            if (user.length > 0)
-            {
-                for (let username of this.userMutedList)
-                    if (username == this.userToMute)
-                        return ;
-                this.userMutedList.push(this.userToMute);
-            }
-            else
-                this.error = "user doesn't exist."
-            this.userToMute = "";
+                headers: { 'content-type': 'application/json' },
+            });
+            const data = await res.json();
+            return data;
+        },
+
+        async fetchUsers() {
+            const res = await fetch(
+                `http://localhost:4200/api/channel/${this.channelId}/users`, {
+                method: 'get',
+                headers: { 'content-type': 'application/json' },
+            });
+            const data = await res.json();
+            return data;
+        },
+
+        async muteUser() {
+            // this.error = "";
+            // if (!this.userToMute)
+            //     return ;
+            // const res = await fetch(
+            //     `http://localhost:3000/api/users/find-by-username/${this.userToMute}`, {
+            //     method: 'get',
+            //    headers: { 'content-type': 'application/json' },
+            // })
+            // const user = await res.json();
+            // if (user.length > 0)
+            // {
+            //     for (let username of this.userMutedList)
+            //         if (username == this.userToMute)
+            //             return ;
+            //     this.userMutedList.push(this.userToMute);
+            // }
+            // else
+            //     this.error = "user doesn't exist."
+            // this.userToMute = "";
         },
 
         unmute(username: string) {
-            console.log(this.userMutedList[0])
-            for (let i in this.userMutedList)
-            {
-                if (this.userMutedList[i] == username)
-                    this.userMutedList.splice(i, 1);
-            }
+            // console.log(this.userMutedList[0])
+            // for (let i in this.userMutedList)
+            // {
+            //     if (this.userMutedList[i] == username)
+            //         this.userMutedList.splice(i, 1);
+            // }
                     
         },
+
+		setDiplayState() {
+            this.listStatus = 1 - this.listStatus;
+		},
 	}
-}
+})
 </script>
 
 <style lang="css" scoped>
@@ -123,6 +166,16 @@ export default	{
 	font-size:	20px;
 	font-family: MyanmarText;
 	font-weight:	bold;
+}
+
+.chatForm > .listName {
+    display:flex;
+    flex-direction: row;
+    text-align: left;
+    border-bottom: solid 2px white;
+    margin-bottom: 0px;
+    font-size: 30px;
+    gap: 2%;
 }
 
 .chatForm > h1 {

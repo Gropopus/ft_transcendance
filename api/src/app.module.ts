@@ -60,6 +60,7 @@ export class AppModule implements NestModule {
         {path: '/api/oauth2/school42/callback', method: RequestMethod.GET},
 		// channel
       {path: '/api/channel/:idChannel', method: RequestMethod.GET},
+      {path: '/api/channel/:idChannel/users', method: RequestMethod.GET},
       {path: '/api/channel/new/:creatorId', method: RequestMethod.PUT},
       {path: '/api/channel/delete/:id', method: RequestMethod.PUT},
       {path: '/api/channel/all/:user', method: RequestMethod.GET},
