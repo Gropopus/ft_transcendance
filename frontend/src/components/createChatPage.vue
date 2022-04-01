@@ -72,13 +72,14 @@ export default	{
 	methods:	{
 		async createChat()	{
             this.error = "";
-            if (!this.chatName || !this.chatDescription)
+            if (!this.chatName || !this.chatDescription || !this.chatType)
                 this.error = "incomplete.";
-            else if (this.chatType != "public" && !this.chatPassword)
+            else if (this.chatType == "protected" && !this.chatPassword)
             {
                 this.error = "Password needed.";
-                console.log("tyyyype")
+                console.log("type")
                 console.log(this.chatType);
+                return ;
             }
             else
             {
@@ -105,9 +106,11 @@ export default	{
 
         async addUserToChannel(channelId: number, username: string) {
             const res = await fetch(
-                `http://localhost:3000/api/channel/${channelId}/adduser/${username}/${this.chatPassword}`, {
+                `http://localhost:3000/api/channel/${channelId}/adduser/${username}`, {
                     method: 'put',
-                        headers: { 'content-type': 'application/json' },
+                    headers: { 'content-type': 'application/json' ,
+                    'Access-Control-Allow-Origin': '*'},
+                    body: JSON.stringify({password: this.chatPassword}),
             })
             console.log((await res.json()))
         },

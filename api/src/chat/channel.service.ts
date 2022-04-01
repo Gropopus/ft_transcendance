@@ -21,7 +21,7 @@ export class ChannelService {
   ) { }
 
   async createChannel(channel: Ichannel, creator: Iuser): Promise<Ichannel> {
-	if (channel.password) {
+	if (channel.password !) {
 		channel.type = ChannelType.PROTECTED;
 		const passwordHash: string = await this.hashPassword(channel.password);
 		channel.password = passwordHash;
@@ -68,6 +68,18 @@ export class ChannelService {
     return paginate(query, options);
   }
 
+  async getChannelInfo(channelId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
+	  const query = this.channelRepository
+      .createQueryBuilder('channel')
+      .leftJoinAndSelect('channel.users', 'users')
+      .leftJoinAndSelect('channel.admin', 'all_admin')
+      .leftJoinAndSelect('channel.muted', 'all_muted')
+      .leftJoinAndSelect('channel.owner', 'onwner')
+	  .where('channel.id = :id', { id: channelId })
+      .orderBy('channel.updated_at', 'DESC');
+	return paginate(query, options);
+  }
+
   async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
@@ -95,12 +107,12 @@ export class ChannelService {
   async addUserToChannel(channelId: number, user: Iuser, password: string): Promise<Observable<{ error: string } | { success: string }>> {
 	  const channel = await this.getChannel(channelId);
 	const bool: number = await this.boolIusersOnChannel(user.id, channel);
-	if (bool) return of({ error: 'Already on the channel;' }); 
-	if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' }); 
+	if (bool) return of({ error: 'Already on the channel;' });
+	/*if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' });*/
 	if (channel.type == ChannelType.CLOSE) return of({ error: 'Can\'t join channel closed;' }); 
 	if (channel.type == ChannelType.PUBLIC) {
-		const newChannel = await this.addCreatorToChannel(channel, user);		
-		this.channelRepository.save(newChannel);
+		channel.users.push(user);
+		this.channelRepository.save(channel);
 		return of({ success: 'Channel joined;' });
 	}
 	if (channel.type == ChannelType.PROTECTED) {
@@ -112,6 +124,12 @@ export class ChannelService {
 			return of({ success: 'Channel joined;' });
 		}
 		return of({ error: 'Bad password;' }); 
+	}
+	if (channel.type == ChannelType.PRIVATE)
+	{
+		channel.users.push(user);
+		this.channelRepository.save(channel);
+			return of({ success: 'Channel joined;' });
 	}	
   }
 
@@ -121,12 +139,13 @@ export class ChannelService {
   }
 
   async addAdminToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
-    channel.admin.push(user);
-    return channel;
-  }
-
-  async addMutedToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
-    channel.muted.push(user);
+	  channel.admin.push(user);
+	  return channel;
+	}
+	
+	async muteUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
+	  console.log(user);
+	//   channel.muted.push(user);
     return channel;
   }
 
@@ -183,7 +202,6 @@ export class ChannelService {
     .where('users.id = :Iuserid', { Iuserid })
 	.andWhere("channel.id = :rid", { rid: channel.id })
 	.getCount();
-
 	return  (query);
   }
 

@@ -35,6 +35,170 @@
 						<p>{{ userData.defeat }}</p>
 					</div>
 				</div>
+				<div v-if="currentTab==1" class="achievements">
+					<div class="achievementsTable">
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+					</div>
+				</div>
+				<div v-if="currentTab==2" class="history">
+					<div class="histCats">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -261,16 +425,24 @@ export default	defineComponent ({
 	width:	100%;
 	min-height:	500px;
 	border: solid white 3px;
-	overflow-y:	scroll;
 	border-top: none;
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
 }
 
 .stat {
+	width: 90%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	border: solid 3px white;
+	max-height:	500px;
 	display: flex;
 	flex-direction: column;
 	font-size: 150%;
+	overflow-y:	scroll;
+	height: 90%;
 }
 
 .stat > .statElem {
@@ -335,6 +507,83 @@ export default	defineComponent ({
 {
 	background:	white;
 	color:	var(--font-blue);
+}
+
+.achievementsTable
+{
+	width: 90%%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: 5%;
+	margin-left: 5%;
+	border: solid white 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	overflow: scroll;
+}
+
+.achievementsCol
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+.achievementsCol > div
+{
+	flex: 1 1 0;
+	border: solid white 3px;
+	margin-right: 7%;
+	margin-left: 7%;
+	max-width: 100px;
+	flex: 1 0 auto;
+	aspect-ratio: 1 / 1;
+	border-radius: 20px;
+}
+
+.history
+{
+	width: 90%;
+	display: inline-block;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	max-height:	500px;
+	overflow-y: scroll;
+	border: solid 3px white;
+}
+
+.histCats
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	background: var(--white-10);
+}
+
+.histCats > div
+{
+	flex: auto;
+}
+
+.histElem
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	border-bottom: solid 1px white;
+}
+
+.histElem > div
+{
+	flex: auto;
 }
 
 </style>

@@ -1,23 +1,28 @@
 <template>
 	<div class="chatPage">
-		<button @click="createChannel()"> new channel</button>
+		<div class="chatSide">
+		<div class="channelName" v-if="channelsList.length > 0">
+			<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
+			<button v-if="hasSettingsRights()" @click="goToSettings(channelId)"> Settings </button>
+		</div>
 		<div class="chatArea">
-			<div class="channelName" v-if="channelsList.length > 0">
-				<h3> {{ channelsList[getChannelIndex(channelId)].name }} </h3>
-			<ul :key="mess.id" v-for="mess in channelMessages">
-				<p v-if="mess.user.id != userId" class="otherUserMess">
-					{{ mess.user.username }} <br>
+			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
+				<div v-if="mess.user.id != userId" class="otherUserMess">
+					{{ mess.user.username}}: <br>
 					{{ mess.text }} <br>
-				</p>
-				<p v-else class="currentUserMess">
-					{{ mess.user.username }} <br>
-					{{ mess.text }} <br>
-				</p>
+				</div>
+				<div v-else class="currentUserMess">
+					<p class="currentUserText">
+					{{ mess.user.username }}: <br>
+					{{ mess.text }}
+					</p>
+				</div>
 			</ul>
-		<input type="text" v-model="message" placeholder="write a message ..." class="messageArea">
-		<button @click="sendMessage(message)" class="sendButton">send</button>
-		<br>
-			</div>
+		</div>
+		<div class="writing-zone">
+			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
+			<button @click="sendMessage(message)" class="sendButton">send</button>
+		</div>
 		</div>
 		<div class="chatToolSpace">
 		<ul :key="channel.id" v-for="channel in channelsList">
@@ -29,7 +34,8 @@
 				<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
 			</div>
 		</ul>
-		</div>
+		<button @click="createChannel()"> new channel</button>
+	</div>
 	</div>
 </template>
 
@@ -66,13 +72,14 @@ export default	defineComponent ({
 	},
 
 	async mounted() {
-		this.channelsList;
+		/*this.channelsList;*/
 		this.channelMessages;
 		this.channelsList = await this.fetchChannelsList();
 
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
+		this.resetScroll();
 		this.socket.auth = {userId: this.userId};
 		this.socket.connect();
 		if (this.channelId)
@@ -88,12 +95,13 @@ export default	defineComponent ({
 
 	created() {
 		console.log('create');
-		this.socket = io('http://localhost:42068', {
+		this.socket = io('http://localhost:42070', {
 			withCredentials: true,
 			extraHeaders: {
 			"my-custom-header": "chat"
 			},
 			autoConnect: false});
+			this.channelsList = this.fetchChannelsList();
 	},
 
 
@@ -104,6 +112,7 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			const data = await res.json()
+			console.log(data.items);
 			return data.items
 		},
 
@@ -136,6 +145,12 @@ export default	defineComponent ({
 			this.$router.replace({name: 'createChat'});
 		},
 
+		async resetScroll()	{
+			let lastMsg = document.getElementsByClassName("chatArea")[0];
+			lastMsg = lastMsg.children[lastMsg.children.length - 1];
+			lastMsg.scrollIntoView(false, {block: "end", inline: "end"});
+		},
+
 		async deleteChannel(id: number) {
 			const res = await fetch(`http://localhost:3000/api/channel/delete/${id}`, {
     			method: 'put',
@@ -156,10 +171,11 @@ export default	defineComponent ({
 		async sendMessage(message: string)
 		{
 			this.socket.emit('addMessage', {msg: message, channelId: this.channelId});
+			this.message = "";
 		},
 
 		async fetchMessages() {
-			console.log('fetch message')
+			//console.log('fetch message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
@@ -168,41 +184,116 @@ export default	defineComponent ({
     		});
 			const mess = await res.json();
 			return mess.items;
-		}
+		},
+
+		goToSettings(id: number) {
+			this.$router.replace(`/channel-setting/${id}`)
+		},
+
+		async hasSettingsRights()	{
+			return (true);
+		},
 	},
 })
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
+.chatPage
+{
+	display: flex;
+	flex-direction: row;
+}
+
+.chatSide {
+	display: flex;
+	flex: 7;
+	flex-direction: column;
+	min-height:	500px;
+	max-height:	45em;
+	width: 100%;
+	margin-right: 3%;
+}
+
 .chatArea
 {
-	float:	left;
-	width:	70%;
-	min-height:	500px;
-	max-height:	500px;
 	overflow-y:	scroll;
 	border:	solid 3px white;
-	border-radius: 5px;
+	width: 100%;
 }
 
 .chatToolSpace
 {
-	float:	right;
-	width:	25%;
+	flex: 3;
 	min-height:	500px;
 	border:	solid 3px white;
 	border-radius: 5px;
-	margin-bottom:	min(22px);
+	width: 100%;
+}
+
+.chatToolSpace > button
+{
+	flex: 1;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-right: 1%;
+	background: none;
+	border: solid 3px white;
+	border-radius: 5px;
+	font-size: 120%;
+	font-style: Myanmar;
+	color: white;
+}
+
+.chatToolSpace > button:hover
+{
+	cursor: pointer;
+	background: rgb(255, 255, 255, 0.5);
 }
 
 .chatToolNav
 {
-	float:	right;
-	width:	25%;
 	min-height:	225px;
 	border:	solid 3px white;
 	border-radius: 5px;
-	margin-bottom:	min(22px);
+}
+
+.channelName
+{
+	display: flex;
+	flex-direction: row;
+	text-align: center;
+	border-top: solid white 3px;
+	border-right: solid white 3px;
+	border-left: solid white 3px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	width: 100%;
+}
+
+.channelName > h2
+{
+	flex: 9;
+}
+
+.channelName > button
+{
+	flex: 1;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-right: 1%;
+	height:	42px;
+	background: none;
+	border: solid 3px white;
+	border-radius: 5px;
+	font-size: 120%;
+	font-style: Myanmar;
+	color: white;
+}
+
+.channelName > button:hover
+{
+	cursor: pointer;
+	background: rgb(255, 255, 255, 0.5);
 }
 
 .chanNameButton
@@ -268,11 +359,96 @@ export default	defineComponent ({
 
 .otherUserMess
 {
+	display: inline-block;
 	text-align: left;
+	overflow-x: hidden;
+	padding-right: 2%;
+	padding-left: 2%;
+	padding-top: 	1%;
+	padding-bottom: 1%;
+	font-size: 130%;
+	margin-right: 4%;
+	border-radius: 20px;
+	height: auto;
+	max-width: 80%;
+	background-color:	rgba(23, 61, 199, 0.103);
 }
 
 .currentUserMess
 {
-	text-align: right;
+	display: flex;
+	justify-content: right;
 }
+
+.currentUserText
+{
+	display: inline-block;
+	text-align: left;
+	overflow-x: hidden;
+	padding-right: 2%;
+	padding-left: 2%;
+	padding-top: 	1%;
+	padding-bottom: 1%;
+	font-size: 130%;
+	margin-right: 4%;
+	border-radius: 20px;
+	height: auto;
+	max-width: 80%;
+	background-color:	rgba(255, 255, 255, 0.24);
+
+}
+
+.writing-zone
+{
+	border: solid 3px white;
+	border-top: none;
+	display: flex;
+	flex-direction:	row;
+	width:		100%;
+}
+
+.writing-zone > input
+{
+	flex: 9;
+	border-radius: 40px;
+	margin: 2%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	padding-top: 1%;
+	padding-right: 2%;
+	padding-left: 2%;
+	font-style: Myanmar;
+	color: white;
+	font-size: 120%;
+	background: var(--white-10);
+}
+
+.writing-zone > input:focus
+{
+	outline: solid rgb(255, 255, 255, 0.4) 2px;
+	caret-color: rgb(255, 255, 255, 0.6);
+}
+
+.sendButton
+{
+	flex: 1;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-right: 1%;
+	width: 9%;
+	height:	42px;
+	background: none;
+	border: solid 3px white;
+	border-radius: 5px;
+	font-size: 120%;
+	font-style: Myanmar;
+	color: white;
+}
+
+.sendButton:hover
+{
+	cursor: pointer;
+	background: rgb(255, 255, 255, 0.5);
+}
+
 </style>

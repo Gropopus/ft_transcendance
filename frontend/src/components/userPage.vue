@@ -19,7 +19,7 @@
 					<button @click="declineRequest()">decline</button>
 				</div>
 				<img v-if="blockIcon.img && !isBlocked()" :src="blockIcon.img" @click="blockUser()" class="blockButton" :title="blockIcon.title">
-				<img v-else v-if="unblockIcon.img" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
+				<img v-else v-if="unblockIcon.img && this.userData" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
 		<div class="StatsWin">
@@ -41,6 +41,170 @@
 					<div class="statElem">
 						<h3>Defeats</h3>
 						<p>{{ userData.defeat }}</p>
+					</div>
+				</div>
+				<div v-if="currentTab==1" class="achievements">
+					<div class="achievementsTable">
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+					</div>
+				</div>
+				<div v-if="currentTab==2" class="history">
+					<div class="histCats">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
 					</div>
 				</div>
 			</div>
@@ -68,8 +232,8 @@ export default	defineComponent ({
 			relation: "",
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
 			challengeIcon: {img: "/src/assets/challenge.png", title:"challenge"},
-			blockIcon: {img: "/src/assets/plain-cat.png", title:"block this.userData.username"},
-			unblockIcon: {img: "/src/assets/plain-cat.png", title:"unblock this.userData.username"},
+			blockIcon: {img: "/src/assets/plain-cat.png", title:'block '},
+			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock '},
 			relationIcon: "",
 			currentTab: 0,
 			picture: "",
@@ -109,7 +273,11 @@ export default	defineComponent ({
 			const data = await res.json();
 			for (let elem of data)
 				if (this.$route.params.username == elem.username)
+				{
+					this.blockIcon.title += elem.username;
+					this.unblockIcon.title += elem.username;
 					return elem;
+				}
 		},
 
 		async fetchRelation() {
@@ -345,89 +513,6 @@ export default	defineComponent ({
     max-height: 200px;
 	object-fit:cover;
 }
-/* stat style */
-
-.StatsArea
-{
-	width:	100%;
-	min-height:	500px;
-	border: solid white 3px;
-	overflow-y:	scroll;
-	border-top: none;
-	border-bottom-left-radius: 35px;
-	border-bottom-right-radius: 35px;
-}
-
-.stat {
-	display: flex;
-	flex-direction: column;
-	font-size: 150%;
-}
-
-.stat > .statElem {
-	display: flex;
-	gap: 4%;
-	text-align: center;
-	align-items: center;
-}
-
-.stat > .statElem > h3 {
-	flex: 1 0;
-	background: rgb(203, 177, 233, 0.2);
-}
-
-.stat > .statElem > p {
-	flex: 1 0;
-	font-size: 1.17em;
-	background: rgb(203, 177, 233, 0.2);
-
-}
-.StatsTabs
-{
-	display:	flex;
-	flex-direction:	row;
-	border:	solid 3px white;
-	border-top-right-radius: 35px;
-	border-top-left-radius: 35px;
-	width: 100%;
-	overflow: hidden;
-}
-
-.middle
-{
-	border-right: solid 3px white !important;
-	border-left: solid 3px white !important;
-}
-
-.StatsTabs > button
-{
-	background: none;
-	border: none;
-	flex:	1 1 0;
-	text-align:	center;
-	vertical-align:	center;
-	text-align:	center;
-	text-decoration:	none;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	32px;
-	color: var(--font-blue);
-	padding-top: 1%;
-	font-weight:	bold;
-}
-
-.StatsTabs > button:hover
-{
-	background:	var(--deep-blue-10);
-	cursor: pointer; 
-}
-
-.StatsTabs #CurrentTab
-{
-	background:	white;
-	color:	var(--font-blue);
-}
-
 
 .relation {
 	display: flex;
@@ -551,5 +636,174 @@ export default	defineComponent ({
 	background:	var(--deep-blue-10);
 	cursor: pointer;
 }
+
+/* stat style */
+
+.StatsArea
+{
+	width:	100%;
+	min-height:	500px;
+	border: solid white 3px;
+	border-top: none;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+}
+
+.stat {
+	width: 90%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	border: solid 3px white;
+	max-height:	500px;
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+	overflow-y:	scroll;
+	height: 90%;
+}
+
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+}
+
+.stat > .statElem > h3 {
+	flex: 1 0;
+	background: rgb(203, 177, 233, 0.2);
+}
+
+.stat > .statElem > p {
+	flex: 1 0;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
+
+}
+.StatsTabs
+{
+	display:	flex;
+	flex-direction:	row;
+	border:	solid 3px white;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.middle
+{
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
+}
+
+.StatsTabs > button
+{
+	background: none;
+	border: none;
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	center;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	32px;
+	color: var(--font-blue);
+	padding-top: 1%;
+	font-weight:	bold;
+}
+
+.StatsTabs > button:hover
+{
+	background:	var(--deep-blue-10);
+	cursor: pointer; 
+}
+
+.StatsTabs #CurrentTab
+{
+	background:	white;
+	color:	var(--font-blue);
+}
+
+.achievementsTable
+{
+	width: 90%%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: 5%;
+	margin-left: 5%;
+	border: solid white 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	overflow: scroll;
+}
+
+.achievementsCol
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+.achievementsCol > div
+{
+	flex: 1 1 0;
+	border: solid white 3px;
+	margin-right: 7%;
+	margin-left: 7%;
+	max-width: 100px;
+	flex: 1 0 auto;
+	aspect-ratio: 1 / 1;
+	border-radius: 20px;
+}
+
+.history
+{
+	width: 90%;
+	display: inline-block;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	max-height:	500px;
+	overflow-y: scroll;
+	border: solid 3px white;
+}
+
+.histCats
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	background: var(--white-10);
+}
+
+.histCats > div
+{
+	flex: auto;
+}
+
+.histElem
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	border-bottom: solid 1px white;
+}
+
+.histElem > div
+{
+	flex: auto;
+}
+
 
 </style>
