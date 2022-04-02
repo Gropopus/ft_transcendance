@@ -14,7 +14,7 @@
 	<div class="winSurface">
 		<div v-if="isLogged() || isCurrent('/register')">
 		</div>
-		<!-- <div v-else v-bind:is="goToRoute('/login')"></div> -->
+	<!--	<div v-else v-bind:is="goToRoute('/login')"></div> -->
 		<router-view
 			:userId="this.userId"
 			@update:userId="saveUserId($event)" />
