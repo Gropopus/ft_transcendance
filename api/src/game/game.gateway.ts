@@ -163,7 +163,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		{
 			score.ball_x = 50;
 			score.ball_y = 50;
-			score.speed_x = -0.4;
+			score.speed_x = 0.4;
 			score.speed_y = (Math.random() - 0.5);
 			if (score.custom == true)
 			{
@@ -185,7 +185,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		{
 			score.ball_x = 50;
 			score.ball_y = 50;
-			score.speed_x = 0.4;
+			score.speed_x = -0.4;
 			score.speed_y = (Math.random() - 0.5);
 			if (score.custom == true)
 			{
@@ -261,17 +261,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('observe')
 	handleObserve(client: Socket, data:any) {
 		//data.gameRoom; data.gameId;
+		let score = this.games_score.get(data.gameId);
 		client.join(data.gameRoom);
-		this.server.to(data.gameRoom).emit('ask_pos')
-	}
-	@SubscribeMessage('for_observer')
-	async handleForObserver(client: Socket, data:any) {
-		// data.gameId;		data.gameRoom
-		// data.pos_x;		data.pos_y
-		// data.speed_x;	data.speed_y
-		// data.left_pos;	data.right_pos;
-		this.server.to(data.gameRoom).emit('observer_data', data.pos_x, data.pos_y,
-									data.speed_x, data.speed_y, data.left_pos, data.right_pos);
+		this.server.to(client.id).emit('player_size', score.l_height, score.r_height);
+		this.server.to(client.id).emit('player_pos_left', score.pos_l);
+		this.server.to(client.id).emit('player_pos_right', score.pos_r);
+		this.server.to(client.id).emit('score_update', score.l, score.r)
+		this.server.to(client.id).emit('start_watching_now');
 	}
 
 	//bellow is matchmaking part

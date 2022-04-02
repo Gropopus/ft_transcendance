@@ -183,11 +183,6 @@ function playerMove(event, ) {
 		game.socket.emit('player_pos_left',  { gameRoom: game.gameRoom, gameId: game.gameId, pos: p_pos })
 }
 
-function engage(pid) {
-	if (game.socket && game.socket.connected == true)
-		game.socket.emit('engage', {gameRoom: game.gameRoom, gameId:game.gameId, speed:game.ball.speed.x});
-}
-
 function entermatchmaking(draw)
 {
 	if (draw == 1)
@@ -333,9 +328,6 @@ function socket_init()
 		game.side = sided;
 		game.gameId = id;
 		game.socket.emit('joinRoom', game.gameRoom);
-		setTimeout(function() {
-			engage(game.id)
-		}, 2000);
 	})
 
 	game.socket.on('AskReady', function(conf_id) {
@@ -444,27 +436,10 @@ function socket_init()
 			game.ball.y = game.canvas.height / 2;
 		}
 	})
-	game.socket.on('ask_pos', function() {
-		if (game.side == 'right')
-			game.socket.emit('for_observer', {gameId: game.id, gameRoom: game.gameRoom, 
-												pos_x: game.ball.x, pos_y: game.ball.y,
-												speed_x: game.ball.speed.x, speed_y: game.ball.speed.y,
-												left_pos: game.player.y, right_pos: game.computer.y})
+	game.socket.on('start_watching_now', function() {
+		play();
 	})
-	game.socket.on('observer_data', function(ball_x, ball_y, speed_x, speed_y, left_pos, right_pos) {
-		//add player pos
-		if (game.side == 'observer')
-		{
-			game.ball.x = ball_x;
-			game.ball.y = ball_y;
-			game.ball.speed.x = speed_x;
-			game.ball.speed.y = speed_y;
-			game.matchmaking = 4;
-			game.player.y = left_pos;
-			game.computer.y = right_pos;
-			play();
-		}
-	})
+
 	game.socket.on('already_in_matchmaking', function() {
 		textDraw('', 0)
 		textDraw('You are already in matchmaking.', -17);
@@ -594,7 +569,7 @@ function observe(userId, gameId)
 	game.matchmaking = -1;
 	draw();
 	textDraw("Connecting to game", 0);
-	emitObserve(gameId);
+	emitObserve(+ gameId);
 }
 
 
