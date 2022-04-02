@@ -213,7 +213,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (score.ball_x >= 100) // colllision right
 		{
 			if (score.ball_y < score.pos_r || score.ball_y > score.pos_r + score.l_height )
-				this.handleLeftMiss(gameId)
+				this.handleRightMiss(gameId)
 			else
 			{
 				const impact = score.ball_y - score.pos_r - score.l_height / 2;
@@ -228,7 +228,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		if (score.ball_x <= 0)
 		{
 			if (score.ball_y < score.pos_l || score.ball_y > score.pos_l + score.r_height )
-			this.handleRightMiss(gameId)
+				this.handleLeftMiss(gameId)
 			else
 			{
 				const impact = score.ball_y - score.pos_l - score.r_height / 2;
