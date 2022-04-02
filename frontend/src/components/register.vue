@@ -93,7 +93,7 @@ export default	{
 			}
 			if (res.status == 409)
 			{
-				this.error = "Email or Login already used by another user.";
+				this.error = "Email or login already used by another user.";
 				return ;
 			}
 		},
