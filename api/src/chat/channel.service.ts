@@ -28,8 +28,8 @@ export class ChannelService {
 	}
 	channel.owner = creator;
     const newChannel = await this.addCreatorToChannel(channel, creator);
-    const newChannelAdmin = await this.addAdminToChannel(newChannel, creator);
-	return this.channelRepository.save(newChannelAdmin);
+    return this.addAdminToChannel(newChannel, creator);
+	// return this.channelRepository.save(newChannelAdmin);
   }
 
   async changePasswordChannel(channel: Ichannel, newPassword: string): Promise<Ichannel> {

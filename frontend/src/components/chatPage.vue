@@ -32,7 +32,6 @@
 						v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
 					{{ channel.name }} <br>
 					</button>
-					<button class="deleteButton" @click="deleteChannel(channel.id)">x</button>
 				</div>
 			</ul>
 		</div>
@@ -104,6 +103,7 @@ export default	defineComponent ({
 			},
 			autoConnect: false});
 			this.channelsList = this.fetchChannelsList();
+			console.log(this.channelsList);
 	},
 
 
@@ -155,23 +155,6 @@ export default	defineComponent ({
 			if (typeof lastMsg === 'undefined')
 				return ;
 			lastMsg.scrollIntoView(false, {block: "end", inline: "end"});
-		},
-
-		async deleteChannel(id: number) {
-			const res = await fetch(`http://localhost:3000/api/channel/delete/${id}`, {
-    			method: 'put',
-    			headers: { 'content-type': 'application/json' }
-    		});
-			const i = this.getChannelIndex(id);
-			this.channelsList = await this.fetchChannelsList();
-			if (this.channelId == id) {
-				if (i >= this.channelsList.length)
-					this.channelId = this.channelsList[i - 1].id;
-				else
-					this.channelId = this.channelsList[i].id;
-				this.channelMessages = await this.fetchMessages();
-			}
-		this.channelsList = await this.fetchChannelsList();
 		},
 
 		async sendMessage(message: string)
