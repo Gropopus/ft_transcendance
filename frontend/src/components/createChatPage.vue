@@ -111,8 +111,7 @@ export default	{
                     headers: { 'content-type': 'application/json' ,
                     'Access-Control-Allow-Origin': '*'},
                     body: JSON.stringify({password: this.chatPassword}),
-            })
-            console.log((await res.json()))
+            });
         },
 
         async addUsername() {

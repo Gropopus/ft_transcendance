@@ -1,5 +1,5 @@
 <template>
-		<div class="chatForm">
+		 <div class="chatForm"> 
             <h1> {{ channelData.name }}: settings </h1>
             <div class="userList">
                 <div class="listName">
@@ -12,19 +12,31 @@
                             <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)" class="addButton">set admin</button>
                             <button v-else @click="unsetAdmin(user.id)" class="addButton"> unset admin</button>
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
-                            <button v-else @click="unmuteUser(user.id)" class="addButton">unmute</button>
+                            <!-- <button v-else @click="unmuteUser(user.id)" class="addButton">unmute</button> -->
                             <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
                         <div v-if="isOwner(user.id)" class="role"> owner </div>
                         <div v-else-if="isAdmin(user.id)" class="role"> admin </div>
-                        <div v-if="isMute(user.id)"> mute </div>
-                        <div v-if="role=='admin' && userId != user.id && !isOwner(user.id)">
-                            <button v-if="!isMute(user.id)" @click="muteUser(user.id)">mute</button>
-                            <button v-else @click="unmuteUser(user.id)">unmute</button>
-                            <button>remove</button>
+                        <div v-if="role=='admin' && userId != user.id && !isOwner(user.id) && !isAdmin(user.id)" class="buts">
+                            <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
+                            <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
+                        <img
+                            v-if="isMute(user.id) && (role == 'owner' || (role == 'admin' && !isAdmin(user.id)))"
+                            title="unmute"
+                            @click="unmuteUser(user.id)"
+                            class="muteIcon"
+                            src="/src/assets/muted-users.png" />
+                        <img v-else-if="isMute(user.id)" class="muteIcon" src="/src/assets/muted-users.png" />
                     </div>
                 </div>
+            </div>
+            <div v-if="role == 'admin' || role == 'owner'" class="formElem">
+                <label for="users">Add users</label> <br>
+                <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
+                    <button @click="addUser()" class="addButton">
+                        add
+                    </button> <br>
             </div>
             <div class="formElem" v-if="channelData.type == 'protected'">
                 <label for="password">Change channel password </label>	<br>
@@ -33,13 +45,14 @@
                         update
                     </button> <br>
             </div>
-            <button v-if="role='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
+            <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
             <p class="error"> {{ error }} </p>
-		</div> <!-- RegisterForm end -->
+            </div>
 </template>
 
 <script lang="ts">
 
+// import { labeledStatement } from '@babel/types';
 import { defineComponent } from 'vue';
 
 export default defineComponent ({
@@ -58,6 +71,7 @@ export default defineComponent ({
             userToMute: "",
             userToAdmin: "",
             chatPassword: "",
+            userToAdd: "",
             users: [],
             role: "",
             error: "",
@@ -92,6 +106,8 @@ export default defineComponent ({
                 this.role = "owner";
             else if (this.isAdmin(this.userId))
                 this.role = "admin";
+            else
+                this.role = "user"
         },
 
         isAdmin(id: number) {
@@ -130,6 +146,43 @@ export default defineComponent ({
             this.channelData = await this.fetchChannel();
         },
 
+        async addUser() {
+            let found = 0;
+            this.error = "";
+            if (!this.userToAdd)
+                return ;
+            const res = await fetch(
+                `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
+                    method: 'get',
+               headers: { 'content-type': 'application/json' },
+            })
+            const user = await res.json();
+            for (let elem of user)
+            {
+                if (elem.username == this.userToAdd)
+                {
+                    if (!this.isInChannel(elem.id))
+                    {
+                        console.log('OKKKKKK')
+                        await fetch(
+                            `http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
+                                method: 'put',
+                                headers: { 'content-type': 'application/json' ,
+                                'Access-Control-Allow-Origin': '*'},
+                                body: JSON.stringify({password: this.chatPassword}),
+                        });
+                        this.userToAdd = "";
+                        this.channelData = await this.fetchChannel();
+                    }
+                    else
+                        this.error = "User already in the channel.";
+                    return ;
+                }
+            }
+            this.error = "User doesn't exist.";
+            this.userToAdd = "";
+        },
+
         async removeUser(id: number) {
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/remove/${id}`, {
@@ -164,6 +217,13 @@ export default defineComponent ({
                headers: { 'content-type': 'application/json' },
             });
             this.$router.replace('/chat');
+        },
+
+        isInChannel(id: number) {
+            for (let user of this.channelData.users)
+                if (user.id == id)
+                    return true;
+            return false;
         },
 
 		setDiplayState() {
@@ -291,16 +351,6 @@ export default defineComponent ({
 
 }
 
-.chatType {
-	padding-top: 1%;
-	width: 50%;
-	background:	white;
-	border:	solid rgb(238, 220, 220);
-	font-size:	100%;
-	color:	rgb(236, 100, 151);
-	border-radius: 4px;
-	font-family: MyanmarText;
-}
 
 .delButton {
     padding: 6px;
@@ -317,4 +367,12 @@ export default defineComponent ({
     text-decoration: underline;
     cursor: pointer;
 }
+
+.muteIcon {
+    margin-top: 2%;
+    margin-bottom: 2%;
+    height: 7%;
+    width: 7%;
+}
+
 </style>
