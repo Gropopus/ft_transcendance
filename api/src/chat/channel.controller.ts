@@ -22,6 +22,11 @@ export class ChannelController {
 	private messageService: MessageService,
   ) { }
 
+	@Get('all')
+	async getAllChannels(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>>{
+		return this.channelService.getAllChannel({ page, limit, route: 'http://localhost:3000/api/channel/all' });
+	}
+
 	@Put('new/:creatorId')
 	async createChannel(@Param() params, @Body() chan: Ichannel): Promise<Ichannel> {
 		const creator = await this.userService.findOne(params.creatorId);
@@ -109,8 +114,18 @@ export class ChannelController {
 
 	@Put(':channelId/adduser/:username')
 	async addUserToChannel(@Param() params, @Body() bod) {
-		const user = (await this.userService.findAllByUsername(params.username))[0];
-		return this.channelService.addUserToChannel(params.channelId, user, bod.password);
+		const users = await this.userService.findAllByUsername(params.username);
+		let userToAdd = {};
+		for (let user of users)
+			if (user.username == params.username)
+				userToAdd = user;
+		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
+	}
+
+	@Put(':userId/join/:channelId')
+	async joinChannel(@Param() params, @Body() bod) {
+		const userToAdd = await this.userService.findOne(params.userId);
+		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
 	}
 
 	@Get(':channelId/messages/:userId')

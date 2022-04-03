@@ -1,5 +1,25 @@
 <template>
+<div>
+	<div class="listName">
+		All channels
+		<button @click="setDiplayState()"  class="arrow">
+			<img v-if="listStatus==0" src="/src/assets/arrow-whitedown.png"/>
+			<img v-else src="/src/assets/arrow-white-up.png" />
+		</button>
+	</div>
+	<div v-if="listStatus" >
+		<div :key="chan.id"  v-for="chan in all" class="elemChanList">
+			<div class="chanName">{{ chan.name }} </div>
+			<div class="chanType">{{ chan.type }} </div>
+            <div v-if="chan.type=='protected' && !isInChannel(chan.id)">
+                <input type="password" v-model="joinPassword" placeholder="password" class="joinPass">
+            </div>
+			<button v-if="!isInChannel(chan.id)" @click="joinChannel(chan.id)" class="joinButton" >join channel</button>
+		</div>
+	</div>
 	<div class="chatPage">
+		<div class="allChan">
+		</div>
 		<div class="chatSide">
 		<div class="channelName" v-if="channelsList.length > 0">
 			<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
@@ -38,6 +58,7 @@
 		<button @click="createChannel()"> new channel</button>
 	</div>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -63,6 +84,9 @@ export default	defineComponent ({
 			socket: Socket,
 			channelMessages: [],
 			message: "",
+			listStatus: 0,
+			all: [],
+			joinPassword: "",
 		}
 	}, 
 
@@ -74,9 +98,10 @@ export default	defineComponent ({
 
 	async mounted() {
 		/*this.channelsList;*/
+		this.all = await this.fetchAllChannels();
 		this.channelMessages;
 		this.channelsList = await this.fetchChannelsList();
-
+		this.all;
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
@@ -94,20 +119,30 @@ export default	defineComponent ({
 		this.socket.disconnect();
 	},
 
-	created() {
+	async created() {
 		console.log('create');
 		this.socket = io('http://localhost:42070', {
 			withCredentials: true,
 			extraHeaders: {
-			"my-custom-header": "chat"
+				"my-custom-header": "chat"
 			},
 			autoConnect: false});
-			this.channelsList = this.fetchChannelsList();
-			console.log(this.channelsList);
+			// this.channelsList = this.fetchChannelsList();
+			// console.log(this.channelsList);
 	},
 
 
 	methods: {
+		async fetchAllChannels() {
+			const res = await fetch(`http://localhost:3000/api/channel/all`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			const data = await res.json()
+			console.log(data.items);
+			return data.items;
+		},
+
 		async fetchChannelsList() {
 			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
     			method: 'get',
@@ -115,7 +150,7 @@ export default	defineComponent ({
     		});
 			const data = await res.json()
 			console.log(data.items);
-			return data.items
+			return data.items;
 		},
 
 		async changeCurrentChan(id: number) {
@@ -164,7 +199,6 @@ export default	defineComponent ({
 		},
 
 		async fetchMessages() {
-			//console.log('fetch message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
@@ -182,13 +216,86 @@ export default	defineComponent ({
 		async hasSettingsRights()	{
 			return (true);
 		},
+
+		setDiplayState() {
+            this.listStatus = 1 - this.listStatus;
+		},
+
+		async joinChannel(chanId: number) {
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.userId}/join/${chanId}`, {
+                    method: 'put',
+                    headers: { 'content-type': 'application/json' ,
+                    'Access-Control-Allow-Origin': '*'},
+                    body: JSON.stringify({password: this.joinPassword}),
+            });
+			this.joinPassword = "";
+			this.channelsList = await this.fetchChannelsList();
+		},
+
+		isInChannel(chanId: number) {
+			for (let chan of this.channelsList)
+			{
+				console.log(chan.id + ' | ' + chanId);
+				if (chan.id == chanId)
+					return true;
+			}
+			return false;
+		},
 	},
 })
 </script>
 
 <style lang="css" scoped>
+
+.listName {
+	display:flex;
+	flex-direction: row;
+	text-align: left;
+	border-bottom: solid 2px white;
+	margin-bottom: 0px;
+	font-size: 30px;
+	gap: 2%;
+}
+
+.elemChanList {
+	display: flex;
+	gap: 5%;
+	font-size: 20px;
+	margin-top: 1%;
+}
+
+.elemChanList > .chanType {
+	width: 20%;
+    color: rgb(255, 255, 255, 0.6);
+}
+
+.elemChanList > .chanName {
+	width: 20%;
+}
+.elemChanList > .joinButton {
+    padding: 6px;
+	font-size:	20px;
+    margin-left: 1%;
+	border:	solid 2px white;
+    background: none;
+    color: white;
+}
+.elemChanList > .joinButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+
+}
+
+.joinPass {
+	border: none;
+	background-color:	var(--input-fields);
+	opacity:	50%;
+	font-size:	20px;
+}
 .chatPage
 {
+	margin-top: 2%;
 	display: flex;
 	flex-direction: row;
 }

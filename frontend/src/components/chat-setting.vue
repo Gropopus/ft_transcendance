@@ -38,7 +38,7 @@
                         add
                     </button> <br>
             </div>
-            <div class="formElem" v-if="channelData.type == 'protected'">
+            <div class="formElem" v-if="channelData.type == 'protected' && role == 'owner'">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
                 <button @click="changePassword()" class="addButton">
@@ -46,6 +46,7 @@
                     </button> <br>
             </div>
             <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
+            <button v-else @click="quitChannel()" class="delButton">Quit channel</button>
             <p class="error"> {{ error }} </p>
             </div>
 </template>
@@ -213,6 +214,15 @@ export default defineComponent ({
         async deleteChannel() {
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            });
+            this.$router.replace('/chat');
+        },
+
+        async quitChannel() {
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
