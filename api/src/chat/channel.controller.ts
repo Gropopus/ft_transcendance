@@ -53,9 +53,16 @@ export class ChannelController {
 	}
 
 	@Put(':id/mute/:userId')
-	async muteUser(@Param() params) {
-		return this.channelService.muteUser(params.id, 
+	async muteUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+		return this.channelService.muteUser(
+			channel.items[0],
 			await this.userService.findOne(params.userId));
+	}
+
+	@Put(':id/unmute/:userId')
+	async unmuteUser(@Param() params) {
+		return this.channelService.deleteAUserMutedFromChannel(params.id, params.userId);
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
@@ -69,9 +76,10 @@ export class ChannelController {
 	// @hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	// @UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/give/:userId')
-	async updateChannelUserForAdmin(@Param() params): Promise<Ichannel> {  
-	  var channel: Ichannel = await this.channelService.getChannel(Number(params.id));
-	  return this.channelService.addAdminToChannel(channel, params.userId);
+	async updateChannelUserForAdmin(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Ichannel> {  
+	const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+	  return this.channelService.addAdminToChannel(channel.items[0],
+		await this.userService.findOne(params.userId));
 	}
 
 	// @hasRoles(UserRole.ADMIN, UserRole.OWNER)
@@ -80,7 +88,12 @@ export class ChannelController {
 	async updateChannelAdminForAdmin(@Param() params): Promise<Ichannel> {
 	  return this.channelService.deleteAUserAdminFromChannel(Number(params.id), params.userId);
 	}
-	
+
+	@Put(':id/remove/:userId')
+	async removeUserFromChannel(@Param() params): Promise<Ichannel> {
+	  return this.channelService.deleteAUserFromChannel(Number(params.id), params.userId);
+	}
+
 	@UseGuards(JwtAuthGuard)
 	@Get(':idChannel/:idUser')
 	async IusersChannel(@Param('idChannel') idChannel: number, @Param('idUser') idUser: number): Promise<Number> {

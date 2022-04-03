@@ -118,6 +118,7 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
+            this.channelData = await this.fetchChannel();
         },
 
         async unmuteUser(id: number) { 
@@ -126,10 +127,16 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
+            this.channelData = await this.fetchChannel();
         },
 
         async removeUser(id: number) {
-
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/remove/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
+            this.channelData = await this.fetchChannel();
         },
 
         async setAdmin(id: number) {
@@ -138,7 +145,6 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
-            console.log('admin set');
             this.channelData = await this.fetchChannel();
         },
 
@@ -148,10 +154,16 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
+            this.channelData = await this.fetchChannel();
         },
 
         async deleteChannel() {
-
+            const res = await fetch(
+                `http://localhost:3000/api/channel/delete/${this.channelId}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            });
+            this.$router.replace('/chat');
         },
 
 		setDiplayState() {

@@ -138,21 +138,22 @@ export class ChannelService {
     return channel;
   }
 
-  async addAdminToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
-	  channel.admin.push(user);
-	  return channel;
+	async addAdminToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
+		channel.admin.push(user);
+		this.channelRepository.save(channel);
+		return channel;
 	}
 	
 	async muteUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
-	  console.log(user);
-	//   channel.muted.push(user);
-    return channel;
-  }
+		channel.muted.push(user);
+		this.channelRepository.save(channel);
+		return channel;
+	}
 
   	private async hashPassword(password: string): Promise<string> {
 		return this.authService.hashPassword(password);
 	}
-
+z
 	private async validatePassword(password: string, storedPasswordHash: string): Promise<any> {
 		return this.authService.comparePasswords(password, storedPasswordHash);
 	}
@@ -165,22 +166,21 @@ export class ChannelService {
 		channel.type = ChannelType.CLOSE;
 		return this.channelRepository.save(channel);
 	}
-	channel.users = channel.users.filter(user => user.id !== Iuserid);
-	channel.admin = channel.admin.filter(user => user.id !== Iuserid);	
+	channel.users = channel.users.filter(user => user.id != Iuserid);
+	channel.admin = channel.admin.filter(user => user.id != Iuserid);	
 
 	return this.channelRepository.save(channel);
   }
 
   async deleteAUserMutedFromChannel(channelId: number, Iuserid: number): Promise<Ichannel> {
 	const channel = await this.getChannel(channelId);
-	channel.muted = channel.muted.filter(user => user.id !== Iuserid);
-
+	channel.muted = channel.muted.filter(user => user.id != Iuserid);
 	return this.channelRepository.save(channel);
   }
 
   async deleteAUserAdminFromChannel(channelId: number, Iuserid: number): Promise<Ichannel> {
 	const channel = await this.getChannel(channelId);
-	channel.admin = channel.admin.filter(user => user.id !== Iuserid);
+	channel.admin = channel.admin.filter(user => user.id != Iuserid);
 	
 	return this.channelRepository.save(channel);
   }
@@ -220,8 +220,8 @@ export class ChannelService {
 	return this.channelRepository.findOne(channelId);
 }
 
-async deleteChannel(id: number): Promise<any> {
-	this.channelRepository.delete(id)
+async deleteChannel(channelId: number): Promise<any> {
+	this.channelRepository.delete({id: channelId});
 }
 
 }
