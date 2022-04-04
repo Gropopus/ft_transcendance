@@ -149,10 +149,22 @@ export class ChannelService {
 		return channel;
 	}
 
+	async banUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
+		channel.ban.push(user);
+		this.channelRepository.save(channel);
+		return channel;
+	}
+
+	async unbanUser(channelId: number, Iuserid: number): Promise<Ichannel> {
+		const channel = await this.getChannel(channelId);
+		channel.muted = channel.ban.filter(user => user.id != Iuserid);
+		return this.channelRepository.save(channel);
+	  }
+
   	private async hashPassword(password: string): Promise<string> {
 		return this.authService.hashPassword(password);
 	}
-z
+
 	private async validatePassword(password: string, storedPasswordHash: string): Promise<any> {
 		return this.authService.comparePasswords(password, storedPasswordHash);
 	}

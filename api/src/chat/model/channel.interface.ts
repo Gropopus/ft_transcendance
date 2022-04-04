@@ -16,6 +16,7 @@ export interface Ichannel {
   users?: Iuser[];
   admin?: Iuser[];
   muted?: Iuser[];
+  ban?:   Iuser[];
   owner?: Iuser;
   created_at?: Date;
   updated_at?: Date;
