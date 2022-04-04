@@ -46,7 +46,7 @@
                     </button> <br>
             </div>
             <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
-            <button v-else @click="quitChannel()" class="delButton">Quit channel</button>
+            <button v-else @click="quitChannel()" class="delButton">Leave channel</button>
             <p class="error"> {{ error }} </p>
             </div>
 </template>
@@ -98,7 +98,6 @@ export default defineComponent ({
                 headers: { 'content-type': 'application/json' },
             });
             const data = await res.json();
-            console.log(data.items[0])
             return data.items[0];
         },
 
@@ -164,7 +163,6 @@ export default defineComponent ({
                 {
                     if (!this.isInChannel(elem.id))
                     {
-                        console.log('OKKKKKK')
                         await fetch(
                             `http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
                                 method: 'put',
@@ -172,8 +170,11 @@ export default defineComponent ({
                                 'Access-Control-Allow-Origin': '*'},
                                 body: JSON.stringify({password: this.chatPassword}),
                         });
+                        console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`);
+                       
+                       this.channelData = await this.fetchChannel();
+                        console.log(this.channelData);
                         this.userToAdd = "";
-                        this.channelData = await this.fetchChannel();
                     }
                     else
                         this.error = "User already in the channel.";
