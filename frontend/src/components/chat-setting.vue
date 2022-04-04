@@ -12,12 +12,14 @@
                             <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)" class="addButton">set admin</button>
                             <button v-else @click="unsetAdmin(user.id)" class="addButton"> unset admin</button>
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
+                            <button v-if="!isBan(user.id)" @click="banUser(user.id)" class="addButton">ban</button>
                             <!-- <button v-else @click="unmuteUser(user.id)" class="addButton">unmute</button> -->
                             <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
                         <div v-if="isOwner(user.id)" class="role"> owner </div>
                         <div v-else-if="isAdmin(user.id)" class="role"> admin </div>
                         <div v-if="role=='admin' && userId != user.id && !isOwner(user.id) && !isAdmin(user.id)" class="buts">
+                            <button v-if="!isBan(user.id)" @click="banUser(user.id)" class="addButton">ban</button>
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
                             <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
@@ -28,6 +30,7 @@
                             class="muteIcon"
                             src="/src/assets/muted-users.png" />
                         <img v-else-if="isMute(user.id)" class="muteIcon" src="/src/assets/muted-users.png" />
+                        <button v-if="isBan(user.id)" @click="unbanUser(user.id)" class="addButton">unban</button>
                     </div>
                 </div>
             </div>
@@ -124,6 +127,13 @@ export default defineComponent ({
             return false;
         },
 
+        isBan(id: number) {
+            for (let user of this.channelData.ban)
+                if (user.id == id)
+                    return true;
+            return false;
+        },
+
         isOwner(id: number) {
             return (id == this.channelData.owner.id);
         },
@@ -140,6 +150,25 @@ export default defineComponent ({
         async unmuteUser(id: number) { 
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/unmute/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
+            this.channelData = await this.fetchChannel();
+        },
+
+        async banUser(id: number)
+        {
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/ban/${id}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            })
+            this.channelData = await this.fetchChannel();
+        },
+
+        async unbanUser(id: number) { 
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/unban/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })

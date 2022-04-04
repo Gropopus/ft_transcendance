@@ -1,9 +1,18 @@
 <template>
 	<div class="settingsPage">
-		<div class="profile-image">
-				<img :src="picture" />
-				<br>
+		<div class="profile-resume">
+			<div class="picture">
+				<img :src="picture" alt="userDate.username" />
 			</div>
+			<div class="info">
+				<div class="username"> {{ userData.username }} </div>
+				<div class="usermail"> {{ userData.email }} </div>
+				<div class="status"> {{ userData.status }} </div>
+			</div>
+			<div class="perso-info">
+				<button @click="goToRoute('/profile')" title="profile"> Profile </button>
+			</div>
+		</div>
 		<div class="settings">
 		<p class="error" v-if="error"> {{ error }} </p>
 		<div class="submitBar">
@@ -67,6 +76,7 @@ export default	{
 	emits:	['update:userId'],
 	data:	function()	{
 		return {
+			userData: [],
 			userLogin:	"",
 			userPass:	"",
 			userMail:	"",
@@ -82,12 +92,42 @@ export default	{
 			finish: "",
 		}
 	},
+	mounted() {
+		this.userData;
+		this.picture;
+	},
+
 	created(){
 		this.displayPicture();
 		this.isTwoFA();
 	},
 
+	async created()	{
+		this.userData = await this.fetchUserData();
+		this.picture = await this.getPicture();
+	},
+
 	methods:	{
+		async fetchUserData() {
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const data = await res.json();
+			return data;
+		},
+
+		async getPicture()
+		{
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
+				method: 'get',
+					headers: { 'responseType': 'blob' },
+			})
+			const blob = await ret.blob();
+    		const newBlob = new Blob([blob]);
+			const blobUrl = window.URL.createObjectURL(newBlob);
+    		return blobUrl;
+		},
 
 		async updateLogin() {
 				this.error = "";
@@ -274,6 +314,10 @@ export default	{
 			}
 			this.finish = "Two factor authentication desactivated."
 		},
+
+		goToRoute(path: string) {
+			this.$router.replace(path);
+		},
 	}
 }
 </script>
@@ -295,22 +339,21 @@ export default	{
 }
 .settingsPage
 {
-	font-size:	130%;
-	font-family: MyanmarText;
-	font-weight:	bold;
-	min-height:	300px;
-	min-width: 548px;
+	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
+	flex-direction:	row;
+	text-align: center;
+	margin-right: 5%;
+	margin-left: 5%;
+	margin-bottom: 0%;
 }
 
 .settings {
-	display: block;
-	border: solid white 2px;
-	border-radius: 5px;
-	margin-right: auto;
-	margin-left: auto;
-	width: 80%;
-	padding-top: 5%;
-	padding-bottom: 5%;
+	width:	100%;
+	min-height:	500px;
+	border: solid white 3px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	font-size: 150%;
 }
 .submitBar > input.textArea
 {
@@ -415,19 +458,96 @@ export default	{
 	cursor: pointer; 
 }
 
-.profile-image {
-    /*float: left;*/
-	margin-top: 		5%;
-	margin-left: 		35%;
-    width: 				calc(33.333% - 1rem);
-    display: 			flex;
-    justify-content: 	center;
-    align-items: 		center;
-    margin-right:		3rem;
-	margin-bottom:		5%;
+.profile-resume {
+	display: flex;
+	flex-direction: row;
+	gap: 3%;
+	/* flex: 1 1 0; */
+	border: solid 3px white;
+	margin-bottom: 2%;
+	align-content: center;
+	border-radius: 5px;
 }
 
-.profile-image > img {
+.info
+{
+	flex: 4;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 4%;
+	margin-bottom: 2%;
+	text-align: left;
+	vertical-align: center;
+}
+
+.username {
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	300%;
+	color: var(--font-blue);
+	font-weight:	bold;
+}
+
+.usermail{
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+}
+
+.perso-info
+{
+	flex: 1;
+	margin-right: 3%;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	vertical-align: center;
+}
+
+.status {
+	flex: 1;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: green;
+}
+
+.perso-info > button
+{
+	flex: 5;
+	background: none;
+	border: solid 3px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: white;
+	padding-top: 2%;
+	margin: 20%;
+	margin-top: 30%;
+}
+
+.perso-info > button:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
+}
+
+.picture {
+	flex: 1;
+	width: calc(33.333% - 1rem);
+    vertical-align: center;
+	margin-left: 3%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+}
+
+.picture > img {
+	/*margin-left: 2%;
+	margin-bottom: 2%;
+	margin-top: 2%;
+	min-height: 150px;
+	min-width: 150px;*/
 	border-radius: 50%;
 	overflow: hidden;
     width: 200px;
@@ -436,5 +556,4 @@ export default	{
     max-height: 200px;
 	object-fit:cover;
 }
-
 </style>

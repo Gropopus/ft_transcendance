@@ -65,6 +65,3 @@ services:
       - 5050:80
     logging:
       driver: none
-
-
-

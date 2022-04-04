@@ -6,6 +6,8 @@ COPY package*.json ./
 
 RUN npm install
 
-ENTRYPOINT npm run dev
+COPY . .
 
 EXPOSE 4200
+
+ENTRYPOINT npm run dev

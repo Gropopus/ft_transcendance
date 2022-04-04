@@ -45,18 +45,18 @@
 		</div>
 		</div>
 		<div class="chatToolSpace">
-		<div class="chanList">
-			<ul :key="channel.id" v-for="channel in channelsList">
-				<div>
-					<button class="chanNameButton" @click="changeCurrentChan(channel.id)"
-						v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
+			<div class="chanList">
+				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
+					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					{{ channel.name }} <br>
-					</button>
-				</div>
-			</ul>
+				</button>
+			</div>
+			<div class="chanSearch">
+				<input @keyup.enter="filterChans(searchKey)" type="text" class="searchBar" v-model="searchKey">
+				<button @click="filterChans(searchKey)"> Filter Channels </button>
+				<button @click="createChannel()"> new channel</button>
+			</div>
 		</div>
-		<button @click="createChannel()"> new channel</button>
-	</div>
 	</div>
 </div>
 </template>
@@ -84,6 +84,7 @@ export default	defineComponent ({
 			socket: Socket,
 			channelMessages: [],
 			message: "",
+			searchKey: "",
 			listStatus: 0,
 			all: [],
 			joinPassword: "",
@@ -242,6 +243,23 @@ export default	defineComponent ({
 			}
 			return false;
 		},
+
+		matchKey(value: string, searchKey: string)	{
+			return (value.name.toString().toLowerCase().startsWith(searchKey));
+		},
+
+		async filterChans(searchKey: string)	{
+			this.channelsList = await this.fetchChannelsList();
+			if (this.channelsList != 'undefined')	{
+				if (searchKey.trim() == "")	{
+					this.searchKey = "";
+					return ;
+				}
+				let tmpList = this.channelsList.filter(value => this.matchKey(value, searchKey.toLowerCase()));
+				this.channelsList = tmpList;
+			}
+			this.searchKey = "";
+		},
 	},
 })
 </script>
@@ -281,6 +299,7 @@ export default	defineComponent ({
     background: none;
     color: white;
 }
+
 .elemChanList > .joinButton:hover {
 	background:	var(--deep-blue-10);
 	cursor: pointer;
@@ -327,12 +346,45 @@ export default	defineComponent ({
 	width: 100%;
 }
 
-.chatToolSpace > button
+.chanSearch
 {
-	flex: 1;
-	margin-top: auto;
-	margin-bottom: auto;
-	margin-right: 1%;
+	display: flex;	
+	border: solid white 3px;
+	border-radius: 5px;
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+	margin: 5%;
+	margin-top: 0;
+	padding: 5%;
+}
+
+.chanSearch > input
+{
+	flex: 1 1 0;
+	border: none;
+	border-radius: 40px;
+	margin: 2%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	padding-top: 1%;
+	padding-right: 2%;
+	padding-left: 2%;
+	font-style: Myanmar;
+	color: white;
+	font-size: 120%;
+	background: rgb(255, 255, 255, 0.4);
+}
+
+.chanSearch > input:focus
+{
+	outline: solid rgb(255, 255, 255, 0.4) 2px;
+	caret-color: rgb(255, 255, 255, 0.6);
+}
+
+.chanSearch > button
+{
+	flex: 1 1 0;
+	margin-right: 5%;
 	background: none;
 	border: solid 3px white;
 	border-radius: 5px;
@@ -341,7 +393,7 @@ export default	defineComponent ({
 	color: white;
 }
 
-.chatToolSpace > button:hover
+.chanSearch > button:hover
 {
 	cursor: pointer;
 	background: rgb(255, 255, 255, 0.5);
@@ -351,13 +403,21 @@ export default	defineComponent ({
 {
 	overflow-y: scroll;
 	max-height:	45em;
+	border: solid white 3px;
+	border-bottom: none;
+	border-radius: 5px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+	margin: 5%;
+	margin-bottom: 0;
+	padding-top: 5%;
+	padding-bottom: 5%;
 }
 
-.chatToolNav
+.chanNameButton
 {
-	min-height:	225px;
-	border:	solid 3px white;
-	border-radius: 5px;
+	width: 100%;
+	border-bottom: solid 3px white;
 }
 
 .channelName
@@ -411,23 +471,7 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	font-size:	32px;
-	color: var(--font-blue);
-	border:	none;
-}
-
-.deleteButton
-{
-	height:	42px;
-	flex:	1 1 0;
-	text-align:	center;
-	vertical-align:	center;
-	text-align:	center;
-	min-width:	50px;
-	text-decoration:	none;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	32px;
-	color: var(--font-blue);
+	color: white;
 	border:	none;
 }
 
