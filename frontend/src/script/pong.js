@@ -8,7 +8,7 @@ var game = {
 		score: 0
 	},
 	ball: {
-		r: 5,
+		r: 15,
 		speed: {
 			x: 0,
 			y: 0
@@ -39,12 +39,12 @@ var game = {
 function scoreDraw(){
 	var context = game.canvas.getContext('2d');
 
-	context.font = "40px Myanmar Text";
+	context.font = "160px MyanmarText";
 	context.fillStyle = "white" //text color;
 	context.textAlign = 'center';
 	context.textBaseLine = 'middle';
-	context.fillText(game.player.score, game.canvas.width / 2 - 30, 40);
-	context.fillText(game.computer.score, game.canvas.width / 2 + 30, 40);
+	context.fillText(game.player.score, game.canvas.width / 2 - 120, 160);
+	context.fillText(game.computer.score, game.canvas.width / 2 + 120, 160);
 
 
 	// Draw middle line
@@ -55,29 +55,22 @@ function scoreDraw(){
 	context.stroke();
 }
 
-
-function imageDraw() {
-	var context = game.canvas.getContext('2d');
-	var img = new Image();
-	img.src = "http://localhost:4200/src/assets/header-id.png"
-	context.drawImage(img, game.canvas.width / 2 - img.width / 2, 30, img.width, img.height);
-}
-
 function buttonDraw(str, offset, ) {
 	
 	var context = game.canvas.getContext('2d');
-	if (offset == 0 || str == "Normal     Custom")
+	if (offset == 0)
 	{
 		//Draw field
-		game.lineaire = context.createLinearGradient(0, 0 ,game.canvas.width, game.canvas.height)
-		game.lineaire.addColorStop(1, "#ddace2")
-		game.lineaire.addColorStop(0, "#173dc7")
-		context.fillStyle = game.lineaire;
-		context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+		context.clearRect(0,0, game.canvas.width, game.canvas.height)
+		// game.lineaire = context.createLinearGradient(0, 0 ,game.canvas.width, game.canvas.height)
+		// game.lineaire.addColorStop(1, "#ddace2")
+		// game.lineaire.addColorStop(0, "#173dc7")
+		// context.fillStyle = game.lineaire;
+		// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 	}
 	//Draw game.button zone
-	context.font = "30px Myanmar Text";
-	var text = { width: context.measureText(str).width + 10, height: 38}
+	context.font = "60px MyanmarText";
+	var text = { width: context.measureText(str).width + 10, height: 76}
 	
 	context.strokeRect(game.canvas.width / 2 - text.width / 2, game.canvas.height / 2 - text.height /2 + offset,
 					text.width, text.height);
@@ -87,14 +80,12 @@ function buttonDraw(str, offset, ) {
 	game.start_buton.maxX = game.start_buton.x + text.width;
 	game.start_buton.maxY = game.start_buton.y + text.height;
 
-
 	//Draw game.button text
-	context.font = "30px Myanmar Text";
+	context.font = "60px MyanmarText";
 	context.fillStyle = "#252E83" //text color;
 	context.textAlign = 'center';
 	context.textBaseline = 'center';
-	context.fillText(str, game.canvas.width /2 , game.canvas.height / 2 + 11 + offset);
-	imageDraw();
+	context.fillText(str, game.canvas.width /2 , game.canvas.height / 2 + 22 + offset);
 }
 
 function textDraw(str, offset = 0) {
@@ -104,11 +95,12 @@ function textDraw(str, offset = 0) {
 	if (str == 'Opponent didn\'t respond, Back in the matchmaking')
 	{
 		// Draw field
-		context.fillStyle = game.lineaire;
-		context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+		context.clearRect(0,0, game.canvas.width, game.canvas.height);
+		// context.fillStyle = game.lineaire;
+		// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 	
 		//Draw text
-		context.font = "30px Myanmar Text";
+		context.font = "60px MyanmarText";
 		context.fillStyle = "#252E83" //text color;
 		context.textAlign = 'center';
 		context.textBaseline = 'center';
@@ -120,16 +112,18 @@ function textDraw(str, offset = 0) {
 	}
 	if (offset == 0)
 	{
+		context.clearRect(0,0, game.canvas.width, game.canvas.height)
 		// Draw field
-		context.fillStyle = game.lineaire;
-		context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+		// context.fillStyle = game.lineaire;
+		// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+
 	}
 	//Draw text
-	context.font = "30px Myanmar Text";
+	context.font = "60px MyanmarText";
 	context.fillStyle = "#252E83" //text color;
 	context.textAlign = 'center';
 	context.textBaseline = 'center';
-	context.fillText(str, game.canvas.width / 2, game.canvas.height / 2 + 11 + offset)
+	context.fillText(str, game.canvas.width / 2, game.canvas.height / 2 + 44 + offset)
 	game.matchmaking = 0;
 }
 
@@ -137,11 +131,12 @@ function draw() {
 	var context = game.canvas.getContext('2d');
 
 	// Draw field
-	game.lineaire = context.createLinearGradient(0, 0 ,game.canvas.width, game.canvas.height)
-	game.lineaire.addColorStop(1, "#ddace2")
-	game.lineaire.addColorStop(0, "#173dc7")
-	context.fillStyle = game.lineaire;
-	context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+	// game.lineaire = context.createLinearGradient(0, 0 ,game.canvas.width, game.canvas.height)
+	// game.lineaire.addColorStop(1, "#ddace2")
+	// game.lineaire.addColorStop(0, "#173dc7")
+	// context.fillStyle = game.lineaire;
+	// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+	context.clearRect(0, 0, game.canvas.width, game.canvas.height);
 
 	// Draw middle line
 	context.strokeStyle = 'white';
@@ -158,7 +153,7 @@ function draw() {
 	// Draw ball
 	context.beginPath();
 	context.fillStyle = 'white';
-	context.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2, false);
+	context.arc(game.ball.x, game.ball.y, game.ball.r, Math.PI * 2, false);
 	context.fill();
 
 	// Draw score
@@ -320,8 +315,6 @@ function socket_init()
 	game.socket.on('score_update', function(l, r) {
 		game.computer.score = r;
 		game.player.score = l;
-		document.querySelector('#computer-score').textContent = game.computer.score;
-		document.querySelector('#player-score').textContent = game.player.score;
 	})
 
 	game.socket.on('player_size', function(l, r) {
@@ -483,6 +476,82 @@ function canvas_init(mode){
 	}
 }
 
+function chooseMod()
+{
+	var context = game.canvas.getContext('2d');
+
+	//Draw field
+	// game.lineaire = context.createLinearGradient(0, 0 ,game.canvas.width, game.canvas.height)
+	// game.lineaire.addColorStop(1, "#ddace2")
+	// game.lineaire.addColorStop(0, "#173dc7")
+	// context.fillStyle = game.lineaire;
+	// context.fillStyle = '#070707';
+	// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+
+	//Draw PongHeader
+	const img = new Image();
+	img.src = "/src/assets/header-id.png";
+	context.drawImage(img, game.canvas.width / 2 - (img.width * 1.5) / 2, 300, img.width * 1.5, img.height * 1.5);
+
+	//Normal game
+		var str = "Normal Mode"
+		context.font = "60px MyanmarText";
+		var text1 = { width: context.measureText(str).width + 10, height: 76}
+		context.fillStyle = 'white'
+		context.fillRect(	game.canvas.width / 2 - (img.width * 1.5) / 2 - text1.width / 2,
+							330 + img.height * 1.5,
+							text1.width,
+							text1.height);
+		//contour
+		// context.lineWidth = 0;
+		// context.strokeStyle = "#252E83"; //text color;
+		// context.strokeRect( game.canvas.width / 2 - (img.width * 1.5) / 2 - text.width / 2,
+		// 					330 + img.height * 1.5,
+		// 					text.width,
+		// 					text.height);	
+
+		//Draw text
+		context.font = "60px MyanmarText";
+		context.fillStyle = "#252E83"; //text color;
+		context.textAlign = 'center';
+		context.textBaseline = 'center';
+		context.fillText(	str,
+							game.canvas.width / 2 - (img.width * 1.5) / 2,
+							2 * game.canvas.height / 3 );
+
+
+	//hard game
+		var str = "Reduce Mode"
+		context.font = "60px MyanmarText";
+		var text2 = { width: context.measureText(str).width + 10, height: 76}
+		context.fillStyle = 'white';
+		context.fillRect(	game.canvas.width / 2 + (img.width * 1.5) / 2 - text2.width / 2,
+							330 + img.height * 1.5,
+							text2.width,
+							text2.height);	
+		//contour
+		// context.lineWidth = 0;
+		// context.strokeStyle = "#252E83"; //text color;
+		// context.strokeRect( game.canvas.width / 2 + (img.width * 1.5) / 2 - text.width / 2,
+		// 					330 + img.height * 1.5,
+		// 					text.width,
+		// 					text.height);	
+		//Draw text
+		context.font = "60px MyanmarText";
+		context.fillStyle = "#252E83" //text color;
+		context.textAlign = 'center';
+		context.textBaseline = 'center';
+		context.fillText(	str,
+							game.canvas.width / 2 + (img.width * 1.5) / 2,
+							2 * game.canvas.height / 3);
+				
+		
+	game.start_buton.x = game.canvas.width / 2 - (img.width * 1.5) / 2 - text1.width / 2,
+	game.start_buton.y = 330 + img.height * 1.5,
+	game.start_buton.maxX = game.canvas.width / 2 + (img.width * 1.5) / 2 + text2.width / 2,
+	game.start_buton.maxY = game.start_buton.y + text2.height;
+}
+
 function load(userId)
 {
 	socket_init();
@@ -490,8 +559,10 @@ function load(userId)
 
 	game.socket.auth = {userId};
 	game.socket.connect();
-	draw();
-	buttonDraw("Normal     Custom", 100, game);
+	chooseMod();
+	// draw();
+	// buttonDraw("Normal", -17, game);
+	// buttonDraw("Custom", 17, game);
 	game.button = 1;
 }
 
@@ -530,7 +601,7 @@ function unload(userId)
 				score: 0
 			},
 			ball: {
-				r: 10000,
+				r: 15,
 				speed: {
 					x: 0,
 					y: 0
@@ -580,6 +651,5 @@ function observe(userId, gameId)
 	textDraw("Connecting to game", 0);
 	emitObserve(+ gameId);
 }
-
 
 export { load, observe, unload }

@@ -1,25 +1,7 @@
 <template>
-	<div>
 		<div class="GameArea">
 			<canvas id="canvas" width="1600" height="1200"></canvas>
 		</div>
-
-		<div class="UserRecap">
-			<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
-		</div>
-
-		<div class="SocialRecap">
-			<p>Live game :
-				<button @click="fectGameList()" >Refresh</button>
-			</p>
-		<ul id="v-for-object" class="gameList">
-			<li v-for="value in gameList">
-				{{ value.player_left_id.username }} vs {{ value.player_right_id.username }}
-				<button @click="goToRoute(value.id)"> Observe </button>
-			</li>
-		</ul>
-		</div>
-	</div>
 </template>
 
 <script lang="ts">
@@ -86,29 +68,14 @@ export default	defineComponent ({
 <style lang="css">
 	.GameArea
 	{
-	}
-
-	#canvas
-	{
-	}
-
-	.UserRecap
-	{
-		float:	right;
-		width:	25%;
-		min-height:	225px;
+		float:	left;
+		display:	flex;
+		width:	70%;
+		min-height:	500px;
 		border:	solid 3px white;
 		border-radius: 5px;
-		margin-bottom:	min(22px);
-	}
-
-	.SocialRecap
-	{
-		float:	right;
-		width:	25%;
-		min-height:	225px;
-		border:	solid 3px white;
-		border-radius: 5px;
-		margin-top:	min(22px);
+		flex-direction:	column;
+		min-height: 800;
+		min-width: 600;
 	}
 </style>

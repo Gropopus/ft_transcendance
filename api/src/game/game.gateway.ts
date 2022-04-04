@@ -57,9 +57,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	}
 	async handleDisconnect(client: Socket) {
-		this.logger.log('client disconnected: ' + client.id);
-		this.logger.log('\t the client was in room : ' + this.player_room.get(client.id));
-
 		let room = this.player_room.get(client.id);
 
 		if (room == "MatchMaking")
@@ -79,7 +76,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			if (score)
 				this.gameService.setScore(+ room.substring(8), score.l, score.r, 1);
 			else
-				this.logger.log('no score for room id:' + room.substring(8));
+			{
+				this.player_room.delete(client.id);
+				return ;
+			}
 			score.ball_x = 50;
 			score.ball_y = 50;
 			score.speed_x = 0;
