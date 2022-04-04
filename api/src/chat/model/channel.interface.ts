@@ -5,6 +5,7 @@ export enum ChannelType {
     PRIVATE = 'private',
     PROTECTED = 'protected',
     CLOSE = 'close',
+    DIRECT = 'direct-message'
 }
 
 export interface Ichannel {

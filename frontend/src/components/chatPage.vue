@@ -22,7 +22,8 @@
 		</div>
 		<div class="chatSide">
 		<div class="channelName" v-if="channelsList.length > 0">
-			<h2> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
+			<h2 v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'"> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
+			<h2 v-else> {{ getUserMessageName(channelId) }}</h2>
 			<button v-if="hasSettingsRights()" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
@@ -50,7 +51,8 @@
 				<div>
 					<button class="chanNameButton" @click="changeCurrentChan(channel.id)"
 						v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
-					{{ channel.name }} <br>
+					<div v-if="channel.type != 'direct-message'"> {{ channel.name }}</div>
+					<div v-else> {{ getUserMessageName(channel.id) }}</div> <br>
 					</button>
 				</div>
 			</ul>
@@ -87,20 +89,16 @@ export default	defineComponent ({
 			listStatus: 0,
 			all: [],
 			joinPassword: "",
+			tmpUsername: "",
 		}
 	}, 
-
-	sockets: {
-		connect: function() {
-			console.log('socket connected');
-		},
-	},
 
 	async mounted() {
 		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
 		this.channelMessages;
 		this.channelsList = await this.fetchChannelsList();
+			console.log(this.channelsList);
 		this.all;
 		if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
@@ -139,7 +137,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			const data = await res.json()
-			console.log(data.items);
 			return data.items;
 		},
 
@@ -149,7 +146,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			const data = await res.json()
-			console.log(data.items);
 			return data.items;
 		},
 
@@ -236,12 +232,22 @@ export default	defineComponent ({
 		isInChannel(chanId: number) {
 			for (let chan of this.channelsList)
 			{
-				console.log(chan.id + ' | ' + chanId);
 				if (chan.id == chanId)
 					return true;
 			}
 			return false;
 		},
+
+		getUserMessageName(id: number){
+			const chan = this.channelsList[this.getChannelIndex(id)];
+			if (chan.type != 'direct-message' || chan.admin.length != 2)
+				return "error";
+				console.log(chan);
+			if (chan.admin[0].id == this.userId)
+				return chan.admin[1].username;
+			else
+				return chan.admin[0].username;
+		}
 	},
 })
 </script>

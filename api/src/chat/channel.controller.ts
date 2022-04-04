@@ -33,6 +33,23 @@ export class ChannelController {
 		return this.channelService.createChannel(chan, creator);
 	}
 
+	@Put('direct-message/new/:user1/:user2')
+	async newDirectMessage(@Param() params): Promise<Ichannel> {
+		const u1 = await this.userService.findOne(params.user1);
+		const u2 = await this.userService.findOne(params.user2);
+		return this.channelService.newDirectMessage(u1, u2);
+	}
+
+	@Get('direct-message/:userId')
+	async getDirectMessage(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+		return this.channelService.getDirectMessage(params.userId, { page, limit, route: 'http://localhost:3000/api/channel/direct-message/:userId' });
+	}
+
+	@Get('direct-message/:user1/:user2')
+	async getOneDirectMessage(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+		return this.channelService.getOneDirectMessage(params.user1, params.user2, { page, limit, route: 'http://localhost:3000/api/channel/direct-message/:user1/:user2' });
+	}
+
 	@Put('delete/:id')
 	async deleteChannel(@Param() params): Promise<any> {
 		return this.channelService.deleteChannel(params.id);
