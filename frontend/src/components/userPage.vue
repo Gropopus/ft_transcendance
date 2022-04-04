@@ -32,7 +32,7 @@
 			<div class="StatsArea">
 				<div v-if="currentTab==0" class="stat">
 					<div class="statElem">
-						<h3>Ladder level</h3>
+						<h3>Rank</h3>
 						<p>{{ ladder.level }} / {{ ladder.total }}</p>
 					</div>
 					<div class="statElem">
