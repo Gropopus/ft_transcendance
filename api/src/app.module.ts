@@ -73,6 +73,8 @@ export class AppModule implements NestModule {
       {path: '/api/channel/:idChannel/:idUser', method: RequestMethod.GET},
       {path: '/api/channel/:id/mute/:idUser', method: RequestMethod.PUT},
       {path: '/api/channel/:id/unmute/:idUser', method: RequestMethod.PUT},
+      {path: '/api/channel/:id/ban/:idUser', method: RequestMethod.PUT},
+      {path: '/api/channel/:id/unban/:idUser', method: RequestMethod.PUT},
       {path: '/api/channel/:channelId/adduser/:username', method: RequestMethod.PUT},
       {path: '/api/channel/:channelId/adduser/:username', method: RequestMethod.PUT},
       {path: '/api/channel/:channelId/messages/:userId', method: RequestMethod.GET},
