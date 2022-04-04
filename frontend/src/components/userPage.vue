@@ -11,6 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
+				<button @click="sendMessage()">send a message</button>
 				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
@@ -31,7 +32,7 @@
 			<div class="StatsArea">
 				<div v-if="currentTab==0" class="stat">
 					<div class="statElem">
-						<h3>Ladder level</h3>
+						<h3>Rank</h3>
 						<p>{{ ladder.level }} / {{ ladder.total }}</p>
 					</div>
 					<div class="statElem">
@@ -377,7 +378,7 @@ export default	defineComponent ({
 		{
 			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userData.id}`, {
 				method: 'get',
-					headers: { 'responseType': 'blob' },
+    			headers: { 'content-type': 'application/json' }
 			})
 			const blob = await ret.blob();
     		const newBlob = new Blob([blob]);
@@ -389,6 +390,23 @@ export default	defineComponent ({
 		async challenge() {
 			return "";
 		},
+
+		async sendMessage() {
+			const res = await fetch(
+				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const data = await res.json();
+			if (!data.items.length) {
+				await fetch(
+					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+			}
+			this.$router.replace('/chat');
+		}
 	},
 })
 </script>
