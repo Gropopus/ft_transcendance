@@ -99,7 +99,10 @@ export default	{
                 })
                 const chan = await res.json();
                 for (let username of this.usernameList)
+                {
+                    console.log(username);
                     this.addUserToChannel(chan.id, username);
+                }
                 this.$router.replace({name: 'chat'});
             }
 		},
