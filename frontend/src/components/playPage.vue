@@ -75,7 +75,5 @@ export default	defineComponent ({
 		border:	solid 3px white;
 		border-radius: 5px;
 		flex-direction:	column;
-		min-height: 800;
-		min-width: 600;
 	}
 </style>

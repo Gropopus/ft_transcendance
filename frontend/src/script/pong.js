@@ -33,8 +33,20 @@ var game = {
 	start_buton: {
 			x: 0, maxX: 0,
 			y: 0, maxY: 0
-	}
+	},
+	mode: 'normal',
 }
+var mod_select = {
+	a :{x: 0,
+		y: 0,
+		xMax: 0,
+		yMax: 0},
+	b :{x: 0,
+		y: 0,
+		xMax: 0,
+		yMax: 0},
+}
+
 
 function scoreDraw(){
 	var context = game.canvas.getContext('2d');
@@ -105,8 +117,8 @@ function textDraw(str, offset = 0) {
 		context.textAlign = 'center';
 		context.textBaseline = 'center';
 		
-		context.fillText('Opponent didn\'t respond', game.canvas.width / 2, game.canvas.height / 2 )
-		context.fillText('Back in the matchmaking', game.canvas.width / 2, game.canvas.height / 2 + 30)
+		context.fillText('Opponent didn\'t respond', game.canvas.width / 2, game.canvas.height / 2  - 60)
+		context.fillText('Back in the matchmaking', game.canvas.width / 2, game.canvas.height / 2 + 60)
 		game.matchmaking = 0;
 		return ;
 	}
@@ -194,7 +206,10 @@ function entermatchmaking(draw)
 	else
 		textDraw('Opponent didn\'t respond, Back in the matchmaking', 0);
 	game.matchmaking = 1;
-	game.socket.emit('joinMatchmaking');
+	if (game.mode == 'normal')
+		game.socket.emit('joinMatchmaking');
+	else
+		game.socket.emit('joinHardMatchmaking');
 }
 
 function play() {
@@ -214,19 +229,20 @@ function play() {
 	});
 }
 
-async function waited_to_long(pid)
+async function waited_too_long(pid)
 {
 	console.log("TIME OUT IS NOW")
 	console.log(game.matchmaking + ' ' + game.nb_confirm)
 	game.ready_usefull = 0;
 	if (game.matchmaking == 2)
 	{
-		textDraw('You didn\'t respond in time', 0);
+		textDraw("",0);
+		textDraw('You didn\'t respond in time', -60);
 		game.socket.emit('MatchTimeOut', game.confirm_id);
 		game.matchmaking = -1;
 		game.nb_confirm = 0;
 		game.button = 3;
-		buttonDraw('Enter the matchmaking again', 50, game);
+		buttonDraw('Enter the matchmaking again', 60, game);
 	}
 	else if (game.matchmaking == 3 && game.nb_confirm != 2)
 	{
@@ -257,11 +273,19 @@ function playerclick(event, ) {
 		return ;
 	if (game.button == 1) // press to start
 	{
-		if (x >= game.start_buton.x && x <= game.start_buton.maxX &&
-			y >= game.start_buton.y && y <= game.start_buton.maxY)
+		if (x >= mod_select.a.x && x <= mod_select.a.xMax &&
+			y >= mod_select.a.y && y <= mod_select.a.yMax)
 		{
 			game.button = 0;
-			entermatchmaking(1, game);
+			game.mode = 'normal';
+			entermatchmaking(1);
+		}	
+		else if (x >= mod_select.b.x && x <= mod_select.b.xMax &&
+				 y >= mod_select.b.y && y <= mod_select.b.yMax)
+		{
+			game.button = 0;
+			game.mode = 'hard';
+			entermatchmaking(1);
 		}
 		
 	}
@@ -319,8 +343,8 @@ function socket_init()
 
 	game.socket.on('player_size', function(l, r) {
 		console.log('rcv player height l: ' + l + ' r : ' + r);
-		game.player.height   = (r / 100) * game.canvas.height;
-		game.computer.height = (l / 100) * game.canvas.height;
+		game.player.height   = (l / 100) * game.canvas.height;
+		game.computer.height = (r / 100) * game.canvas.height;
 	})
 
 
@@ -341,7 +365,7 @@ function socket_init()
 		game.confirm_id = conf_id;
 		game.socket.emit('joinRoom', conf_id);
 		setTimeout(function() {
-			waited_to_long(game.id)
+			waited_too_long(game.id)
 		}, 5000);
 	})
 
@@ -355,7 +379,7 @@ function socket_init()
 		if (game.nb_confirm == 2)
 		{
 			game.matchmaking = 5;
-			game.socket.emit('startGame', game.confirm_id);
+			game.socket.emit('startGame', {room: game.confirm_id, mode: game.mode});
 			play();
 		}
 	})
@@ -375,7 +399,7 @@ function socket_init()
 		game.computer.y = game.canvas.height / 2 - game.player.height / 2;
 		game.player.y = game.canvas.height / 2 - game.computer.height / 2;
 
-		draw(game);
+		textDraw("", 0)
 		if (game.side == 'observer')
 		{
 			if (game.player.score > game.computer.score)
@@ -387,12 +411,12 @@ function socket_init()
 		}
 		else if ((game.player.score == 11 && game.side == 'left') || 
 			game.computer.score == 11 && game.side == 'right')
-			textDraw("You win !", 0)
+			textDraw("You win !", -60)
 		else
-			textDraw("You loose !", 0)
+			textDraw("You loose !", -60)
 		game.matchmaking = 0;
 		game.button = 3;
-		buttonDraw('Play again', 50, game);
+		buttonDraw('Play again', 60, game);
 		game.player.score = 0;
 		game.computer.score = 0;
 		game.nb_confirm = 0;
@@ -417,11 +441,11 @@ function socket_init()
 					game.computer.score = game.player + 1;
 			game.socket.emit('playerLeave',
 					{side: game.side, gameId: game.gameId, score_r: game.player.score, score_l: game.computer.score});
-
-			textDraw("Your opponent has left the game, you win");
+			textDraw("", 0)
+			textDraw("Your opponent has left the game, you win", -60);
 			game.matchmaking = 0;
 			game.button = 3;
-			buttonDraw('Play again', 50, game);
+			buttonDraw('Play again', 60, game);
 			cancelAnimationFrame(game.anim);
 			game.player.score = 0;
 			game.computer.score = 0;
@@ -444,8 +468,8 @@ function socket_init()
 
 	game.socket.on('already_in_matchmaking', function() {
 		textDraw('', 0)
-		textDraw('You are already in matchmaking.', -17);
-		textDraw('You can leave this page.', 17);
+		textDraw('You are already in matchmaking.', -30);
+		textDraw('You can leave this page.', 30);
 	})
 }
 
@@ -502,6 +526,10 @@ function chooseMod()
 							330 + img.height * 1.5,
 							text1.width,
 							text1.height);
+		mod_select.a.x = game.canvas.width / 2 - (img.width * 1.5) / 2 - text1.width / 2;
+		mod_select.a.y = 330 + img.height * 1.5;
+		mod_select.a.xMax = mod_select.a.x + text1.width;
+		mod_select.a.yMax = mod_select.a.y + text1.height;
 		//contour
 		// context.lineWidth = 0;
 		// context.strokeStyle = "#252E83"; //text color;
@@ -521,7 +549,7 @@ function chooseMod()
 
 
 	//hard game
-		var str = "Reduce Mode"
+		var str = "Hard Mode"
 		context.font = "60px MyanmarText";
 		var text2 = { width: context.measureText(str).width + 10, height: 76}
 		context.fillStyle = 'white';
@@ -529,6 +557,10 @@ function chooseMod()
 							330 + img.height * 1.5,
 							text2.width,
 							text2.height);	
+		mod_select.b.x = game.canvas.width / 2 + (img.width * 1.5) / 2 - text2.width / 2;
+		mod_select.b.y = 330 + img.height * 1.5;
+		mod_select.b.xMax = mod_select.b.x + text2.width;
+		mod_select.b.yMax = mod_select.b.y + text2.height;
 		//contour
 		// context.lineWidth = 0;
 		// context.strokeStyle = "#252E83"; //text color;
@@ -560,6 +592,7 @@ function load(userId)
 	game.socket.auth = {userId};
 	game.socket.connect();
 	chooseMod();
+	console.log(mod_select);
 	// draw();
 	// buttonDraw("Normal", -17, game);
 	// buttonDraw("Custom", 17, game);

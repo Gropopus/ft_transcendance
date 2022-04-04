@@ -11,9 +11,14 @@ export interface Igame {
 	score_r?: number;
 
 	status?: gameStatus;
+	mode?: gameMode;
 }
 export enum gameStatus {
     PLAYING = "playing",
     CANCEL = "cancel",
 	FINISH = "finish"
+}
+export enum gameMode {
+    NORMAL = "normal",
+    HARD = "hard"
 }

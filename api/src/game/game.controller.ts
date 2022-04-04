@@ -11,11 +11,6 @@ export class GameController {
 		private userService: UserService
 		) {}
 
-	@Put('create')
-	async createGame() {
-		return (await (this.gameService.createGame()));
-	}
-
 	@Put('delete/:gameID')
 	async deleteGame(@Param('gameID') gameID: number) {
 		this.gameService.remove(gameID);

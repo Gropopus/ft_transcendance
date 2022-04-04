@@ -32,12 +32,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	
 	private logger: Logger = new Logger('GameGateway');
 	
-	nb_matchmaking: number = 0;
+	nb_matchmaking:		 number = 0;
+	nb_hard_matchmaking: number = 0;
 	nb_try: number = 0;
 	games_score: Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean}> = 
 				new Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean}>();
 	player_room: Map<string, string> = new Map<string, string>();
 	matchmaking_id: string[] = [];
+	matchmaking_hard_id: string[] = [];
 
 	private disconnect(client: Socket) {
 		client.emit('Error', new UnauthorizedException());
@@ -64,6 +66,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.matchmaking_id = [];
 			--this.nb_matchmaking;
 			this.logger.log("reduce number of player in matchmaking")
+		}
+		else if (room == "MatchMakingHard")
+		{
+			this.matchmaking_hard_id = [];
+			--this.nb_hard_matchmaking;
+			this.logger.log("reduce number of player in matchmaking hard")
 		}
 		else if (room.substring(0, 7) == 'Confirm' )
 		{
@@ -167,7 +175,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			score.speed_y = (Math.random() - 0.5);
 			if (score.custom == true)
 			{
-				score.l_height = 100 / (6 + score.r );
+				score.l_height = 100 / (6 + score.l );
 				this.server.to('gameRoom' + gameId).emit('player_size', score.l_height, score.r_height);
 			}
 		}
@@ -189,7 +197,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			score.speed_y = (Math.random() - 0.5);
 			if (score.custom == true)
 			{
-				score.r_height = 100 / (6 + score.l );
+				score.r_height = 100 / (6 + score.r );
 				this.server.to('gameRoom' + gameId).emit('player_size', score.l_height, score.r_height);
 			}
 		}
@@ -272,16 +280,22 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	//bellow is matchmaking part
 	@SubscribeMessage('startGame')
-	async handleStartGame(client: Socket, room: string) {
+	async handleStartGame(client: Socket, data: any) {
+		let room = data.room;
 		if (client.rooms.has(room) == true)
 		{	// if client still in room to avoid duplicate game
+			console.log(data.mode)
 			
 			const players = this.server.sockets.adapter.rooms.get(room);
 			const playerss = Array.from(players.values());
 			this.kickAllFrom(room);
 
 			// create game
-			let gameid = await this.gameService.createGame();
+			if (data.mode == 'normal')
+				var gameid = await this.gameService.createGame(false);
+			else
+				var gameid = await this.gameService.createGame(true);
+
 			this.logger.log('game ' + gameid + ' start');
 			this.player_room.set(this.server.sockets.sockets.get(playerss[0]).id, 'gameRoom' + gameid);
 			this.player_room.set(this.server.sockets.sockets.get(playerss[1]).id, 'gameRoom' + gameid);
@@ -299,7 +313,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				this.server.to(playerss[0]).emit('gameId', 'left', gameid, "gameRoom" + gameid);
 				this.server.to(playerss[1]).emit('gameId', 'right',  gameid, "gameRoom" + gameid);
 			}
-			this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: true});
+			if (data.mode == 'normal')
+				this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: false});
+			else
+				this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: true});
 			this.server.to(playerss[0]).emit('player_size', 100/6, 100/6)
 			this.server.to(playerss[1]).emit('player_size', 100/6, 100/6)
 			await this.sleep(2000);
@@ -326,7 +343,31 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.kickAllFrom('MatchMaking');
 			this.nb_matchmaking = 0;
 		}
-	}	
+	}
+
+
+	@SubscribeMessage('joinHardMatchmaking')
+	async handleHardMatchmaking(client: Socket)
+	{
+		if (this.matchmaking_hard_id && this.matchmaking_hard_id[0] == client.handshake.auth.userId)	//already in matchmacking
+		{
+			this.server.to(client.id).emit('already_in_matchmaking');
+			return ;
+		}
+		this.matchmaking_hard_id.push(client.handshake.auth.userId);
+		this.nb_hard_matchmaking += 1;
+		client.join('MatchMakingHard');
+		this.player_room.set(client.id, 'MatchMakingHard');
+		if (this.nb_hard_matchmaking == 2)
+		{
+			this.matchmaking_hard_id = [];
+			this.nb_try += 1;
+			this.server.to('MatchMakingHard').emit('AskReady', 'Confirm' + this.nb_try.toString());
+			this.kickAllFrom('MatchMakingHard');
+			this.nb_hard_matchmaking = 0;
+		}
+	}
+
 	@SubscribeMessage('playerReady')
 	async handlePlayerReady(client: Socket, room: string) {
 		this.server.to(room).emit('playerConfirm');

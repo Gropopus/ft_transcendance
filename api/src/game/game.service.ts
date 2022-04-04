@@ -6,7 +6,7 @@ import { PlayerService } from 'src/player/player.service';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { GameEntity } from './model/game.entity';
-import { Igame, gameStatus } from './model/game.interface';
+import { Igame, gameStatus, gameMode } from './model/game.interface';
 
 @Injectable()
 export class GameService {
@@ -30,12 +30,16 @@ export class GameService {
 		await this.gameRepository.delete(id);
 	}
 
-	async createGame() : Promise<number> {
+	async createGame(hard: boolean) : Promise<number> {
 		let igame: Igame = {
 			score_l: 0,
 			score_r: 0,
-			status: gameStatus.PLAYING,
+			status: gameStatus.PLAYING
 		}
+		if (hard == true)
+			igame.mode = gameMode.NORMAL;
+		else
+			igame.mode = gameMode.HARD;
 		let game = this.gameRepository.create(igame);
 		await this.gameRepository.save(game);
 		console.log('game id is ', game.id);
