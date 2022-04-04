@@ -55,10 +55,18 @@ function scoreDraw(){
 	context.stroke();
 }
 
+
+function imageDraw() {
+	var context = game.canvas.getContext('2d');
+	var img = new Image();
+	img.src = "http://localhost:4200/src/assets/header-id.png"
+	context.drawImage(img, game.canvas.width / 2 - img.width / 2, 30, img.width, img.height);
+}
+
 function buttonDraw(str, offset, ) {
 	
 	var context = game.canvas.getContext('2d');
-	if (offset == 0)
+	if (offset == 0 || str == "Normal     Custom")
 	{
 		//Draw field
 		game.lineaire = context.createLinearGradient(0, 0 ,game.canvas.width, game.canvas.height)
@@ -71,7 +79,6 @@ function buttonDraw(str, offset, ) {
 	context.font = "30px Myanmar Text";
 	var text = { width: context.measureText(str).width + 10, height: 38}
 	
-	context.fillStyle = 'red';
 	context.strokeRect(game.canvas.width / 2 - text.width / 2, game.canvas.height / 2 - text.height /2 + offset,
 					text.width, text.height);
 
@@ -80,12 +87,14 @@ function buttonDraw(str, offset, ) {
 	game.start_buton.maxX = game.start_buton.x + text.width;
 	game.start_buton.maxY = game.start_buton.y + text.height;
 
+
 	//Draw game.button text
 	context.font = "30px Myanmar Text";
 	context.fillStyle = "#252E83" //text color;
 	context.textAlign = 'center';
 	context.textBaseline = 'center';
 	context.fillText(str, game.canvas.width /2 , game.canvas.height / 2 + 11 + offset);
+	imageDraw();
 }
 
 function textDraw(str, offset = 0) {
@@ -482,7 +491,7 @@ function load(userId)
 	game.socket.auth = {userId};
 	game.socket.connect();
 	draw();
-	buttonDraw("Press here to start", 0, game);
+	buttonDraw("Normal     Custom", 100, game);
 	game.button = 1;
 }
 
@@ -521,7 +530,7 @@ function unload(userId)
 				score: 0
 			},
 			ball: {
-				r: 5,
+				r: 10000,
 				speed: {
 					x: 0,
 					y: 0

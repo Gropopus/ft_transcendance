@@ -167,7 +167,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			score.speed_y = (Math.random() - 0.5);
 			if (score.custom == true)
 			{
-				score.l_height = 100 / (6 + score.l );
+				score.l_height = 100 / (6 + score.r );
 				this.server.to('gameRoom' + gameId).emit('player_size', score.l_height, score.r_height);
 			}
 		}
@@ -189,7 +189,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			score.speed_y = (Math.random() - 0.5);
 			if (score.custom == true)
 			{
-				score.r_height = 100 / (6 + score.r );
+				score.r_height = 100 / (6 + score.l );
 				this.server.to('gameRoom' + gameId).emit('player_size', score.l_height, score.r_height);
 			}
 		}

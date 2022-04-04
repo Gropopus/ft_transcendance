@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="GameArea">
-			<canvas id="canvas" width="640" height="500"></canvas>
+			<canvas id="canvas" width="1600" height="1200"></canvas>
 		</div>
 
 		<div class="UserRecap">
