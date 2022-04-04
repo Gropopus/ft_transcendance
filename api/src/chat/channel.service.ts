@@ -29,8 +29,40 @@ export class ChannelService {
 	channel.owner = creator;
     const newChannel = await this.addCreatorToChannel(channel, creator);
     return this.addAdminToChannel(newChannel, creator);
-	// return this.channelRepository.save(newChannelAdmin);
   }
+
+  async newDirectMessage(user1: Iuser, user2: Iuser): Promise<Ichannel> {
+		let channel: Ichannel = {
+			name: 'test2',
+			users: [user1, user2],
+			type: ChannelType.DIRECT,
+			admin: [user1, user2],
+			password: "",
+
+		};
+		// channel.owner = user1;
+		return this.channelRepository.save(channel);
+  }
+
+  async getDirectMessage(userId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
+		const query = await this.channelRepository
+		.createQueryBuilder('channel')
+		.leftJoinAndSelect('channel.users', 'users')
+		.where('users.id = :userId', { userId })
+		.andWhere('channel.type = :t', {t: ChannelType.DIRECT});
+		return paginate(query, options);
+  }
+
+  async getOneDirectMessage(userId1: number, userId2: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
+		const query = this.channelRepository
+		.createQueryBuilder('channel')
+		.leftJoinAndSelect('channel.users', 'users')
+		.where('users.id = :userId1 and users.id = :userId2', { userId1: userId1, userId2: userId2  })
+		.andWhere('channel.type = :t', {t: ChannelType.DIRECT});
+
+		return paginate(query, options);
+	}
+
 
   async changePasswordChannel(channel: Ichannel, newPassword: string): Promise<Ichannel> {
 	  if (newPassword) {
@@ -85,14 +117,26 @@ export class ChannelService {
 	const query = this.channelRepository
 		.createQueryBuilder('channel')
 		.leftJoinAndSelect('channel.users', 'users')
-		.where('users.id = :Iuserid', { Iuserid })
-		.andWhere('channel.type != :type', { type: ChannelType.CLOSE })
 		.leftJoinAndSelect('channel.admin', 'all_admin')
 		.leftJoinAndSelect('channel.muted', 'all_muted')
 		.leftJoinAndSelect('channel.owner', 'onwner')
+		.where('channel.id = :id', { id: channelId })
 		.orderBy('channel.updated_at', 'DESC');
-
 	return paginate(query, options);
+	}
+
+	async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
+		const query = this.channelRepository
+			.createQueryBuilder('channel')
+			.leftJoinAndSelect('channel.admin', 'admin')
+			.leftJoinAndSelect('channel.muted', 'muted')
+			.leftJoinAndSelect('channel.owner', 'owner')
+			.leftJoinAndSelect('channel.users', 'users')
+			.where('users.id = :id', { id: Iuserid })
+			.andWhere('channel.type != :type', { type: ChannelType.CLOSE })
+			.orderBy('channel.updated_at', 'DESC');
+
+		return paginate(query, options);
   }
 
   async getAllChannel(options: IPaginationOptions): Promise<Pagination<Ichannel>> {
@@ -100,6 +144,7 @@ export class ChannelService {
 		.createQueryBuilder('channel')
 		.where('channel.type != :p', { p: ChannelType.PRIVATE })
 		.andWhere('channel.type != :c', { c: ChannelType.CLOSE })
+		.andWhere('channel.type != :d', { d: ChannelType.DIRECT })
 		.orderBy('channel.updated_at', 'DESC');
 	
 	return paginate(query, options);
@@ -109,7 +154,6 @@ export class ChannelService {
 	  const channel = await this.getChannel(channelId);
 	const bool: number = await this.boolIusersOnChannel(user.id, channel);
 	if (bool) return of({ error: 'Already on the channel;' });
-	/*if (channel.type == ChannelType.PRIVATE) return of({ error: 'Can\'t join private channel;' });*/
 	if (channel.type == ChannelType.CLOSE) return of({ error: 'Can\'t join channel closed;' }); 
 	if (channel.type == ChannelType.PUBLIC) {
 		channel.users.push(user);
@@ -119,7 +163,6 @@ export class ChannelService {
 	if (channel.type == ChannelType.PROTECTED) {
 		const matches: boolean = await this.validatePassword(password, channel.password);
 		if (matches) {
-			// const newChannel = await this.addCreatorToChannel(channel, user);
 			channel.users.push(user);
 			await this.channelRepository.save(channel);
 			return of({ success: 'Channel joined;' });
@@ -146,8 +189,7 @@ export class ChannelService {
 	
 	async muteUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
 		channel.muted.push(user);
-		this.channelRepository.save(channel);
-		return channel;
+		return this.channelRepository.save(channel);
 	}
 
 	async banUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {

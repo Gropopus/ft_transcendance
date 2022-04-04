@@ -7,7 +7,7 @@
                 </div>
                 <div :key="user.id" v-for="user in channelData.users">
                     <div class="displayUser">
-                        <div class="username">{{ user.username }}</div>
+                        <div @click="goToProfile(user.username)" class="username">{{ user.username }}</div>
                         <div v-if="role=='owner' && userId != user.id" class="buts">
                             <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)" class="addButton">set admin</button>
                             <button v-else @click="unsetAdmin(user.id)" class="addButton"> unset admin</button>
@@ -266,9 +266,9 @@ export default defineComponent ({
             return false;
         },
 
-		setDiplayState() {
-            this.listStatus = 1 - this.listStatus;
-		},
+		goToProfile(username: string) {
+            this.$router.replace(`/profile/${username}`)
+        }
 	}
 })
 </script>
@@ -312,6 +312,10 @@ export default defineComponent ({
     /* color:rgb(37, 46, 131) */
 }
 
+.displayUser > .username:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
 .role {
     margin-right: 2%;
     font-size: 15px;
