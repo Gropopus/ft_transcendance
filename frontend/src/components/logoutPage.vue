@@ -54,7 +54,7 @@ export default	{
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .LogoutHeader
 {
@@ -71,13 +71,18 @@ export default	{
 
 .LogoutForm
 {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
 	border-radius: 5px;
 	margin-top:	2%;
 	margin-bottom:	5%;
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
-	padding-left:	15%;
+	padding-right: auto;
+	padding-left: auto;
 	width:	30%;
 	height:	40%;
 	border:	solid 3px white;
@@ -98,24 +103,21 @@ export default	{
 .LogoutForm > .submitBar
 {
 	margin-top:	2%;
+	margin-bottom: 5%;
+	margin-right: 5%;
+	margin-left: 5%;
 	display:	flex;
-	margin-right:	auto;
-	margin-left:	auto;
 	flex-direction:	row;
+	justify-content: center;
 }
 
 .LogoutForm > .submitBar > .submitButton
 {
-	display:	block;
+	flex: 1 1 0;
+	margin: 5%;
+	padding-top: 2%;
 	background:	none;
-	flex:	0 0 center;
-	width:			15%;
-	margin-bottom:	5%;
-	margin-right:	auto;
-	padding-top:	3.2%;
-	padding-bottom:	2%;
-	background:	none;
-	border:	solid white;
+	border:	solid white 3px;
 	font-size:	100%;
 	color:	white;
 	font-family: MyanmarText;

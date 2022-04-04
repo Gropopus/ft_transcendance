@@ -10,13 +10,13 @@ import UserNameAlreadyExistsException from '../exception/UserNameAlreadyExists.e
 export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 	constructor(private usersService: UserService) {
 		super({
-			authorizationURL: "https://api.intra.42.fr/oauth/authorize?client_id=90727c13a881b305781354461f119b6772fdd365a2557c93b61b6d1d9015a3c4&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fpublic%2Fcallback&response_type=code",
+			authorizationURL: "https://api.intra.42.fr/oauth/authorize?client_id=90727c13a881b305781354461f119b6772fdd365a2557c93b61b6d1d9015a3c4&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fcallback&response_type=code",
 			tokenURL: "https://api.intra.42.fr/oauth/token",
 			clientID: process.env.OAUTH_42_UID,
 			clientSecret: process.env.OAUTH_42_SECRET,
 			callbackURL: "http://localhost:4200/callback",
 			scope: 'public',
-			proxy: true
+			proxy: true,
 		});
 	}
 

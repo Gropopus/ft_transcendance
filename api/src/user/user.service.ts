@@ -183,9 +183,12 @@ export class UserService {
 	}
 
 	async setTwoFactorAuthenticationSecret(secret: string, Iuserid: number) {
-		return this.userRepository.update(Iuserid, {
+		console.log(secret);
+		console.log(Iuserid);
+		this.userRepository.update(Iuserid, {
 		twoFactorAuthenticationSecret: secret
 		});
+		return;
 	}
 
 	async turnOnTwoFactorAuthentication(Iuserid: number) {
@@ -210,5 +213,23 @@ export class UserService {
 		else throw new UserOauthIdNotFoundException(id);
 	}
 
+	async updateStat(userId: number, isWinner: boolean) {
+		if (isWinner)
+			await this.userRepository.increment({id: userId}, "victory", 1);
+		else 
+			await this.userRepository.increment({id: userId}, "defeat", 1);
+	}
+
+	async getLadderLevel(userId: number) {
+		const ladder = await this.userRepository.find({
+			select: ["id"],
+			order: {
+				victory: "DESC"
+			},
+		});
+		for (let i = 0; i < ladder.length; i++)
+			if (userId == ladder[i].id)
+				return {level: i + 1, total: ladder.length};
+	}
 
 }

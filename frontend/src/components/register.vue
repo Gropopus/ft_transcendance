@@ -9,12 +9,15 @@
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Login </label>	<br>
-			<input type="text" v-model="userLogin" class="textArea"> <br>
+			<input type="text" @keyup.enter="login()" v-model="userLogin" class="textArea">
+			<br>
+			<br>
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass" class="textArea">	<br>
-
+			<input type="password" @keyup.enter="login()" v-model="userPass" class="textArea">
+			<br>
+			<br>
 			<label for="email"> Email </label>	<br>
-			<input type="text" v-model="userMail" class="textArea">	<br>
+			<input type="text" @keyup.enter="login()" v-model="userMail" class="textArea">	<br>
 
 			<div class="submitBar">
 		
@@ -90,7 +93,7 @@ export default	{
 			}
 			if (res.status == 409)
 			{
-				this.error = "Email or Login already used by another user.";
+				this.error = "Email or login already used by another user.";
 				return ;
 			}
 		},
@@ -102,7 +105,7 @@ export default	{
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .error {
 	justify-content: top;
@@ -155,7 +158,7 @@ export default	{
 {
 	margin-top:	2%;
 	display:	flex;
-	margin-right:	6%;
+	/*margin-right:	6%;*/
 	margin-left:	auto;
 	flex-direction:	row;
 }
@@ -166,8 +169,9 @@ export default	{
 	background:	none;
 	flex:	0 0 auto;
 	margin-bottom:	5%;
-	margin-right:	auto;
+	margin-right:	22%;	
 	padding-top:	3%;
+	padding-bottom: 3%;
 	padding-left:	5%;
 	padding-right:	5%;
 	border-radius: 5px;
@@ -175,7 +179,7 @@ export default	{
 	border:	solid white;
 	font-size:	24px;
 	color:	white;
-	width: 40%;
+	width: 30%;
 	font-family: MyanmarText;
 }
 

@@ -8,10 +8,10 @@
 		<div class="LoginForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Email </label>	<br>
-			<input type="text" v-model="userLogin"  class="textArea">	<br>
+			<input type="text" v-model="userLogin"  class="textArea" v-on:keyup.enter="login()">	<br>
 
 			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="userPass"  class="textArea">	<br>
+			<input type="password" v-model="userPass"  class="textArea" v-on:keyup.enter="login()">	<br>
 			<div class="submitBar">
 				<button @click="register()" class="submitButton">
 					Register
@@ -20,21 +20,25 @@
 					Log-in
 				</button>
 			</div> <!-- submitBar end -->
+			<div class="secret" v-if="twofa">
+			Please enter the 6 digit code from Google Authenticator: <br>
+			<input type="googlecode" v-model="googlecode" class="textArea">
+			<button @click="twoFACheck()" class="submitButton">
+				Log-in </button>
+		</div>
 		</div> <!-- LoginForm end -->
-
-		
-		<!-- <a class="submit42Button" href="http://localhost:3000/api/oauth2/school42" v-bind:is="loginWith42()"> -->
-		<button class="submit42Button" @click="loginWith42()">
+		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
 			<img src="../assets/logo-42_white.png">
 			<div>
 				Log In with<br>
 				Connect
-			</div>
-		</button> <!-- submit42Button end -->
+			</div></a>
+	<!--	</button> submit42Button end -->
 	</div>
 </template>
 
 <script lang="ts">
+//<!-- <button class="submit42Button" @click="loginWith42()"> -->
 export default	{
 	name: 'logPage',
 	props:	{
@@ -45,6 +49,8 @@ export default	{
 	},
 	data:	function()	{
 		return {
+			twofa: "",
+			googlecode: "",
 			userLogin:	"",
 			userPass:	"",
 			error:		"",
@@ -83,35 +89,95 @@ checkForm() {
 						headers: { 'content-type': 'application/json' },
 					})
 					const data1 = await userRes.json()
-					this.$emit('update:userId', data1.id);
-					this.$router.replace({name: 'game'})
-					return ;
+					if (data1.twoFactorAuthEnabled == true)
+					{
+						this.twofa = "oui";
+					}
+					else
+					{
+						this.$emit('update:userId', data1.id);
+						this.$router.replace({name: 'game'})
+						return ;
+					}
 				}
 				else if (res.status == 400 || res.status == 404)
 				{
 					this.error = "User not found, Wrong Email or password.";
+					return ;
 				}
 		},
+		async 	twoFACheck()
+		{
+			this.error = "";
+			const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' },
+			})
+			const data1 = await userRes.json()
+			if (!this.googlecode)
+			{
+				this.error = "No code to submit"
+				return ;
+			}
+			const res = await fetch('http://localhost:3000/api/2fa/authenticate', {
+				method: 'post',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({code: this.googlecode, user: data1}),
+				})
+			const ret =	await res;
+			console.log(ret.status);
+			if (ret.status == 401)
+			{
+				this.error = "Wrong identification code."
+				return ;
+			}
+			this.$emit('update:userId', data1.id);
+			this.$router.replace({name: 'game'})
 
+		},
 		async	loginWith42(){
-			const res = await fetch(`http://localhost:3000/api/oauth2/school42`, {
+			return await fetch(`http://localhost:3000/api/oauth2/school42`, {
 						method: 'get',
 						mode: 'no-cors',
 						headers: { 'content-type': 'application/json' },
+			})
+			.then(res => {
+				return res.json(); })
+			.then (data => {
+				console.log(data);
+				return data;
+			})
+			.catch(error => {
+				return "error";
 			});
-			const data = await  res.json();
-			console.log(data);
+			// const data = await  res.json();
+			// console.log(data);
 			// this.$emit('update:userId', data1.id);
 			// console.log(this.$router.query.page)
 			// console.log(this.$router.params)
-			// this.$router.replace('/game');
+			// this.$router.replace('/game');*/
+			/*const uri = window.location.href;
+	
+			let auth = "/api/oauth2/school42",
+			const output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
+			uri = output;
+    		this.apiService.getToken(uri).subscribe(
+			(result: any) =>{
+        	localStorage.setItem('auth-token', result.token);        
+		    if (result.two_factor) this.router.navigate(['../../public/two-factor'])
+			{
+				console.log("non non");
+			}
+		    else this.router.navigate(['../../private/profile/']) {
+				console.log("lol");
+			}*/
 		},
 
 		register: function() {
 			this.$router.replace({name: 'register'});
 			// this.$emit('register');
 		}
-	}
+}
 }
 </script>
 
@@ -193,7 +259,7 @@ checkForm() {
 	padding-top:	1%;
 	padding-bottom:	1%;
 	border-radius: 5px;
-
+	cursor: pointer; 
 	width:	15%;
 	border:	solid 3px white;
 	font-size:	150%;
@@ -213,6 +279,10 @@ checkForm() {
 	margin-left:	10px;
 	margin-right:	10px;
 	object-fit:	contain;
+}
+
+.secret {
+	margin-bottom: 5%;
 }
 
 .error {

@@ -1,38 +1,50 @@
 <template>
 		<div class="chatForm">
             <h1> Create a new channel </h1>
-			<label for="chatName"> Name </label>	<br>
-			<input type="text" v-model="chatName" placeholder="Name" class="textArea">	<br>
-
-			<label for="description"> Description </label>	<br>
-			<input type="text" v-model="chatDescription" placeholder="description" class="textArea">	<br>
-
-            <label for="type"> Type </label>	<br>
-            <select v-model="chatType">
-                <option>public</option>
-                <option>protected</option>
-                <option>private</option>
-            </select> <br>
-			<!-- <input type="checkbox" v-model="chatType" placeholder="type" class="textArea">	<br> -->
-
-			<label for="password"> Password </label>	<br>
-			<input type="password" v-model="chatPassword" placeholder="password" class="textArea">	<br>
-            <label for="users">Add users</label> <br>
-            <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
-                <button @click="addUsername()" class="addButton">
-                    add
-                </button> <br>
-            <div :key="username" v-for="username in usernameList">
-                {{ username }}
-                <button @click="deleteUsername(username)" class="deleleButton">
-                    x
-                </button>
+            <div class="formElem">
+                <label for="chatName"> Name </label>	<br>
+                <input type="text" v-model="chatName" placeholder="Name" class="textArea">
             </div>
-			<div class="submitBar">
+
+            <div class="formElem">
+                <label for="description"> Description </label>	<br>
+                <input type="text" v-model="chatDescription" placeholder="description" class="textArea">
+            </div>
+
+            <div class="formElem">
+                <label for="type"> Type </label>	<br>
+                <select class="chatType" v-model="chatType">
+                    <option selected>public</option>
+                    <option>protected</option>
+                    <option>private</option>
+                </select> <br>
+            </div>
+            
+
+            <div v-if="chatType=='protected'" class="formElem">
+                <label for="password"> Password </label>	<br>
+                <input type="password" v-model="chatPassword" placeholder="password" class="textArea">
+            </div>
+            
+            <div class="formElem">
+                <label for="users">Add users</label> <br>
+                <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
+                    <button @click="addUsername()" class="addButton">
+                        add
+                    </button> <br>
+                <div :key="username" v-for="username in usernameList">
+                    {{ username }}
+                    <button @click="deleteUsername(username)" class="deleteButton1">
+                        x
+                    </button>
+                </div>
+            </div>
+            
+			<!-- <div class="submitBar"> -->
 				<button @click="createChat()" class="submitButton">
 					Create
 				</button>
-			</div> <!-- submitBar end -->
+			<!-- </div> submitBar end -->
             <p class="error"> {{ error }} </p>
 		</div> <!-- RegisterForm end -->
 </template>
@@ -60,10 +72,15 @@ export default	{
 	methods:	{
 		async createChat()	{
             this.error = "";
-            if (!this.chatName || !this.chatDescription)
+            if (!this.chatName || !this.chatDescription || !this.chatType)
                 this.error = "incomplete.";
-            else if (this.chatType != "public" && !this.chatPassword)
+            else if (this.chatType == "protected" && !this.chatPassword)
+            {
                 this.error = "Password needed.";
+                console.log("type")
+                console.log(this.chatType);
+                return ;
+            }
             else
             {
                 const req = {
@@ -89,32 +106,44 @@ export default	{
 
         async addUserToChannel(channelId: number, username: string) {
             const res = await fetch(
-                `http://localhost:3000/api/channel/${channelId}/adduser/${username}/${this.chatPassword}`, {
+                `http://localhost:3000/api/channel/${channelId}/adduser/${username}`, {
                     method: 'put',
-                        headers: { 'content-type': 'application/json' },
-            })
-            console.log((await res.json()))
+                    headers: { 'content-type': 'application/json' ,
+                    'Access-Control-Allow-Origin': '*'},
+                    body: JSON.stringify({password: this.chatPassword}),
+            });
         },
 
         async addUsername() {
+            let found = 0;
             this.error = "";
             if (!this.userToAdd)
                 return ;
             const res = await fetch(
                 `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
-                method: 'get',
-                headers: { 'content-type': 'application/json' },
+                    method: 'get',
+               headers: { 'content-type': 'application/json' },
             })
             const user = await res.json();
-            if (user.length > 0)
+            for (let elem of user)
+            {
+                if (elem.username == this.userToAdd)
+                {
+                    if (elem.id == this.userId)
+                        this.error = "You are already in the channel.";
+                    else
+                        found = 1;
+                }
+            }
+            if (found)
             {
                 for (let username of this.usernameList)
                     if (username == this.userToAdd)
                         return ;
                 this.usernameList.push(this.userToAdd);
             }
-            else
-                this.error = "user doesn't exist."
+            else if (!this.error)
+                this.error = "user doesn't exist.";
             this.userToAdd = "";
         },
 
@@ -131,10 +160,12 @@ export default	{
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .chatForm
 {
+    display: flex;
+    flex-direction: column;
 	border-radius: 5px;
 	margin-top:	2%;
 	margin-bottom:	5%;
@@ -142,7 +173,7 @@ export default	{
 	margin-right:	auto;
 	padding-top:	2%;
 	padding-left:	5%;
-	width:	100%;
+	width:	50%;
 	height:	100%;
 	/* border:	solid 3px white; */
 	font-size:	20px;
@@ -150,7 +181,17 @@ export default	{
 	font-weight:	bold;
 }
 
-.chatForm > input.textArea
+.chatForm > h1 {
+    text-align: center;
+    border-bottom : solid 1px white;
+}
+
+.chatForm > .formElem {
+    margin-left: 0%;
+    margin-bottom: 3%;
+}
+
+.chatForm > .formElem > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
@@ -159,35 +200,63 @@ export default	{
 	padding:	6px;
 }
 
-.chatForm > .submitBar
+.chatForm > .submitButton
 {
 	margin-top:	4%;
-	display:	flex;
-	margin-right:	auto;
-	margin-left:	auto;
-	flex-direction:	row;
-}
-
-.chatForm > .submitBar > .submitButton
-{
-	display:	block;
-	background:	none;
-	flex:	0 0 auto;
-	margin-bottom:	5%;
-	margin-right:	auto;
-	padding-top:	1%;
-	padding-bottom:	1%;
-	padding-left:	3%;
-	padding-right:	3%;
+	display: flex;
+	justify-content: center;
+	align-items:	center;
+    text-align: center;
 	background:	none;
 	border:	solid 3px white;
 	font-size:	24px;
 	color:	white;
 	font-family: MyanmarText;
+    width: 20%;
+}
+
+.chatForm > .submitButton:hover {
+	background:	var(--deep-blue-10);
 }
 
 .error
 {
     color:red;
+}
+
+.addButton {
+    padding: 6px;
+	font-size:	20px;
+    margin-left: 1%;
+	border:	solid 2px white;
+    background: none;
+    color: white;
+}
+
+.addButton:hover {
+	background:	var(--deep-blue-10);
+
+}
+
+.deleteButton1 {
+    background: none;
+    border: solid 2px rgb(236, 100, 151);
+    background: white;
+    color: rgb(236, 100, 151);
+}
+
+.deleteButton1:hover {
+	background:	var(--deep-blue-10);
+}
+
+.chatType {
+	padding-top: 1%;
+	width: 50%;
+	background:	white;
+	border:	solid rgb(238, 220, 220);
+	font-size:	100%;
+	color:	rgb(236, 100, 151);
+	border-radius: 4px;
+	font-family: MyanmarText;
 }
 </style>

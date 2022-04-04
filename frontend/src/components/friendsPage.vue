@@ -60,7 +60,7 @@ export default	defineComponent ({
 			search: "",
 			found: [],
 			all: [
-				{type: "Your friends", icon: "/src/assets/friends.png", list: [], status: 0},
+				{type: "Your friends", icon: "/src/assets/your-friends01.png", list: [], status: 0},
 				{type: "Friends requests", icon: "/src/assets/friends-requests.png", list: [], status: 0},
 				{type: "Blocked users", icon: "/src/assets/muted-users.png", list: [], status: 0}
 			]
@@ -282,7 +282,7 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	border:	solid 2px white;
-	border-top: none;
+	/* border-top: none; */
 }
 
 .listArea > .elem {
@@ -296,7 +296,6 @@ export default	defineComponent ({
 
 .listArea > .elem > .friend-username:hover {
 	background:	var(--deep-blue-10);
-	cursor: pointer;
 }
 
 .listArea > .elem > .friend-username {

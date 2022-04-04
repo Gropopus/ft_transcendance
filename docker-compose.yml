@@ -28,13 +28,15 @@ services:
       - 3000:3000
       - 9229:9229
       - 42069:42069
-      - 42068:42068
+      - 42070:42070
   
   frontend:
     build:
       dockerfile: Dockerfile
       context: ./frontend
     command: npm run start
+    depends_on:
+      - api
     volumes:
       - ./frontend:/transcendance/frontend/src/app
       - /transcendance/frontend/src/app/node_modules

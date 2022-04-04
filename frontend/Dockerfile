@@ -4,8 +4,6 @@ WORKDIR /transcendance/frontend/src/app
 
 COPY package*.json ./
 
-RUN npm install -g @vue/cli
-
 RUN npm install
 
 COPY . .

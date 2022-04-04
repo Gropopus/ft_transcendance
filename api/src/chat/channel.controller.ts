@@ -22,6 +22,11 @@ export class ChannelController {
 	private messageService: MessageService,
   ) { }
 
+	@Get('all')
+	async getAllChannels(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>>{
+		return this.channelService.getAllChannel({ page, limit, route: 'http://localhost:3000/api/channel/all' });
+	}
+
 	@Put('new/:creatorId')
 	async createChannel(@Param() params, @Body() chan: Ichannel): Promise<Ichannel> {
 		const creator = await this.userService.findOne(params.creatorId);
@@ -35,15 +40,34 @@ export class ChannelController {
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Get()
+	@Get('')
 	async getAllChannelAdmin(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
 	  limit = limit > 100 ? 100 : limit;
 	  return this.channelService.getAllChannelAdmin({ page, limit, route: 'http://localhost:3000/api/channel' });
 	}
 
 	@Get('/all/:user')
-	async getChannelsForUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+	async getChannelsForUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 100): Promise<Pagination<Ichannel>> {
 	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://localhost:3000/api/channel/all/:user' });
+	}
+
+	@Get('/:id/info')
+	async getChannelData(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
+		limit = limit > 100 ? 100 : limit;
+		return this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+	}
+
+	@Put(':id/mute/:userId')
+	async muteUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+		return this.channelService.muteUser(
+			channel.items[0],
+			await this.userService.findOne(params.userId));
+	}
+
+	@Put(':id/unmute/:userId')
+	async unmuteUser(@Param() params) {
+		return this.channelService.deleteAUserMutedFromChannel(params.id, params.userId);
 	}
 
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
@@ -54,21 +78,27 @@ export class ChannelController {
 	  return this.channelService.changeTypeChannel(channel, ChannelType.CLOSE);
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put(':id/admin/give')
-	async updateChannelUserForAdmin(@Param('id') id: string, @Body() user: Iuser): Promise<Ichannel> {  
-	  var channel: Ichannel = await this.channelService.getChannel(Number(id));
-	  return this.channelService.addAdminToChannel(channel, user);
+	// @hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	// @UseGuards(JwtAuthGuard, RolesGuard)
+	@Put(':id/admin/give/:userId')
+	async updateChannelUserForAdmin(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Ichannel> {  
+	const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+	  return this.channelService.addAdminToChannel(channel.items[0],
+		await this.userService.findOne(params.userId));
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put(':id/admin/remove')
-	async updateChannelAdminForAdmin(@Param('id') id: string, @Body() user: Iuser): Promise<Ichannel> {
-	  return this.channelService.deleteAUserAdminFromChannel(Number(id), user.id);
+	// @hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	// @UseGuards(JwtAuthGuard, RolesGuard)
+	@Put(':id/admin/remove/:userId')
+	async updateChannelAdminForAdmin(@Param() params): Promise<Ichannel> {
+	  return this.channelService.deleteAUserAdminFromChannel(Number(params.id), params.userId);
 	}
-	
+
+	@Put(':id/remove/:userId')
+	async removeUserFromChannel(@Param() params): Promise<Ichannel> {
+	  return this.channelService.deleteAUserFromChannel(Number(params.id), params.userId);
+	}
+
 	@UseGuards(JwtAuthGuard)
 	@Get(':idChannel/:idUser')
 	async IusersChannel(@Param('idChannel') idChannel: number, @Param('idUser') idUser: number): Promise<Number> {
@@ -82,24 +112,35 @@ export class ChannelController {
 		return this.channelService.getChannel(idChannel);
 	}
 
-	@Put(':channelId/adduser/:username/:password')
-	async addUserToChannel(@Param() params) {
-		const user = (await this.userService.findAllByUsername(params.username))[0];
-		return this.channelService.addUserToChannel(params.channelId, user, params.password);
+	@Put(':channelId/adduser/:username')
+	async addUserToChannel(@Param() params, @Body() bod) {
+		const users = await this.userService.findAllByUsername(params.username);
+		let userToAdd = {};
+		for (let user of users)
+			if (user.username == params.username)
+				userToAdd = user;
+		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
+	}
+
+	@Put(':userId/join/:channelId')
+	async joinChannel(@Param() params, @Body() bod) {
+		const userToAdd = await this.userService.findOne(params.userId);
+		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
 	}
 
 	@Get(':channelId/messages/:userId')
-	async getMessages(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Imessage>> {
+	async getMessages(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 1000): Promise<Pagination<Imessage>> {
+		const user = await this.userService.findOne(params.userId);
+		const channel = await this.channelService.findOne(params.channelId);
 		const mess = await this.messageService.findMessagesForChannel(
-			params.channelId,
-			params.userId,
+			channel,
+			user,
 			{
 				page,
 				limit,
 				route: 'http://localhost:3000/api/channel/:channelId/messages/:userId'
 			}
 		);
-		console.log(mess.items);
 		return mess;
 	}
 }

@@ -18,6 +18,9 @@ export class MessageEntity {
   @JoinColumn()
   user: UserEntity;
 
+  @Column()
+  username: string;
+
   @ManyToOne(() => ChannelEntity, channel => channel.messages, { onDelete: 'CASCADE' })
   @JoinTable()
   channel: ChannelEntity;

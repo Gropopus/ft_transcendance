@@ -4,7 +4,7 @@ import App from './App.vue'
 import * as VueRouter from 'vue-router'
 import logPage from './components/logPage.vue'
 import register from './components/register.vue'
-import playPageVue from './components/playPage.vue'
+import playPage from './components/playPage.vue'
 import chatPage from './components/chatPage.vue'
 import friendsPage from './components/friendsPage.vue'
 import createChatPageVue from './components/createChatPage.vue'
@@ -12,6 +12,11 @@ import profilePage from './components/profilePage.vue'
 import userPage from './components/userPage.vue'
 import logoutPageVue from './components/logoutPage.vue'
 import settingsPage from './components/settingsPage.vue'
+import observePage from './components/observePage.vue'
+import callback from './components/callback.vue'
+import watchPage from './components/watchPage.vue'
+import channelsetting from './components/chat-setting.vue'
+import NotFound from './components/NotFound.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -35,7 +40,19 @@ routes: [
     {
         path: '/game',
         name: 'game',
-        component: playPageVue,
+        component: playPage,
+        props: true
+    },
+    {
+        path: '/watch',
+        name: 'watch',
+        component: watchPage,
+        props: true
+    },
+    {
+        path: '/watch/:gameId',
+        name: 'observe',
+        component: observePage,
         props: true
     },
     {
@@ -54,6 +71,12 @@ routes: [
         path: '/createChat',
         name: 'createChat',
         component: createChatPageVue,
+        props: true
+    },
+    {
+        path: '/channel-setting/:id',
+        name: 'channel-setting',
+        component: channelsetting,
         props: true
     },
     {
@@ -80,8 +103,18 @@ routes: [
         component: userPage,
         props: true
     },
+    {
+        path: '/callback',
+        name: 'callback',
+        component: callback,
+        props: true
+    },
+    {
+        path: "/:catchAll(.*)",
+        name: 'NotFound',
+        component: NotFound,
+    },
     ]
-})
-    
+});
 
 createApp(App).use(router).mount('#app')

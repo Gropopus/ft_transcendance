@@ -7,31 +7,32 @@
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
+				<div class="usermail"> {{userData.email }} </div>
 				<div class="status"> {{ userData.status }} </div>
 			</div>
-			<div v-if="userId != userData.id" class="challengeButton">
-				<p @click="challenge()" >challenge</p>
-			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton"/>
+				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
+				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
-				<div v-else class="replyButton">
+				<div v-else-if="!isBlocked()" class="replyButton">
 					<button @click="acceptRequest()">accept</button>
 					<button @click="declineRequest()">decline</button>
 				</div>
+				<img v-if="blockIcon.img && !isBlocked()" :src="blockIcon.img" @click="blockUser()" class="blockButton" :title="blockIcon.title">
+				<img v-else v-if="unblockIcon.img && this.userData" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
 		<div class="StatsWin">
 			<div class="StatsTabs">
 				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
-				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
+				<button class="tab middle" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
 			</div>
 			<div class="StatsArea">
 				<div v-if="currentTab==0" class="stat">
 					<div class="statElem">
 						<h3>Ladder level</h3>
-						<p>?</p>
+						<p>{{ ladder.level }} / {{ ladder.total }}</p>
 					</div>
 					<div class="statElem">
 						<h3>Victories</h3>
@@ -42,9 +43,172 @@
 						<p>{{ userData.defeat }}</p>
 					</div>
 				</div>
+				<div v-if="currentTab==1" class="achievements">
+					<div class="achievementsTable">
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+						<div class="achievementsCol">
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+							<div>hello</div>
+						</div>
+					</div>
+				</div>
+				<div v-if="currentTab==2" class="history">
+					<div class="histCats">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+					<div class="histElem">
+						<div> Result </div>
+						<div> UserLogin </div>
+						<div> Opponent </div>
+						<div> score 1 </div>
+						<div> score 2 </div>
+					</div>
+				</div>
 			</div>
 		</div>
-
   </div>
 </template>
 
@@ -67,21 +231,26 @@ export default	defineComponent ({
 			userData: [],
 			relation: "",
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
-			blockIcon: "/src/assets/your-friends.png",
+			challengeIcon: {img: "/src/assets/challenge.png", title:"challenge"},
+			blockIcon: {img: "/src/assets/plain-cat.png", title:'block '},
+			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock '},
 			relationIcon: "",
 			currentTab: 0,
 			picture: "",
+			ladder: 0,
 		}
 	},
 
 	mounted() {
 		this.userData;
 		this.relation;
+		this.ladder;
 	},
 
 	async created() {
 		this.userData = await this.fetchUserData();
-		this.picture =await this.getPicture();
+		this.picture = await this.getPicture();
+		this.ladder = await this.fetchLadderLevel();
 	},
 
 	async updated() {
@@ -104,7 +273,11 @@ export default	defineComponent ({
 			const data = await res.json();
 			for (let elem of data)
 				if (this.$route.params.username == elem.username)
+				{
+					this.blockIcon.title += elem.username;
+					this.unblockIcon.title += elem.username;
 					return elem;
+				}
 		},
 
 		async fetchRelation() {
@@ -121,6 +294,15 @@ export default	defineComponent ({
 			.catch(error => {
 				return "";
 			});
+		},
+
+		async fetchLadderLevel() {
+			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userData.id}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			})
+			const ladder = await res.json();
+			return ladder;
 		},
 
 		async addOrRemovefriend(){
@@ -142,7 +324,16 @@ export default	defineComponent ({
 			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.userData = await this.fetchUserData();
+		},
+
+		async unblock(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			this.userData = await this.fetchUserData();
 		},
 
 		async acceptRequest(){
@@ -165,7 +356,7 @@ export default	defineComponent ({
 			return false;
 		},
 
-		isBlock() {
+		isBlocked() {
 			if (this.relation == "user-blocked")
 				return true;
 			return false;
@@ -203,11 +394,20 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
+<style lang="css" scoped>
 
 	/*** PROFILE STYLES ***/
+.StatsWin
+{
+	width:	100%;
+	min-height:	500px;
+	display:	flex;
+	flex-direction:	column;
+}
 
-.user-profile {
+.profilePage
+{
+	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
 	margin-right: 5%;
@@ -217,20 +417,24 @@ export default	defineComponent ({
 
 .profile-resume {
 	display: flex;
-	flex-direction:	row;
+	flex-direction: row;
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
+	border-radius: 35px;
 }
 
-.info {
+.info
+{
+	flex: 4;
 	display: flex;
 	flex-direction:	column;
+	margin-top: 4%;
 	margin-bottom: 2%;
-	margin-top: 2%;
-	height: 50%;
+	text-align: left;
+	vertical-align: center;
 }
 
 .username {
@@ -239,80 +443,122 @@ export default	defineComponent ({
 	font-size:	300%;
 	color: var(--font-blue);
 	font-weight:	bold;
-	margin-top: 10%;
+}
+
+.usermail{
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+}
+
+.perso-info
+{
+	flex: 1;
+	margin-right: 3%;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	vertical-align: center;
 }
 
 .status {
+	flex: 1;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	100%;
+	font-size:	150%;
+	color: green;
+}
+
+.perso-info > button
+{
+	flex: 5;
+	background: none;
+	border: solid 3px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: white;
+	padding-top: 2%;
+	margin: 20%;
+	margin-top: 30%;
+}
+
+.perso-info > button:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
 }
 
 .picture {
-	margin-left: 4%;
+	flex: 1;
+	width: calc(33.333% - 1rem);
+    vertical-align: center;
+	margin-left: 3%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+}
+
+.picture > img {
+	/*margin-left: 2%;
 	margin-bottom: 2%;
 	margin-top: 2%;
+	min-height: 150px;
+	min-width: 150px;*/
+	border-radius: 50%;
+	overflow: hidden;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+	object-fit:cover;
 }
 
 .relation {
 	display: flex;
-	justify-content: right;
+	flex-direction: row;
+	justify-content: center;
+	margin-right: 5%;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 .challengeButton {
-	flex:	1 1 0;
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
 	display: flex;
 	align-items: center;
-	justify-content: center;
-}
-
-.challengeButton > p {
-	appearance: none;
-	background-color: #FFFFFF;
-	border-radius: 40em;
-	border-style: none;
-	box-shadow: #ADCFFF 0 -12px 6px inset;
-	box-sizing: border-box;
-	color: var(--font-blue);
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white;
 	cursor: pointer;
-	display: inline-block;
-	font-family: -apple-system,sans-serif;
-	font-size: 1.2rem;
-	font-weight: 700;
-	letter-spacing: -.24px;
-	margin: 0;
-	outline: none;
-	padding: 1rem 1.3rem;
-	quotes: auto;
-	text-align: center;
-	text-decoration: none;
-	transition: all .15s;
 	user-select: none;
 	-webkit-user-select: none;
 	touch-action: manipulation;
 }
 
-.challengeButton > p:hover {
-  background-color: rgb(255, 228, 113);
-  box-shadow: rgb(250, 168, 120) 0 -6px 8px inset;
-  transform: scale(1.125);
-}
-
-.challengeButton > p:active {
-  transform: scale(1.025);
-}
-
-
-.relation {
-	margin-right: 5%;
-	display: flex;
-	align-items: center;
+.challengeButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
 }
 
 .relationButton {
-	border-radius: 8px;
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	height: 70px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white
 }
 
 .relationButton:hover {
@@ -322,86 +568,12 @@ export default	defineComponent ({
 
 }
 
-/* stat style */
-
-.StatsArea
-{
-	/* width:	100%;
-	min-height:	500px;
-	border-radius: 5px; */
-	overflow-y:	scroll;
-	/* max-height:	500px; */
-}
-
-.StatsTabs
-{
-	display:	flex;
+.user-profile {
 	flex-direction:	row;
-	border-bottom:	solid 2px white;
-}
-
-.tab
-{
-	flex:	1 1 0;
-	text-align:	center;
-	vertical-align:	center;
-	text-align:	center;
-	text-decoration:	none;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	32px;
-	color: var(--font-blue);
-}
-
-.StatsTabs > button
-{
-	background: none;
-	border: none;
-	border-right:	solid 2px white;
-}
-
-.StatsTabs > button:hover
-{
-	background:	var(--deep-blue-10);
-}
-
-.StatsTabs #CurrentTab
-{
-	background:	white;
-	color:	var(--font-blue);
-	font-weight:	bold;
-}
-
-.stat {
-	display: flex;
-	flex-direction: column;
-	font-size: 150%;
-}
-
-.stat > .statElem {
-	display: flex;
-	gap: 4%;
 	text-align: center;
-	align-items: center;
-	margin-left: 5%;
 	margin-right: 5%;
-}
-.stat > .statElem > h3 {
-	flex: 1 0;
-	margin-bottom:6%;
-	margin-top: 6%;
-	height: 100%;
-	background: rgb(203, 177, 233, 0.2);
-}
-
-.stat > .statElem > p {
-	flex: 1 0;
-	height: 100%;
-	margin-top: 6%;
-	margin-bottom:6%;
-	font-size: 1.17em;
-	background: rgb(203, 177, 233, 0.2);
-
+	margin-left: 5%;
+	margin-bottom: 0%;
 }
 
 .replyButton {
@@ -411,6 +583,7 @@ export default	defineComponent ({
 }
 
 .replyButton > button {
+	border-radius: 8px;
 	background:	none;
 	border: none;
 	border: solid 2px white;
@@ -419,9 +592,218 @@ export default	defineComponent ({
 	color: white;
 	margin-top: 5%;
 }
+
 .replyButton > button:hover {
 	background:	var(--deep-blue-10);
 	cursor: pointer;
 }
+
+.blockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
+	padding: 3%;
+	border: solid 2px white
+}
+
+.blockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+	background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
+}
+
+
+.unblockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	padding: 3%;
+	border: solid 2px white
+}
+
+.unblockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+}
+
+/* stat style */
+
+.StatsArea
+{
+	width:	100%;
+	min-height:	500px;
+	border: solid white 3px;
+	border-top: none;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+}
+
+.stat {
+	width: 90%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	border: solid 3px white;
+	max-height:	500px;
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+	overflow-y:	scroll;
+	height: 90%;
+}
+
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+}
+
+.stat > .statElem > h3 {
+	flex: 1 0;
+	background: rgb(203, 177, 233, 0.2);
+}
+
+.stat > .statElem > p {
+	flex: 1 0;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
+
+}
+.StatsTabs
+{
+	display:	flex;
+	flex-direction:	row;
+	border:	solid 3px white;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.middle
+{
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
+}
+
+.StatsTabs > button
+{
+	background: none;
+	border: none;
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	center;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	32px;
+	color: var(--font-blue);
+	padding-top: 1%;
+	font-weight:	bold;
+}
+
+.StatsTabs > button:hover
+{
+	background:	var(--deep-blue-10);
+	cursor: pointer; 
+}
+
+.StatsTabs #CurrentTab
+{
+	background:	white;
+	color:	var(--font-blue);
+}
+
+.achievementsTable
+{
+	width: 90%%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: 5%;
+	margin-left: 5%;
+	border: solid white 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	overflow: scroll;
+}
+
+.achievementsCol
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
+
+.achievementsCol > div
+{
+	flex: 1 1 0;
+	border: solid white 3px;
+	margin-right: 7%;
+	margin-left: 7%;
+	max-width: 100px;
+	flex: 1 0 auto;
+	aspect-ratio: 1 / 1;
+	border-radius: 20px;
+}
+
+.history
+{
+	width: 90%;
+	display: inline-block;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	max-height:	500px;
+	overflow-y: scroll;
+	border: solid 3px white;
+}
+
+.histCats
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	background: var(--white-10);
+}
+
+.histCats > div
+{
+	flex: auto;
+}
+
+.histElem
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	border-bottom: solid 1px white;
+}
+
+.histElem > div
+{
+	flex: auto;
+}
+
 
 </style>

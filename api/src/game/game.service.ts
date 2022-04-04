@@ -52,23 +52,26 @@ export class GameService {
 		await this.gameRepository.update({id: pid}, game);
 	}
 
-	async setScore(pid: number, score_l: number, score_r: number, end: boolean) {
+	async setScore(pid: number, score_l: number, score_r: number, end: number) {
 		let game = await this.findOne(pid);
 		
 		game.score_l = score_l;
 		game.score_r = score_r;
-		if (end == true)
+		if (end == 1)
 		{
 			game.status = gameStatus.FINISH;
 			await this.gameRepository.update({id: pid}, game)
 			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
 		}
-		else
+		else if (end == 0)
 		{
 			game.status = gameStatus.CANCEL;
 			await this.gameRepository.update({id: pid}, game);
 			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
 		}
+		else
+			await this.gameRepository.update({id: pid}, game);
+
 	}
 	async getScore(pid: number) {
 		let game = await this.findOne(pid);
