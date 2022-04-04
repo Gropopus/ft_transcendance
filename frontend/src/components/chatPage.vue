@@ -47,7 +47,7 @@
 		<div class="chatToolSpace">
 			<div class="chanList">
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
-					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-10)" : "none")}'>
+					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					{{ channel.name }} <br>
 				</button>
 			</div>
