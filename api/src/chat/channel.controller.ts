@@ -70,6 +70,18 @@ export class ChannelController {
 		return this.channelService.deleteAUserMutedFromChannel(params.id, params.userId);
 	}
 
+	@Put(':id/ban/:userId')
+	async banUser(@Param() params) {
+		const channel = await this.channelService.getChannel(params.id)
+		this.channelService.banUser(channel, params.userId);
+		this.channelService.deleteAUserFromChannel(Number(params.id), params.userId);
+	}
+
+	@Put(':id/unban/:userId')
+	async unbanUser(@Param() params) {
+		return this.channelService.unbanUser(params.id, params.userId);
+	}
+
 	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/destroy')
@@ -125,7 +137,11 @@ export class ChannelController {
 	@Put(':userId/join/:channelId')
 	async joinChannel(@Param() params, @Body() bod) {
 		const userToAdd = await this.userService.findOne(params.userId);
-		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
+		const channel = await this.channelService.findOne(params.channelId);
+		const blacklist = channel.ban;
+		const res = await this.channelService.boolUserBanedOnChannel(params.userId, params.channelId);
+		if (!res)
+			return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
 	}
 
 	@Get(':channelId/messages/:userId')
