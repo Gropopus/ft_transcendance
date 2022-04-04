@@ -113,18 +113,6 @@ export class ChannelService {
 	return paginate(query, options);
   }
 
-  async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	const query = this.channelRepository
-		.createQueryBuilder('channel')
-		.leftJoinAndSelect('channel.users', 'users')
-		.leftJoinAndSelect('channel.admin', 'all_admin')
-		.leftJoinAndSelect('channel.muted', 'all_muted')
-		.leftJoinAndSelect('channel.owner', 'onwner')
-		.where('channel.id = :id', { id: channelId })
-		.orderBy('channel.updated_at', 'DESC');
-	return paginate(query, options);
-	}
-
 	async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
 		const query = this.channelRepository
 			.createQueryBuilder('channel')
