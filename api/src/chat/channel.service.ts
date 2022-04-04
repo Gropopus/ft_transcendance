@@ -112,7 +112,7 @@ export class ChannelService {
 	if (channel.type == ChannelType.CLOSE) return of({ error: 'Can\'t join channel closed;' }); 
 	if (channel.type == ChannelType.PUBLIC) {
 		channel.users.push(user);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 		return of({ success: 'Channel joined;' });
 	}
 	if (channel.type == ChannelType.PROTECTED) {
@@ -120,7 +120,7 @@ export class ChannelService {
 		if (matches) {
 			// const newChannel = await this.addCreatorToChannel(channel, user);
 			channel.users.push(user);
-			this.channelRepository.save(channel);
+			await this.channelRepository.save(channel);
 			return of({ success: 'Channel joined;' });
 		}
 		return of({ error: 'Bad password;' }); 
@@ -128,9 +128,9 @@ export class ChannelService {
 	if (channel.type == ChannelType.PRIVATE)
 	{
 		channel.users.push(user);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 			return of({ success: 'Channel joined;' });
-	}	
+	}
   }
 
   async addCreatorToChannel(channel: Ichannel, creator: Iuser): Promise<Ichannel> {
