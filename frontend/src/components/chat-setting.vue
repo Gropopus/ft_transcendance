@@ -174,6 +174,7 @@ export default defineComponent ({
                         });
                         this.userToAdd = "";
                         this.channelData = await this.fetchChannel();
+                        console.log(this.channelData.users);
                     }
                     else
                         this.error = "User already in the channel.";
