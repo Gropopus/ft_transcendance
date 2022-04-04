@@ -140,8 +140,7 @@ export class ChannelService {
 
 	async addAdminToChannel(channel: Ichannel, user: Iuser): Promise<Ichannel> {
 		channel.admin.push(user);
-		this.channelRepository.save(channel);
-		return channel;
+		return this.channelRepository.save(channel);
 	}
 	
 	async muteUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
