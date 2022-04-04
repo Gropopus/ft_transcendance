@@ -61,142 +61,18 @@
 					<div class="histCats">
 						<div> Result </div>
 						<div> UserLogin </div>
-						<div> Opponent </div>
 						<div> score 1 </div>
 						<div> score 2 </div>
+						<div> Opponent </div>
 					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
+					<div title="insert db query and v-for">
+						<div class="histElem">
+							<div> Win / Defeat </div>
+							<div> UserLogin </div>
+							<div> score 1 </div>
+							<div> score 2 </div>
+							<div> Opponent </div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -410,7 +286,7 @@ export default	defineComponent ({
 	margin-top: 2%;
 	min-height: 150px;
 	min-width: 150px;*/
-	border-radius: 5px;
+	border-radius: 50%;
 	overflow: hidden;
     width: 200px;
     height: 200px;
@@ -569,7 +445,7 @@ export default	defineComponent ({
 
 .histCats > div
 {
-	flex: auto;
+	flex: 1 1 0;
 }
 
 .histElem
@@ -583,7 +459,7 @@ export default	defineComponent ({
 
 .histElem > div
 {
-	flex: auto;
+	flex: 1 1 0;
 }
 
 </style>
