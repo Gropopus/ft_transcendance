@@ -138,10 +138,10 @@ export class ChannelController {
 	async joinChannel(@Param() params, @Body() bod) {
 		const userToAdd = await this.userService.findOne(params.userId);
 		const channel = await this.channelService.findOne(params.channelId);
-		for (let user of channel.ban)
-			if (userToAdd == user)
-				return (false);
-		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
+		const blacklist = channel.ban;
+		const res = await this.channelService.boolUserBanedOnChannel(params.userId, params.channelId);
+		if (!res)
+			return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
 	}
 
 	@Get(':channelId/messages/:userId')
