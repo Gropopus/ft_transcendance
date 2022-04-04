@@ -45,18 +45,16 @@
 		</div>
 		</div>
 		<div class="chatToolSpace">
-		<div class="chanList">
-			<ul :key="channel.id" v-for="channel in channelsList">
-				<div>
-					<button class="chanNameButton" @click="changeCurrentChan(channel.id)"
-						v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
+			<div class="chanSearch">
+				<button @click="createChannel()"> new channel</button>
+			</div>
+			<div class="chanList">
+				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
+					v-bind:style='{"background" : (isCurrent(channel.id) ? "white" : "none")}'>
 					{{ channel.name }} <br>
-					</button>
-				</div>
-			</ul>
+				</button>
+			</div>
 		</div>
-		<button @click="createChannel()"> new channel</button>
-	</div>
 	</div>
 </div>
 </template>
@@ -327,12 +325,15 @@ export default	defineComponent ({
 	width: 100%;
 }
 
-.chatToolSpace > button
+.chanSearch
+{
+	display: flex;	
+}
+
+.chanSearch > button
 {
 	flex: 1;
-	margin-top: auto;
-	margin-bottom: auto;
-	margin-right: 1%;
+	margin-right: 5%;
 	background: none;
 	border: solid 3px white;
 	border-radius: 5px;
@@ -341,7 +342,7 @@ export default	defineComponent ({
 	color: white;
 }
 
-.chatToolSpace > button:hover
+.chanSearch > button:hover
 {
 	cursor: pointer;
 	background: rgb(255, 255, 255, 0.5);
@@ -351,13 +352,17 @@ export default	defineComponent ({
 {
 	overflow-y: scroll;
 	max-height:	45em;
+	border: solid white 3px;
+	border-radius: 5px;
+	margin: 5%;
+	padding-top: 5%;
+	padding-bottom: 5%;
 }
 
-.chatToolNav
+.chanNameButton
 {
-	min-height:	225px;
-	border:	solid 3px white;
-	border-radius: 5px;
+	width: 100%;
+	border-bottom: solid 3px white;
 }
 
 .channelName

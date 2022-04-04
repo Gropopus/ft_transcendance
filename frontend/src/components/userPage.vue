@@ -423,7 +423,7 @@ export default	defineComponent ({
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 35px;
+	border-radius: 5px;
 }
 
 .info
@@ -645,8 +645,8 @@ export default	defineComponent ({
 	min-height:	500px;
 	border: solid white 3px;
 	border-top: none;
-	border-bottom-left-radius: 20px;
-	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 .stat {
@@ -687,8 +687,8 @@ export default	defineComponent ({
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
-	border-top-right-radius: 20px;
-	border-top-left-radius: 20px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 	width: 100%;
 	overflow: hidden;
 }
@@ -761,7 +761,7 @@ export default	defineComponent ({
 	max-width: 100px;
 	flex: 1 0 auto;
 	aspect-ratio: 1 / 1;
-	border-radius: 20px;
+	border-radius: 5px;
 }
 
 .history

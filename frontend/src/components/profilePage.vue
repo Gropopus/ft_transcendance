@@ -491,8 +491,8 @@ export default	defineComponent ({
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	32px;
-	color: var(--font-blue);
+	font-size: 120%;
+	color: white;
 	padding-top: 1%;
 	font-weight:	bold;
 }
@@ -542,7 +542,7 @@ export default	defineComponent ({
 	max-width: 100px;
 	flex: 1 0 auto;
 	aspect-ratio: 1 / 1;
-	border-radius: 20px;
+	border-radius: 5px;
 }
 
 .history
