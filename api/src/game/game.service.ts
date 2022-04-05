@@ -30,8 +30,10 @@ export class GameService {
 		.createQueryBuilder('history')
 		.leftJoinAndSelect('history.player_left_id', 'p1')
 		.leftJoinAndSelect('history.player_right_id', 'p2')
-		.where('p1.id = :userId', { userId: userId })
-		.orWhere('p2.id = :userId', { userId: userId })
+		.leftJoinAndSelect('p1.user', 'u1')
+		.leftJoinAndSelect('p2.user', 'u2')
+		.where('u1.id = :userId1', { userId1: userId })
+		.orWhere('u2.id = :userId2', { userId2: userId })
 
 		return paginate(query, options);
 	}
