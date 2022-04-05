@@ -290,7 +290,7 @@ export default	defineComponent ({
 }
 
 .listName > p	{
-	flex: 12;
+	flex: 14;
 	user-select: none;
 }
 
@@ -353,12 +353,13 @@ export default	defineComponent ({
 
 .chatSide {
 	display: flex;
-	flex: 7;
+	flex: 8;
 	flex-direction: column;
 	min-height:	500px;
 	max-height:	45em;
 	width: 100%;
 	margin-right: 3%;
+	margin-left: 3%;
 }
 
 .chatArea
@@ -438,6 +439,7 @@ export default	defineComponent ({
 {
 	flex: 9;
 	overflow-y: scroll;
+	oferflow-x: hidden;
 	max-height:	45em;
 	border: solid white 3px;
 	border-bottom: none;

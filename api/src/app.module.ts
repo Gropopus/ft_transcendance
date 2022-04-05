@@ -59,6 +59,7 @@ export class AppModule implements NestModule {
         {path: '/api/oauth2/school42', method: RequestMethod.GET},
         {path: '/api/oauth2/school42/callback', method: RequestMethod.GET},
 		// channel
+      {path: '/api/channel/:id/update-password', method: RequestMethod.POST},
       {path: '/api/channel/:idChannel', method: RequestMethod.GET},
       {path: '/api/channel/all', method: RequestMethod.GET},
       {path: '/api/channel/direct-message/:userId', method: RequestMethod.GET},

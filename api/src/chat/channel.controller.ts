@@ -49,6 +49,15 @@ export class ChannelController {
 		return this.channelService.getOneDirectMessage(params.user1, params.user2, { page, limit, route: 'http://localhost:3000/api/channel/direct-message/:user1/:user2' });
 	}
 
+	@UseGuards(JwtAuthGuard)
+	@Post(':id/update-password')
+	async updatePassword(@Param() params, @Body() password, @Query('page') page: number = 1, @Query('limit') limit: number = 10){
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'})
+		const pass : string = password.password;
+		console.log(pass);
+		this.channelService.changePasswordChannel(channel.items[0], pass);
+	}
+
 	@Put('delete/:id')
 	async deleteChannel(@Param() params): Promise<any> {
 		return this.channelService.deleteChannel(params.id);

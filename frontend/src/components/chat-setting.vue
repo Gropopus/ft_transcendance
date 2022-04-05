@@ -35,22 +35,18 @@
                 </div>
             </div>
             <div v-if="role == 'admin' || role == 'owner'" class="formElem">
-                <label>Add users</label> <br>
-                <input type="text" v-model="searchString" @keyup.enter="filterUsers(searchString)" placeholder="username" class="textArea">
-                    <button @click="filterUsers(searchString)" class="searchButton">
-                        Search
+                <label for="users">Add users</label> <br>
+                <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
+                    <button @click="addUser()" class="addButton">
+                        add
                     </button>
-                <div v-if="usernameSearch != undefined" v-for="search in usernameSearch">
-                    {{ search.username }}
-                    <button @click="addUserFromList(search)" class="addButton">
-                        Add
-                    </button>
+                <div v-if="role == 'owner'" style="margin-top:5%; margin-botton: 6%">
+                    Change channel type:
+                    <select class="selector" @change="changeType()">
+                        <option :selected="isProtected(channelData.type)">protected</option>
+                        <option :selected="!isProtected(channelData.type)">not protected</option>
+                    </select>
                 </div>
-                Change channel type:
-                <select class="selector" @change="changeType()">
-                <option :selected="isProtected(channelData.type)">protected</option>
-                <option :selected="!isProtected(channelData.type)">not protected</option>
-            </select>
             </div>
             <div class="formElem" v-if="channelData.type == 'protected' && role == 'owner'">
                 <label for="password">Change channel password </label>	<br>
@@ -88,8 +84,6 @@ export default defineComponent ({
             chatPassword: "",
             userToAdd: "",
             users: [],
-			usernameSearch: [],
-			searchString: "",
             role: "",
             error: "",
             new_type: "",
@@ -98,12 +92,12 @@ export default defineComponent ({
 
     mounted() {
         this.channelData;
-		this.usernameSearch = [];
     },
 
     async created() {
         this.channelId = this.$route.params.id;
         this.channelData = await this.fetchChannel();
+        console.log(this.channelData);
         this.setRole();
     },
 
@@ -159,6 +153,19 @@ export default defineComponent ({
                 return (1);
             else
                 return (0);
+        },
+        async changePassword()
+        {
+            if (!this.chatPassword)
+                return ;
+             const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/update-password`, {
+                method: 'post',
+               headers: { 'content-type': 'application/json' },
+               body: JSON.stringify({password: this.chatPassword})
+            })
+            this.chatPassword = "";
+            this.channelData = await this.fetchChannel();
         },
         async muteUser(id: number) {
             const res = await fetch(
@@ -308,72 +315,7 @@ export default defineComponent ({
 
 		goToProfile(username: string) {
             this.$router.replace(`/profile/${username}`)
-        },
-
-		IsInChan(user: any)	{
-			if (user.id === this.userId)
-				return (false);
-			if (this.channelData != undefined && this.channelData.users.length != 0)	{
-				for (let elem of this.channelData.users)	{
-					if (elem.id === user.id)
-						return (false);
-				}
-			}
-			return (true);
-		},
-
-        async addUserFromList(searchString: any) {
-            let found = 0;
-            this.error = "";
-            if (!searchString)
-                return ;
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${searchString.username}`, {
-                    method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-            for (let elem of user)
-            {
-                if (elem.username === searchString.username)
-                {
-                    if (!this.isInChannel(elem.id))
-                    {
-                        if (this.isBan(elem.id) == true)
-                            this.unbanUser(elem.id);
-                        await fetch(
-                            `http://localhost:3000/api/channel/${this.channelId}/adduser/${searchString.username}`, {
-                                method: 'put',
-                                headers: { 'content-type': 'application/json' ,
-                                'Access-Control-Allow-Origin': '*'},
-                                body: JSON.stringify({password: this.chatPassword}),
-                        });
-                   		this.channelData = await this.fetchChannel();
-						this.usernameSearch.splice(user, 1);
-                    }
-                    else
-                        this.error = "User already in the channel.";
-                    return ;
-                }
-            }
-            this.error = "User doesn't exist.";
-        },
-
-		async filterUsers(searchString: string)	{
-			if (searchString.trim() === "")	{
-				this.searchString = "";
-				this.usernameSearch = [];
-				return ;
-			}
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${searchString}`, {
-                    method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-			this.usernameSearch = user.filter(value => this.IsInChan(value));
-			this.searchString = "";
-		},
+        }
 	}
 })
 </script>
@@ -522,19 +464,6 @@ export default defineComponent ({
     margin-bottom: 2%;
     height: 7%;
     width: 7%;
-}
-
-.searchButton {
-    padding: 6px;
-	font-size:	20px;
-    margin-left: 1%;
-	border:	solid 2px white;
-    background: none;
-    color: white;
-}
-
-.searchButton:hover {
-	background:	var(--deep-blue-10);
 }
 
 .selector {

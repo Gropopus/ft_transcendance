@@ -16,14 +16,12 @@
 	</div>
 	<div class="friendsPage">
 		<div :key="relation.type" v-for="relation in all" class="friendsArea">
-			<div class="listName" @click="setDiplayState(relation.type)" >
+			<div class="listName">
+				{{ relation.type }}
 				<div class="icon">
 					<img :src="relation.icon"/>
 				</div>
-				<p>
-					{{ relation.type }}
-				</p>
-				<button class="arrow">
+				<button @click="setDiplayState(relation.type)"  class="arrow">
 					<img v-if="relation.status==0" src="/src/assets/arrow-whitedown.png"/>
 					<img v-else src="/src/assets/arrow-white-up.png" />
 				</button>
@@ -205,50 +203,34 @@ export default	defineComponent ({
 	letter-spacing:	2px;
 }
 
-.listName {
+.friendsArea > .listName {
 	display:flex;
 	flex-direction: row;
 	text-align: left;
 	border-bottom: solid 2px white;
-	margin-top: auto;
-	margin-bottom: auto;
-	font-size: 150%;
-	cursor: pointer;
-	height: 1%;
+	margin-bottom: 0px;
+	font-size: 30px;
 	gap: 2%;
-	user-select: none;
 }
 
-.listName > p	{
-	flex: 10;
-	margin-top: 0;
-	margin-bottom: 0;
+.icon > img {
+	width: 50px;
 }
 
-.listName > .icon	{
-	flex: 1;
-	margin-top: auto;
-	margin-bottom: auto;
-}
-
-.listName > .icon > img {
-	object-fit: contain;
-	height: 30%;
-	width: 30%;
-}
-
-.listName > .arrow	{
-	flex: 1;
+.arrow {
+	flex: 1 1 0;
 	background: none;
 	border: none;
-	margin-top: auto;
-	margin-bottom: auto;
+	display: flex;
+	justify-content: right;
 }
 
-.listName > .arrow > img	{
-	object-fit: contain;
-	height: 30%;
-	width: 30%;
+.arrow > img {
+	width: 40px;
+}
+
+.arrow > img:hover {
+	cursor: pointer;
 }
 
 .friendsToolSpace
