@@ -1,5 +1,4 @@
 import { IPlayer } from "src/player/player.interface";
-import { Iuser } from "src/user/model/user.interface";
 
 export interface Igame {
 	id?: number;

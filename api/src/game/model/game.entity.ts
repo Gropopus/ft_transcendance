@@ -1,6 +1,5 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { gameMode, gameStatus } from "src/game/model/game.interface"
-import { IPlayer } from "src/player/player.interface";
 import { PlayerEntity } from "src/player/player.entity";
 
 @Entity()

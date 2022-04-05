@@ -151,7 +151,6 @@ export default	defineComponent ({
 		},
 
 		async fetchUserData() {
-			console.log(`---${this.$route.params.username}`);
 			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
@@ -271,7 +270,6 @@ export default	defineComponent ({
 			const blob = await ret.blob();
     		const newBlob = new Blob([blob]);
 			const blobUrl = window.URL.createObjectURL(newBlob);
-			console.log(blobUrl);
     		return blobUrl;
 		},
 
@@ -309,8 +307,21 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const history = await res.json();
-			console.log(history.items);
-			return history.items;
+			return history;
+		},
+
+		async fetchGameInfo()	{
+			let	tmpHistory = [];
+			const	playerHistory = await this.fetchPlayerHistory();
+			for (let elem of playerHistory)	{
+				const res = await fetch(`http://localhost:3000/api/game/stat/${elem.gameId}`,	{
+					method: 'get',
+					headers: { 'content-type': 'application/json' }
+				})
+				const histElem = await res.json();
+				tmpHistory[tmpHistory.length] = histElem;
+			}
+			return (tmpHistory);
 		},
 
 		whoWon(playerStats)	{

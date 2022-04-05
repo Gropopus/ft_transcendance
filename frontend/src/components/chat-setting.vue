@@ -139,11 +139,7 @@ export default defineComponent ({
         isBan(id: number) {
             for (let user of this.channelData.ban)
                 if (user.id == id)
-                {
-                    console.log("user is baned");
                     return true;
-                }
-            console.log("user is not baned");
             return false;
         },
 
@@ -234,10 +230,8 @@ export default defineComponent ({
                                 'Access-Control-Allow-Origin': '*'},
                                 body: JSON.stringify({password: this.chatPassword}),
                         });
-                        /*console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`);*/
                        
                        this.channelData = await this.fetchChannel();
-                        console.log(this.channelData);
                         this.userToAdd = "";
                     }
                     else

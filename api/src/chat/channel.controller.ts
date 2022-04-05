@@ -166,7 +166,6 @@ export class ChannelController {
 	async joinChannel(@Param() params, @Body() bod) {
 		const userToAdd = await this.userService.findOne(params.userId);
 		const channel = await this.channelService.findOne(params.channelId);
-		const blacklist = channel.ban;
 		const res = await this.channelService.boolUserBanedOnChannel(params.userId, params.channelId);
 		if (!res)
 			return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);

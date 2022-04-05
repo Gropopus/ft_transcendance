@@ -44,7 +44,6 @@ export default	{
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
 				})
 			const ret =	await res;
-			console.log(ret.status);
 			if (ret.status == 401)
 			{
 				this.error = "Wrong identification code."
@@ -56,15 +55,12 @@ export default	{
 		},
 		async	loginWith42(){
 			let uri = window.location.href
-			console.log(uri + "window");
 			let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
 			let auth = "/api/oauth2/school42";
 			let test= uri.slice(30);
 			backadrr += test;
-			console.log(backadrr + "backaddr");
 			let output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
 			uri = output;
-			console.log(uri);
 			const res = await fetch(backadrr, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' },

@@ -1,6 +1,5 @@
 import { Body, Controller, Param, Get, Put, Query } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
-import { get } from 'superagent';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { GameService } from './game.service';
 import { Igame } from './model/game.interface';

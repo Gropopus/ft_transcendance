@@ -7,8 +7,7 @@ import { ChannelEntity } from 'src/chat/model/channel.entity';
 import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { Iuser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/user.service';
-import { Repository, getConnection } from 'typeorm';
-import { JoinedChannelEntity } from './model/joined-channel.entity';
+import { Repository } from 'typeorm';
 import { MessageService } from './service/message.service';
 
 @Injectable()
@@ -286,7 +285,6 @@ export class ChannelService {
 }
 
 async deleteChannel(channelId: number): Promise<any> {
-	console.log(channelId);
 	this.channelRepository.delete({id: channelId});
 }
 

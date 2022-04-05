@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Param, Get } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { PlayerService } from './player.service'
 

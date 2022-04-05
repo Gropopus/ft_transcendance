@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Res, Post, Request, Put, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Param, Get, Put } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { IFriend } from './friend.interface';
 import { FriendService } from './friend.service'
@@ -11,7 +11,6 @@ export class FriendController {
 
     @Put(':u1/add/:u2')
     async addFriend(@Param() params): Promise<IFriend> {
-        console.log('add')
         return this.friendService.addFriend(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2)
@@ -20,7 +19,6 @@ export class FriendController {
     
     @Put(':u1/unfriend/:u2')
     async unfriend(@Param() params): Promise<any> {
-        console.log('delete')
         return this.friendService.unfriend(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2)
@@ -29,7 +27,6 @@ export class FriendController {
     
     @Put(':u1/accept/:u2')
     async acceptFriendRequest(@Param() params): Promise<IFriend> {
-        console.log('accept')
         return this.friendService.acceptFriendRequest(
             await this.userService.findOne(params.u1),
             await this.userService.findOne(params.u2)
