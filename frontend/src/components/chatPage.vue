@@ -1,8 +1,10 @@
 <template>
 <div>
-	<div class="listName">
-		All channels
-		<button @click="setDiplayState()"  class="arrow">
+	<div class="listName" @click="setDiplayState()">
+		<p>
+			All channels
+		</p>
+		<button>
 			<img v-if="listStatus==0" src="/src/assets/arrow-whitedown.png"/>
 			<img v-else src="/src/assets/arrow-white-up.png" />
 		</button>
@@ -28,7 +30,7 @@
 		</div>
 		<div class="chatArea">
 			<!--<div v-if="mess">-->
-			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
+			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					{{ mess.user.username}}: <br>
 					{{ mess.text }} <br>
@@ -280,9 +282,30 @@ export default	defineComponent ({
 	flex-direction: row;
 	text-align: left;
 	border-bottom: solid 2px white;
-	margin-bottom: 0px;
-	font-size: 30px;
+	margin-top: auto;
+	margin-bottom: auto;
+	font-size: 150%;
+	cursor: pointer;
 	gap: 2%;
+}
+
+.listName > p	{
+	flex: 12;
+	user-select: none;
+}
+
+.listName > button	{
+	flex: 1;
+	background: none;
+	border: none;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.listName > button > img	{
+	object-fit: contain;
+	height: 30%;
+	width: 30%;
 }
 
 .elemChanList {
@@ -349,14 +372,16 @@ export default	defineComponent ({
 .chatToolSpace
 {
 	flex: 3;
+	display: flex;
+	flex-direction: column;
 	min-height:	500px;
 	border:	solid 3px white;
 	border-radius: 5px;
-	width: 100%;
 }
 
 .chanSearch
 {
+	flex: 1;
 	display: flex;	
 	border: solid white 3px;
 	border-radius: 5px;
@@ -364,20 +389,21 @@ export default	defineComponent ({
 	border-top-left-radius: 0;
 	margin: 5%;
 	margin-top: 0;
-	padding: 5%;
+	padding: 2%;
 }
 
 .chanSearch > input
 {
-	flex: 1 1 0;
+	flex: 4;
 	border: none;
 	border-radius: 40px;
 	margin: 2%;
 	margin-top: 1%;
 	margin-bottom: 1%;
 	padding-top: 1%;
-	padding-right: 2%;
-	padding-left: 2%;
+	padding-right: 1%;
+	padding-left: 1%;
+	width: 100%;
 	font-style: Myanmar;
 	color: white;
 	font-size: 120%;
@@ -392,7 +418,7 @@ export default	defineComponent ({
 
 .chanSearch > button
 {
-	flex: 1 1 0;
+	flex: 1;
 	margin-right: 5%;
 	background: none;
 	border: solid 3px white;
@@ -410,15 +436,16 @@ export default	defineComponent ({
 
 .chanList
 {
+	flex: 9;
 	overflow-y: scroll;
 	max-height:	45em;
 	border: solid white 3px;
 	border-bottom: none;
-	border-radius: 5px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 	margin: 5%;
 	margin-bottom: 0;
+	padding: 0;
 	padding-top: 5%;
 	padding-bottom: 5%;
 }
@@ -475,7 +502,6 @@ export default	defineComponent ({
 	text-align:	center;
 	vertical-align:	center;
 	text-align:	center;
-	min-width:	150px;
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
@@ -493,7 +519,6 @@ export default	defineComponent ({
 	text-align:	center;
 	vertical-align:	center;
 	text-align:	left ;
-	min-width:	450px;
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
