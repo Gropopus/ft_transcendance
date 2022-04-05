@@ -97,10 +97,10 @@ export default	defineComponent ({
 	data() {
 		return {
 			userData: [],
-			gameInfo: [],
 			currentTab: 0,
 			picture: "",
 			ladder: 0,
+			gameInfo: [],
 			gameHistory: [],
 		}
 	},
