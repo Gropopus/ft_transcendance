@@ -79,7 +79,7 @@ export class ChannelService {
 
   async getChannel(channelId: number): Promise<Ichannel> {
     return this.channelRepository.findOne(channelId, {
-      relations: ['users', 'owner', 'admin', 'muted'],
+      relations: ['users', 'owner', 'admin', 'muted', 'ban'],
 	  select: ['id', 'name', 'type', 'password']
     });
   }
@@ -94,6 +94,7 @@ export class ChannelService {
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admin', 'all_admin')
       .leftJoinAndSelect('channel.muted', 'all_muted')
+	  .leftJoinAndSelect('channel.ban', 'all_ban')
       .leftJoinAndSelect('channel.owner', 'onwner')
       .orderBy('channel.updated_at', 'DESC');
 

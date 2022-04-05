@@ -130,7 +130,11 @@ export default defineComponent ({
         isBan(id: number) {
             for (let user of this.channelData.ban)
                 if (user.id == id)
+                {
+                    console.log("user is baned");
                     return true;
+                }
+            console.log("user is not baned");
             return false;
         },
 
@@ -164,6 +168,7 @@ export default defineComponent ({
                headers: { 'content-type': 'application/json' },
             })
             this.channelData = await this.fetchChannel();
+            console.log(this.channelData.ban)
         },
 
         async unbanUser(id: number) { 
