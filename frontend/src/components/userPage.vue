@@ -11,7 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<button @click="sendMessage()">send a message</button>
+				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/chat.png" class="challengeButton"/>
 				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
