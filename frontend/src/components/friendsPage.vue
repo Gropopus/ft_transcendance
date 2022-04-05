@@ -221,9 +221,9 @@ export default	defineComponent ({
 }
 
 .listName > p	{
-	flex: 10;
-	margin-top: 0;
-	margin-bottom: 0;
+	flex: 13;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 .listName > .icon	{
@@ -234,8 +234,8 @@ export default	defineComponent ({
 
 .listName > .icon > img {
 	object-fit: contain;
-	height: 30%;
-	width: 30%;
+	height: 50%;
+	width: 50%;
 }
 
 .listName > .arrow	{
@@ -244,6 +244,8 @@ export default	defineComponent ({
 	border: none;
 	margin-top: auto;
 	margin-bottom: auto;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 .listName > .arrow > img	{
