@@ -134,7 +134,7 @@ export default	defineComponent ({
 		await this.update();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
-		this.gameHistory = await this.fetchGameInfo();
+		this.gameHistory = await this.fetchPlayerHistory();
 	},
 
 
@@ -300,27 +300,13 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/history/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
 			const history = await res.json();
-			return history;
-		},
-
-		async fetchGameInfo()	{
-			let	tmpHistory = [];
-			const	playerHistory = await this.fetchPlayerHistory();
-			for (let elem of playerHistory)	{
-				const res = await fetch(`http://localhost:3000/api/game/stat/${elem.gameId}`,	{
-					method: 'get',
-					headers: { 'content-type': 'application/json' }
-				})
-				const histElem = await res.json();
-				console.log(histElem);
-				tmpHistory[tmpHistory.length] = histElem;
-			}
-			return (tmpHistory);
+			console.log(history.items);
+			return history.items;
 		},
 
 		whoWon(playerStats)	{
