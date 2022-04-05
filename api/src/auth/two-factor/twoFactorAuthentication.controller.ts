@@ -1,26 +1,18 @@
 import {
-	ClassSerializerInterceptor,
 	Controller,
 	Post,
 	Get,
-	UseInterceptors,
 	UseGuards,
-	Req,
 	Res,
 	Body,
-	UnauthorizedException, HttpCode,
+	UnauthorizedException,
   } from '@nestjs/common';
 import { TwoFactorService } from './twoFactor.service';
-import { Response } from 'express';
-import path = require('path');
 import { join } from 'path';
-import { Observable, of } from 'rxjs';
-import RequestWithUser from '../requestWithUser.interface';
+import { of } from 'rxjs';
 import { UserService } from 'src/user/user.service';
-import { TwoFactorAuthenticationCodeDto } from './twoFactor.dto';
 import { JwtAuthGuard } from 'src/auth/login/guards/jwt.guard';
 import { Iuser } from 'src/user/model/user.interface';
-import { UserEntity } from 'src/user/model/user.entity';
 
   @Controller('2fa')
   export class TwoFactorAuthenticationController {

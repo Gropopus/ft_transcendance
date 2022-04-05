@@ -1,13 +1,9 @@
 import { Logger } from "@nestjs/common";
-import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { map } from "rxjs";
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Socket, Server } from 'socket.io';
 import { PlayerService } from "src/player/player.service";
-import { subscribe } from "superagent";
 import { UnauthorizedException } from '@nestjs/common';
 import { GameService } from "./game.service";
-import { Igame } from './model/game.interface';
-import { Iuser } from "src/user/model/user.interface";
 import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-oauth2';
+import { Strategy } from 'passport-oauth2';
 import axios from 'axios';
 import {UserService} from 'src/user/user.service';
 import UserOauthIdNotFoundException from '../exception/UserOauthIdNotFound.exception';

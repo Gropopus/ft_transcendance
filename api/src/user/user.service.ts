@@ -1,14 +1,13 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
 import { Iuser, UserStatus } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Observable, from, throwError } from 'rxjs';
-import { switchMap, map, catchError} from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/auth/auth.service';
 import UserOauthIdNotFoundException from 'src/auth/exception/UserOauthIdNotFound.exception';
-import { LogoutUserDto } from 'src/user/model/dto/logout-user.dt';
 
 @Injectable()
 export class UserService {

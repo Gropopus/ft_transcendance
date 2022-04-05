@@ -1,4 +1,3 @@
-import { CANCELLED } from "dns";
 import { Iuser } from "src/user/model/user.interface";
 
 export interface IPlayer {

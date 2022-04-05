@@ -1,7 +1,5 @@
-import { isJSXFragment } from '@babel/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IPlayer } from 'src/player/player.interface';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { PlayerService } from 'src/player/player.service';
 import { UserService } from 'src/user/user.service';

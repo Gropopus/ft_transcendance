@@ -5,7 +5,6 @@ import { CreateUserDto } from './model/dto/create-user.dto';
 import { LoginUserDto } from './model/dto/login-user.dto';
 import { LoginResponseI } from './model/login-response.interface';
 import { Iuser } from './model/user.interface';
-import { map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { UserHelperService } from './user-helper/user-helper.service';
 import { UserService } from './user.service';
@@ -13,7 +12,6 @@ import { JwtAuthGuard } from '../auth/login/guards/jwt.guard'
 import { diskStorage } from 'multer';
 import path = require('path');
 import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
 import { RolesGuard } from 'src/auth/login/guards/roles.guards';
 // import { hasRoles } from 'src/auth/login/roles.decorator';
