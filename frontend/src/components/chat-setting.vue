@@ -168,7 +168,6 @@ export default defineComponent ({
                headers: { 'content-type': 'application/json' },
             })
             this.channelData = await this.fetchChannel();
-            console.log(this.channelData.ban)
         },
 
         async unbanUser(id: number) { 
@@ -249,6 +248,11 @@ export default defineComponent ({
         },
 
         async deleteChannel() {
+            const ret = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            });
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',
