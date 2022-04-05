@@ -55,8 +55,8 @@ export class ChannelController {
 		return this.channelService.deleteChannel(params.id);
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	//@hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	//@UseGuards(JwtAuthGuard, RolesGuard)
 	@Get('')
 	async getAllChannelAdmin(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
 	  limit = limit > 100 ? 100 : limit;
@@ -101,8 +101,8 @@ export class ChannelController {
 		return this.channelService.unbanUser(params.id, params.userId);
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
+	//@hasRoles(UserRole.ADMIN, UserRole.OWNER)
+	//@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(':id/admin/destroy')
 	async closeChannelAdmin(@Param('id') id: string): Promise<Ichannel> {
 	  var channel: Ichannel = await this.channelService.getChannel(Number(id));

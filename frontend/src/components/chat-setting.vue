@@ -23,6 +23,7 @@
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
                             <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
+                         <button v-if="isBan(user.id) && (role == 'owner' || (role == 'admin'))" @click="unbanUser(user.id)" class="addButton">unban</button>
                         <img
                             v-if="isMute(user.id) && (role == 'owner' || (role == 'admin' && !isAdmin(user.id)))"
                             title="unmute"
@@ -30,7 +31,6 @@
                             class="muteIcon"
                             src="/src/assets/muted-users.png" />
                         <img v-else-if="isMute(user.id)" class="muteIcon" src="/src/assets/muted-users.png" />
-                        <button v-if="isBan(user.id)" @click="unbanUser(user.id)" class="addButton">unban</button>
                     </div>
                 </div>
             </div>
