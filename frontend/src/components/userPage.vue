@@ -398,20 +398,23 @@ export default	defineComponent ({
 		},
 
 		async sendMessage() {
-			const res = await fetch(
+			let res = await fetch(
 				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
-			const data = await res.json();
+			let data = await res.json();
 			if (!data.items.length) {
-				await fetch(
+				res = await fetch(
 					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
+				data = await res.json();
+				this.$router.replace({path: '/chat', query: {id: data.id}});
 			}
-			this.$router.replace('/chat');
+			else
+				this.$router.replace({path: '/chat', query: {id: data.items[0].id}});
 		}
 	},
 })
