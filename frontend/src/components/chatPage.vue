@@ -27,6 +27,7 @@
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
+			<div v-if="mess">
 			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					{{ mess.user.username}}: <br>
@@ -39,6 +40,7 @@
 					</p>
 				</div>
 			</ul>
+			</div>
 		</div>
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
@@ -85,6 +87,7 @@ export default	defineComponent ({
 			channelId: 0,
 			socket: Socket,
 			channelMessages: [],
+			mess: "",
 			message: "",
 			searchKey: "",
 			listStatus: 0,
@@ -97,7 +100,7 @@ export default	defineComponent ({
 	async mounted() {
 		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
-		this.channelMessages;
+		console.log(this.all);
 		this.channelsList = await this.fetchChannelsList();
 			console.log(this.channelsList);
 		this.all;
