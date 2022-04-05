@@ -231,8 +231,6 @@ function play() {
 
 async function waited_too_long(pid)
 {
-	console.log("TIME OUT IS NOW")
-	console.log(game.matchmaking + ' ' + game.nb_confirm)
 	game.ready_usefull = 0;
 	if (game.matchmaking == 2)
 	{
@@ -300,8 +298,8 @@ function playerclick(event, ) {
 	}
 	if (game.button == 3) //play again
 	{
-		if (x >= game.start_buton.x && x <= game.start_buton.maxX &&
-			y >= game.start_buton.y && y <= game.start_buton.maxY)
+		if (x >= mod_select.a.x && x <= mod_select.a.xMax &&
+			y >= mod_select.a.y && y <= mod_select.a.yMax)
 		{
 			game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
 			game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
@@ -309,7 +307,20 @@ function playerclick(event, ) {
 			game.player.y = game.canvas.height / 2 - game.computer.height / 2;
 			game.button = 0;
 			game.matchmaking = 1
-			entermatchmaking(1, game);
+			game.mode = 'normal';
+			entermatchmaking(1);
+		}	
+		else if (x >= mod_select.b.x && x <= mod_select.b.xMax &&
+					y >= mod_select.b.y && y <= mod_select.b.yMax)
+		{
+			game.player.height   = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+			game.computer.height = (1/6) * game.canvas.height; // base is 1/6 min for alt is 18
+			game.computer.y = game.canvas.height / 2 - game.player.height / 2;
+			game.player.y = game.canvas.height / 2 - game.computer.height / 2;
+			game.button = 0;
+			game.matchmaking = 1
+			game.mode = 'hard';
+			entermatchmaking(1);
 		}
 	}
 }
@@ -342,13 +353,10 @@ function socket_init()
 	})
 
 	game.socket.on('player_size', function(l, r) {
-		console.log('rcv player height l: ' + l + ' r : ' + r);
 		game.player.height   = (l / 100) * game.canvas.height;
 		game.computer.height = (r / 100) * game.canvas.height;
 	})
 
-
-	//meta event
 	game.socket.on('gameId', function(sided, id, gameRoomid) {
 		game.gameRoom = gameRoomid;
 		game.side = sided;
@@ -411,12 +419,11 @@ function socket_init()
 		}
 		else if ((game.player.score == 11 && game.side == 'left') || 
 			game.computer.score == 11 && game.side == 'right')
-			textDraw("You win !", -60)
+			chooseMod("You win !");
 		else
-			textDraw("You loose !", -60)
+			chooseMod("You loose !");
 		game.matchmaking = 0;
 		game.button = 3;
-		buttonDraw('Play again', 60, game);
 		game.player.score = 0;
 		game.computer.score = 0;
 		game.nb_confirm = 0;
@@ -500,7 +507,7 @@ function canvas_init(mode){
 	}
 }
 
-function chooseMod()
+function chooseMod(txt = "")
 {
 	var context = game.canvas.getContext('2d');
 
@@ -576,7 +583,12 @@ function chooseMod()
 		context.fillText(	str,
 							game.canvas.width / 2 + (img.width * 1.5) / 2,
 							2 * game.canvas.height / 3);
-				
+		if (txt != '')
+		{
+			context.fillText(	txt,
+								game.canvas.width / 2,
+								2 * game.canvas.height / 3);
+		}
 		
 	game.start_buton.x = game.canvas.width / 2 - (img.width * 1.5) / 2 - text1.width / 2,
 	game.start_buton.y = 330 + img.height * 1.5,
@@ -592,7 +604,6 @@ function load(userId)
 	game.socket.auth = {userId};
 	game.socket.connect();
 	chooseMod();
-	console.log(mod_select);
 	// draw();
 	// buttonDraw("Normal", -17, game);
 	// buttonDraw("Custom", 17, game);
