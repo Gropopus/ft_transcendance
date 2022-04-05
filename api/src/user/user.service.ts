@@ -201,6 +201,7 @@ export class UserService {
 			await this.userRepository.increment({id: userId}, "victory", 1);
 		else 
 			await this.userRepository.increment({id: userId}, "defeat", 1);
+		this.userRepository.update(userId, {status: UserStatus.ON});
 	}
 
 	async getLadderLevel(userId: number) {
@@ -213,6 +214,10 @@ export class UserService {
 		for (let i = 0; i < ladder.length; i++)
 			if (userId == ladder[i].id)
 				return {level: i + 1, total: ladder.length};
+	}
+
+	async setStatus(user: Iuser, newStatus: UserStatus) {
+		this.userRepository.update(user.id, {status: newStatus});
 	}
 
 }

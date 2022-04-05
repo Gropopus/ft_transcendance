@@ -11,7 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<button @click="sendMessage()">send a message</button>
+				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/chat.png" class="challengeButton"/>
 				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
@@ -70,147 +70,25 @@
 					<div class="histCats">
 						<div> Result </div>
 						<div> UserLogin </div>
-						<div> Opponent </div>
 						<div> score 1 </div>
 						<div> score 2 </div>
-					</div>
-					<div class="histElem">
+						<div> Opponent </div>
 						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
 					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-					</div>
-					<div class="histElem">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
+					<div v-for="elem in gameHistory">
+						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
+							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.status }} </div>
+							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.user.username }} </div>
+							<div v-if="elem.score_l != undefined"> {{ elem.score_l }} </div>
+							<div v-if="elem.score_r != undefined"> {{ elem.score_r }} </div>
+							<div v-if="elem.player_right_id != undefined"> {{ elem.player_right_id.user.username }} </div>
+							<div v-if="elem.player_right_id != undefined"> {{ elem.player_right_id.status }} </div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-  </div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -239,6 +117,8 @@ export default	defineComponent ({
 			currentTab: 0,
 			picture: "",
 			ladder: 0,
+			gameInfo: [],
+			gameHistory: [],
 		}
 	},
 
@@ -247,12 +127,14 @@ export default	defineComponent ({
 		this.userData;
 		this.relation;
 		this.ladder;
+		this.gameHistory;
 	},
 
 	async created() {
 		await this.update();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
+		this.gameHistory = await this.fetchGameInfo();
 	},
 
 
@@ -415,11 +297,51 @@ export default	defineComponent ({
 			}
 			else
 				this.$router.replace({path: '/chat', query: {id: data.items[0].id}});
+		},
+
+		async fetchPlayerHistory() {
+			const res = await fetch(`http://localhost:3000/api/history/${this.userId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			})
+			const history = await res.json();
+			return history;
+		},
+
+		async fetchGameInfo()	{
+			let	tmpHistory = [];
+			const	playerHistory = await this.fetchPlayerHistory();
+			for (let elem of playerHistory)	{
+				const res = await fetch(`http://localhost:3000/api/game/stat/${elem.gameId}`,	{
+					method: 'get',
+					headers: { 'content-type': 'application/json' }
+				})
+				const histElem = await res.json();
+				console.log(histElem);
+				tmpHistory[tmpHistory.length] = histElem;
+			}
+			return (tmpHistory);
+		},
+
+		whoWon(playerStats)	{
+ 			if (playerStats.user.username === this.userData.username)
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (false);
+				else
+					return (true);
+			}
+			else
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (true);
+				else
+					return (false);
+			}
 		}
 	},
 })
 </script>
-
 
 <style lang="css" scoped>
 
@@ -737,8 +659,8 @@ export default	defineComponent ({
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	32px;
-	color: var(--font-blue);
+	font-size: 120%;
+	color: white;
 	padding-top: 1%;
 	font-weight:	bold;
 }
@@ -815,7 +737,7 @@ export default	defineComponent ({
 
 .histCats > div
 {
-	flex: auto;
+	flex: 1 1 0;
 }
 
 .histElem
@@ -829,7 +751,7 @@ export default	defineComponent ({
 
 .histElem > div
 {
-	flex: auto;
+	flex: 1 1 0;
 }
 
 
