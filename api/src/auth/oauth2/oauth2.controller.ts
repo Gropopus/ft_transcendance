@@ -19,7 +19,6 @@ export class Oauth2Controller {
   @HttpCode(200)
   async school42Callback(@Req() request: any, @Res() response: Response) {
   const { user } = request;
-  console.log(user);
   const userEntity: Iuser = {email: user.email, password: 'School42'};
 	const login = await this.usersService.login(userEntity);
 	const resp = {id : user.id42 ,two_factor: user.twoFactorAuthEnabled , token: login.jwt};
@@ -28,7 +27,6 @@ export class Oauth2Controller {
     } catch (error) {
       response.redirect('http://localhost:4200');
     }
-    console.log("OK");
   }
 
   @Get('school42')

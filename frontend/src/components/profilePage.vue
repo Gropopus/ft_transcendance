@@ -181,7 +181,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const history = await res.json();
-			console.log(history.items);
 			return history.items;
 		},
 

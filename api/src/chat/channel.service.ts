@@ -279,7 +279,6 @@ export class ChannelService {
 }
 
 async deleteChannel(channelId: number): Promise<any> {
-	console.log(channelId);
 	this.channelRepository.delete({id: channelId});
 }
 

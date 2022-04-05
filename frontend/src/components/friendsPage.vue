@@ -81,7 +81,6 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchFriends() {
-			console.log('user id: ' + this.userId);
 			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }

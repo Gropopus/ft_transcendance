@@ -166,8 +166,6 @@ export class UserService {
 	}
 
 	async setTwoFactorAuthenticationSecret(secret: string, Iuserid: number) {
-		console.log(secret);
-		console.log(Iuserid);
 		this.userRepository.update(Iuserid, {
 		twoFactorAuthenticationSecret: secret
 		});

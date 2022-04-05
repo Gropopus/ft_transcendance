@@ -84,8 +84,6 @@ export default	{
             else if (this.chatType == "protected" && !this.chatPassword)
             {
                 this.error = "Password needed.";
-                console.log("type")
-                console.log(this.chatType);
                 return ;
             }
             else
@@ -106,10 +104,7 @@ export default	{
                 })
                 const chan = await res.json();
                 for (let username of this.usernameList)
-                {
-                    console.log(username);
                     this.addUserToChannel(chan.id, username);
-                }
                 this.$router.replace({name: 'chat'});
             }
 		},
@@ -157,7 +152,6 @@ export default	{
             this.userToAdd = "";
         },
         deleteUsername(username: string) {
-            console.log(this.usernameList[0])
             for (let i in this.usernameList)
             {
                 if (this.usernameList[i] == username)
@@ -201,9 +195,7 @@ export default	{
                headers: { 'content-type': 'application/json' },
             })
             const user = await res.json();
-			console.log(user);
 			this.usernameSearch = user.filter(value => this.IsInChan(value));
-			console.log(this.usernameSearch);
 			this.searchString = "";
 		},
 	}

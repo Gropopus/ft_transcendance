@@ -37,7 +37,6 @@ export default	defineComponent ({
             this.obs(this.userId, this.$route.params.gameId)
         }
         catch {
-            console.log('test fail to json')
             this.$router.replace('/404');
         }
 

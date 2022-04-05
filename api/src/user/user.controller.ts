@@ -125,7 +125,6 @@ export class UserController {
 	@Get('pictureById/:id')
 	async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
 	    const user = await this.userService.findOne(id);
-		console.log(user.picture);
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/' + user.picture)));
 	}
 

@@ -169,7 +169,6 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ password: this.userPass })
 			})
-			console.log(await res.json());	
 		},
 
 		onChangeFileUpload($event) {
@@ -219,7 +218,6 @@ export default	{
 				headers: { 'content-type': 'application/json' }
 			})
 			this.user = await res.json();
-			console.log(this.user);
 			if (this.user.twoFactorAuthEnabled == false)
 				this.twofa = false;
 			else

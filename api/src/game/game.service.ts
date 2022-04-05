@@ -57,7 +57,6 @@ export class GameService {
 			igame.mode = gameMode.HARD;
 		let game = this.gameRepository.create(igame);
 		await this.gameRepository.save(game);
-		console.log('game id is ', game.id);
 		return game.id;
 	}
 	async addPlayerToGame(pid: number, left_uid: number, right_uid: number): Promise<number> {

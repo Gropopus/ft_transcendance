@@ -32,11 +32,9 @@ import { UserEntity } from 'src/user/model/user.entity';
 	@Post('authenticate')
 	@UseGuards(JwtAuthGuard)
 	async authenticate(@Body() bod: any) {
-		//console.log(bod.user);
 		const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
 		  bod.code, await this.usersService.findOne(bod.user.id));	  
 		if (!isCodeValid) {
-			console.log("NOPE");
 		  throw new UnauthorizedException('Wrong authentication code');
 		}
 		return ;

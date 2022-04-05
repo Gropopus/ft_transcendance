@@ -125,7 +125,6 @@ checkForm() {
 				body: JSON.stringify({code: this.googlecode, user: data1}),
 				})
 			const ret =	await res;
-			console.log(ret.status);
 			if (ret.status == 401)
 			{
 				this.error = "Wrong identification code."
@@ -144,38 +143,15 @@ checkForm() {
 			.then(res => {
 				return res.json(); })
 			.then (data => {
-				console.log(data);
 				return data;
 			})
 			.catch(error => {
 				return "error";
 			});
-			// const data = await  res.json();
-			// console.log(data);
-			// this.$emit('update:userId', data1.id);
-			// console.log(this.$router.query.page)
-			// console.log(this.$router.params)
-			// this.$router.replace('/game');*/
-			/*const uri = window.location.href;
-	
-			let auth = "/api/oauth2/school42",
-			const output = [uri.slice(0, 21), auth, uri.slice(21)].join('');
-			uri = output;
-    		this.apiService.getToken(uri).subscribe(
-			(result: any) =>{
-        	localStorage.setItem('auth-token', result.token);        
-		    if (result.two_factor) this.router.navigate(['../../public/two-factor'])
-			{
-				console.log("non non");
-			}
-		    else this.router.navigate(['../../private/profile/']) {
-				console.log("lol");
-			}*/
 		},
 
 		register: function() {
 			this.$router.replace({name: 'register'});
-			// this.$emit('register');
 		}
 }
 }

@@ -68,28 +68,22 @@ export default	defineComponent ({
 		this.gameList;
 		this.gameListPlaying;
         await this.fectGameList();
-		console.log(this.gameList)
 		if (this.gameList.length)
 			await this.Select(this.gameList[0]);
 		this.picture;
-		console.log("mounted")
 	}, 
 
 	created() {
-		console.log("created");
-		// console.log(this.actualSelect)
 	},
 
 	methods: {
 		goToRoute() {
-			console.log('redirect to /game/' + this.actualSelect.id)
 			this.$router.replace(`/watch/${this.actualSelect.id}`);
 		},
         async Select(game: any) {
 			this.actualSelect = game;
 			this.picture.left = await this.getPicture(game.player_left_id.user.id);
 			this.picture.right = await this.getPicture(game.player_right_id.user.id);
-            console.log(game);
         },
 
 		async formatGameList() {
@@ -112,7 +106,6 @@ export default	defineComponent ({
 			const blob = await ret.blob();
     		const newBlob = new Blob([blob]);
 			const blobUrl = window.URL.createObjectURL(newBlob);
-// 			console.log(blobUrl);
     		return blobUrl;
 		},
 
@@ -125,7 +118,6 @@ export default	defineComponent ({
 		},
 
 		async changeSelectGame(n: number) {
-			console.log("tg")
 			this.index += n;
 			await this.Select(this.gameList[this.index]);
 		}
