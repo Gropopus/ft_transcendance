@@ -23,6 +23,7 @@
                             <button v-if="!isMute(user.id)" @click="muteUser(user.id)" class="addButton">mute</button>
                             <button @click="removeUser(user.id)" class="addButton">remove</button>
                         </div>
+                         <button v-if="isBan(user.id) && (role == 'owner' || (role == 'admin'))" @click="unbanUser(user.id)" class="addButton">unban</button>
                         <img
                             v-if="isMute(user.id) && (role == 'owner' || (role == 'admin' && !isAdmin(user.id)))"
                             title="unmute"
@@ -30,7 +31,6 @@
                             class="muteIcon"
                             src="/src/assets/muted-users.png" />
                         <img v-else-if="isMute(user.id)" class="muteIcon" src="/src/assets/muted-users.png" />
-                        <button v-if="isBan(user.id)" @click="unbanUser(user.id)" class="addButton">unban</button>
                     </div>
                 </div>
             </div>
@@ -130,7 +130,11 @@ export default defineComponent ({
         isBan(id: number) {
             for (let user of this.channelData.ban)
                 if (user.id == id)
+                {
+                    console.log("user is baned");
                     return true;
+                }
+            console.log("user is not baned");
             return false;
         },
 
@@ -164,6 +168,7 @@ export default defineComponent ({
                headers: { 'content-type': 'application/json' },
             })
             this.channelData = await this.fetchChannel();
+            console.log(this.channelData.ban)
         },
 
         async unbanUser(id: number) { 
@@ -192,6 +197,8 @@ export default defineComponent ({
                 {
                     if (!this.isInChannel(elem.id))
                     {
+                        if (this.isBan(elem.id) == true)
+                            this.unbanUser(elem.id);
                         await fetch(
                             `http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
                                 method: 'put',
@@ -199,7 +206,7 @@ export default defineComponent ({
                                 'Access-Control-Allow-Origin': '*'},
                                 body: JSON.stringify({password: this.chatPassword}),
                         });
-                        console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`);
+                        /*console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`);*/
                        
                        this.channelData = await this.fetchChannel();
                         console.log(this.channelData);

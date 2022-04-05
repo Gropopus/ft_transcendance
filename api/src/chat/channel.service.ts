@@ -79,7 +79,7 @@ export class ChannelService {
 
   async getChannel(channelId: number): Promise<Ichannel> {
     return this.channelRepository.findOne(channelId, {
-      relations: ['users', 'owner', 'admin', 'muted'],
+      relations: ['users', 'owner', 'admin', 'muted', 'ban'],
 	  select: ['id', 'name', 'type', 'password']
     });
   }
@@ -94,6 +94,7 @@ export class ChannelService {
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admin', 'all_admin')
       .leftJoinAndSelect('channel.muted', 'all_muted')
+	  .leftJoinAndSelect('channel.ban', 'all_ban')
       .leftJoinAndSelect('channel.owner', 'onwner')
       .orderBy('channel.updated_at', 'DESC');
 
@@ -106,7 +107,7 @@ export class ChannelService {
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admin', 'all_admin')
       .leftJoinAndSelect('channel.muted', 'all_muted')
-	  .leftJoinAndSelect('channel.ban', 'all_baned')
+	  .leftJoinAndSelect('channel.ban', 'all_ban')
       .leftJoinAndSelect('channel.owner', 'onwner')
 	  .where('channel.id = :id', { id: channelId })
       .orderBy('channel.updated_at', 'DESC');
@@ -119,6 +120,7 @@ export class ChannelService {
 			.leftJoinAndSelect('channel.admin', 'admin')
 			.leftJoinAndSelect('channel.muted', 'muted')
 			.leftJoinAndSelect('channel.owner', 'owner')
+			.leftJoinAndSelect('channel.ban', 'ban')
 			.leftJoinAndSelect('channel.users', 'users')
 			.where('users.id = :id', { id: Iuserid })
 			.andWhere('channel.type != :type', { type: ChannelType.CLOSE })
@@ -188,7 +190,7 @@ export class ChannelService {
 
 	async unbanUser(channelId: number, Iuserid: number): Promise<Ichannel> {
 		const channel = await this.getChannel(channelId);
-		channel.muted = channel.ban.filter(user => user.id != Iuserid);
+		channel.ban = channel.ban.filter(user => user.id != Iuserid);
 		return this.channelRepository.save(channel);
 	  }
 
