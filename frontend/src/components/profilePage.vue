@@ -67,7 +67,7 @@
 						<div> Result </div>
 					</div>
 					<div v-for="elem in gameHistory">
-						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "rgb(224, 55, 55, 0.5)" : "none")}'>
+						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
 							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.status }} </div>
 							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.user.username }} </div>
 							<div v-if="elem.score_l != undefined"> {{ elem.score_l }} </div>
@@ -204,10 +204,20 @@ export default	defineComponent ({
 		},
 
 		whoWon(playerStats)	{
-			if (playerStats.status === 'lost-the-game' && playerStats.user.username === this.userData.username)
-				return (true);
+ 			if (playerStats.user.username === this.userData.username)
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (false);
+				else
+					return (true);
+			}
 			else
-				return (false);
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (true);
+				else
+					return (false);
+			}
 		}
 	},
 })
