@@ -261,7 +261,7 @@ export default	defineComponent ({
 				return "error";
 				console.log(chan);
 			if (chan.admin[0].id == this.userId)
-				return chan.admin[1].username;
+				return chan.owner.username;
 			else
 				return chan.admin[0].username;
 		}

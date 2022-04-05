@@ -34,15 +34,16 @@ export class ChannelService {
 
   async newDirectMessage(user1: Iuser, user2: Iuser): Promise<Ichannel> {
 		let channel: Ichannel = {
-			name: 'test2',
-			users: [user1, user2],
+			name: 'none',
+			users: [user2],
 			type: ChannelType.DIRECT,
-			admin: [user1, user2],
+			admin: [user2],
 			password: "",
 
 		};
-		// channel.owner = user1;
-		return this.channelRepository.save(channel);
+		channel.owner = user1;
+		const newChannel = await this.addCreatorToChannel(channel, user1);
+		return this.addAdminToChannel(newChannel, user1);
   }
 
   async getDirectMessage(userId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
