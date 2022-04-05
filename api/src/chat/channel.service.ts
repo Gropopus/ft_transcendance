@@ -101,7 +101,7 @@ export class ChannelService {
   }
 
   async getChannelInfo(channelId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	  const query = this.channelRepository
+	  const query = await this.channelRepository
       .createQueryBuilder('channel')
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admin', 'all_admin')
@@ -116,11 +116,11 @@ export class ChannelService {
 	async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
 		const query = this.channelRepository
 			.createQueryBuilder('channel')
+			.leftJoinAndSelect('channel.users', 'users')
 			.leftJoinAndSelect('channel.admin', 'admin')
 			.leftJoinAndSelect('channel.muted', 'muted')
 			.leftJoinAndSelect('channel.owner', 'owner')
 			.leftJoinAndSelect('channel.ban', 'ban')
-			.leftJoinAndSelect('channel.users', 'users')
 			.where('users.id = :id', { id: Iuserid })
 			.andWhere('channel.type != :type', { type: ChannelType.CLOSE })
 			.orderBy('channel.updated_at', 'DESC');

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
-import { Iuser, UserRole, UserStatus } from 'src/user/model/user.interface';
+import { Iuser, UserStatus } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Observable, from, throwError } from 'rxjs';
@@ -32,7 +32,6 @@ export class UserService {
 			newUser.picture = "profile-picture.png";
 			const user = await this.userRepository.save(this.userRepository.create(newUser));
 			//if (user.id == 0) {
-			//user.role = UserRole.OWNER;
 			//await this.userRepository.save(user);
 			//}
 			return this.findOne(user.id);
@@ -112,27 +111,12 @@ export class UserService {
 	}
 
 	async updateOne(id: number, user: Iuser): Promise<any> {
-		//delete user.email;
 		delete user.password;
-		delete user.role;
 		
 		return from(this.userRepository.update(id, user)).pipe(
 			switchMap(() => this.findOne(id))
 			);
 	}
-
-    async  updateUserRole(id: number, user: Iuser): Promise<any> {
-		const temp = await this.userRepository.findOne({
-			where: {
-			  id: id,
-			},
-		});
-		if (temp.role == UserRole.OWNER) throw new HttpException('Can\'t change the Owner role...', HttpStatus.CONFLICT);
-		if (user.role == UserRole.OWNER) throw new HttpException('Can\'t have 2 owner', HttpStatus.CONFLICT);
-		return from(this.userRepository.update(id, user)).pipe(
-			switchMap(() => this.findOne(id))
-		);
-    }
 
     async updateBanOfUser(id: number, user: Iuser): Promise<any> {
 		const temp = await this.userRepository.findOne({
@@ -140,7 +124,6 @@ export class UserService {
 			  id: id,
 			},
 		});		
-		if (temp.role == UserRole.OWNER) throw new HttpException('You can\'t ban Owner...', HttpStatus.CONFLICT);
 		return from(this.userRepository.update(id, user)).pipe(
 			switchMap(() => this.findOne(id))
 		);
