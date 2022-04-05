@@ -29,6 +29,11 @@ export default	defineComponent ({
     async mounted() {	
         this.gameList;
         this.gameListPlaying;
+		if (isNaN(this.$route.params.gameId) == true)
+		{
+			this.$router.replace('/404');
+			return ;
+		}
         const h = await fetch('http://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
             method: 'get',
         });
@@ -38,9 +43,9 @@ export default	defineComponent ({
         }
         catch {
             console.log('test fail to json')
-            this.$router.replace('/404');
+            // this.$router.replace('/404');
         }
-
+ 
     },
     unmounted() {
         unload(this.userId);
