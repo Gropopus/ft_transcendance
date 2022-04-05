@@ -303,7 +303,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const history = await res.json();
-<<<<<<< HEAD
 			return history;
 		},
 
@@ -319,10 +318,6 @@ export default	defineComponent ({
 				tmpHistory[tmpHistory.length] = histElem;
 			}
 			return (tmpHistory);
-=======
-			console.log(history.items);
-			return history.items;
->>>>>>> master
 		},
 
 		whoWon(playerStats)	{
