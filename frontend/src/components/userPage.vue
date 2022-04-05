@@ -242,20 +242,21 @@ export default	defineComponent ({
 		}
 	},
 
-	mounted() {
+	async mounted() {
+
 		this.userData;
 		this.relation;
 		this.ladder;
 	},
 
 	async created() {
+		this.relation = await this.fetchRelation();
 		this.userData = await this.fetchUserData();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
 	},
 
 	async updated() {
-		this.relation = await this.fetchRelation();
 		if (this.isFriend())
 			this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
 		else if (!this.relation)
@@ -319,6 +320,7 @@ export default	defineComponent ({
 					headers: { 'content-type': 'application/json' }
 				});
 			}
+			this.relation = await this.fetchRelation();
 		},
 
 		async blockUser(){
@@ -327,6 +329,7 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			this.userData = await this.fetchUserData();
+			this.relation = await this.fetchRelation();
 		},
 
 		async unblock(){
@@ -335,6 +338,7 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
     		});
 			this.userData = await this.fetchUserData();
+			this.relation = await this.fetchRelation();
 		},
 
 		async acceptRequest(){
@@ -342,6 +346,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
+			this.relation = await this.fetchRelation();
 		},
 
 		async declineRequest(){
@@ -349,6 +354,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
+			this.relation = await this.fetchRelation();
 		},
 
 		isFriend() {
