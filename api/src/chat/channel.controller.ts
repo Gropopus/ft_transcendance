@@ -69,12 +69,12 @@ export class ChannelController {
 	@Get('/:id/info')
 	async getChannelData(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
 		limit = limit > 100 ? 100 : limit;
-		return this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/channel/:id/users'});
+		return this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
 	}
 
 	@Put(':id/mute/:userId')
 	async muteUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/channel/:id/users'});
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
 		return this.channelService.muteUser(
 			channel.items[0],
 			await this.userService.findOne(params.userId));
@@ -86,11 +86,9 @@ export class ChannelController {
 	}
 
 	@Put(':id/ban/:userId')
-	async banUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/channel/:id/ban/:userId'});
-		const user = await this.userService.findOne(params.userId);
-		console.log(user);
-		this.channelService.banUser(channel.items[0], user);
+	async banUser(@Param() params) {
+		const channel = await this.channelService.getChannel(params.id)
+		this.channelService.banUser(channel, params.userId);
 		this.channelService.deleteAUserFromChannel(Number(params.id), params.userId);
 	}
 
