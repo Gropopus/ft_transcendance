@@ -283,9 +283,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	async handleStartGame(client: Socket, data: any) {
 		let room = data.room;
 		if (client.rooms.has(room) == true)
-		{	// if client still in room to avoid duplicate game
-			console.log(data.mode)
-			
+		{			
 			const players = this.server.sockets.adapter.rooms.get(room);
 			const playerss = Array.from(players.values());
 			this.kickAllFrom(room);
@@ -344,7 +342,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.nb_matchmaking = 0;
 		}
 	}
-
 
 	@SubscribeMessage('joinHardMatchmaking')
 	async handleHardMatchmaking(client: Socket)

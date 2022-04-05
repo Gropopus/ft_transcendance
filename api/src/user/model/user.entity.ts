@@ -4,7 +4,7 @@ import { JoinedChannelEntity } from "src/chat/model/joined-channel.entity";
 import { MessageEntity } from "src/chat/model/message.entity";
 import { ChannelEntity } from "src/chat/model/channel.entity";
 import { FriendEntity } from "src/friend/friend.entity";
-import { UserRole, UserStatus } from "./user.interface";
+import { UserStatus } from "./user.interface";
 import { PlayerEntity } from "src/player/player.entity";
 import { Exclude } from 'class-transformer';
 
@@ -49,9 +49,6 @@ export class UserEntity {
 	
 	@Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
 	status: UserStatus;
-
-	@Column({type: 'enum', enum: UserRole, default: UserRole.USER})
-	role: UserRole;
 
 	@ManyToMany(() => ChannelEntity, channel => channel.users)
 	channels: ChannelEntity[]

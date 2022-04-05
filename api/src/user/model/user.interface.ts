@@ -11,7 +11,6 @@ export interface Iuser {
     picture?: string;
     level?: number;
     status?: UserStatus;
-    role?: UserRole;
 	victory?: number;
 	id42?: number;
 	defeat?: number;
@@ -21,12 +20,6 @@ export interface Iuser {
     friends?: IFriend[];
     target?: IFriend[];
     history?: IPlayer[];
-}
-
-export enum UserRole {
-    OWNER = 'owner',
-    ADMIN = 'admin',
-    USER = 'user',
 }
 
 export enum UserStatus {

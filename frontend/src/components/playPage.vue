@@ -71,7 +71,6 @@ export default	defineComponent ({
 		float:	left;
 		display:	flex;
 		width:	70%;
-		min-height:	500px;
 		border:	solid 3px white;
 		border-radius: 5px;
 		flex-direction:	column;

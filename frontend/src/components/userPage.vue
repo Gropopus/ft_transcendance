@@ -131,23 +131,25 @@ export default	defineComponent ({
 	},
 
 	async created() {
-		this.relation = await this.fetchRelation();
-		this.userData = await this.fetchUserData();
+		await this.update();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
 		this.gameHistory = await this.fetchGameInfo();
 	},
 
-	async updated() {
-		if (this.isFriend())
-			this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
-		else if (!this.relation)
-			this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
-		else
-			this.friendIcon = {img: "", title: this.relation};
-	},
 
 	methods: {
+		async update() {
+			this.userData = await this.fetchUserData();
+			this.relation = await this.fetchRelation();
+			if (this.isFriend())
+				this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
+			else if (!this.relation)
+				this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
+			else
+				this.friendIcon = {img: "", title: this.relation};
+		},
+
 		async fetchUserData() {
 			console.log(`---${this.$route.params.username}`);
 			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
@@ -202,7 +204,7 @@ export default	defineComponent ({
 					headers: { 'content-type': 'application/json' }
 				});
 			}
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async blockUser(){
@@ -210,8 +212,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.userData = await this.fetchUserData();
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async unblock(){
@@ -219,8 +220,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.userData = await this.fetchUserData();
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async acceptRequest(){
@@ -228,7 +228,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async declineRequest(){
@@ -236,7 +236,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		isFriend() {

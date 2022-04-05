@@ -8,6 +8,7 @@ import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { Iuser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/user.service';
 import { Repository, getConnection } from 'typeorm';
+import { JoinedChannelEntity } from './model/joined-channel.entity';
 import { MessageService } from './service/message.service';
 
 @Injectable()
@@ -33,15 +34,16 @@ export class ChannelService {
 
   async newDirectMessage(user1: Iuser, user2: Iuser): Promise<Ichannel> {
 		let channel: Ichannel = {
-			name: 'test2',
-			users: [user1, user2],
+			name: 'none',
+			users: [user2],
 			type: ChannelType.DIRECT,
-			admin: [user1, user2],
+			admin: [user2],
 			password: "",
 
 		};
-		// channel.owner = user1;
-		return this.channelRepository.save(channel);
+		channel.owner = user1;
+		const newChannel = await this.addCreatorToChannel(channel, user1);
+		return this.addAdminToChannel(newChannel, user1);
   }
 
   async getDirectMessage(userId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
@@ -102,7 +104,7 @@ export class ChannelService {
   }
 
   async getChannelInfo(channelId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
-	  const query = this.channelRepository
+	  const query = await this.channelRepository
       .createQueryBuilder('channel')
       .leftJoinAndSelect('channel.users', 'users')
       .leftJoinAndSelect('channel.admin', 'all_admin')
@@ -117,11 +119,11 @@ export class ChannelService {
 	async getChannelsForUser(Iuserid: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
 		const query = this.channelRepository
 			.createQueryBuilder('channel')
+			.leftJoinAndSelect('channel.users', 'users')
 			.leftJoinAndSelect('channel.admin', 'admin')
 			.leftJoinAndSelect('channel.muted', 'muted')
 			.leftJoinAndSelect('channel.owner', 'owner')
 			.leftJoinAndSelect('channel.ban', 'ban')
-			.leftJoinAndSelect('channel.users', 'users')
 			.where('users.id = :id', { id: Iuserid })
 			.andWhere('channel.type != :type', { type: ChannelType.CLOSE })
 			.orderBy('channel.updated_at', 'DESC');
@@ -275,6 +277,7 @@ export class ChannelService {
 }
 
 async deleteChannel(channelId: number): Promise<any> {
+	console.log(channelId);
 	this.channelRepository.delete({id: channelId});
 }
 
