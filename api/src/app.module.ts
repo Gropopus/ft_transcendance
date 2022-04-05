@@ -101,6 +101,7 @@ export class AppModule implements NestModule {
       {path: 'api/game/stat/:gameID', method: RequestMethod.GET},
       {path: 'api/game/stat/', method: RequestMethod.GET},
       {path: 'api/game/playinglist/', method: RequestMethod.GET},
+      {path: 'api/game/history/:userId', method: RequestMethod.GET},
       )
       .forRoutes('')
   }
