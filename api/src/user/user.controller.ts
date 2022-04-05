@@ -4,7 +4,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto } from './model/dto/create-user.dto';
 import { LoginUserDto } from './model/dto/login-user.dto';
 import { LoginResponseI } from './model/login-response.interface';
-import { Iuser, UserRole } from './model/user.interface';
+import { Iuser } from './model/user.interface';
 import { map, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { UserHelperService } from './user-helper/user-helper.service';
@@ -16,7 +16,7 @@ import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 import { RolesGuard } from 'src/auth/login/guards/roles.guards';
-import { hasRoles } from 'src/auth/login/roles.decorator';
+// import { hasRoles } from 'src/auth/login/roles.decorator';
 import * as fs from 'fs';
 
 export const storage = {
@@ -99,13 +99,6 @@ export class UserController {
 	  return this.userService.logout(user);
 	}
 	
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put(':id/role')
-	async  updateUserRole(@Param('id') id: string, @Body() user: Iuser): Promise<Iuser> {
-	  return this.userService. updateUserRole(Number(id), user);
-	}
-	
 	@UseGuards(JwtAuthGuard)
 	@Put(':id')
 	async updateOne(@Param('id') id: string, @Body() user: Iuser): Promise<any> {    
@@ -116,7 +109,6 @@ export class UserController {
 	async updateUser(@Param() params, @Body() user: Iuser) {
 		return this.userService.updateUser(params.id, user);
 	}
-
 
 	@UseGuards(JwtAuthGuard)
 	@Post('upload')
@@ -137,7 +129,6 @@ export class UserController {
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/' + user.picture)));
 	}
 
-	@hasRoles(UserRole.ADMIN, UserRole.OWNER)
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put('ban/:id')
 	async updateBanOfUser(@Param('id') id: string, @Body() user: Iuser): Promise<Iuser> {		

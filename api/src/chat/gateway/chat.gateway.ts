@@ -1,7 +1,7 @@
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { AuthService } from 'src/auth/auth.service';
 import { Socket, Server } from 'socket.io';
-import { Iuser, UserRole } from 'src/user/model/user.interface';
+import { Iuser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/user.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { ChannelService } from '../channel.service';

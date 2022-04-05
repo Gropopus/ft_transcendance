@@ -29,7 +29,7 @@ export class ChannelEntity {
   @ManyToMany(() => UserEntity)
   @JoinTable()
   admin: UserEntity[];
-  
+
   @ManyToMany(() => UserEntity)
   @JoinTable()
   muted: UserEntity[];

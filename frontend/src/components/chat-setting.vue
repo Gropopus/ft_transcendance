@@ -83,12 +83,13 @@ export default defineComponent ({
 	},
 
     mounted() {
-        this.channel;
+        this.channelData;
     },
 
     async created() {
         this.channelId = this.$route.params.id;
         this.channelData = await this.fetchChannel();
+        console.log(this.channelData);
         this.setRole();
     },
 
