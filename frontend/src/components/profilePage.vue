@@ -67,7 +67,7 @@
 						<div> Result </div>
 					</div>
 					<div v-for="elem in gameHistory">
-						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "rgb(224, 55, 55, 0.5)" : "none")}'>
+						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
 							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.status }} </div>
 							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.user.username }} </div>
 							<div v-if="elem.score_l != undefined"> {{ elem.score_l }} </div>
@@ -97,10 +97,10 @@ export default	defineComponent ({
 	data() {
 		return {
 			userData: [],
-			gameInfo: [],
 			currentTab: 0,
 			picture: "",
 			ladder: 0,
+			gameInfo: [],
 			gameHistory: [],
 		}
 	},
@@ -116,7 +116,7 @@ export default	defineComponent ({
 		this.userData = await this.fetchUserData();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
-		this.gameHistory = await this.fetchGameInfo();
+		this.gameHistory = await this.fetchPlayerHistory();
 	},
 
 	methods: {
@@ -176,27 +176,13 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/history/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
 			const history = await res.json();
-			return history;
-		},
-
-		async fetchGameInfo()	{
-			let	tmpHistory = [];
-			const	playerHistory = await this.fetchPlayerHistory();
-			for (let elem of playerHistory)	{
-				const res = await fetch(`http://localhost:3000/api/game/stat/${elem.gameId}`,	{
-					method: 'get',
-					headers: { 'content-type': 'application/json' }
-				})
-				const histElem = await res.json();
-				console.log(histElem);
-				tmpHistory[tmpHistory.length] = histElem;
-			}
-			return (tmpHistory);
+			console.log(history.items);
+			return history.items;
 		},
 
 		goToRoute(path: string) {
@@ -204,10 +190,20 @@ export default	defineComponent ({
 		},
 
 		whoWon(playerStats)	{
-			if (playerStats.status === 'lost-the-game' && playerStats.user.username === this.userData.username)
-				return (true);
+ 			if (playerStats.user.username === this.userData.username)
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (false);
+				else
+					return (true);
+			}
 			else
-				return (false);
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (true);
+				else
+					return (false);
+			}
 		}
 	},
 })

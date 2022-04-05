@@ -27,15 +27,21 @@
             </div>
             
             <div class="formElem">
-                <label for="users">Add users</label> <br>
-                <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
-                    <button @click="addUsername()" class="addButton">
-                        add
-                    </button> <br>
                 <div :key="username" v-for="username in usernameList">
                     {{ username }}
                     <button @click="deleteUsername(username)" class="deleteButton1">
                         x
+                    </button>
+                </div>
+                <label for="users">Add users</label> <br>
+                <input type="text" v-model="userToAdd" @keyup.enter="filterUsers(userToAdd)" placeholder="username" class="textArea">
+                    <button @click="filterUsers(userToAdd)" class="searchButton">
+                        Search
+                    </button>
+                <div v-if="usernameSearch != undefined" v-for="user in usernameSearch">
+                    {{ user.username }}
+                    <button @click="addUserFromList(user)" class="addButton">
+                        Add
                     </button>
                 </div>
             </div>
@@ -64,6 +70,7 @@ export default	{
 			chatDescription:	"",
             chatType: "",
             usernameList: [],
+			usernameSearch: [],
             userToAdd: "",
             error: "",
 		}
@@ -149,7 +156,6 @@ export default	{
                 this.error = "user doesn't exist.";
             this.userToAdd = "";
         },
-
         deleteUsername(username: string) {
             console.log(this.usernameList[0])
             for (let i in this.usernameList)
@@ -159,6 +165,47 @@ export default	{
             }
                     
         },
+
+		IsInChan(user: any)	{
+			if (user.id === this.userId)
+				return (false);
+			if (this.usernameList.length != 0)	{
+				for (let elem of this.usernameList)	{
+					if (elem === user.username)
+						return (false);
+				}
+			}
+			return (true);
+		},
+
+		addUserFromList(user: any)	{
+			if (this.usernameList.length != 0)	{
+				for (let elem in this.usernameList)	{
+					if (user.username === elem)
+						return ;
+				}
+			}
+			this.usernameList.push(user.username);
+			this.usernameSearch.splice(user, 1);
+		},
+
+		async filterUsers(searchString: string)	{
+			if (searchString.trim() === "")	{
+				this.searchString = "";
+				this.usernameSearch = [];
+				return ;
+			}
+            const res = await fetch(
+                `http://localhost:3000/api/users/find-by-username/${searchString}`, {
+                    method: 'get',
+               headers: { 'content-type': 'application/json' },
+            })
+            const user = await res.json();
+			console.log(user);
+			this.usernameSearch = user.filter(value => this.IsInChan(value));
+			console.log(this.usernameSearch);
+			this.searchString = "";
+		},
 	}
 }
 </script>
@@ -238,7 +285,19 @@ export default	{
 
 .addButton:hover {
 	background:	var(--deep-blue-10);
+}
 
+.searchButton {
+    padding: 6px;
+	font-size:	20px;
+    margin-left: 1%;
+	border:	solid 2px white;
+    background: none;
+    color: white;
+}
+
+.searchButton:hover {
+	background:	var(--deep-blue-10);
 }
 
 .deleteButton1 {

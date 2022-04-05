@@ -11,7 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<button @click="sendMessage()">send a message</button>
+				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/chat.png" class="challengeButton"/>
 				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
@@ -70,21 +70,25 @@
 					<div class="histCats">
 						<div> Result </div>
 						<div> UserLogin </div>
-						<div> Opponent </div>
 						<div> score 1 </div>
 						<div> score 2 </div>
-					</div>
-					<div class="histElem">
+						<div> Opponent </div>
 						<div> Result </div>
-						<div> UserLogin </div>
-						<div> Opponent </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
+					</div>
+					<div v-for="elem in gameHistory">
+						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
+							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.status }} </div>
+							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.user.username }} </div>
+							<div v-if="elem.score_l != undefined"> {{ elem.score_l }} </div>
+							<div v-if="elem.score_r != undefined"> {{ elem.score_r }} </div>
+							<div v-if="elem.player_right_id != undefined"> {{ elem.player_right_id.user.username }} </div>
+							<div v-if="elem.player_right_id != undefined"> {{ elem.player_right_id.status }} </div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-  </div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -113,6 +117,8 @@ export default	defineComponent ({
 			currentTab: 0,
 			picture: "",
 			ladder: 0,
+			gameInfo: [],
+			gameHistory: [],
 		}
 	},
 
@@ -121,25 +127,29 @@ export default	defineComponent ({
 		this.userData;
 		this.relation;
 		this.ladder;
+		this.gameHistory;
 	},
 
 	async created() {
-		this.userData = await this.fetchUserData();
-		this.relation = await this.fetchRelation();
+		await this.update();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
+		this.gameHistory = await this.fetchPlayerHistory();
 	},
 
-	async updated() {
-		// if (this.isFriend())
-		// 	this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
-		// else if (!this.relation)
-		// 	this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
-		// else
-		// 	this.friendIcon = {img: "", title: this.relation};
-	},
 
 	methods: {
+		async update() {
+			this.userData = await this.fetchUserData();
+			this.relation = await this.fetchRelation();
+			if (this.isFriend())
+				this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
+			else if (!this.relation)
+				this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
+			else
+				this.friendIcon = {img: "", title: this.relation};
+		},
+
 		async fetchUserData() {
 			console.log(`---${this.$route.params.username}`);
 			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
@@ -194,7 +204,7 @@ export default	defineComponent ({
 					headers: { 'content-type': 'application/json' }
 				});
 			}
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async blockUser(){
@@ -202,8 +212,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.userData = await this.fetchUserData();
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async unblock(){
@@ -211,8 +220,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.userData = await this.fetchUserData();
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async acceptRequest(){
@@ -220,7 +228,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async declineRequest(){
@@ -228,7 +236,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		isFriend() {
@@ -276,436 +284,465 @@ export default	defineComponent ({
 		},
 
 		async sendMessage() {
-			const res = await fetch(
+			let res = await fetch(
 				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
-			const data = await res.json();
+			let data = await res.json();
 			if (!data.items.length) {
-				await fetch(
+				res = await fetch(
 					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
+				data = await res.json();
+				this.$router.replace({path: '/chat', query: {id: data.id}});
 			}
-			this.$router.replace('/chat');
+			else
+				this.$router.replace({path: '/chat', query: {id: data.items[0].id}});
+		},
+
+		async fetchPlayerHistory() {
+			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			})
+			const history = await res.json();
+			console.log(history.items);
+			return history.items;
+		},
+
+		whoWon(playerStats)	{
+ 			if (playerStats.user.username === this.userData.username)
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (false);
+				else
+					return (true);
+			}
+			else
+			{
+				if (playerStats.status === 'lost-the-game')
+					return (true);
+				else
+					return (false);
+			}
 		}
 	},
 })
 </script>
 
-
 <style lang="css" scoped>
 
-		/*** PROFILE STYLES ***/
-	.StatsWin
-	{
-		width:	100%;
-		min-height:	500px;
-		display:	flex;
-		flex-direction:	column;
-	}
+	/*** PROFILE STYLES ***/
+.StatsWin
+{
+	width:	100%;
+	min-height:	500px;
+	display:	flex;
+	flex-direction:	column;
+}
 
-	.profilePage
-	{
-		background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
-		flex-direction:	row;
-		text-align: center;
-		margin-right: 5%;
-		margin-left: 5%;
-		margin-bottom: 0%;
-	}
+.profilePage
+{
+	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
+	flex-direction:	row;
+	text-align: center;
+	margin-right: 5%;
+	margin-left: 5%;
+	margin-bottom: 0%;
+}
 
-	.profile-resume {
-		display: flex;
-		flex-direction: row;
-		gap: 3%;
-		/* flex: 1 1 0; */
-		border: solid 3px white;
-		margin-bottom: 2%;
-		align-content: center;
-		border-radius: 5px;
-	}
+.profile-resume {
+	display: flex;
+	flex-direction: row;
+	gap: 3%;
+	/* flex: 1 1 0; */
+	border: solid 3px white;
+	margin-bottom: 2%;
+	align-content: center;
+	border-radius: 5px;
+}
 
-	.info
-	{
-		flex: 4;
-		display: flex;
-		flex-direction:	column;
-		margin-top: 4%;
-		margin-bottom: 2%;
-		text-align: left;
-		vertical-align: center;
-	}
+.info
+{
+	flex: 4;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 4%;
+	margin-bottom: 2%;
+	text-align: left;
+	vertical-align: center;
+}
 
-	.username {
-		font-family: MyanmarText;
-		letter-spacing:	2px;
-		font-size:	300%;
-		color: var(--font-blue);
-		font-weight:	bold;
-	}
+.username {
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	300%;
+	color: var(--font-blue);
+	font-weight:	bold;
+}
 
-	.usermail{
-		font-family: MyanmarText;
-		letter-spacing:	2px;
-		font-size:	150%;
-	}
+.usermail{
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+}
 
-	.perso-info
-	{
-		flex: 1;
-		margin-right: 3%;
-		display: flex;
-		flex-direction:	column;
-		margin-top: 2%;
-		margin-bottom: 2%;
-		vertical-align: center;
-	}
+.perso-info
+{
+	flex: 1;
+	margin-right: 3%;
+	display: flex;
+	flex-direction:	column;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	vertical-align: center;
+}
 
-	.status {
-		flex: 1;
-		font-family: MyanmarText;
-		letter-spacing:	2px;
-		font-size:	150%;
-		color: green;
-	}
+.status {
+	flex: 1;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: green;
+}
 
-	.perso-info > button
-	{
-		flex: 5;
-		background: none;
-		border: solid 3px white;
-		font-family: MyanmarText;
-		letter-spacing:	2px;
-		font-size:	150%;
-		color: white;
-		padding-top: 2%;
-		margin: 20%;
-		margin-top: 30%;
-	}
+.perso-info > button
+{
+	flex: 5;
+	background: none;
+	border: solid 3px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: white;
+	padding-top: 2%;
+	margin: 20%;
+	margin-top: 30%;
+}
 
-	.perso-info > button:hover
-	{
-		background: rgba(255, 255, 255, 0.5);
-		cursor: pointer; 
-	}
+.perso-info > button:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
+}
 
-	.picture {
-		flex: 1;
-		width: calc(33.333% - 1rem);
-		vertical-align: center;
-		margin-left: 3%;
-		margin-top: 2%;
-		margin-bottom: 2%;
-	}
+.picture {
+	flex: 1;
+	width: calc(33.333% - 1rem);
+    vertical-align: center;
+	margin-left: 3%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+}
 
-	.picture > img {
-		/*margin-left: 2%;
-		margin-bottom: 2%;
-		margin-top: 2%;
-		min-height: 150px;
-		min-width: 150px;*/
-		border-radius: 50%;
-		overflow: hidden;
-		width: 200px;
-		height: 200px;
-		max-width: 200px;
-		max-height: 200px;
-		object-fit:cover;
-	}
+.picture > img {
+	/*margin-left: 2%;
+	margin-bottom: 2%;
+	margin-top: 2%;
+	min-height: 150px;
+	min-width: 150px;*/
+	border-radius: 50%;
+	overflow: hidden;
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+	object-fit:cover;
+}
 
-	.relation {
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		margin-right: 5%;
-		margin-top: auto;
-		margin-bottom: auto;
-	}
+.relation {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	margin-right: 5%;
+	margin-top: auto;
+	margin-bottom: auto;
+}
 
-	.challengeButton {
-		margin-right: 3%;
-		margin-left: 3%;
-		flex: auto;
-		display: flex;
-		align-items: center;
-		border-radius: 50%;
-		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-		max-height: 70px;
-		height: auto;
-		width: auto;
-		padding: 3%;
-		border: solid 2px white;
-		cursor: pointer;
-		user-select: none;
-		-webkit-user-select: none;
-		touch-action: manipulation;
-	}
+.challengeButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	display: flex;
+	align-items: center;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+}
 
-	.challengeButton:hover {
-		background:	var(--deep-blue-10);
-		color: white;
-		cursor: pointer;
-	}
+.challengeButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
+}
 
-	.relationButton {
-		margin-right: 3%;
-		margin-left: 3%;
-		flex: auto;
-		border-radius: 50%;
-		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-		max-height: 70px;
-		height: auto;
-		width: auto;
-		padding: 3%;
-		border: solid 2px white
-	}
+.relationButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white
+}
 
-	.relationButton:hover {
-		background:	var(--deep-blue-10);
-		color: white;
-		cursor: pointer;
+.relationButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
 
-	}
+}
 
-	.user-profile {
-		flex-direction:	row;
-		text-align: center;
-		margin-right: 5%;
-		margin-left: 5%;
-		margin-bottom: 0%;
-	}
+.user-profile {
+	flex-direction:	row;
+	text-align: center;
+	margin-right: 5%;
+	margin-left: 5%;
+	margin-bottom: 0%;
+}
 
-	.replyButton {
-		display: flex;
-		flex-direction: column;
-		justify-content: right;
-	}
+.replyButton {
+	display: flex;
+	flex-direction: column;
+	justify-content: right;
+}
 
-	.replyButton > button {
-		border-radius: 8px;
-		background:	none;
-		border: none;
-		border: solid 2px white;
-		font-family: MyanmarText;
-		letter-spacing:	2px;
-		color: white;
-		margin-top: 5%;
-	}
+.replyButton > button {
+	border-radius: 8px;
+	background:	none;
+	border: none;
+	border: solid 2px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	color: white;
+	margin-top: 5%;
+}
 
-	.replyButton > button:hover {
-		background:	var(--deep-blue-10);
-		cursor: pointer;
-	}
+.replyButton > button:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+}
 
-	.blockButton {
-		margin-right: 3%;
-		margin-left: 3%;
-		flex: auto;
-		border-radius: 50%;
-		max-height: 70px;
-		height: auto;
-		width: auto;
-		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-		background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
-		padding: 3%;
-		border: solid 2px white
-	}
+.blockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
+	padding: 3%;
+	border: solid 2px white
+}
 
-	.blockButton:hover {
-		background:	var(--deep-blue-10);
-		cursor: pointer;
-		background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
-	}
+.blockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+	background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
+}
 
 
-	.unblockButton {
-		margin-right: 3%;
-		margin-left: 3%;
-		flex: auto;
-		border-radius: 50%;
-		max-height: 70px;
-		height: auto;
-		width: auto;
-		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-		padding: 3%;
-		border: solid 2px white
-	}
+.unblockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	padding: 3%;
+	border: solid 2px white
+}
 
-	.unblockButton:hover {
-		background:	var(--deep-blue-10);
-		cursor: pointer;
-	}
+.unblockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+}
 
-	/* stat style */
+/* stat style */
 
-	.StatsArea
-	{
-		width:	100%;
-		min-height:	500px;
-		border: solid white 3px;
-		border-top: none;
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;
-	}
+.StatsArea
+{
+	width:	100%;
+	min-height:	500px;
+	border: solid white 3px;
+	border-top: none;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
 
-	.stat {
-		width: 90%;
-		margin-top: 3%;
-		margin-bottom: 3%;
-		margin-right: auto;
-		margin-left: auto;
-		border: solid 3px white;
-		max-height:	500px;
-		display: flex;
-		flex-direction: column;
-		font-size: 150%;
-		overflow-y:	scroll;
-		height: 90%;
-	}
+.stat {
+	width: 90%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	border: solid 3px white;
+	max-height:	500px;
+	display: flex;
+	flex-direction: column;
+	font-size: 150%;
+	overflow-y:	scroll;
+	height: 90%;
+}
 
-	.stat > .statElem {
-		display: flex;
-		gap: 4%;
-		text-align: center;
-		align-items: center;
-	}
+.stat > .statElem {
+	display: flex;
+	gap: 4%;
+	text-align: center;
+	align-items: center;
+}
 
-	.stat > .statElem > h3 {
-		flex: 1 0;
-		background: rgb(203, 177, 233, 0.2);
-	}
+.stat > .statElem > h3 {
+	flex: 1 0;
+	background: rgb(203, 177, 233, 0.2);
+}
 
-	.stat > .statElem > p {
-		flex: 1 0;
-		font-size: 1.17em;
-		background: rgb(203, 177, 233, 0.2);
+.stat > .statElem > p {
+	flex: 1 0;
+	font-size: 1.17em;
+	background: rgb(203, 177, 233, 0.2);
 
-	}
-	.StatsTabs
-	{
-		display:	flex;
-		flex-direction:	row;
-		border:	solid 3px white;
-		border-top-right-radius: 5px;
-		border-top-left-radius: 5px;
-		width: 100%;
-		overflow: hidden;
-	}
+}
+.StatsTabs
+{
+	display:	flex;
+	flex-direction:	row;
+	border:	solid 3px white;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	width: 100%;
+	overflow: hidden;
+}
 
-	.middle
-	{
-		border-right: solid 3px white !important;
-		border-left: solid 3px white !important;
-	}
+.middle
+{
+	border-right: solid 3px white !important;
+	border-left: solid 3px white !important;
+}
 
-	.StatsTabs > button
-	{
-		background: none;
-		border: none;
-		flex:	1 1 0;
-		text-align:	center;
-		vertical-align:	center;
-		text-align:	center;
-		text-decoration:	none;
-		font-family: MyanmarText;
-		letter-spacing:	2px;
-		font-size:	32px;
-		color: var(--font-blue);
-		padding-top: 1%;
-		font-weight:	bold;
-	}
+.StatsTabs > button
+{
+	background: none;
+	border: none;
+	flex:	1 1 0;
+	text-align:	center;
+	vertical-align:	center;
+	text-align:	center;
+	text-decoration:	none;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size: 120%;
+	color: white;
+	padding-top: 1%;
+	font-weight:	bold;
+}
 
-	.StatsTabs > button:hover
-	{
-		background:	var(--deep-blue-10);
-		cursor: pointer; 
-	}
+.StatsTabs > button:hover
+{
+	background:	var(--deep-blue-10);
+	cursor: pointer; 
+}
 
-	.StatsTabs #CurrentTab
-	{
-		background:	white;
-		color:	var(--font-blue);
-	}
+.StatsTabs #CurrentTab
+{
+	background:	white;
+	color:	var(--font-blue);
+}
 
-	.achievementsTable
-	{
-		width: 90%%;
-		margin-top: 3%;
-		margin-bottom: 3%;
-		margin-right: 5%;
-		margin-left: 5%;
-		border: solid white 3px;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		overflow: scroll;
-	}
+.achievementsTable
+{
+	width: 90%%;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: 5%;
+	margin-left: 5%;
+	border: solid white 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	overflow: scroll;
+}
 
-	.achievementsCol
-	{
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		width: 100%;
-		margin-top: 1%;
-		margin-bottom: 1%;
-	}
+.achievementsCol
+{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+	margin-top: 1%;
+	margin-bottom: 1%;
+}
 
-	.achievementsCol > div
-	{
-		flex: 1 1 0;
-		border: solid white 3px;
-		margin-right: 7%;
-		margin-left: 7%;
-		max-width: 100px;
-		flex: 1 0 auto;
-		aspect-ratio: 1 / 1;
-		border-radius: 5px;
-	}
+.achievementsCol > div
+{
+	flex: 1 1 0;
+	border: solid white 3px;
+	margin-right: 7%;
+	margin-left: 7%;
+	max-width: 100px;
+	flex: 1 0 auto;
+	aspect-ratio: 1 / 1;
+	border-radius: 5px;
+}
 
-	.history
-	{
-		width: 90%;
-		display: inline-block;
-		margin-top: 3%;
-		margin-bottom: 3%;
-		margin-right: auto;
-		margin-left: auto;
-		max-height:	500px;
-		overflow-y: scroll;
-		border: solid 3px white;
-	}
+.history
+{
+	width: 90%;
+	display: inline-block;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	max-height:	500px;
+	overflow-y: scroll;
+	border: solid 3px white;
+}
 
-	.histCats
-	{
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-		text-align: center;
-		background: var(--white-10);
-	}
+.histCats
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	background: var(--white-10);
+}
 
-	.histCats > div
-	{
-		flex: auto;
-	}
+.histCats > div
+{
+	flex: 1 1 0;
+}
 
-	.histElem
-	{
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-		text-align: center;
-		border-bottom: solid 1px white;
-	}
+.histElem
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	border-bottom: solid 1px white;
+}
 
-	.histElem > div
-	{
-		flex: auto;
-	}
+.histElem > div
+{
+	flex: 1 1 0;
+}
 
 
 </style>

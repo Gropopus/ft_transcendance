@@ -59,12 +59,14 @@ export class AppModule implements NestModule {
         {path: '/api/oauth2/school42', method: RequestMethod.GET},
         {path: '/api/oauth2/school42/callback', method: RequestMethod.GET},
 		// channel
+      {path: '/api/channel/:id/update-password', method: RequestMethod.POST},
       {path: '/api/channel/:idChannel', method: RequestMethod.GET},
       {path: '/api/channel/all', method: RequestMethod.GET},
       {path: '/api/channel/direct-message/:userId', method: RequestMethod.GET},
       {path: '/api/channel/direct-message/:user1/:user2', method: RequestMethod.GET},
       {path: '/api/channel/:id/info', method: RequestMethod.GET},
       {path: '/api/channel/new/:creatorId', method: RequestMethod.PUT},
+      {path: '/api/channel/:id/changetype/:type', method: RequestMethod.PUT},
       {path: '/api/channel/direct-message/new/:user1/:user2', method: RequestMethod.PUT},
       {path: '/api/channel/delete/:id', method: RequestMethod.PUT},
       {path: '/api/channel/:id/remove/:userId', method: RequestMethod.PUT},
@@ -101,6 +103,7 @@ export class AppModule implements NestModule {
       {path: 'api/game/stat/:gameID', method: RequestMethod.GET},
       {path: 'api/game/stat/', method: RequestMethod.GET},
       {path: 'api/game/playinglist/', method: RequestMethod.GET},
+      {path: 'api/game/history/:userId', method: RequestMethod.GET},
       )
       .forRoutes('')
   }

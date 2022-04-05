@@ -2,6 +2,7 @@ import { isJSXFragment } from '@babel/types';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPlayer } from 'src/player/player.interface';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { PlayerService } from 'src/player/player.service';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
@@ -23,6 +24,20 @@ export class GameService {
 	async findAllPlaying(): Promise<any[]> {
 		return await this.gameRepository.find({where: { status: "playing" }});
 	}
+
+	async userHistory(userId: number, options: IPaginationOptions): Promise<Pagination<Igame>> {
+		const query = this.gameRepository
+		.createQueryBuilder('history')
+		.leftJoinAndSelect('history.player_left_id', 'p1')
+		.leftJoinAndSelect('history.player_right_id', 'p2')
+		.leftJoinAndSelect('p1.user', 'u1')
+		.leftJoinAndSelect('p2.user', 'u2')
+		.where('u1.id = :userId1', { userId1: userId })
+		.orWhere('u2.id = :userId2', { userId2: userId })
+
+		return paginate(query, options);
+	}
+
 	findOne(id: number): Promise<GameEntity> {
 		return this.gameRepository.findOne(id);
 	}

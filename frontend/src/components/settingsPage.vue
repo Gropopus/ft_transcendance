@@ -97,12 +97,14 @@ export default	{
 		this.picture;
 	},
 
-	created(){
+/*	created(){
 		this.displayPicture();
 		this.isTwoFA();
-	},
+	},*/
 
 	async created()	{
+		this.displayPicture();
+		this.isTwoFA();
 		this.userData = await this.fetchUserData();
 		this.picture = await this.getPicture();
 	},

@@ -39,7 +39,14 @@
                 <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
                     <button @click="addUser()" class="addButton">
                         add
-                    </button> <br>
+                    </button>
+                <div v-if="role == 'owner'" style="margin-top:5%; margin-botton: 6%">
+                    Change channel type:
+                    <select class="selector" @change="changeType()">
+                        <option :selected="isProtected(channelData.type)">protected</option>
+                        <option :selected="!isProtected(channelData.type)">not protected</option>
+                    </select>
+                </div>
             </div>
             <div class="formElem" v-if="channelData.type == 'protected' && role == 'owner'">
                 <label for="password">Change channel password </label>	<br>
@@ -79,16 +86,18 @@ export default defineComponent ({
             users: [],
             role: "",
             error: "",
+            new_type: "",
 		}
 	},
 
     mounted() {
-        this.channel;
+        this.channelData;
     },
 
     async created() {
         this.channelId = this.$route.params.id;
         this.channelData = await this.fetchChannel();
+        console.log(this.channelData);
         this.setRole();
     },
 
@@ -142,6 +151,26 @@ export default defineComponent ({
             return (id == this.channelData.owner.id);
         },
 
+        isProtected(type: string)
+        {
+            if (type == 'protected')
+                return (1);
+            else
+                return (0);
+        },
+        async changePassword()
+        {
+            if (!this.chatPassword)
+                return ;
+             const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/update-password`, {
+                method: 'post',
+               headers: { 'content-type': 'application/json' },
+               body: JSON.stringify({password: this.chatPassword})
+            })
+            this.chatPassword = "";
+            this.channelData = await this.fetchChannel();
+        },
         async muteUser(id: number) {
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/mute/${id}`, {
@@ -168,7 +197,6 @@ export default defineComponent ({
                headers: { 'content-type': 'application/json' },
             })
             this.channelData = await this.fetchChannel();
-            console.log(this.channelData.ban)
         },
 
         async unbanUser(id: number) { 
@@ -249,6 +277,11 @@ export default defineComponent ({
         },
 
         async deleteChannel() {
+            const ret = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            });
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',
@@ -264,6 +297,19 @@ export default defineComponent ({
                headers: { 'content-type': 'application/json' },
             });
             this.$router.replace('/chat');
+        },
+        async changeType(){
+            let type = "";
+            if (this.isProtected(this.channelData.type) == 1)
+                type = "public";
+            else
+                type = "protected";
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/changetype/${type}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            });
+            this.channelData = await this.fetchChannel();
         },
 
         isInChannel(id: number) {
@@ -424,6 +470,18 @@ export default defineComponent ({
     margin-bottom: 2%;
     height: 7%;
     width: 7%;
+}
+
+.selector {
+	padding-top: 1%;
+    margin-left: 10%;
+	width: 20%;
+	background:	white;
+	border:	solid rgb(238, 220, 220);
+	font-size:	100%;
+	color:	rgb(236, 100, 151);
+	border-radius: 4px;
+	font-family: MyanmarText;
 }
 
 </style>
