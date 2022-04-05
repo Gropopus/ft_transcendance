@@ -156,6 +156,19 @@ export default defineComponent ({
             else
                 return (0);
         },
+        async changePassword()
+        {
+            if (!this.chatPassword)
+                return ;
+             const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/update-password`, {
+                method: 'post',
+               headers: { 'content-type': 'application/json' },
+               body: JSON.stringify({password: this.chatPassword})
+            })
+            this.chatPassword = "";
+            this.channelData = await this.fetchChannel();
+        },
         async muteUser(id: number) {
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/mute/${id}`, {

@@ -32,6 +32,13 @@ export class ChannelService {
     return this.addAdminToChannel(newChannel, creator);
   }
 
+  async updatePassword(channel : Ichannel, password: string): Promise<Ichannel> {
+	console.log(channel.password);
+	channel.password = password;
+	console.log(channel.password);
+	return this.channelRepository.save(channel);
+  }
+
   async newDirectMessage(user1: Iuser, user2: Iuser): Promise<Ichannel> {
 		let channel: Ichannel = {
 			name: 'none',
