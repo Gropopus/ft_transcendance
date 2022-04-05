@@ -24,7 +24,7 @@
 		<div class="channelName" v-if="channelsList.length > 0">
 			<h2 v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'"> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
 			<h2 v-else> {{ getUserMessageName(channelId) }}</h2>
-			<button v-if="hasSettingsRights()" @click="goToSettings(channelId)"> Settings </button>
+			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
 			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
