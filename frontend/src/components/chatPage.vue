@@ -27,7 +27,7 @@
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
-			<div v-if="mess">
+			<!--<div v-if="mess">-->
 			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					{{ mess.user.username}}: <br>
@@ -41,7 +41,7 @@
 				</div>
 			</ul>
 			</div>
-		</div>
+		<!--</div>-->
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
 			<button @click="sendMessage(message)" class="sendButton">send</button>

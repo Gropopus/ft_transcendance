@@ -99,6 +99,13 @@ export class ChannelController {
 		return this.channelService.unbanUser(params.id, params.userId);
 	}
 
+	@Put(':id/changetype/:type')
+	async changeTypeChannel(@Param() params,@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Ichannel>
+	{
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'})
+		return this.channelService.changeTypeChannel(channel.items[0], params.type);
+	}
+
 	@UseGuards(JwtAuthGuard)
 	@Put(':id/admin/destroy')
 	async closeChannelAdmin(@Param('id') id: string): Promise<Ichannel> {
