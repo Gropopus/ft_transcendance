@@ -322,7 +322,7 @@ export default	defineComponent ({
 					headers: { 'content-type': 'application/json' }
 				});
 			}
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async blockUser(){
@@ -346,7 +346,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		async declineRequest(){
@@ -354,7 +354,7 @@ export default	defineComponent ({
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
-			this.relation = await this.fetchRelation();
+			this.update();
 		},
 
 		isFriend() {
