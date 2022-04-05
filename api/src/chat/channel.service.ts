@@ -58,8 +58,10 @@ export class ChannelService {
   async getOneDirectMessage(userId1: number, userId2: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
 		const query = this.channelRepository
 		.createQueryBuilder('channel')
-		.leftJoinAndSelect('channel.users', 'users')
-		.where('users.id = :userId1 and users.id = :userId2', { userId1: userId1, userId2: userId2  })
+		.leftJoinAndSelect('channel.users', 'users1')
+		.leftJoinAndSelect('channel.users', 'users2')
+		.where('users1.id = :userId1', { userId1: userId1 })
+		.andWhere('users2.id = :userId2', { userId2: userId2 })
 		.andWhere('channel.type = :t', {t: ChannelType.DIRECT});
 
 		return paginate(query, options);

@@ -25,12 +25,12 @@
 		<div class="chatSide">
 		<div class="channelName" v-if="channelsList.length > 0">
 			<h2 v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'"> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
-			<h2 v-else> {{ getUserMessageName(channelId) }}</h2>
+			<h2 v-else @click="goToUserProfile(getUserMessageName(channelId))" class="usernameButton"> {{ getUserMessageName(channelId) }}</h2>
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
-			<div v-if="mess">
-			<ul :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
+			<!--<div v-if="mess">-->
+			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					{{ mess.user.username}}: <br>
 					{{ mess.text }} <br>
@@ -43,7 +43,7 @@
 				</div>
 			</ul>
 			</div>
-		</div>
+		<!--</div>-->
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
 			<button @click="sendMessage(message)" class="sendButton">send</button>
@@ -102,11 +102,11 @@ export default	defineComponent ({
 	async mounted() {
 		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
-		console.log(this.all);
 		this.channelsList = await this.fetchChannelsList();
-			console.log(this.channelsList);
 		this.all;
-		if (this.channelsList.length > 0)
+		if (this.$route.query)
+			this.channelId = this.$route.query.id;
+		else if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.channelMessages = await this.fetchMessages();
 		this.resetScroll();
@@ -124,7 +124,6 @@ export default	defineComponent ({
 	},
 
 	async created() {
-		console.log('create');
 		this.socket = io('http://localhost:42070', {
 			withCredentials: true,
 			extraHeaders: {
@@ -132,7 +131,6 @@ export default	defineComponent ({
 			},
 			autoConnect: false});
 			// this.channelsList = this.fetchChannelsList();
-			// console.log(this.channelsList);
 	},
 
 
@@ -215,6 +213,10 @@ export default	defineComponent ({
 			this.$router.replace(`/channel-setting/${id}`)
 		},
 
+		goToUserProfile(username: string) {
+			this.$router.replace(`/profile/${username}`)
+		},
+
 		async hasSettingsRights()	{
 			return (true);
 		},
@@ -264,7 +266,6 @@ export default	defineComponent ({
 			const chan = this.channelsList[this.getChannelIndex(id)];
 			if (chan.type != 'direct-message' || chan.admin.length != 2)
 				return "error";
-				console.log(chan);
 			if (chan.admin[0].id == this.userId)
 				return chan.owner.username;
 			else
@@ -623,6 +624,11 @@ export default	defineComponent ({
 	font-size: 120%;
 	font-style: Myanmar;
 	color: white;
+}
+
+.usernameButton:hover {
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 .sendButton:hover

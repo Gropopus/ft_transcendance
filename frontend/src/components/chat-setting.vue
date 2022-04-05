@@ -46,6 +46,11 @@
                         Add
                     </button>
                 </div>
+                Change channel type:
+                <select class="selector" @change="changeType()">
+                <option :selected="isProtected(channelData.type)">protected</option>
+                <option :selected="!isProtected(channelData.type)">not protected</option>
+            </select>
             </div>
             <div class="formElem" v-if="channelData.type == 'protected' && role == 'owner'">
                 <label for="password">Change channel password </label>	<br>
@@ -87,6 +92,7 @@ export default defineComponent ({
 			searchString: "",
             role: "",
             error: "",
+            new_type: "",
 		}
 	},
 
@@ -151,6 +157,13 @@ export default defineComponent ({
             return (id == this.channelData.owner.id);
         },
 
+        isProtected(type: string)
+        {
+            if (type == 'protected')
+                return (1);
+            else
+                return (0);
+        },
         async muteUser(id: number) {
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/mute/${id}`, {
@@ -278,6 +291,19 @@ export default defineComponent ({
             });
             this.$router.replace('/chat');
         },
+        async changeType(){
+            let type = "";
+            if (this.isProtected(this.channelData.type) == 1)
+                type = "public";
+            else
+                type = "protected";
+            const res = await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/changetype/${type}`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+            });
+            this.channelData = await this.fetchChannel();
+        },
 
         isInChannel(id: number) {
             for (let user of this.channelData.users)
@@ -330,7 +356,8 @@ export default defineComponent ({
                         });
                         /*console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.searchString}`);*/
                        
-                       this.channelData = await this.fetchChannel();
+                   		this.channelData = await this.fetchChannel();
+						this.usernameSearch.splice(user, 1);
                     }
                     else
                         this.error = "User already in the channel.";
@@ -518,6 +545,18 @@ export default defineComponent ({
 
 .searchButton:hover {
 	background:	var(--deep-blue-10);
+}
+
+.selector {
+	padding-top: 1%;
+    margin-left: 10%;
+	width: 20%;
+	background:	white;
+	border:	solid rgb(238, 220, 220);
+	font-size:	100%;
+	color:	rgb(236, 100, 151);
+	border-radius: 4px;
+	font-family: MyanmarText;
 }
 
 </style>
