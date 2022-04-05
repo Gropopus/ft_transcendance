@@ -197,6 +197,8 @@ export default defineComponent ({
                 {
                     if (!this.isInChannel(elem.id))
                     {
+                        if (this.isBan(elem.id) == true)
+                            this.unbanUser(elem.id);
                         await fetch(
                             `http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
                                 method: 'put',
@@ -204,7 +206,7 @@ export default defineComponent ({
                                 'Access-Control-Allow-Origin': '*'},
                                 body: JSON.stringify({password: this.chatPassword}),
                         });
-                        console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`);
+                        /*console.log(`http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`);*/
                        
                        this.channelData = await this.fetchChannel();
                         console.log(this.channelData);
