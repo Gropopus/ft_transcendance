@@ -271,6 +271,7 @@ export default defineComponent ({
         },
 
         async deleteChannel() {
+            console.log(this.channelData);
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',
