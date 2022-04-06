@@ -370,6 +370,7 @@ export default	defineComponent ({
 	flex-direction: row;
 	gap: 3%;
 	/* flex: 1 1 0; */
+	min-width: 1300px;
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
@@ -385,6 +386,7 @@ export default	defineComponent ({
 	margin-bottom: 2%;
 	text-align: left;
 	vertical-align: center;
+	min-width: 350px;
 }
 
 .username {
@@ -465,12 +467,19 @@ export default	defineComponent ({
 }
 
 .relation {
+	flex: 2;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
+	min-width: 400px;
 	margin-right: 5%;
+	/*margin-left:auto;*/
 	margin-top: auto;
 	margin-bottom: auto;
+}
+
+.relation > img	{
+	object-fit: contain;
 }
 
 .challengeButton {
@@ -591,6 +600,7 @@ export default	defineComponent ({
 
 .StatsArea
 {
+	min-width: 800px;
 	width:	100%;
 	min-height:	500px;
 	border: solid white 3px;
@@ -640,6 +650,7 @@ export default	defineComponent ({
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
 	width: 100%;
+	min-width: 800px;
 	overflow: hidden;
 }
 
