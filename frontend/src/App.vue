@@ -56,12 +56,9 @@ export default	{
 
     setRoute() {
       const name = this.$route.name;
-      console.log(name);
-
-
       if (!this.isLogged() && this.isLogPage(name))
         this.$router.replace('/login')
-      else if (this.isLogged && !this.isLogPage(name))
+      else if (this.isLogged() && !this.isLogPage(name) && name != 'callback')
         this.$router.replace('/game')
     },
 
