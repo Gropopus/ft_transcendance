@@ -276,8 +276,14 @@ export default	defineComponent ({
 		async challenge() {
 			console.log('your user id is ' + this.userId + 'trying to challenge ' + this.userData.id);
 			// /challenge/:challengeMode/:challengeId
-			this.$router.push('/challenge/normal/3');
-			// this.$router.push('/challenge/hard/1');
+			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const challengeId = await ret.json();
+			console.log(challengeId)
+			this.$router.push('/challenge/normal/' + challengeId);
+
 			return "";
 		},
 
