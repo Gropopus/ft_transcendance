@@ -47,6 +47,8 @@ export default	{
         'logout',
         'profile',
         'userProfile',
+        'friends',
+        'settings'
       ];
       for (let page of pageLog)
         if (page == name)

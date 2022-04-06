@@ -43,7 +43,7 @@ export default	{
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
-				})
+				}).catch (err)
 			const ret =	await res;
 			if (ret.status == 401)
 			{
