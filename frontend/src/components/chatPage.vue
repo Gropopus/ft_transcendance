@@ -54,7 +54,7 @@
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					<div v-if="channel.type != 'direct-message'"> {{ channel.name }}</div>
-					<div v-else> {{ getUserMessageName(channel.id) }}</div> <br>
+					<div v-else> {{ getUserMessageName(channel.id) }}</div>
 				</button>
 			</div>
 			<div class="chanSearch">
@@ -309,6 +309,7 @@ export default	defineComponent ({
 }
 
 .elemChanList {
+	min-width: 300px;
 	display: flex;
 	gap: 5%;
 	font-size: 20px;
@@ -357,6 +358,7 @@ export default	defineComponent ({
 	flex-direction: column;
 	min-height:	500px;
 	max-height:	45em;
+	min-width: 500px;
 	width: 100%;
 	margin-right: 3%;
 	margin-left: 3%;
@@ -376,8 +378,6 @@ export default	defineComponent ({
 	display: flex;
 	flex-direction: column;
 	min-height:	500px;
-	border:	solid 3px white;
-	border-radius: 5px;
 }
 
 .chanSearch
@@ -388,9 +388,11 @@ export default	defineComponent ({
 	border-radius: 5px;
 	border-top-right-radius: 0;
 	border-top-left-radius: 0;
-	margin: 5%;
+	margin-left: 5%;
+	margin-right: 5%;
 	margin-top: 0;
 	padding: 2%;
+	min-width: 300px;
 }
 
 .chanSearch > input
@@ -420,7 +422,8 @@ export default	defineComponent ({
 .chanSearch > button
 {
 	flex: 1;
-	margin-right: 5%;
+	margin-left: 4%;
+	margin-right: 4%;
 	background: none;
 	border: solid 3px white;
 	border-radius: 5px;
@@ -439,16 +442,16 @@ export default	defineComponent ({
 {
 	flex: 9;
 	overflow-y: scroll;
-	oferflow-x: hidden;
 	max-height:	45em;
 	border: solid white 3px;
 	border-bottom: none;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
 	margin: 5%;
+	margin-top: 0%;
 	margin-bottom: 0;
 	padding: 0;
-	padding-top: 5%;
+	/*padding-top: 5%;*/
 	padding-bottom: 5%;
 }
 
@@ -499,6 +502,8 @@ export default	defineComponent ({
 
 .chanNameButton
 {
+	width: 100%;
+/*	overflow-y: scroll;*/
 	height:	42px;
 	flex:	1 1 0;
 	text-align:	center;
@@ -584,6 +589,8 @@ export default	defineComponent ({
 .writing-zone
 {
 	border: solid 3px white;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 	border-top: none;
 	display: flex;
 	flex-direction:	row;
