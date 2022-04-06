@@ -67,8 +67,6 @@ export default	{
 				headers: { 'content-type': 'application/json' },
 			})
 			this.user =	await res.json();
-			if (this.user.username == "adbenoit")
-				this.special();
 			if (this.user.twoFactorAuthEnabled == false)
 			{
 				this.$emit('update:userId', this.user.id);
