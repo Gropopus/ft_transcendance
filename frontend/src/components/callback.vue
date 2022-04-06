@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts">
+import { handleError } from '@vue/runtime-core';
 export default	{
 	name: 'callback',
 	props:	{
@@ -35,6 +36,17 @@ export default	{
 		this.loginWith42();
     },
 	methods:	{
+		handleError(status: number) {
+			if (status == 401)
+				this.$router.push({name: 'Unauthorized'});
+			else if (status == 40)
+				this.$router.push({name: 'NotFound'});
+			else if (status == 500)
+				this.$router.push({name: 'InternalServerError'});
+			else
+				return false;
+			return true;
+		},
 
 		async 	twoFACheck()
 		{
@@ -45,15 +57,13 @@ export default	{
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
 				})
 			const ret =	await res;
-			if (ret.status == 401)
+			if (!this.handleError(res.status))
 			{
-				this.error = "Wrong identification code."
-				return ;
+				this.$emit('update:userId', this.user.id);
+				this.$router.push({name: 'game'})
 			}
-			this.$emit('update:userId', this.user.id);
-			this.$router.push({name: 'game'})
-
 		},
+		
 		async	loginWith42(){
 			let uri = window.location.href
 			let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
