@@ -1,9 +1,13 @@
 import { Logger } from "@nestjs/common";
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { find, map } from "rxjs";
 import { Socket, Server } from 'socket.io';
 import { PlayerService } from "src/player/player.service";
+import { subscribe } from "superagent";
 import { UnauthorizedException } from '@nestjs/common';
 import { GameService } from "./game.service";
+import { Igame } from './model/game.interface';
+import { Iuser } from "src/user/model/user.interface";
 import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 
@@ -36,9 +40,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	player_room: Map<string, string> = new Map<string, string>();
 	matchmaking_id: string[] = [];
 	matchmaking_hard_id: string[] = [];
+	direct_game_id: Map<number, {mode: string, usr: string}> = new
+					Map<number, {mode: string, usr: string}>();
 
 	private disconnect(client: Socket) {
-		client.emit('Error', new UnauthorizedException());
 		client.disconnect();
 	  }
 
@@ -68,6 +73,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.matchmaking_hard_id = [];
 			--this.nb_hard_matchmaking;
 			this.logger.log("reduce number of player in matchmaking hard")
+		}
+		else if (room.substring(0, 10) == 'DirectGame')
+		{
+			this.logger.log("was in direct game matchmaking")
+			let dg = this.direct_game_id.get(+ room.substring(10));
+			dg.usr = "";
 		}
 		else if (room.substring(0, 7) == 'Confirm' )
 		{
@@ -146,7 +157,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage('playerLeave')
 	handlePlayerLeave(socket: Socket, data:any): void {
-		//data.side;	data.gameId;	data.score_l;	data.score_r
+		//data.side;	data.gameId;
 		
 		this.kickAllFrom(data.gameRoom);
 		this.games_score.delete(data.gameId);
@@ -266,6 +277,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	handleObserve(client: Socket, data:any) {
 		//data.gameRoom; data.gameId;
 		let score = this.games_score.get(data.gameId);
+		if (!score)
+		{
+			this.disconnect(client)
+			return ;
+		}
 		client.join(data.gameRoom);
 		this.server.to(client.id).emit('player_size', score.l_height, score.r_height);
 		this.server.to(client.id).emit('player_pos_left', score.pos_l);
@@ -359,6 +375,42 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.kickAllFrom('MatchMakingHard');
 			this.nb_hard_matchmaking = 0;
 		}
+	}
+
+
+	@SubscribeMessage('joinDirectGame')
+	async handleDirectGame(client: Socket, data: {mode: string, searchid: number})
+	{
+		// let match = this.bidul.set(id, {val})
+		let match = this.direct_game_id.get(data.searchid);
+		if (match && match.mode == 'done')
+		{
+			console.log('trying to join a game already started');
+			this.server.to(client.id).emit('tooLateForChall');
+			return ;
+		}
+		if (match && match.usr == client.handshake.auth.userId)
+		{
+			this.logger.log('Direct game trying to join again');
+			this.server.to(client.id).emit('already_in_matchmaking');
+			return ;
+		}
+		console.log('find the match');
+		if (!match)
+		{
+			match = (this.direct_game_id.set(data.searchid, {mode: data.mode, usr: client.handshake.auth.userId }))[0];
+			client.join('DirectGame' + data.searchid);
+			this.player_room.set(client.id, 'DirectGame' + data.searchid);
+		}
+		else
+		{
+			client.join('DirectGame' + data.searchid);
+			this.player_room.set(client.id, 'DirectGame' + data.searchid);
+			this.server.to('DirectGame' + data.searchid).emit('AskReady', 'Confirm' + this.nb_try.toString());
+			this.kickAllFrom('DirectGame' + data.searchid);
+			match.mode = 'done';
+		}
+		
 	}
 
 	@SubscribeMessage('playerReady')

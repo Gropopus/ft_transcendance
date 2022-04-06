@@ -15,9 +15,11 @@ export default	defineComponent ({
 			default:	"0"
 		},
 	},
-
-	mounted() {	
-		load(this.userId, 0);
+	mounted() {
+        console.log('challengepage id  = ' + this.$route.params.challengeId);
+        console.log('challengepage mode = ' + this.$route.params.challengeMode);
+        //:challengeMode/:challengeId
+		load(this.userId, this.$route.params.challengeId, this.$route.params.challengeMode );
 	},
 	unmounted() {
 		unload(this.userId);

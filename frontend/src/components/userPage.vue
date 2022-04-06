@@ -274,6 +274,10 @@ export default	defineComponent ({
 		},
 
 		async challenge() {
+			console.log('your user id is ' + this.userId + 'trying to challenge ' + this.userData.id);
+			// /challenge/:challengeMode/:challengeId
+			this.$router.replace('/challenge/normal/3');
+			// this.$router.replace('/challenge/hard/1');
 			return "";
 		},
 
