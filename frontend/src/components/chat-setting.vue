@@ -271,11 +271,6 @@ export default defineComponent ({
         },
 
         async deleteChannel() {
-            const ret = await fetch(
-                `http://localhost:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
-                method: 'put',
-               headers: { 'content-type': 'application/json' },
-            });
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',
