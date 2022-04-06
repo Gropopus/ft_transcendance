@@ -29,7 +29,7 @@ export class UserEntity {
 	@Column({default: 'profile-picture.png'})
 	picture: string;
 	
-	@Column({default: 0})
+	@Column({default: 1000})
 	level: number;
 	
 	@Column({ nullable: true })

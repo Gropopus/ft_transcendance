@@ -35,8 +35,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	nb_matchmaking:		 number = 0;
 	nb_hard_matchmaking: number = 0;
 	nb_try: number = 0;
-	games_score: Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean}> = 
-				new Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean}>();
+	games_score: Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean, l_username: string, r_username: string}> = 
+				new Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean, l_username: string, r_username: string}>();
 	player_room: Map<string, string> = new Map<string, string>();
 	matchmaking_id: string[] = [];
 	matchmaking_hard_id: string[] = [];
@@ -89,7 +89,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		{
 			let score = this.games_score.get(+ room.substring(8))
 			if (score)
+			{
 				this.gameService.setScore(+ room.substring(8), score.l, score.r, 1);
+			}
 			else
 			{
 				this.player_room.delete(client.id);
@@ -129,9 +131,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.logger.log("client leave room");
 	}
 
-
-
-
 	emitScore(gameRoom: string, score_l: number, score_r: number): void {
 		this.server.to(gameRoom).emit('score_update', score_l, score_r)
 	}
@@ -158,10 +157,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage('playerLeave')
 	handlePlayerLeave(socket: Socket, data:any): void {
 		//data.side;	data.gameId;
-		
+		let score = this.games_score.get(data.gameId);
+
+		if (data.side == 'left' && score.l <= score.r)
+			score.l = score.r + 1;
+		else if (data.side == 'right' && score.r <= score.l)
+			score.r = score.l + 1;
+		this.server.to(data.gameRoom).emit('leaveResult', score.l, score.r)
 		this.kickAllFrom(data.gameRoom);
 		this.games_score.delete(data.gameId);
-		this.gameService.setScore(data.gameId, data.score_l, data.score_r, 0);
+		this.gameService.setScore(data.gameId, score.l, score.r, 0);
 	}
 
 	handleRightMiss(gameId: number) {
@@ -265,8 +270,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.actualiseBall(gameId);
 	}
 
-	handleEngage(gameId: number) {		
+	async handleEngage(gameId: number) {		
+		await this.sleep(2000);
 		let score = this.games_score.get(gameId);
+		if (!score)
+			return;
 		score.speed_y = (Math.random() - 0.5);
 		if (Math.random() < 0.5)
 			score.speed_x *= -1;
@@ -287,7 +295,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.server.to(client.id).emit('player_pos_left', score.pos_l);
 		this.server.to(client.id).emit('player_pos_right', score.pos_r);
 		this.server.to(client.id).emit('score_update', score.l, score.r)
-		this.server.to(client.id).emit('start_watching_now');
+		this.server.to(client.id).emit('start_watching_now', score.l_username, score.r_username);
 	}
 
 	//bellow is matchmaking part
@@ -313,23 +321,26 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			let p_one  = this.server.sockets.sockets.get(playerss[1]).handshake.auth.userId;
 			if (Math.random() < 0.5)
 			{
+				var p_r_name = (await this.userService.findOne(p_zero)).username;
+				var p_l_name = (await this.userService.findOne(p_one)).username;
 				await this.gameService.addPlayerToGame(gameid, p_one, p_zero);
-				this.server.to(playerss[1]).emit('gameId', 'left',  gameid, "gameRoom" + gameid);
-				this.server.to(playerss[0]).emit('gameId', 'right', gameid, "gameRoom" + gameid);
+				this.server.to(playerss[0]).emit('gameId', 'right', gameid, "gameRoom" + gameid, p_l_name, p_r_name);
+				this.server.to(playerss[1]).emit('gameId', 'left',  gameid, "gameRoom" + gameid, p_l_name, p_r_name);
 			}
 			else
 			{
+				var p_l_name = (await this.userService.findOne(p_zero)).username;
+				var p_r_name = (await this.userService.findOne(p_one)).username;
 				await this.gameService.addPlayerToGame(gameid, p_zero, p_one);
-				this.server.to(playerss[0]).emit('gameId', 'left', gameid, "gameRoom" + gameid);
-				this.server.to(playerss[1]).emit('gameId', 'right',  gameid, "gameRoom" + gameid);
+				this.server.to(playerss[0]).emit('gameId', 'left',  gameid, "gameRoom" + gameid, p_l_name, p_r_name);
+				this.server.to(playerss[1]).emit('gameId', 'right', gameid, "gameRoom" + gameid, p_l_name, p_r_name);
 			}
 			if (data.mode == 'normal')
-				this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: false});
+				this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: false, l_username: p_r_name, r_username: p_l_name});
 			else
-				this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: true});
+				this.games_score.set(gameid, {r:0, l:0, speed_x: 0.4, speed_y: 0, ball_x: 50, ball_y: 50, pos_l: 50 - 50/6, pos_r: 50 - 50/6, l_height: 100/ 6, r_height: 100/6, custom: true, l_username: p_r_name, r_username: p_l_name});
 			this.server.to(playerss[0]).emit('player_size', 100/6, 100/6)
 			this.server.to(playerss[1]).emit('player_size', 100/6, 100/6)
-			await this.sleep(2000);
 			this.handleEngage(gameid);
 		}
 	}
@@ -377,7 +388,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 	}
 
-
 	@SubscribeMessage('joinDirectGame')
 	async handleDirectGame(client: Socket, data: {mode: string, searchid: number})
 	{
@@ -385,7 +395,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		let match = this.direct_game_id.get(data.searchid);
 		if (match && match.mode == 'done')
 		{
-			console.log('trying to join a game already started');
 			this.server.to(client.id).emit('tooLateForChall');
 			return ;
 		}
@@ -395,7 +404,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.server.to(client.id).emit('already_in_matchmaking');
 			return ;
 		}
-		console.log('find the match');
 		if (!match)
 		{
 			match = (this.direct_game_id.set(data.searchid, {mode: data.mode, usr: client.handshake.auth.userId }))[0];

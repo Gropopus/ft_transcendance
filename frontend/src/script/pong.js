@@ -2,10 +2,12 @@ import 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js'
 
 var game = {
 	player: {
-		score: 0
+		score: 0,
+		name: 'roger'
 	},
 	computer: {
-		score: 0
+		score: 0,
+		name: 'huhuhuhuhuhuhuhuhuhuh'
 	},
 	ball: {
 		r: 15,
@@ -49,17 +51,33 @@ var mod_select = {
 		yMax: 0},
 }
 
+function clearCanvas() {
+	var context = game.canvas.getContext('2d');
+	context.clearRect(0, 0, game.canvas.width, game.canvas.height);
+}
+function clearLower() {
+	var context = game.canvas.getContext('2d');
 
-function scoreDraw(){
+	const img = new Image();
+	img.src = "/src/assets/header-id.png";
+	context.clearRect(0, 300 + img.height * 1.5, game.canvas.width, game.canvas.height);
+}
+
+function scoreDraw() {
 	var context = game.canvas.getContext('2d');
 
 	context.font = "160px MyanmarText";
 	context.fillStyle = "white" //text color;
 	context.textAlign = 'center';
 	context.textBaseLine = 'middle';
-	context.fillText(game.player.score, game.canvas.width / 2 - 120, 160);
-	context.fillText(game.computer.score, game.canvas.width / 2 + 120, 160);
+	context.fillText(game.player.score, game.canvas.width / 2 - 120, 170);
+	context.fillText(game.computer.score, game.canvas.width / 2 + 120, 170);
 
+	context.font = "40px MyanmarText"
+	context.textAlign = 'right';
+	context.fillText(game.player.name , game.canvas.width / 2 - 60, 40);
+	context.textAlign = 'left';
+	context.fillText(game.computer.name, game.canvas.width / 2 + 60, 40);
 
 	// Draw middle line
 	context.strokeStyle = 'white';
@@ -108,19 +126,15 @@ function textDraw(str, offset = 0) {
 
 	if (str == 'Opponent didn\'t respond, Back in the matchmaking')
 	{
-		// Draw field
-		context.clearRect(0,0, game.canvas.width, game.canvas.height);
-		// context.fillStyle = game.lineaire;
-		// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
-	
+		clearLower();
 		//Draw text
 		context.font = "60px MyanmarText";
 		context.fillStyle = "#252E83" //text color;
 		context.textAlign = 'center';
 		context.textBaseline = 'center';
 		
-		context.fillText('Opponent didn\'t respond', game.canvas.width / 2, game.canvas.height / 2  - 60)
-		context.fillText('Back in the matchmaking', game.canvas.width / 2, game.canvas.height / 2 + 60)
+		context.fillText('Opponent didn\'t respond', game.canvas.width / 2, game.canvas.height / 2   + 44 + offset)
+		context.fillText('Searching a new opponent', game.canvas.width / 2, game.canvas.height / 2 + 125 + offset)
 		game.matchmaking = 0;
 		return ;
 	}
@@ -203,10 +217,11 @@ function playerMove(event, ) {
 
 function entermatchmaking(draw)
 {
+	clearLower()
 	if (draw == 1)
-		textDraw("Searching an opponent", 0);
+		textDraw("Searching an opponent", 150);
 	else
-		textDraw('Opponent didn\'t respond, Back in the matchmaking', 0);
+		textDraw('Opponent didn\'t respond, Back in the matchmaking', 150);
 	game.matchmaking = 1;
 	if (game.challenge == 0)
 	{
@@ -243,16 +258,17 @@ async function waited_too_long(pid)
 	game.ready_usefull = 0;
 	if (game.matchmaking == 2)
 	{
-		textDraw("",0);
-		textDraw('You didn\'t respond in time', -60);
+		clearLower()
 		game.socket.emit('MatchTimeOut', game.confirm_id);
 		game.matchmaking = -1;
 		game.nb_confirm = 0;
 		game.button = 3;
-		buttonDraw('Enter the matchmaking again', 60, game);
+		chooseMod('You didn\'t');
+		textDraw('respond in time', 231);
 	}
 	else if (game.matchmaking == 3 && game.nb_confirm != 2)
 	{
+		// opponent didn't respond
 		game.socket.emit('MatchTimeOut', game.confirm_id);
 		game.nb_confirm = 0;
 		entermatchmaking(0, game);
@@ -262,7 +278,8 @@ async function waited_too_long(pid)
 function ready() {
 	if (game.ready_usefull == 0)
 		return ;
-	textDraw('Thanks for confirming waiting opponent', 0);
+	clearLower();
+	textDraw('Thanks for confirming waiting opponent', 150);
 	game.ready_usefull = 0;
 	game.matchmaking = 3;
 	game.socket.emit('playerReady', game.confirm_id);
@@ -366,18 +383,21 @@ function socket_init()
 		game.computer.height = (r / 100) * game.canvas.height;
 	})
 
-	game.socket.on('gameId', function(sided, id, gameRoomid) {
+	game.socket.on('gameId', function(sided, id, gameRoomid, l_name, r_name) {
 		game.gameRoom = gameRoomid;
 		game.side = sided;
+		game.player.name = l_name;
+		game.computer.name = r_name;
 		game.gameId = id;
 		game.socket.emit('joinRoom', game.gameRoom);
 	})
 
 	game.socket.on('AskReady', function(conf_id) {
-		textDraw("Please press ready", 0);
+		clearLower();
+		textDraw("Opponent found !", 150);
 		game.ready_usefull = 1;
 		game.button = 2;
-		buttonDraw("Press here to confirm", 0, game);
+		buttonDraw("Press here to confirm", 275);
 		game.matchmaking = 2;
 		game.confirm_id = conf_id;
 		game.socket.emit('joinRoom', conf_id);
@@ -419,11 +439,13 @@ function socket_init()
 		textDraw("", 0)
 		if (game.side == 'observer')
 		{
+			cancelAnimationFrame(game.anim);
+			clearCanvas();
+			drawHead()
 			if (game.player.score > game.computer.score)
-				textDraw("Game end, left player win !", 0)
+				textDraw("Game end, " + game.player.name + " win !", 150)
 			else 
-				textDraw("Game end, right player win !", 0)
-				cancelAnimationFrame(game.anim);
+				textDraw("Game end, " + game.computer.name + " win !", 150)
 			return;
 		}
 		else if ((game.player.score == 11 && game.side == 'left') || 
@@ -443,25 +465,44 @@ function socket_init()
 		game.ball.x = game.canvas.width / 2;
 		game.ball.y = game.canvas.height / 2;
 	})
+	game.socket.on('leaveResult', function(score_l, score_r) {
+		if (game.side == 'observer')
+		{
+			game.player.score = score_l;
+			game.computer.score = score_r;
+			cancelAnimationFrame(game.anim);
+			clearLower();
+			drawHead()
+			if (game.player.score > game.computer.score)
+			{
+				textDraw(game.computer.name + " leaved the game", 150);
+				textDraw(game.player.name + " win !", 231)
+			}
+			else 
+			{
+				textDraw(game.player.name + " leaved the game", 150);
+				textDraw(game.computer.name + " win !", 231)
+			}
+		}
+	})
+
 	game.socket.on('playerLeave', function() {
 		if (game.side == 'observer')
 		{
 			cancelAnimationFrame(game.anim);
-			textDraw("A player leave the game", 0);
+			drawHead()
+			textDraw("All player leaved the game", 0);
 		}
 		else
 		{
-			if (game.side == 'left' && game.player.score <= game.computer.score)
-					game.player.score = game.computer.score + 1;
-			else if (game.side == 'right' && game.computer <= game.player.score)
-					game.computer.score = game.player + 1;
 			game.socket.emit('playerLeave',
-					{side: game.side, gameId: game.gameId});
-			textDraw("", 0)
-			textDraw("Your opponent has left the game, you win", -60);
+					{side: game.side, gameId: game.gameId, gameRoom: game.gameRoom});
+			clearCanvas();
+			drawHead()
+			textDraw("Your opponent left the game :'(", 231);
+			chooseMod("You win !");
 			game.matchmaking = 0;
-			game.button = 3;
-			buttonDraw('Play again', 60, game);
+			game.button = 1;
 			cancelAnimationFrame(game.anim);
 			game.player.score = 0;
 			game.computer.score = 0;
@@ -478,7 +519,9 @@ function socket_init()
 			game.ball.y = game.canvas.height / 2;
 		}
 	})
-	game.socket.on('start_watching_now', function() {
+	game.socket.on('start_watching_now', function(r_name, l_name) {
+		game.player.name = l_name;
+		game.computer.name = r_name;
 		play();
 	})
 
@@ -631,6 +674,7 @@ function load(userId, challenge = 0, mode = '')
 	{
 		chooseMod();
 		game.button = 1;
+		game.challenge = challenge;
 	}
 	else
 	{
