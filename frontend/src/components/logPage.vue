@@ -1,10 +1,6 @@
 <template>
-	<header>
-	</header>
 	<div>
-		<!-- <div class="LoginHeader">
-			<img src="../assets/picto-id.png">
-		</div> LoginHeader end -->
+		<header />
 		<div class="LoginForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Email </label>	<br>

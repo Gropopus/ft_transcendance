@@ -1,5 +1,6 @@
 <template>
 <div>
+	<header style="padding-top: 20%"/>
     <div class="callback" v-if="twofa">
             <p class="error" v-if="error"> {{ error }} </p>
 			Please enter the 6 digit code from Google Authenticator: <br>
