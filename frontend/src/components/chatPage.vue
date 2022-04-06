@@ -24,8 +24,13 @@
 		</div>
 		<div class="chatSide">
 		<div class="channelName" v-if="channelsList.length > 0">
-			<h2 v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'"> {{ channelsList[getChannelIndex(channelId)].name }} : {{ channelsList[getChannelIndex(channelId)].description }}</h2>
-			<h2 v-else @click="goToUserProfile(getUserMessageName(channelId))" class="usernameButton"> {{ getUserMessageName(channelId) }}</h2>
+			<div v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'">
+				<p style="font-size: 1.5em; margin-block-start: 0.60em;">
+					{{ channelsList[getChannelIndex(channelId)].name }} </p>
+				<p style="font-style: italic; color: rgb(255,255,255,0.7); margin-block-end: 0.60em;">
+					{{ channelsList[getChannelIndex(channelId)].description }} </p>
+			</div>
+			<div v-else @click="goToUserProfile(getDMUserInfo(channelId))" class="usernameButton"> {{ getDMUserInfo(channelId).name }}</div>
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
@@ -54,7 +59,11 @@
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					<div v-if="channel.type != 'direct-message'"> {{ channel.name }}</div>
-					<div v-else> {{ getUserMessageName(channel.id) }}</div>
+					<div v-else>
+						{{getDMUserInfo(channel.id).name}}
+						<!-- <p>{{ getDMUserInfo(channel.id).name }}</p>
+						<p>{{ getDMUserInfo(channel.id).status }}</p> -->
+					</div>
 				</button>
 			</div>
 			<div class="chanSearch">
@@ -262,14 +271,14 @@ export default	defineComponent ({
 			}
 			this.searchKey = "";
 		},
-		getUserMessageName(id: number){
+		getDMUserInfo(id: number) {
 			const chan = this.channelsList[this.getChannelIndex(id)];
 			if (chan.type != 'direct-message' || chan.admin.length != 2)
 				return "error";
 			if (chan.admin[0].id == this.userId)
-				return chan.owner.username;
+				return {name: chan.owner.username, status: chan.owner.username};
 			else
-				return chan.admin[0].username;
+				return {name: chan.admin[0].username, status: chan.admin[0].username};
 		}
 	},
 })
@@ -474,9 +483,16 @@ export default	defineComponent ({
 	width: 100%;
 }
 
-.channelName > h2
+.channelName > div
 {
 	flex: 9;
+	font-weight: bold;
+}
+
+.channelName > div > p {
+	margin-top: 0px;
+	margin-bottom: 0px;
+
 }
 
 .channelName > button
@@ -512,7 +528,7 @@ export default	defineComponent ({
 	text-decoration:	none;
 	font-family: MyanmarText;
 	letter-spacing:	2px;
-	font-size:	32px;
+	font-size:	25px;
 	color: white;
 	border:	none;
 }
@@ -635,6 +651,15 @@ export default	defineComponent ({
 	color: white;
 }
 
+.usernameButton {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
 .usernameButton:hover {
 	text-decoration: underline;
 	cursor: pointer;
