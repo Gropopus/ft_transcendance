@@ -34,6 +34,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	
 	nb_matchmaking:		 number = 0;
 	nb_hard_matchmaking: number = 0;
+	nb_direct: number = 0;
 	nb_try: number = 0;
 	games_score: Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean, l_username: string, r_username: string}> = 
 				new Map<number, {r:number, l:number, ball_x: number, ball_y: number, speed_x: number, speed_y: number, pos_r: number, pos_l: number, l_height: number, r_height: number, custom: boolean, l_username: string, r_username: string}>();

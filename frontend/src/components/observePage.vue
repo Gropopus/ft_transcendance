@@ -18,7 +18,7 @@ export default	defineComponent ({
     async mounted() {	
         this.gameList;
         this.gameListPlaying;
-		if (isNaN(this.$route.params.gameId) == true)
+		if (isNaN(this.$route.params.gameId) == true || this.$route.params.gameId >= 2147483648 || this.$route.params.gameId < -2147483648 )
 		{
 			this.$router.push('/404');
 			return ;
@@ -28,7 +28,11 @@ export default	defineComponent ({
         });
         try {
             const test = await h.json();
-            this.obs(this.userId, this.$route.params.gameId)
+			console.log('trying');
+			if (test.status != 'playing')
+				this.$router.push('/401')
+			else
+				this.obs(this.userId, this.$route.params.gameId)
         }
         catch {
             this.$router.push('/404');

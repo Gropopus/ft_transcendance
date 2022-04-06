@@ -3,13 +3,15 @@ import { UserService } from 'src/user/user.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { GameService } from './game.service';
 import { Igame } from './model/game.interface';
+import { GameGateway } from './game.gateway';
 
 @Controller('game')
 export class GameController {
 
 	constructor(
 		private gameService: GameService,
-		private userService: UserService
+		private userService: UserService,
+		private gameGateway: GameGateway,
 		) {}
 
 	@Put('delete/:gameID')
@@ -38,9 +40,10 @@ export class GameController {
 		return this.gameService.findAllPlaying();
 	}
 
-	@Get('hello')
-	hello() {
-		return 'hello :)';
+	@Get('newchallengeid/')
+	async newChallengeId() {
+		this.gameGateway.nb_direct += 1;
+		return this.gameGateway.nb_direct;
 	}
 
 	@Get('history/:userId')

@@ -5,6 +5,7 @@ import { PlayerService } from 'src/player/player.service';
 import { Iuser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
+import { GameGateway } from './game.gateway';
 import { GameEntity } from './model/game.entity';
 import { Igame, gameStatus, gameMode } from './model/game.interface';
 
@@ -102,6 +103,7 @@ export class GameService {
 		return {score_l: game.score_l, score_r: game.score_r};
 	}
 
+	
 	async updateElo(winnerid: number, looserid: number)
 	{
 		let user_a = await this.userService.findOne(winnerid);
