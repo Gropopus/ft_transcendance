@@ -51,7 +51,7 @@ export default	{
 				return ;
 			}
 			this.$emit('update:userId', this.user.id);
-			this.$router.replace({name: 'game'})
+			this.$router.push({name: 'game'})
 
 		},
 		async	loginWith42(){
@@ -70,7 +70,7 @@ export default	{
 			if (this.user.twoFactorAuthEnabled == false)
 			{
 				this.$emit('update:userId', this.user.id);
-				this.$router.replace({name: 'game'})
+				this.$router.push({name: 'game'})
 			}
 			else
 				this.twofa = "oui";

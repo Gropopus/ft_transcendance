@@ -14,7 +14,7 @@ export default defineComponent({
 	
 	methods: {
 		goBack() {
-			this.$router.replace('/login');
+			this.$router.push('/login');
 		},
 	}
 })

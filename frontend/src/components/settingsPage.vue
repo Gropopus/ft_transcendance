@@ -316,7 +316,7 @@ export default	{
 		},
 
 		goToRoute(path: string) {
-			this.$router.replace(path);
+			this.$router.push(path);
 		},
 	}
 }

@@ -31,7 +31,7 @@ export default	defineComponent ({
         this.gameListPlaying;
 		if (isNaN(this.$route.params.gameId) == true)
 		{
-			this.$router.replace('/404');
+			this.$router.push('/404');
 			return ;
 		}
         const h = await fetch('http://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
@@ -42,7 +42,7 @@ export default	defineComponent ({
             this.obs(this.userId, this.$route.params.gameId)
         }
         catch {
-            this.$router.replace('/404');
+            this.$router.push('/404');
         }
  
     },

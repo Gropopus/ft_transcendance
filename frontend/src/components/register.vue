@@ -87,7 +87,7 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 				})
 				const data1 = await userRes.json()
-				this.$router.replace({name: 'login'})
+				this.$router.push({name: 'login'})
 
 				return ;
 			}
@@ -99,7 +99,7 @@ export default	{
 		},
 		async goBack()
 		{
-			this.$router.replace({name: 'login'});
+			this.$router.push({name: 'login'});
 		}
 	}
 }
