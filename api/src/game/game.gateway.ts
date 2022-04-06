@@ -170,7 +170,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	handleRightMiss(gameId: number) {
-
 		let score = this.games_score.get(gameId);
 		if (score == undefined)
 			return ;
@@ -232,7 +231,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			
 		if (score.ball_x >= 100) // colllision right
 		{
-			if (score.ball_y < score.pos_r || score.ball_y > score.pos_r + score.l_height )
+			if (score.ball_y < score.pos_r || score.ball_y > score.pos_r + score.r_height )
 				this.handleRightMiss(gameId)
 			else
 			{
@@ -247,7 +246,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 		if (score.ball_x <= 0)
 		{
-			if (score.ball_y < score.pos_l || score.ball_y > score.pos_l + score.r_height )
+			if (score.ball_y < score.pos_l || score.ball_y > score.pos_l + score.l_height )
 				this.handleLeftMiss(gameId)
 			else
 			{
