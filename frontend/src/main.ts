@@ -116,6 +116,7 @@ routes: [
         component: callback,
         props: true
     },
+    { path: '/404', component: NotFound },
     {
         path: "/:catchAll(.*)",
         name: 'NotFound',
