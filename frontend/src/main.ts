@@ -21,6 +21,7 @@ import NotFound from './components/NotFound.vue'
 import InternalServerError from './components/InternalServerError.vue'
 import Unauthorized from './components/unauthorized.vue'
 import challengePage from './components/challengePage.vue'
+import unauthorizedVue from './components/unauthorized.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
