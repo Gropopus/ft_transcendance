@@ -27,6 +27,10 @@
 						<p> {{ ladder.level }} / {{ ladder.total }} </p>
 					</div>
 					<div class="statElem">
+						<h3>Elo</h3>
+						<p> {{ userData.level }}  </p>
+					</div>
+					<div class="statElem">
 						<h3>Victories</h3>
 						<p>{{ userData.victory }}</p>
 					</div>

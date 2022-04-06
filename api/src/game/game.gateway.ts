@@ -88,11 +88,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		else if (room.substring(0, 8) == 'gameRoom') 
 		{
 			let score = this.games_score.get(+ room.substring(8))
-			if (score)
-			{
-				this.gameService.setScore(+ room.substring(8), score.l, score.r, 1);
-			}
-			else
+			if (!score)
 			{
 				this.player_room.delete(client.id);
 				return ;

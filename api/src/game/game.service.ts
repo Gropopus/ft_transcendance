@@ -51,9 +51,9 @@ export class GameService {
 			status: gameStatus.PLAYING
 		}
 		if (hard == true)
-			igame.mode = gameMode.NORMAL;
-		else
 			igame.mode = gameMode.HARD;
+		else
+			igame.mode = gameMode.NORMAL;
 		let game = this.gameRepository.create(igame);
 		await this.gameRepository.save(game);
 		return game.id;
@@ -76,16 +76,22 @@ export class GameService {
 		game.score_r = score_r;
 		if (end == 1)
 		{
-			game.status = gameStatus.FINISH;
+			game.status = gameStatus.CANCEL;
 			await this.gameRepository.update({id: pid}, game)
-			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
-			await this.updateElo(game.player_left_id.user.id, game.player_right_id.user.id);
 		}
 		else if (end == 0)
 		{
-			game.status = gameStatus.CANCEL;
+			game.status = gameStatus.FINISH;
 			await this.gameRepository.update({id: pid}, game);
 			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
+			if (game.mode == 'normal')
+			{
+				console.log(game.score_l + ' - ' + game.score_r)
+				if (game.score_l > game.score_r)
+					await this.updateElo(game.player_left_id.user.id, game.player_right_id.user.id);
+				else
+					await this.updateElo(game.player_right_id.user.id, game.player_left_id.user.id);
+			}
 		}
 		else
 			await this.gameRepository.update({id: pid}, game);
@@ -102,12 +108,32 @@ export class GameService {
 		let user_b = await this.userService.findOne(looserid);
 
 		const D = 400;
-		user_a.level += 100;
-		const Ea = 1 / (1 + Math.pow(10 , ((user_b.level - user_a.level) / D))) //proba of A winning
-		const Eb = 1 - Ea //proba of B winning
-		const K = 32;
-		
-		console.log(Ea);
-		console.log(Eb);
+		var Ea = 1 / (1 + Math.pow(10 , ((user_b.level - user_a.level) / D))) //proba of A winning
+		var Eb = 1 / (1 + Math.pow(10 , ((user_a.level - user_b.level) / D))) //proba of B winning
+		if (Ea > 0.9)
+			Ea = 0.9;
+		if (Eb < 0.1)
+			Eb = 0.1;
+
+		var Ka = 40;
+		var Kb = 40;
+		if (user_a.level >= 2400)
+			Ka = 15;
+		if (user_b.level >= 2400)
+			Kb = 15;
+		var win_p = Math.round(Ka * (1 - Ea));
+		var loose_p = Math.round(Kb * (0 - Eb));
+		if (win_p < 1)
+			win_p = 1;
+		if (loose_p > -1)
+			loose_p = -1;
+		user_a.level = user_a.level + win_p;
+
+		if (user_b.level + loose_p < 0)
+			user_b.level = 0;
+		else
+			user_b.level = user_b.level + loose_p;
+		this.userService.updateOne(user_a.id, user_a)
+		this.userService.updateOne(user_b.id, user_b)
 	}
 }

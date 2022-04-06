@@ -56,7 +56,7 @@ export default	{
 
 .LogoutHeader
 {
-	margin-top:	3%;
+	margin-top:	15%;
 	height:	20%;
 	display:	flex;
 	justify-content:	center;
@@ -83,6 +83,7 @@ export default	{
 	padding-left: auto;
 	width:	30%;
 	height:	40%;
+	min-width: 300px;
 	border:	solid 3px white;
 	font-size:	24px;
 	font-family: MyanmarText;
