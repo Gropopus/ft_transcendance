@@ -33,7 +33,7 @@
 				Upload </button>
 		</div>
 		<div class="submitBar">
-			<div class="title"> Two factor authentification: </div>
+			<div class="title"> Two factor authentication: </div>
 			<select class="selector" @change="handleTwoFA()">
                 <option :selected="isDisable()">disable</option>
                 <option :selected="isEnable()"> enable</option>

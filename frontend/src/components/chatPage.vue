@@ -37,7 +37,7 @@
 			<!--<div v-if="mess">-->
 			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
-					{{ mess.user.username}}: <br>
+					<button @click="goToUserProfile(mess.user.username)" class=linkButton > {{ mess.user.username}}: </button><br>
 					{{ mess.text }} <br>
 				</div>
 				<div v-else class="currentUserMess">
@@ -106,8 +106,8 @@ export default	defineComponent ({
 			joinPassword: "",
 			tmpUsername: "",
 		}
-	}, 
-
+	},
+	
 	async mounted() {
 		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
@@ -285,6 +285,18 @@ export default	defineComponent ({
 </script>
 
 <style lang="css" scoped>
+
+.linkButton {
+	background: none;
+	border: none;
+	margin-top: auto;
+	margin-bottom: auto;
+	cursor: pointer;
+	font-style: Myanmar;
+	color: white;
+	font-size: 100%;
+	letter-spacing: 2px;
+}
 
 .listName {
 	display:flex;
