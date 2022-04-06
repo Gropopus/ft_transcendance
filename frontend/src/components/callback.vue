@@ -77,19 +77,6 @@ export default	{
 			else
 				this.twofa = "oui";
 		},
-		async special()
-		{
-			const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
-						method: 'post',
-						headers: { 'content-type': 'application/json' },
-						body: JSON.stringify({ username: "tess" })
-					})
-			const ret = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
-						method: 'post',
-						headers: { 'content-type': 'application/json' },
-						body: JSON.stringify({ picture: "src/uploads/tess.jpeg" })
-					})
-		}
 
 }
 }
