@@ -11,7 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div class="perso-info">
-				<button @click="goToRoute('/settings')" title="settings"> Edit </button>
+				<button @click="goToRoute('/settings')" title="settings" class="Edit"> Edit</button>
 			</div>
 		</div>
 		<div class="StatsWin">
@@ -214,6 +214,7 @@ export default	defineComponent ({
 
 
 <style lang="css" scoped>
+
 .StatsWin
 {
 	width:	100%;
@@ -238,6 +239,8 @@ export default	defineComponent ({
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
+	min-width: 800px;
+	width: 100%;
 	margin-bottom: 2%;
 	align-content: center;
 	border-radius: 5px;
@@ -266,6 +269,7 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	font-size:	150%;
+	
 }
 
 .perso-info
@@ -296,9 +300,14 @@ export default	defineComponent ({
 	letter-spacing:	2px;
 	font-size:	150%;
 	color: white;
+	max-height: 60px;
+	min-width: 150px;
+	width:		50%;
+	margin-top: auto;
+	margin-bottom: auto;	
 	padding-top: 2%;
-	margin: 20%;
-	margin-top: 30%;
+	/*margin: 20%;*/
+	margin-top: auto;
 }
 
 .perso-info > button:hover
@@ -335,6 +344,7 @@ export default	defineComponent ({
 .StatsArea
 {
 	width:	100%;
+	min-width: 800px;
 	min-height:	500px;
 	border: solid white 3px;
 	border-top: none;
@@ -377,6 +387,7 @@ export default	defineComponent ({
 }
 .StatsTabs
 {
+	min-width: 800px;
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
