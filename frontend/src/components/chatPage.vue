@@ -463,6 +463,7 @@ export default	defineComponent ({
 {
 	flex: 9;
 	/*overflow-y: scroll;*/
+	min-width: 313px;
 	max-height:	45em;
 	border: solid white 3px;
 	border-bottom: none;
