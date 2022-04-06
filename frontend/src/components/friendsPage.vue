@@ -60,9 +60,9 @@ export default	defineComponent ({
 			search: "",
 			found: [],
 			all: [
-				{type: "Your friends", icon: "/src/assets/your-friends01.png", list: [], status: 0},
-				{type: "Friends requests", icon: "/src/assets/friends-requests.png", list: [], status: 0},
-				{type: "Blocked users", icon: "/src/assets/muted-users.png", list: [], status: 0}
+				{type: "Your friends", icon: "/src/assets/your-friends01.png", list: [], status: 1},
+				{type: "Friends requests", icon: "/src/assets/friends-requests.png", list: [], status: 1},
+				{type: "Blocked users", icon: "/src/assets/muted-users.png", list: [], status: 1}
 			]
 		}
 	},
