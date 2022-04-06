@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { PlayerService } from 'src/player/player.service';
+import { Iuser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { GameEntity } from './model/game.entity';
@@ -78,6 +79,7 @@ export class GameService {
 			game.status = gameStatus.FINISH;
 			await this.gameRepository.update({id: pid}, game)
 			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
+			await this.updateElo(game.player_left_id.user.id, game.player_right_id.user.id);
 		}
 		else if (end == 0)
 		{
@@ -92,5 +94,20 @@ export class GameService {
 	async getScore(pid: number) {
 		let game = await this.findOne(pid);
 		return {score_l: game.score_l, score_r: game.score_r};
+	}
+
+	async updateElo(winnerid: number, looserid: number)
+	{
+		let user_a = await this.userService.findOne(winnerid);
+		let user_b = await this.userService.findOne(looserid);
+
+		const D = 400;
+		user_a.level += 100;
+		const Ea = 1 / (1 + Math.pow(10 , ((user_b.level - user_a.level) / D))) //proba of A winning
+		const Eb = 1 - Ea //proba of B winning
+		const K = 32;
+		
+		console.log(Ea);
+		console.log(Eb);
 	}
 }

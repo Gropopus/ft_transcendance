@@ -1,17 +1,6 @@
 <template>
-	<div>
-		<div class="GameArea">
-			<canvas id="canvas" width="1600" height="1200"></canvas>
-		</div>
-
-		<div class="UserRecap">
-			<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
-		</div>
-
-		<div class="SocialRecap">
-			<p>mhh
-			</p>
-		</div>
+	<div class="GameArea">
+		<canvas id="canvas" width="1600" height="1200"></canvas>
 	</div>
 </template>
 
