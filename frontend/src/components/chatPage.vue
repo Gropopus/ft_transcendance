@@ -441,7 +441,7 @@ export default	defineComponent ({
 .chanList
 {
 	flex: 9;
-	overflow-y: scroll;
+	/*overflow-y: scroll;*/
 	max-height:	45em;
 	border: solid white 3px;
 	border-bottom: none;
@@ -452,7 +452,7 @@ export default	defineComponent ({
 	margin-bottom: 0;
 	padding: 0;
 	/*padding-top: 5%;*/
-	padding-bottom: 5%;
+	/*padding-bottom: 5%;*/
 }
 
 .chanNameButton
@@ -503,7 +503,7 @@ export default	defineComponent ({
 .chanNameButton
 {
 	width: 100%;
-/*	overflow-y: scroll;*/
+	overflow-x: scroll;
 	height:	42px;
 	flex:	1 1 0;
 	text-align:	center;
