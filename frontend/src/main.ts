@@ -17,6 +17,8 @@ import callback from './components/callback.vue'
 import watchPage from './components/watchPage.vue'
 import channelsetting from './components/chat-setting.vue'
 import NotFound from './components/NotFound.vue'
+import InternalServerError from './components/InternalServerError.vue'
+import Unauthorized from './components/unauthorized.vue'
 import challengePage from './components/challengePage.vue'
 
 const router = VueRouter.createRouter({
@@ -121,6 +123,16 @@ routes: [
         path: "/:catchAll(.*)",
         name: 'NotFound',
         component: NotFound,
+    },
+    {
+        path: '/500',
+        name: 'InternalServerError',
+        component: InternalServerError,
+    },
+    {
+        path: '/401',
+        name: 'Unauthorized',
+        component: Unauthorized,
     },
     ]
 });
