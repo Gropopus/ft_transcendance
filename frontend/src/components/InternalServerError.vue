@@ -1,7 +1,8 @@
 <template>
 	<div class="notFound">
 		<img src="/src/assets/confused-cat.png" />
-        <h1> 404 Not found </h1>
+        <h1> Internal Server Error </h1>
+        <br><h5>We are deeply sorry...</h5>
 	</div>
 </template>
 
@@ -9,11 +10,11 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-	name: 'NotFound',
+	name: 'InternalServerError',
 	
 	methods: {
 		goBack() {
-			this.$router.push('/login');
+			this.$router.replace('/login');
 		},
 	}
 })

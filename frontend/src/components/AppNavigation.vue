@@ -30,7 +30,7 @@
         methods: {
             goToRoute(path: string) {
             if (path != this.$route.path)
-                this.$router.replace(path);
+                this.$router.push(path);
             },
 
             isCurrent(path: string) {

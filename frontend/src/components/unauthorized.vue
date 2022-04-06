@@ -1,7 +1,8 @@
 <template>
-	<div class="notFound">
-		<img src="/src/assets/confused-cat.png" />
-        <h1> 404 Not found </h1>
+	<div class="Unauthorized">
+		<img src="/src/assets/muted-users.png" />
+        <h1> Unauthorized </h1>
+        <br><h5>You're not allowed here, you silly kitty...</h5>
 	</div>
 </template>
 
@@ -9,18 +10,18 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-	name: 'NotFound',
+	name: 'Unauthorized',
 	
 	methods: {
 		goBack() {
-			this.$router.push('/login');
+			this.$router.replace('/login');
 		},
 	}
 })
 </script>
 
 <style>
-.notFound {
+.Unauthorized {
 	display: flex;
 	flex-direction: column;
 	text-align: center;
@@ -30,13 +31,13 @@ export default defineComponent({
 	margin-top: 10%;
 }
 
-.notFound > img {
+.Unauthorized > img {
 	margin-right: auto;
 	margin-left: auto;
 	width: 20%;
 }
 
-.notFound > h3:hover {
+.Unauthorized > h3:hover {
 	text-decoration: underline;
 	cursor: default;
 }

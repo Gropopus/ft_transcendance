@@ -276,8 +276,8 @@ export default	defineComponent ({
 		async challenge() {
 			console.log('your user id is ' + this.userId + 'trying to challenge ' + this.userData.id);
 			// /challenge/:challengeMode/:challengeId
-			this.$router.replace('/challenge/normal/3');
-			// this.$router.replace('/challenge/hard/1');
+			this.$router.push('/challenge/normal/3');
+			// this.$router.push('/challenge/hard/1');
 			return "";
 		},
 
@@ -295,10 +295,10 @@ export default	defineComponent ({
 					headers: { 'content-type': 'application/json' }
 				});
 				data = await res.json();
-				this.$router.replace({path: '/chat', query: {id: data.id}});
+				this.$router.push({path: '/chat', query: {id: data.id}});
 			}
 			else
-				this.$router.replace({path: '/chat', query: {id: data.items[0].id}});
+				this.$router.push({path: '/chat', query: {id: data.items[0].id}});
 		},
 
 		async fetchPlayerHistory() {

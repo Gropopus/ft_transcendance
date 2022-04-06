@@ -38,7 +38,7 @@ export class ChannelEntity {
   @JoinTable()
   ban: UserEntity[];
   
-  @OneToMany(() => JoinedChannelEntity, joinedChannel => joinedChannel.channel)
+  @OneToMany(() => JoinedChannelEntity, joinedChannel => joinedChannel.channel, { onDelete: 'CASCADE' })
   joinedUsers: JoinedChannelEntity[];
 
   @OneToMany(() => MessageEntity, message => message.channel)

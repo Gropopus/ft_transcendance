@@ -78,7 +78,7 @@ export default	defineComponent ({
 
 	methods: {
 		goToRoute() {
-			this.$router.replace(`/watch/${this.actualSelect.id}`);
+			this.$router.push(`/watch/${this.actualSelect.id}`);
 		},
         async Select(game: any) {
 			this.actualSelect = game;

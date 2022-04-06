@@ -18,7 +18,7 @@ export class JoinedChannelEntity {
   @Column()
   Iuserid: number;
 
-  @ManyToOne(() => ChannelEntity, channel => channel.joinedUsers)
+  @ManyToOne(() => ChannelEntity, channel => channel.joinedUsers, { onDelete: 'CASCADE' })
   @JoinColumn()
   channel: ChannelEntity;
 

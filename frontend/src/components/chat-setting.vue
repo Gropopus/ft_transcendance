@@ -1,5 +1,6 @@
 <template>
 		 <div class="chatForm"> 
+             <button @click="goBack()" class="BackButton">go back</button>
             <h1> {{ channelData.name }}: settings </h1>
             <div class="userList">
                 <div class="listName">
@@ -102,7 +103,10 @@ export default defineComponent ({
     },
 
 	methods:	{
-
+        async goBack()
+		{
+			this.$router.replace({name: 'chat'});
+		},
         async fetchChannel() {
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/info`, {
@@ -271,17 +275,13 @@ export default defineComponent ({
         },
 
         async deleteChannel() {
-            const ret = await fetch(
-                `http://localhost:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
-                method: 'put',
-               headers: { 'content-type': 'application/json' },
-            });
+            console.log(this.channelData);
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
-            this.$router.replace('/chat');
+            this.$router.push('/chat');
         },
 
         async quitChannel() {
@@ -290,7 +290,7 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
-            this.$router.replace('/chat');
+            this.$router.push('/chat');
         },
         async changeType(){
             let type = "";
@@ -314,13 +314,28 @@ export default defineComponent ({
         },
 
 		goToProfile(username: string) {
-            this.$router.replace(`/profile/${username}`)
+            this.$router.push(`/profile/${username}`)
         }
 	}
 })
 </script>
 
 <style lang="css" scoped>
+
+.BackButton {
+    width: 10%;
+    min-width: 20px;
+    padding: 6px;
+	font-size:	20px;
+    margin-left: 1%;
+	border:	solid 2px white;
+    background: none;
+    color: white;
+    cursor: pointer;
+}
+.BackButton:hover {
+	background:	var(--deep-blue-10);
+}
 
 .chatForm
 {
