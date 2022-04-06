@@ -17,6 +17,7 @@ import callback from './components/callback.vue'
 import watchPage from './components/watchPage.vue'
 import channelsetting from './components/chat-setting.vue'
 import NotFound from './components/NotFound.vue'
+import challengePage from './components/challengePage.vue'
 
 const router = VueRouter.createRouter({
 history: VueRouter.createWebHistory(),
@@ -41,6 +42,12 @@ routes: [
         path: '/game',
         name: 'game',
         component: playPage,
+        props: true
+    },
+    {
+        path: '/challenge/:challengeMode/:challengeId',
+        name: 'challenge',
+        component: challengePage,
         props: true
     },
     {
@@ -109,6 +116,7 @@ routes: [
         component: callback,
         props: true
     },
+    { path: '/404', component: NotFound },
     {
         path: "/:catchAll(.*)",
         name: 'NotFound',

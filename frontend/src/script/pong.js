@@ -35,7 +35,9 @@ var game = {
 			y: 0, maxY: 0
 	},
 	mode: 'normal',
+	challenge: 0,
 }
+
 var mod_select = {
 	a :{x: 0,
 		y: 0,
@@ -206,10 +208,17 @@ function entermatchmaking(draw)
 	else
 		textDraw('Opponent didn\'t respond, Back in the matchmaking', 0);
 	game.matchmaking = 1;
-	if (game.mode == 'normal')
-		game.socket.emit('joinMatchmaking');
+	if (game.challenge == 0)
+	{
+		if (game.mode == 'normal')
+			game.socket.emit('joinMatchmaking');
+		else
+			game.socket.emit('joinHardMatchmaking');
+	}
 	else
-		game.socket.emit('joinHardMatchmaking');
+	{
+		game.socket.emit('joinDirectGame', {mode: game.mode, searchid: game.challenge});
+	}
 }
 
 function play() {
@@ -447,7 +456,7 @@ function socket_init()
 			else if (game.side == 'right' && game.computer <= game.player.score)
 					game.computer.score = game.player + 1;
 			game.socket.emit('playerLeave',
-					{side: game.side, gameId: game.gameId, score_r: game.player.score, score_l: game.computer.score});
+					{side: game.side, gameId: game.gameId});
 			textDraw("", 0)
 			textDraw("Your opponent has left the game, you win", -60);
 			game.matchmaking = 0;
@@ -478,6 +487,12 @@ function socket_init()
 		textDraw('You are already in matchmaking.', -30);
 		textDraw('You can leave this page.', 30);
 	})
+
+	game.socket.on('tooLateForChall', function() {
+		console.log('AHHHHH')
+		drawHead();
+		textDraw('This challenge is already finish', 70);
+	})
 }
 
 function canvas_init(mode){
@@ -507,6 +522,17 @@ function canvas_init(mode){
 	}
 }
 
+function drawHead()
+{
+	var context = game.canvas.getContext('2d');
+	//Draw PongHeader
+	const img = new Image();
+	img.src = "/src/assets/header-id.png";
+	img.onload = function() {
+		context.drawImage(img, game.canvas.width / 2 - (img.width * 1.5) / 2, 300, img.width * 1.5, img.height * 1.5);
+		}
+}
+
 function chooseMod(txt = "")
 {
 	var context = game.canvas.getContext('2d');
@@ -519,22 +545,21 @@ function chooseMod(txt = "")
 	// context.fillStyle = '#070707';
 	// context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 
-	//Draw PongHeader
+	drawHead();
 	const img = new Image();
 	img.src = "/src/assets/header-id.png";
-	context.drawImage(img, game.canvas.width / 2 - (img.width * 1.5) / 2, 300, img.width * 1.5, img.height * 1.5);
-
+	
 	//Normal game
 		var str = "Normal Mode"
 		context.font = "60px MyanmarText";
-		var text1 = { width: context.measureText(str).width + 10, height: 76}
+		var text1 = { width: context.measureText(str).width + 10, height: 60}
 		context.fillStyle = 'white'
 		context.fillRect(	game.canvas.width / 2 - (img.width * 1.5) / 2 - text1.width / 2,
-							330 + img.height * 1.5,
+							300 + img.height * 1.5 + 20,
 							text1.width,
 							text1.height);
 		mod_select.a.x = game.canvas.width / 2 - (img.width * 1.5) / 2 - text1.width / 2;
-		mod_select.a.y = 330 + img.height * 1.5;
+		mod_select.a.y = 300 + img.height * 1.5 + 20;
 		mod_select.a.xMax = mod_select.a.x + text1.width;
 		mod_select.a.yMax = mod_select.a.y + text1.height;
 		//contour
@@ -552,20 +577,20 @@ function chooseMod(txt = "")
 		context.textBaseline = 'center';
 		context.fillText(	str,
 							game.canvas.width / 2 - (img.width * 1.5) / 2,
-							2 * game.canvas.height / 3 );
+							300 + img.height * 1.5 + 50 + 20);
 
 
 	//hard game
 		var str = "Hard Mode"
 		context.font = "60px MyanmarText";
-		var text2 = { width: context.measureText(str).width + 10, height: 76}
+		var text2 = { width: context.measureText(str).width + 10, height: 60}
 		context.fillStyle = 'white';
 		context.fillRect(	game.canvas.width / 2 + (img.width * 1.5) / 2 - text2.width / 2,
-							330 + img.height * 1.5,
+							300 + img.height * 1.5 + 20,
 							text2.width,
 							text2.height);	
 		mod_select.b.x = game.canvas.width / 2 + (img.width * 1.5) / 2 - text2.width / 2;
-		mod_select.b.y = 330 + img.height * 1.5;
+		mod_select.b.y = 300 + img.height * 1.5 + 20;
 		mod_select.b.xMax = mod_select.b.x + text2.width;
 		mod_select.b.yMax = mod_select.b.y + text2.height;
 		//contour
@@ -582,7 +607,7 @@ function chooseMod(txt = "")
 		context.textBaseline = 'center';
 		context.fillText(	str,
 							game.canvas.width / 2 + (img.width * 1.5) / 2,
-							2 * game.canvas.height / 3);
+							300 + img.height * 1.5 + 50 + 20);
 		if (txt != '')
 		{
 			context.fillText(	txt,
@@ -596,18 +621,24 @@ function chooseMod(txt = "")
 	game.start_buton.maxY = game.start_buton.y + text2.height;
 }
 
-function load(userId)
+function load(userId, challenge = 0, mode = '')
 {
 	socket_init();
 	canvas_init('player');
-
 	game.socket.auth = {userId};
 	game.socket.connect();
-	chooseMod();
-	// draw();
-	// buttonDraw("Normal", -17, game);
-	// buttonDraw("Custom", 17, game);
-	game.button = 1;
+	if (challenge == 0)
+	{
+		chooseMod();
+		game.button = 1;
+	}
+	else
+	{
+		game.mode = mode;
+		game.challenge = challenge; 
+		game.button = 0;
+		entermatchmaking(1);
+	}
 }
 
 function unload(userId)

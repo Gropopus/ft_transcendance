@@ -274,6 +274,10 @@ export default	defineComponent ({
 		},
 
 		async challenge() {
+			console.log('your user id is ' + this.userId + 'trying to challenge ' + this.userData.id);
+			// /challenge/:challengeMode/:challengeId
+			this.$router.replace('/challenge/normal/3');
+			// this.$router.replace('/challenge/hard/1');
 			return "";
 		},
 
@@ -303,8 +307,21 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const history = await res.json();
-			console.log(history.items);
-			return history.items;
+			return history;
+		},
+
+		async fetchGameInfo()	{
+			let	tmpHistory = [];
+			const	playerHistory = await this.fetchPlayerHistory();
+			for (let elem of playerHistory)	{
+				const res = await fetch(`http://localhost:3000/api/game/stat/${elem.gameId}`,	{
+					method: 'get',
+					headers: { 'content-type': 'application/json' }
+				})
+				const histElem = await res.json();
+				tmpHistory[tmpHistory.length] = histElem;
+			}
+			return (tmpHistory);
 		},
 
 		whoWon(playerStats)	{

@@ -1,6 +1,6 @@
 <template>
 	<div class="notFound">
-		<img src="/src/assets/picto-id.png" />
+		<img src="/src/assets/confused-cat.png" />
         <h1> 404 Not found </h1>
 		<h3 @click="goBack()"> Go back </h3>
 	</div>
