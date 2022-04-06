@@ -7,7 +7,8 @@
       <!-- <div v-if="getBackUserId()">ok</div> -->
       <router-view
         :userId="this.userId"
-        @update:userId="saveUserId($event)" />
+        @update:userId="saveUserId($event)"
+        v-bind="setRoute()"/>
     </div>
   </main>
 </template>
@@ -34,9 +35,31 @@ export default	{
       return (false);
     },
 
-    goToRoute(path: string) {
-    if (path != this.$route.path)
-      this.$router.push(path);
+    isLogPage(name: string) {
+      const pageLog = [
+        'game',
+        'challenge',
+        'watch',
+        'observe',
+        'chat',
+        'createChat',
+        'channel-setting',
+        'logout',
+        'profile',
+        'userProfile',
+      ];
+      for (let page of pageLog)
+        if (page == name)
+          return true;
+      return false;
+    },
+
+    setRoute() {
+      const name = this.$route.name;
+      if (!this.isLogged() && this.isLogPage(name))
+        this.$router.replace('/login')
+      else if (this.isLogged() && !this.isLogPage(name) && name != 'callback')
+        this.$router.replace('/game')
     },
 
     isCurrent(path: string) {
