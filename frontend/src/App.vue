@@ -4,6 +4,7 @@
     <div class="winSurface">
       <!-- <div v-if="isLogged() || isCurrent('/register')"></div> -->
       <!--	<div v-else v-bind:is="goToRoute('/login')"></div> -->
+      <!-- <div v-if="getBackUserId()">ok</div> -->
       <router-view
         :userId="this.userId"
         @update:userId="saveUserId($event)" />
@@ -35,7 +36,7 @@ export default	{
 
     goToRoute(path: string) {
     if (path != this.$route.path)
-      this.$router.replace(path);
+      this.$router.push(path);
     },
 
     isCurrent(path: string) {
@@ -46,6 +47,10 @@ export default	{
 
     saveUserId(id: string) {
       this.userId = id;
+    },
+
+    async logoutUser() {
+
     },
   }
 }

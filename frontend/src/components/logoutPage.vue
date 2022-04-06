@@ -43,10 +43,10 @@ export default	{
 					body: JSON.stringify(data)
 			})
 			this.$emit('update:userId', "0");
-			this.$router.replace({name: 'login'});
+			this.$router.push({name: 'login'});
 		},
 		cancel:	function()	{
-			this.$router.replace({name: 'game'});
+			this.$router.push({name: 'game'});
 		}
 	}
 }

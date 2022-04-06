@@ -92,7 +92,7 @@ checkForm() {
 					else
 					{
 						this.$emit('update:userId', data1.id);
-						this.$router.replace({name: 'game'})
+						this.$router.push({name: 'game'})
 						return ;
 					}
 				}
@@ -127,7 +127,7 @@ checkForm() {
 				return ;
 			}
 			this.$emit('update:userId', data1.id);
-			this.$router.replace({name: 'game'})
+			this.$router.push({name: 'game'})
 
 		},
 		async	loginWith42(){
@@ -147,7 +147,7 @@ checkForm() {
 		},
 
 		register: function() {
-			this.$router.replace({name: 'register'});
+			this.$router.push({name: 'register'});
 		}
 }
 }

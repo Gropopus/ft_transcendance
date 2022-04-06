@@ -136,7 +136,7 @@ export default	defineComponent ({
 			this.all[2].list = await this.fetchBlocked();
 		},
 		async goToUserPage(username: string) {
-			this.$router.replace(`/profile/${username}`)
+			this.$router.push(`/profile/${username}`)
 		},
 
 		async searchUser() {
