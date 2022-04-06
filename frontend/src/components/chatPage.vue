@@ -188,7 +188,7 @@ export default	defineComponent ({
 		},
 
 		createChannel() {
-			this.$router.replace({name: 'createChat'});
+			this.$router.push({name: 'createChat'});
 		},
 
 		resetScroll()	{
@@ -219,11 +219,11 @@ export default	defineComponent ({
 		},
 
 		goToSettings(id: number) {
-			this.$router.replace(`/channel-setting/${id}`)
+			this.$router.push(`/channel-setting/${id}`)
 		},
 
 		goToUserProfile(username: string) {
-			this.$router.replace(`/profile/${username}`)
+			this.$router.push(`/profile/${username}`)
 		},
 
 		async hasSettingsRights()	{

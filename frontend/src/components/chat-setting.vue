@@ -281,7 +281,7 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
-            this.$router.replace('/chat');
+            this.$router.push('/chat');
         },
 
         async quitChannel() {
@@ -290,7 +290,7 @@ export default defineComponent ({
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
-            this.$router.replace('/chat');
+            this.$router.push('/chat');
         },
         async changeType(){
             let type = "";
@@ -314,7 +314,7 @@ export default defineComponent ({
         },
 
 		goToProfile(username: string) {
-            this.$router.replace(`/profile/${username}`)
+            this.$router.push(`/profile/${username}`)
         }
 	}
 })

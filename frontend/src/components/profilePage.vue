@@ -185,7 +185,7 @@ export default	defineComponent ({
 		},
 
 		goToRoute(path: string) {
-			this.$router.replace(path);
+			this.$router.push(path);
 		},
 
 		whoWon(playerStats)	{
