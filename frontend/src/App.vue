@@ -8,7 +8,7 @@
       <router-view
         :userId="this.userId"
         @update:userId="saveUserId($event)"
-        v-bind="setRoute()"/>
+        v-bind="setRoute()" />
     </div>
   </main>
 </template>
@@ -26,6 +26,10 @@ export default	{
     return {
       userId: "0"
     }
+  },
+
+  async beforeUnmounted() {
+    await this.logoutUser();
   },
 
   methods: {
@@ -75,8 +79,31 @@ export default	{
     },
 
     async logoutUser() {
-
+        const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+          method: 'get',
+            headers: { 'content-type': 'application/json' }
+        })
+        const data = await res.json()
+        const res1 = await fetch(`http://localhost:3000/api/users/logout`, {
+          method: 'post',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(data)
+        })
     },
+
+    handleError(status: number) {
+      console.log('handle error: ', status);
+        if (status == 401)
+          this.$router.push('/401');
+        else if (status == 40)
+          this.$router.push('/404');
+        else if (status == 500)
+          this.$router.push('/500');
+        else
+          return false;
+        console.log("ERROR");
+        return true;
+    }
   }
 }
 </script>

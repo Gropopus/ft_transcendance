@@ -10,7 +10,12 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
 	name: 'NotFound',
-	
+	props:	{
+	userId:	{
+		type:	[Number, String],
+		default:	0
+		}
+	},
 	methods: {
 		goBack() {
 			this.$router.push('/login');
