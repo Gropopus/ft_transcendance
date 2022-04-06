@@ -24,7 +24,7 @@ export class UserService {
 		if (!exists) {
 			const passwordHash: string = await this.hashPassword(newUser.password);
 			newUser.password = passwordHash;
-			newUser.level = 0;
+			newUser.level = 1000;
 			newUser.defeat = 0;
 			newUser.victory = 0;
 			newUser.twoFactorAuthEnabled = false;
@@ -205,7 +205,7 @@ export class UserService {
 		const ladder = await this.userRepository.find({
 			select: ["id"],
 			order: {
-				victory: "DESC"
+				level: "DESC"
 			},
 		});
 		for (let i = 0; i < ladder.length; i++)
