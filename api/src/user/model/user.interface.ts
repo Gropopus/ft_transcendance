@@ -14,6 +14,7 @@ export interface Iuser {
 	victory?: number;
 	id42?: number;
 	defeat?: number;
+    lastTask?: number;
 	twoFactorAuthEnabled?: boolean;
 	twoFactorAuthenticationSecret?: string;
 	chatOwner?: Ichannel[];

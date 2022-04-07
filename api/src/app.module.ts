@@ -10,9 +10,13 @@ import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
 import { PlayerModule } from './player/player.module';
 import { GameModule } from './game/game.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -25,10 +29,11 @@ import { GameModule } from './game/game.module';
     ChatModule,
     FriendModule,
   	PlayerModule,
-    GameModule 
+    GameModule,
+    TasksModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TasksService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -39,6 +44,7 @@ export class AppModule implements NestModule {
         {path: '/api/users', method: RequestMethod.POST},
         {path: '/api/users/update/:id', method: RequestMethod.POST},
         {path: '/api/users', method: RequestMethod.GET},
+        {path: '/api/users/:id/isOnline', method: RequestMethod.PUT},
         {path: '/api/users/:id', method: RequestMethod.GET},
         {path: '/api/users/login', method: RequestMethod.POST},
         {path: '/api/users/logout', method: RequestMethod.POST},
