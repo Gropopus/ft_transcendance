@@ -51,7 +51,7 @@
 		<!--</div>-->
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
-			<button @click="sendMessage(message)" class="sendButton">send</button>
+			<img src="/src/assets/message012.png" @click="sendMessage(message)" title="Send" class="sendButton">
 		</div>
 		</div>
 		<div class="chatToolSpace">
@@ -632,7 +632,7 @@ export default	defineComponent ({
 
 .writing-zone > input
 {
-	flex: 9;
+	flex: 15;
 	border-radius: 40px;
 	margin: 2%;
 	margin-top: 1%;
@@ -652,20 +652,19 @@ export default	defineComponent ({
 	caret-color: rgb(255, 255, 255, 0.6);
 }
 
+.sendButton > img 
+{
+	object-fit: contain;
+}
 .sendButton
 {
 	flex: 1;
 	margin-top: auto;
 	margin-bottom: auto;
 	margin-right: 1%;
-	width: 9%;
-	height:	42px;
+	width: 70px;
+	height:	70px;
 	background: none;
-	border: solid 3px white;
-	border-radius: 5px;
-	font-size: 120%;
-	font-style: Myanmar;
-	color: white;
 }
 
 .usernameButton {
@@ -684,8 +683,9 @@ export default	defineComponent ({
 
 .sendButton:hover
 {
+	border-radius: 5px;
 	cursor: pointer;
-	background: rgb(255, 255, 255, 0.5);
+	background: rgb(255, 255, 255, 0.2);
 }
 
 </style>
