@@ -8,6 +8,7 @@ export interface Imessage {
   user: Iuser;
   username: string;
   text: string;
+  challengeId: number;
   channel: Ichannel;
   created_at: Date;
   updated_at: Date;
