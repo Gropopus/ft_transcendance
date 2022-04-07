@@ -16,9 +16,6 @@ export default	defineComponent ({
 		},
 	},
 	mounted() {
-        console.log('challengepage id  = ' + this.$route.params.challengeId);
-        console.log('challengepage mode = ' + this.$route.params.challengeMode);
-        //:challengeMode/:challengeId
 		load(this.userId, this.$route.params.challengeId, this.$route.params.challengeMode );
 	},
 	unmounted() {

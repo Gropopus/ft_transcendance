@@ -89,9 +89,6 @@ export default	defineComponent ({
 			default:	"0"
 		},
 	},
-
-	emits: ['save'],
-
 	data() {
 		return {
 			userData: [],
@@ -107,6 +104,8 @@ export default	defineComponent ({
 		}
 	},
 
+	emits:	['userIsOnline'],
+
 	async mounted() {
 
 		this.userData;
@@ -120,6 +119,9 @@ export default	defineComponent ({
 		this.ladder = await this.fetchLadderLevel();
 	},
 
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods: {
 		async update() {
@@ -257,14 +259,12 @@ export default	defineComponent ({
 		},
 
 		async challenge() {
-			console.log('your user id is ' + this.userId + 'trying to challenge ' + this.userData.id);
 			// /challenge/:challengeMode/:challengeId
 			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			const challengeId = await ret.json();
-			console.log(challengeId)
 			this.$router.push('/challenge/normal/' + challengeId);
 
 			return "";

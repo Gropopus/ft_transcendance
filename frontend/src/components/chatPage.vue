@@ -90,7 +90,7 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save', 'addMessage'],
+	emits: ['save', 'addMessage', 'userIsOnline'],
 
 	data() {
 		return {
@@ -142,6 +142,9 @@ export default	defineComponent ({
 			autoConnect: false});
 	},
 
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods: {
 		async fetchAllChannels() {
@@ -208,14 +211,12 @@ export default	defineComponent ({
 		},
 
 		async fetchMessages() {
-			console.log('in message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
-			console.log('message set')
 			const mess = await res.json();
 			return mess.items;
 		},
