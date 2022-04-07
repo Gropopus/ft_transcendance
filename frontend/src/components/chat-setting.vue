@@ -56,6 +56,13 @@
                         update
                     </button> <br>
             </div>
+            <div v-if="channelData.ban.length" class="banList">
+                <h3> Banned users </h3>
+                <div :key="user.id" v-for="user in channelData.ban" class="banUser">
+                    <p> {{ user.username }} </p>
+                    <button @click="unbanUser(user.id)" class="addButton"> unban </button>
+                </div>
+            </div>
             <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
             <button v-else @click="quitChannel()" class="delButton">Leave channel</button>
             <p class="error"> {{ error }} </p>
@@ -497,6 +504,21 @@ export default defineComponent ({
 	color:	rgb(236, 100, 151);
 	border-radius: 4px;
 	font-family: MyanmarText;
+}
+
+.banUser {
+    display: flex;
+    margin-left: 3%;
+    gap: 10%;
+}
+
+.banList {
+    margin-bottom: 5%;
+    width: 50%;
+}
+
+.banList > h3 {
+    border-bottom: solid 1px white;
 }
 
 </style>
