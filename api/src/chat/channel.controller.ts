@@ -96,8 +96,8 @@ export class ChannelController {
 	@Put(':id/ban/:userId')
 	async banUser(@Param() params) {
 		const channel = await this.channelService.getChannel(params.id)
-		this.channelService.banUser(channel, params.userId);
-		this.channelService.deleteAUserFromChannel(Number(params.id), params.userId);
+		await this.channelService.banUser(channel, params.userId);
+		await this.channelService.deleteAUserFromChannel(Number(params.id), params.userId);
 	}
 
 	@Put(':id/unban/:userId')

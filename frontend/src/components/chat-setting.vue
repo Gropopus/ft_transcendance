@@ -100,6 +100,7 @@ export default defineComponent ({
     async created() {
         this.channelId = this.$route.params.id;
         this.channelData = await this.fetchChannel();
+        console.log(this.channelData);
         this.setRole();
     },
 
@@ -196,6 +197,7 @@ export default defineComponent ({
 
         async banUser(id: number)
         {
+            console.log("puuuute");
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/ban/${id}`, {
                 method: 'put',
