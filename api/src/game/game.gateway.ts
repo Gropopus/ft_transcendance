@@ -41,8 +41,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	player_room: Map<string, string> = new Map<string, string>();
 	matchmaking_id: string[] = [];
 	matchmaking_hard_id: string[] = [];
-	direct_game_id: Map<number, {mode: string, usr: string}> = new
-					Map<number, {mode: string, usr: string}>();
+	direct_game_id: Map<number, {mode: string, usr: string, gameId: number}> = new
+					Map<number, {mode: string, usr: string, gameId: number}>();
 
 	private disconnect(client: Socket) {
 		client.disconnect();
@@ -383,6 +383,20 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.nb_hard_matchmaking = 0;
 		}
 	}
+	@SubscribeMessage('DirectGameId')
+	async handleDirectGameId(client: Socket, data: {searchid: number, gameId: number})
+	{
+		let match = this.direct_game_id.get(data.searchid);
+		match.gameId = data.gameId;
+		match.mode = "playing";
+	}
+	@SubscribeMessage('DirectGameEnd')
+	async handleDirectGameEnd(client: Socket, data: {searchid: number, gameId: number})
+	{
+		console.log('DIRECT GAME END ')
+		let match = this.direct_game_id.get(data.searchid);
+		match.mode = "done";
+	}
 
 	@SubscribeMessage('joinDirectGame')
 	async handleDirectGame(client: Socket, data: {mode: string, searchid: number})
@@ -391,9 +405,23 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		let match = this.direct_game_id.get(data.searchid);
 		if (match && match.mode == 'done')
 		{
+			console.log('join a direct game status done');
 			this.server.to(client.id).emit('tooLateForChall');
 			return ;
 		}
+		else if (match && match.mode == 'playing')
+		{
+			console.log('join a direct game status playing');
+			this.server.to(client.id).emit('playingForChall', match.gameId);
+			return ;
+		}
+		else if (match && match.mode == 'confirming')
+		{
+			console.log('join a direct game status confirming');
+			this.server.to(client.id).emit('confirmingForChall');
+			return ;
+		}
+
 		if (match && match.usr == client.handshake.auth.userId)
 		{
 			this.logger.log('Direct game trying to join again');
@@ -402,7 +430,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 		if (!match)
 		{
-			match = (this.direct_game_id.set(data.searchid, {mode: data.mode, usr: client.handshake.auth.userId }))[0];
+			match = (this.direct_game_id.set(data.searchid, {mode: data.mode, usr: client.handshake.auth.userId, gameId: -1 }))[0];
 			client.join('DirectGame' + data.searchid);
 			this.player_room.set(client.id, 'DirectGame' + data.searchid);
 		}
@@ -412,7 +440,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			this.player_room.set(client.id, 'DirectGame' + data.searchid);
 			this.server.to('DirectGame' + data.searchid).emit('AskReady', 'Confirm' + this.nb_try.toString());
 			this.kickAllFrom('DirectGame' + data.searchid);
-			match.mode = 'done';
+			match.mode = 'confirming';
 		}
 		
 	}

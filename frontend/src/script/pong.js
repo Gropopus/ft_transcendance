@@ -218,10 +218,21 @@ function playerMove(event, ) {
 function entermatchmaking(draw)
 {
 	clearLower()
-	if (draw == 1)
-		textDraw("Searching an opponent", 150);
+	if (game.challenge == 0)
+	{
+		if (draw == 1)
+			textDraw("Searching an opponent", 150);
+		else
+			textDraw('Opponent didn\'t respond, Back in the matchmaking', 150);
+	}
 	else
-		textDraw('Opponent didn\'t respond, Back in the matchmaking', 150);
+	{
+		if (draw == 1)
+			textDraw("Waiting an opponent", 150);
+		else
+			textDraw('Opponent didn\'t respond, Waiting again', 150);
+
+	}
 	game.matchmaking = 1;
 	if (game.challenge == 0)
 	{
@@ -284,9 +295,14 @@ function ready() {
 	game.matchmaking = 3;
 	game.socket.emit('playerReady', game.confirm_id);
 }
+async function speed_Game_check(){
+	game.wait = 0;
+}
 
 function playerclick(event, ) {
 
+	if (game.side == "observer")
+		return ;
 	var rect = game.canvas.getBoundingClientRect(); // abs. size of element
 	var scaleX = game.canvas.width / rect.width;    // relationship bitmap vs. element for X
 	var scaleY = game.canvas.height / rect.height;  // relationship bitmap vs. element for Y
@@ -319,6 +335,8 @@ function playerclick(event, ) {
 			y >= game.start_buton.y && y <= game.start_buton.maxY)
 		{
 			game.button = 0;
+			game.wait = 1;
+			setTimeout(speed_Game_check, 10000);
 			ready(game);
 		}
 	}
@@ -350,7 +368,7 @@ function playerclick(event, ) {
 		}
 	}
 }
-
+    
 function socket_init()
 {
 	game.socket = io("http://localhost:42069",{
@@ -390,6 +408,8 @@ function socket_init()
 		game.computer.name = r_name;
 		game.gameId = id;
 		game.socket.emit('joinRoom', game.gameRoom);
+		if (game.challenge != 0)
+			game.socket.emit('DirectGameId', {searchid: game.challenge, gameId: game.gameId});
 	})
 
 	game.socket.on('AskReady', function(conf_id) {
@@ -424,7 +444,7 @@ function socket_init()
 		game.nb_confirm -= 1;
 	})
 
-	game.socket.on('gameEnd', function() {
+	game.socket.on('gameEnd', async function() {
 		cancelAnimationFrame(game.anim);
 		game.ball.speed.x = 0;
 		game.ball.speed.y = 0;
@@ -448,7 +468,9 @@ function socket_init()
 				textDraw("Game end, " + game.computer.name + " win !", 150)
 			return;
 		}
-		else if ((game.player.score == 11 && game.side == 'left') || 
+		if (game.challenge != 0)
+			game.socket.emit('DirectGameEnd', {searchid: game.challenge, gameId: game.gameId});
+		if ((game.player.score == 11 && game.side == 'left') || 
 			game.computer.score == 11 && game.side == 'right')
 			chooseMod("You win !");
 		else
@@ -471,7 +493,7 @@ function socket_init()
 			game.player.score = score_l;
 			game.computer.score = score_r;
 			cancelAnimationFrame(game.anim);
-			clearLower();
+			clearCanvas();
 			drawHead()
 			if (game.player.score > game.computer.score)
 			{
@@ -495,6 +517,8 @@ function socket_init()
 		}
 		else
 		{
+			if (game.challenge != 0)
+				game.socket.emit('DirectGameEnd', {searchid: game.challenge, gameId: game.gameId});
 			game.socket.emit('playerLeave',
 					{side: game.side, gameId: game.gameId, gameRoom: game.gameRoom});
 			clearCanvas();
@@ -532,9 +556,19 @@ function socket_init()
 	})
 
 	game.socket.on('tooLateForChall', function() {
+		clearCanvas()
+		drawHead();
+		textDraw('This challenge is already finish', 150);
+	})
+
+	game.socket.on('playingForChall', function(gameId) {
+		console.log('need to observe')
+		observe(game.userId, gameId);
+	})
+	game.socket.on('confirmingForChall', function() {
 		console.log('AHHHHH')
 		drawHead();
-		textDraw('This challenge is already finish', 70);
+		textDraw('This challenge is already confirming', 150);
 	})
 }
 
@@ -567,6 +601,8 @@ function canvas_init(mode){
 
 function drawHead()
 {
+	if (game.canvas)
+	{
 	var context = game.canvas.getContext('2d');
 	//Draw PongHeader
 	const img = new Image();
@@ -574,6 +610,7 @@ function drawHead()
 	img.onload = function() {
 		context.drawImage(img, game.canvas.width / 2 - (img.width * 1.5) / 2, 300, img.width * 1.5, img.height * 1.5);
 		}
+	}
 }
 
 function chooseMod(txt = "")
@@ -666,10 +703,14 @@ function chooseMod(txt = "")
 
 function load(userId, challenge = 0, mode = '')
 {
+	if (userId == 0)
+		return ;
 	socket_init();
 	canvas_init('player');
+	console.log('userid = ' + userId);
 	game.socket.auth = {userId};
 	game.socket.connect();
+	game.wait = 0;
 	if (challenge == 0)
 	{
 		chooseMod();
@@ -678,6 +719,7 @@ function load(userId, challenge = 0, mode = '')
 	}
 	else
 	{
+		drawHead();
 		game.mode = mode;
 		game.challenge = challenge; 
 		game.button = 0;
@@ -757,12 +799,14 @@ function emitObserve(id)
 
 function observe(userId, gameId) 
 {
-	socket_init();
 	canvas_init('observer');
+	if (!game.socket)
+	{
+		socket_init();
+		game.socket.auth = {userId};
+		game.socket.connect();
+	}
 
-	
-	game.socket.auth = {userId};
-	game.socket.connect();
 	game.side = "observer";
 	game.gameRoom = "gameRoom" + gameId;
 	game.matchmaking = -1;

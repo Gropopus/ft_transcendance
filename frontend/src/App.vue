@@ -54,7 +54,10 @@ export default	{
         'profile',
         'userProfile',
         'friends',
-        'settings'
+        'settings',
+        'InternalServerError',
+        'Unauthorized',
+        'NotFound'
       ];
       for (let page of pageLog)
         if (page == name)
