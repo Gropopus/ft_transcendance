@@ -225,8 +225,8 @@ export default	defineComponent ({
 			this.$router.push(`/channel-setting/${id}`)
 		},
 
-		goToUserProfile(username: string) {
-			this.$router.push(`/profile/${username}`)
+		goToUserProfile(userInfo) {
+			this.$router.push(`/profile/${userInfo.name}`)
 		},
 
 		async hasSettingsRights()	{

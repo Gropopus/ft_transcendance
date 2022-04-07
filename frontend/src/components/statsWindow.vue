@@ -27,22 +27,24 @@
 			<div v-if="currentTab==1" class="achievements">
 				<div class="achievementsTable">
 					<div class="achievementsCol">
-						<div>hello</div>
-						<div>hello</div>
-						<div>hello</div>
-						<div>hello</div>
+						<div :key="file.icon" v-for="file in socialAchievements">
+							<img :src="file.icon">
+						</div>
 					</div>
 					<div class="achievementsCol">
-						<div>hello</div>
-						<div>hello</div>
-						<div>hello</div>
-						<div>hello</div>
+						<div :key="file.icon" v-for="file in socialAchievements">
+							<img :src="file.icon">
+						</div>
 					</div>
 					<div class="achievementsCol">
-						<div>hello</div>
-						<div>hello</div>
-						<div>hello</div>
-						<div>hello</div>
+						<div :key="file.icon" v-for="file in socialAchievements">
+							<img :src="file.icon">
+						</div>
+					</div>
+					<div class="achievementsCol">
+						<div :key="file.icon" v-for="file in socialAchievements">
+							<img :src="file.icon">
+						</div>
 					</div>
 				</div>
 			</div>
@@ -94,6 +96,11 @@ export default	defineComponent ({
 			userData: [],
 			ladder: 0,
 			gameHistory: [],
+			socialAchievements: [
+                {name: "Social 1", icon: "/src/assets/Achievement_Social_1.png"},
+                {name: "Social 2", icon: "/src/assets/Achievement_Social_2.png"},
+                {name: "Social 3", icon: "/src/assets/Achievement_Social_3.png"},
+            ],
 		}
 	},
 
@@ -169,7 +176,7 @@ export default	defineComponent ({
 			if (playerId === this.profId)
 				return (true);
 			return (false);
-		}
+		},
 	},
 })
 </script>
@@ -287,31 +294,41 @@ export default	defineComponent ({
 	margin-left: 5%;
 	border: solid white 3px;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	justify-content: center;
-	overflow: scroll;
+	padding: 2%;
 }
 
 .achievementsCol
 {
+	flex: 1 1 1;
 	display: flex;
-	flex-direction: row;
 	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 	width: 100%;
-	margin-top: 1%;
-	margin-bottom: 1%;
 }
 
 .achievementsCol > div
 {
-	flex: 1 1 0;
 	border: solid white 3px;
-	margin-right: 7%;
-	margin-left: 7%;
-	max-width: 100px;
-	flex: 1 0 auto;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	min-width: 120px;
+	flex: 1 1 1;
 	aspect-ratio: 1 / 1;
 	border-radius: 5px;
+}
+
+.achievementsCol > div > img
+{
+	max-width: 120px;
+	object-fit: contain;
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .history

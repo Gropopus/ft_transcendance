@@ -3,7 +3,7 @@
 </script>
 
 <template>
-	<div class="user-profile">
+	<div v-if="userData != undefined" class="user-profile">
 		<!-- <button @click="reload()"> reload </button> -->
 		<div class="profile-resume">
 			<div class="picture">
@@ -27,7 +27,7 @@
 				<img v-else v-if="unblockIcon.img && this.userData" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
-		<statsWindow v-if="userData.length != 0" :profId="userData.id"/>
+		<statsWindow v-if="userData.id != undefined" :profId="userData.id"/>
 	</div>
 </template>
 
