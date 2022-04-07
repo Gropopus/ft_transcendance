@@ -113,14 +113,15 @@ export default	defineComponent ({
 		this.all = await this.fetchAllChannels();
 		this.channelsList = await this.fetchChannelsList();
 		this.all;
-		if (this.$route.query)
-			this.channelId = this.$route.query.id;
+		const param = this.$route.query.id;
+		if (param)
+			this.channelId = param;
 		else if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
-		this.channelMessages = await this.fetchMessages();
-		this.resetScroll();
 		this.socket.auth = {userId: this.userId};
 		this.socket.connect();
+		this.channelMessages = await this.fetchMessages();
+		this.resetScroll();
 		if (this.channelId)
 			this.socket.emit('joinChannel', this.channelId);
 		this.socket.on('messageAdded', async () =>  {
@@ -139,7 +140,6 @@ export default	defineComponent ({
 				"my-custom-header": "chat"
 			},
 			autoConnect: false});
-			// this.channelsList = this.fetchChannelsList();
 	},
 
 
@@ -208,12 +208,14 @@ export default	defineComponent ({
 		},
 
 		async fetchMessages() {
+			console.log('in message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
-    			method: 'get',
+				method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
+			console.log('message set')
 			const mess = await res.json();
 			return mess.items;
 		},
@@ -243,6 +245,7 @@ export default	defineComponent ({
                     body: JSON.stringify({password: this.joinPassword}),
             });
 			this.joinPassword = "";
+			this.changeCurrentChan(chanId)
 			this.channelsList = await this.fetchChannelsList();
 		},
 
@@ -463,6 +466,7 @@ export default	defineComponent ({
 {
 	flex: 9;
 	/*overflow-y: scroll;*/
+	min-width: 313px;
 	max-height:	45em;
 	border: solid white 3px;
 	border-bottom: none;

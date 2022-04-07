@@ -349,6 +349,7 @@ export default defineComponent ({
 	padding-top:	2%;
 	padding-left:	5%;
 	width:	50%;
+    min-width: 800px;
 	height:	100%;
 	/* border:	solid 3px white; */
 	font-size:	20px;

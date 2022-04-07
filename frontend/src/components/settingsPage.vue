@@ -345,6 +345,7 @@ export default	{
 	margin-right: 5%;
 	margin-left: 5%;
 	margin-bottom: 0%;
+	min-width: 1000px;
 }
 
 .settings {
@@ -522,9 +523,14 @@ export default	{
 	letter-spacing:	2px;
 	font-size:	150%;
 	color: white;
+	max-height: 60px;
+	min-width: 150px;
+	width:		50%;
+	margin-top: auto;
+	margin-bottom: auto;	
 	padding-top: 2%;
-	margin: 20%;
-	margin-top: 30%;
+	/*margin: 20%;*/
+	margin-top: auto;
 }
 
 .perso-info > button:hover
