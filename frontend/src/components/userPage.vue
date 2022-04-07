@@ -40,6 +40,10 @@
 						<p>{{ ladder.level }} / {{ ladder.total }}</p>
 					</div>
 					<div class="statElem">
+						<h3>Elo</h3>
+						<p> {{ userData.level }}  </p>
+					</div>
+					<div class="statElem">
 						<h3>Victories</h3>
 						<p>{{ userData.victory }}</p>
 					</div>
@@ -295,383 +299,383 @@ export default	defineComponent ({
 
 <style lang="css" scoped>
 
-	/*** PROFILE STYLES ***/
-.StatsWin
-{
-	width:	100%;
-	min-height:	500px;
-	display:	flex;
-	flex-direction:	column;
-}
+		/*** PROFILE STYLES ***/
+	.StatsWin
+	{
+		width:	100%;
+		min-height:	500px;
+		display:	flex;
+		flex-direction:	column;
+	}
 
-.profilePage
-{
-	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
-	flex-direction:	row;
-	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
-	margin-bottom: 0%;
-}
+	.profilePage
+	{
+		background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
+		flex-direction:	row;
+		text-align: center;
+		margin-right: 5%;
+		margin-left: 5%;
+		margin-bottom: 0%;
+	}
 
-.profile-resume {
-	display: flex;
-	flex-direction: row;
-	gap: 3%;
-	/* flex: 1 1 0; */
-	min-width: 1300px;
-	border: solid 3px white;
-	margin-bottom: 2%;
-	align-content: center;
-	border-radius: 5px;
-}
+	.profile-resume {
+		display: flex;
+		flex-direction: row;
+		gap: 3%;
+		/* flex: 1 1 0; */
+		min-width: 1300px;
+		border: solid 3px white;
+		margin-bottom: 2%;
+		align-content: center;
+		border-radius: 5px;
+	}
 
-.info
-{
-	flex: 4;
-	display: flex;
-	flex-direction:	column;
-	margin-top: 4%;
-	margin-bottom: 2%;
-	text-align: left;
-	vertical-align: center;
-	min-width: 350px;
-}
+	.info
+	{
+		flex: 4;
+		display: flex;
+		flex-direction:	column;
+		margin-top: 4%;
+		margin-bottom: 2%;
+		text-align: left;
+		vertical-align: center;
+		min-width: 350px;
+	}
 
-.username {
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	300%;
-	color: var(--font-blue);
-	font-weight:	bold;
-}
+	.username {
+		font-family: MyanmarText;
+		letter-spacing:	2px;
+		font-size:	300%;
+		color: var(--font-blue);
+		font-weight:	bold;
+	}
 
-.usermail{
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-}
+	.usermail{
+		font-family: MyanmarText;
+		letter-spacing:	2px;
+		font-size:	150%;
+	}
 
-.perso-info
-{
-	flex: 1;
-	margin-right: 3%;
-	display: flex;
-	flex-direction:	column;
-	margin-top: 2%;
-	margin-bottom: 2%;
-	vertical-align: center;
-}
+	.perso-info
+	{
+		flex: 1;
+		margin-right: 3%;
+		display: flex;
+		flex-direction:	column;
+		margin-top: 2%;
+		margin-bottom: 2%;
+		vertical-align: center;
+	}
 
-.status {
-	flex: 1;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: green;
-}
+	.status {
+		flex: 1;
+		font-family: MyanmarText;
+		letter-spacing:	2px;
+		font-size:	150%;
+		color: green;
+	}
 
-.perso-info > button
-{
-	flex: 5;
-	background: none;
-	border: solid 3px white;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: white;
-	padding-top: 2%;
-	margin: 20%;
-	margin-top: 30%;
-}
+	.perso-info > button
+	{
+		flex: 5;
+		background: none;
+		border: solid 3px white;
+		font-family: MyanmarText;
+		letter-spacing:	2px;
+		font-size:	150%;
+		color: white;
+		padding-top: 2%;
+		margin: 20%;
+		margin-top: 30%;
+	}
 
-.perso-info > button:hover
-{
-	background: rgba(255, 255, 255, 0.5);
-	cursor: pointer; 
-}
+	.perso-info > button:hover
+	{
+		background: rgba(255, 255, 255, 0.5);
+		cursor: pointer; 
+	}
 
-.picture {
-	flex: 1;
-	width: calc(33.333% - 1rem);
-    vertical-align: center;
-	margin-left: 3%;
-	margin-top: 2%;
-	margin-bottom: 2%;
-}
+	.picture {
+		flex: 1;
+		width: calc(33.333% - 1rem);
+		vertical-align: center;
+		margin-left: 3%;
+		margin-top: 2%;
+		margin-bottom: 2%;
+	}
 
-.picture > img {
-	/*margin-left: 2%;
-	margin-bottom: 2%;
-	margin-top: 2%;
-	min-height: 150px;
-	min-width: 150px;*/
-	border-radius: 50%;
-	overflow: hidden;
-    width: 200px;
-    height: 200px;
-    max-width: 200px;
-    max-height: 200px;
-	object-fit:cover;
-}
+	.picture > img {
+		/*margin-left: 2%;
+		margin-bottom: 2%;
+		margin-top: 2%;
+		min-height: 150px;
+		min-width: 150px;*/
+		border-radius: 50%;
+		overflow: hidden;
+		width: 200px;
+		height: 200px;
+		max-width: 200px;
+		max-height: 200px;
+		object-fit:cover;
+	}
 
-.relation {
-	flex: 2;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	min-width: 400px;
-	margin-right: 5%;
-	/*margin-left:auto;*/
-	margin-top: auto;
-	margin-bottom: auto;
-}
+	.relation {
+		flex: 2;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		min-width: 400px;
+		margin-right: 5%;
+		/*margin-left:auto;*/
+		margin-top: auto;
+		margin-bottom: auto;
+	}
 
-.relation > img	{
-	object-fit: contain;
-}
+	.relation > img	{
+		object-fit: contain;
+	}
 
-.challengeButton {
-	margin-right: 3%;
-	margin-left: 3%;
-	flex: auto;
-	display: flex;
-	align-items: center;
-	border-radius: 50%;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	max-height: 70px;
-	height: auto;
-	width: auto;
-	padding: 3%;
-	border: solid 2px white;
-	cursor: pointer;
-	user-select: none;
-	-webkit-user-select: none;
-	touch-action: manipulation;
-}
+	.challengeButton {
+		margin-right: 3%;
+		margin-left: 3%;
+		flex: auto;
+		display: flex;
+		align-items: center;
+		border-radius: 50%;
+		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+		max-height: 70px;
+		height: auto;
+		width: auto;
+		padding: 3%;
+		border: solid 2px white;
+		cursor: pointer;
+		user-select: none;
+		-webkit-user-select: none;
+		touch-action: manipulation;
+	}
 
-.challengeButton:hover {
-	background:	var(--deep-blue-10);
-	color: white;
-	cursor: pointer;
-}
+	.challengeButton:hover {
+		background:	var(--deep-blue-10);
+		color: white;
+		cursor: pointer;
+	}
 
-.relationButton {
-	margin-right: 3%;
-	margin-left: 3%;
-	flex: auto;
-	border-radius: 50%;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	max-height: 70px;
-	height: auto;
-	width: auto;
-	padding: 3%;
-	border: solid 2px white
-}
+	.relationButton {
+		margin-right: 3%;
+		margin-left: 3%;
+		flex: auto;
+		border-radius: 50%;
+		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+		max-height: 70px;
+		height: auto;
+		width: auto;
+		padding: 3%;
+		border: solid 2px white
+	}
 
-.relationButton:hover {
-	background:	var(--deep-blue-10);
-	color: white;
-	cursor: pointer;
+	.relationButton:hover {
+		background:	var(--deep-blue-10);
+		color: white;
+		cursor: pointer;
 
-}
+	}
 
-.user-profile {
-	flex-direction:	row;
-	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
-	margin-bottom: 0%;
-}
+	.user-profile {
+		flex-direction:	row;
+		text-align: center;
+		margin-right: 5%;
+		margin-left: 5%;
+		margin-bottom: 0%;
+	}
 
-.replyButton {
-	display: flex;
-	flex-direction: column;
-	justify-content: right;
-}
+	.replyButton {
+		display: flex;
+		flex-direction: column;
+		justify-content: right;
+	}
 
-.replyButton > button {
-	border-radius: 8px;
-	background:	none;
-	border: none;
-	border: solid 2px white;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	color: white;
-	margin-top: 5%;
-}
+	.replyButton > button {
+		border-radius: 8px;
+		background:	none;
+		border: none;
+		border: solid 2px white;
+		font-family: MyanmarText;
+		letter-spacing:	2px;
+		color: white;
+		margin-top: 5%;
+	}
 
-.replyButton > button:hover {
-	background:	var(--deep-blue-10);
-	cursor: pointer;
-}
+	.replyButton > button:hover {
+		background:	var(--deep-blue-10);
+		cursor: pointer;
+	}
 
-.blockButton {
-	margin-right: 3%;
-	margin-left: 3%;
-	flex: auto;
-	border-radius: 50%;
-	max-height: 70px;
-	height: auto;
-	width: auto;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
-	padding: 3%;
-	border: solid 2px white
-}
+	.blockButton {
+		margin-right: 3%;
+		margin-left: 3%;
+		flex: auto;
+		border-radius: 50%;
+		max-height: 70px;
+		height: auto;
+		width: auto;
+		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+		background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
+		padding: 3%;
+		border: solid 2px white
+	}
 
-.blockButton:hover {
-	background:	var(--deep-blue-10);
-	cursor: pointer;
-	background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
-}
+	.blockButton:hover {
+		background:	var(--deep-blue-10);
+		cursor: pointer;
+		background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
+	}
 
 
-.unblockButton {
-	margin-right: 3%;
-	margin-left: 3%;
-	flex: auto;
-	border-radius: 50%;
-	max-height: 70px;
-	height: auto;
-	width: auto;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	padding: 3%;
-	border: solid 2px white
-}
+	.unblockButton {
+		margin-right: 3%;
+		margin-left: 3%;
+		flex: auto;
+		border-radius: 50%;
+		max-height: 70px;
+		height: auto;
+		width: auto;
+		box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+		padding: 3%;
+		border: solid 2px white
+	}
 
-.unblockButton:hover {
-	background:	var(--deep-blue-10);
-	cursor: pointer;
-}
+	.unblockButton:hover {
+		background:	var(--deep-blue-10);
+		cursor: pointer;
+	}
 
-/* stat style */
+	/* stat style */
 
-.StatsArea
-{
-	min-width: 800px;
-	width:	100%;
-	min-height:	500px;
-	border: solid white 3px;
-	border-top: none;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-}
+	.StatsArea
+	{
+		min-width: 800px;
+		width:	100%;
+		min-height:	500px;
+		border: solid white 3px;
+		border-top: none;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
 
-.stat {
-	width: 90%;
-	margin-top: 3%;
-	margin-bottom: 3%;
-	margin-right: auto;
-	margin-left: auto;
-	border: solid 3px white;
-	max-height:	500px;
-	display: flex;
-	flex-direction: column;
-	font-size: 150%;
-	overflow-y:	scroll;
-	height: 90%;
-}
+	.stat {
+		width: 90%;
+		margin-top: 3%;
+		margin-bottom: 3%;
+		margin-right: auto;
+		margin-left: auto;
+		border: solid 3px white;
+		max-height:	500px;
+		display: flex;
+		flex-direction: column;
+		font-size: 150%;
+		overflow-y:	scroll;
+		height: 90%;
+	}
 
-.stat > .statElem {
-	display: flex;
-	gap: 4%;
-	text-align: center;
-	align-items: center;
-}
+	.stat > .statElem {
+		display: flex;
+		gap: 4%;
+		text-align: center;
+		align-items: center;
+	}
 
-.stat > .statElem > h3 {
-	flex: 1 0;
-	background: rgb(203, 177, 233, 0.2);
-}
+	.stat > .statElem > h3 {
+		flex: 1 0;
+		background: rgb(203, 177, 233, 0.2);
+	}
 
-.stat > .statElem > p {
-	flex: 1 0;
-	font-size: 1.17em;
-	background: rgb(203, 177, 233, 0.2);
+	.stat > .statElem > p {
+		flex: 1 0;
+		font-size: 1.17em;
+		background: rgb(203, 177, 233, 0.2);
 
-}
-.StatsTabs
-{
-	display:	flex;
-	flex-direction:	row;
-	border:	solid 3px white;
-	border-top-right-radius: 5px;
-	border-top-left-radius: 5px;
-	width: 100%;
-	min-width: 800px;
-	overflow: hidden;
-}
+	}
+	.StatsTabs
+	{
+		display:	flex;
+		flex-direction:	row;
+		border:	solid 3px white;
+		border-top-right-radius: 5px;
+		border-top-left-radius: 5px;
+		width: 100%;
+		min-width: 800px;
+		overflow: hidden;
+	}
 
-.middle
-{
-	border-right: solid 3px white !important;
-	border-left: solid 3px white !important;
-}
+	.middle
+	{
+		border-right: solid 3px white !important;
+		border-left: solid 3px white !important;
+	}
 
-.StatsTabs > button
-{
-	background: none;
-	border: none;
-	flex:	1 1 0;
-	text-align:	center;
-	vertical-align:	center;
-	text-align:	center;
-	text-decoration:	none;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size: 120%;
-	color: white;
-	padding-top: 1%;
-	font-weight:	bold;
-}
+	.StatsTabs > button
+	{
+		background: none;
+		border: none;
+		flex:	1 1 0;
+		text-align:	center;
+		vertical-align:	center;
+		text-align:	center;
+		text-decoration:	none;
+		font-family: MyanmarText;
+		letter-spacing:	2px;
+		font-size: 120%;
+		color: white;
+		padding-top: 1%;
+		font-weight:	bold;
+	}
 
-.StatsTabs > button:hover
-{
-	background:	var(--deep-blue-10);
-	cursor: pointer; 
-}
+	.StatsTabs > button:hover
+	{
+		background:	var(--deep-blue-10);
+		cursor: pointer; 
+	}
 
-.StatsTabs #CurrentTab
-{
-	background:	white;
-	color:	var(--font-blue);
-}
+	.StatsTabs #CurrentTab
+	{
+		background:	white;
+		color:	var(--font-blue);
+	}
 
-.achievementsTable
-{
-	width: 90%%;
-	margin-top: 3%;
-	margin-bottom: 3%;
-	margin-right: 5%;
-	margin-left: 5%;
-	border: solid white 3px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	overflow: scroll;
-}
+	.achievementsTable
+	{
+		width: 90%%;
+		margin-top: 3%;
+		margin-bottom: 3%;
+		margin-right: 5%;
+		margin-left: 5%;
+		border: solid white 3px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		overflow: scroll;
+	}
 
-.achievementsCol
-{
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	width: 100%;
-	margin-top: 1%;
-	margin-bottom: 1%;
-}
+	.achievementsCol
+	{
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		width: 100%;
+		margin-top: 1%;
+		margin-bottom: 1%;
+	}
 
-.achievementsCol > div
-{
-	flex: 1 1 0;
-	border: solid white 3px;
-	margin-right: 7%;
-	margin-left: 7%;
-	max-width: 100px;
-	flex: 1 0 auto;
-	aspect-ratio: 1 / 1;
-	border-radius: 5px;
-}
+	.achievementsCol > div
+	{
+		flex: 1 1 0;
+		border: solid white 3px;
+		margin-right: 7%;
+		margin-left: 7%;
+		max-width: 100px;
+		flex: 1 0 auto;
+		aspect-ratio: 1 / 1;
+		border-radius: 5px;
+	}
 
 </style>

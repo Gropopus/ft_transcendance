@@ -18,11 +18,6 @@ export default	defineComponent ({
     async mounted() {	
         this.gameList;
         this.gameListPlaying;
-		if (isNaN(this.$route.params.gameId) == true || this.$route.params.gameId >= 2147483648 || this.$route.params.gameId < -2147483648 )
-		{
-			this.$router.push('/404');
-			return ;
-		}
         const h = await fetch('http://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
             method: 'get',
         });
@@ -30,12 +25,12 @@ export default	defineComponent ({
             const test = await h.json();
 			console.log('trying');
 			if (test.status != 'playing')
-				this.$router.push('/401')
+				this.$router.replace('/404')
 			else
 				this.obs(this.userId, this.$route.params.gameId)
         }
         catch {
-            this.$router.push('/404');
+			this.$router.replace('/404')
         }
  
     },
