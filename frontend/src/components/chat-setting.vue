@@ -91,6 +91,8 @@ export default defineComponent ({
 		}
 	},
 
+	emits:	['userIsOnline'],
+
     mounted() {
         this.channelData;
     },
@@ -98,8 +100,11 @@ export default defineComponent ({
     async created() {
         this.channelId = this.$route.params.id;
         this.channelData = await this.fetchChannel();
-        console.log(this.channelData);
         this.setRole();
+    },
+
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
     },
 
 	methods:	{
@@ -275,7 +280,6 @@ export default defineComponent ({
         },
 
         async deleteChannel() {
-            console.log(this.channelData);
             const res = await fetch(
                 `http://localhost:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',

@@ -87,7 +87,6 @@ export class GameService {
 			await this.playerService.setFinalScores(game.player_left_id.id, game.score_l, game.score_r);
 			if (game.mode == 'normal')
 			{
-				console.log(game.score_l + ' - ' + game.score_r)
 				if (game.score_l > game.score_r)
 					await this.updateElo(game.player_left_id.user.id, game.player_right_id.user.id);
 				else

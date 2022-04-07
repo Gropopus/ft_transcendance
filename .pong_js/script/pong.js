@@ -219,7 +219,6 @@ socket.on('gameID', function(sided, id, gameRoomid) {
 	side = sided;
 	gameId = id;
 	socket.emit('joinRoom', gameRoom);
-	console.log('game id is ', id)
 	setTimeout(engage, 2000);
 })
 
@@ -360,11 +359,11 @@ function play() {
 	else if (matchmaking == 0)
 		enterMatchMaking(1);
 	else if (matchmaking == 1)
-		; // console.log("searching a game");
+		;
 	else if (matchmaking == 2)
-		; // console.log("waiting for confirm");
+		;
 	else if (matchmaking == 3)
-		; // console.log("waiting for opponent");
+		;
 	else {
 		if (gameRoom != "-1")
 		{

@@ -67,6 +67,8 @@ export default	defineComponent ({
 		}
 	},
 
+	emits:	['userIsOnline'],
+	
 	mounted() {
 		this.all;
 	},
@@ -76,6 +78,10 @@ export default	defineComponent ({
 		this.all[1].list = await this.fetchRequest();
 		this.all[2].list = await this.fetchBlocked();
 	},
+
+	async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods: {
 		async fetchFriends() {

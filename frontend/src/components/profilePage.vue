@@ -109,6 +109,8 @@ export default	defineComponent ({
 		}
 	},
 
+	emits:	['userIsOnline'],
+	
 	mounted() {
 		this.userData;
 		this.picture;
@@ -122,6 +124,10 @@ export default	defineComponent ({
 		this.ladder = await this.fetchLadderLevel();
 		this.gameHistory = await this.fetchPlayerHistory();
 	},
+
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods: {
 		async fetchUserData() {
