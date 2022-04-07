@@ -156,7 +156,9 @@ export default	{
 						headers: { 'content-type': 'application/json' },
 						body: JSON.stringify({ username: this.userLogin })
 					})
+					this.userData.username = this.userLogin;
 				}
+				
 		},
 		async updatePassword()	{
 				this.error = "";
