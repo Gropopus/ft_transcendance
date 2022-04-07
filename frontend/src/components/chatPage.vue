@@ -246,7 +246,7 @@ export default	defineComponent ({
                     body: JSON.stringify({password: this.joinPassword}),
             });
 			this.joinPassword = "";
-			this.changeCurrentChan(chanId)
+			this.changeCurrentChan(chanId);
 			this.channelsList = await this.fetchChannelsList();
 		},
 
