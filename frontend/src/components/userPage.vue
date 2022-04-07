@@ -265,7 +265,24 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			});
 			const challengeId = await ret.json();
-			this.$router.push('/challenge/normal/' + challengeId);
+			
+			let res = await fetch(
+				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			let data = await res.json();
+			if (!data.items.length) {
+				res = await fetch(
+					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+				data = await res.json();
+				this.$router.push({path: '/chat', query: {id: data.id, challengeId: challengeId}});
+			}
+			else
+				this.$router.push({path: '/chat', query: {id: data.items[0].id, challengeId: challengeId}});
 
 			return "";
 		},
