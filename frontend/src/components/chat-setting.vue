@@ -197,7 +197,6 @@ export default defineComponent ({
 
         async banUser(id: number)
         {
-            console.log("puuuute");
             const res = await fetch(
                 `http://localhost:3000/api/channel/${this.channelId}/ban/${id}`, {
                 method: 'put',
