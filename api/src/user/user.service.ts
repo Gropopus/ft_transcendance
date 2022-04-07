@@ -30,9 +30,6 @@ export class UserService {
 			newUser.twoFactorAuthEnabled = false;
 			newUser.picture = "profile-picture.png";
 			const user = await this.userRepository.save(this.userRepository.create(newUser));
-			//if (user.id == 0) {
-			//await this.userRepository.save(user);
-			//}
 			return this.findOne(user.id);
 		} else {
 			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
@@ -52,7 +49,8 @@ export class UserService {
 					if (payload.ban)
 						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);
 					const jwt: string = await this.authService.generateJwt(payload);
-					this.updateStatusOfUser(payload.id, {"status": UserStatus.ON});
+					this.updateLastTaskTime(payload.id);
+					this.userRepository.update(payload.id, {status: UserStatus.ON});
 					return {
 						jwt,
 						payload,
@@ -69,7 +67,7 @@ export class UserService {
 	}
 
 	async logout(user:Iuser): Promise<any> {
-		this.updateStatusOfUser(user.id, {"status": UserStatus.OFF});
+		this.userRepository.update(user.id, {status: UserStatus.OFF});
 	}
 
 	async findAll(options: IPaginationOptions): Promise<Pagination<Iuser>> {
@@ -126,10 +124,6 @@ export class UserService {
 		return from(this.userRepository.update(id, user)).pipe(
 			switchMap(() => this.findOne(id))
 		);
-    }
-
-    updateStatusOfUser(id: number, user: Iuser): Observable<any> {
-      	return from(this.userRepository.update(id, user))
     }
 
 	updateOneOb(id: number, user: Iuser): Observable<any> {
@@ -215,6 +209,22 @@ export class UserService {
 
 	async setStatus(user: Iuser, newStatus: UserStatus) {
 		this.userRepository.update(user.id, {status: newStatus});
+	}
+
+	async updateLastTaskTime(id: number) {
+		const currentTime = Math.floor(Date.now() / 1000);
+		return await this.userRepository.update(id, {lastTask: currentTime});
+	}
+
+	async handleUserConnection() {
+		const currentTime = Math.floor(Date.now() / 1000);
+		const connectUsers = await this.userRepository.find({
+			select: ['id', 'lastTask'],
+			where: {status: UserStatus.ON},
+		})
+		for (let user of connectUsers)
+			if (currentTime - user.lastTask > 3 * 60) // 3min
+				this.userRepository.update(user.id, {status: UserStatus.OFF});
 	}
 
 }

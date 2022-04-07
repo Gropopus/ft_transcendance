@@ -48,7 +48,12 @@ export class UserController {
 	  limit = limit > 100 ? 100 : limit;
 	  return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' });
 	}
-  
+
+	@Put(':id/isOnline')
+	async userIsOnline(@Param() params) {
+		return this.userService.updateLastTaskTime(params.id);
+	}
+
 	@Get('/find-by-username/:name')
 	// async findAllByUsername(@Query('username') username: string) {	  
 		async findAllByUsername(@Param() params) {	  

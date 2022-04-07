@@ -28,8 +28,9 @@ export default	{
     }
   },
 
-  async beforeUnmounted() {
-    await this.logoutUser();
+  async updated() {
+    if (this.isLogged())
+        await this.userIsOnline(this.userId);
   },
 
   methods: {
@@ -78,32 +79,13 @@ export default	{
       this.userId = id;
     },
 
-    async logoutUser() {
-        const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
-          method: 'get',
-            headers: { 'content-type': 'application/json' }
-        })
-        const data = await res.json()
-        const res1 = await fetch(`http://localhost:3000/api/users/logout`, {
-          method: 'post',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify(data)
-        })
+    async userIsOnline(id: number) {
+      await fetch(
+        `http://localhost:3000/api/users/${id}/isOnline`, {
+        method: 'put',
+        headers: { 'content-type': 'application/json' }
+        });
     },
-
-    handleError(status: number) {
-      console.log('handle error: ', status);
-        if (status == 401)
-          this.$router.push('/401');
-        else if (status == 40)
-          this.$router.push('/404');
-        else if (status == 500)
-          this.$router.push('/500');
-        else
-          return false;
-        console.log("ERROR");
-        return true;
-    }
   }
 }
 </script>
