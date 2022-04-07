@@ -212,6 +212,7 @@ export class UserService {
 	}
 
 	async updateLastTaskTime(id: number) {
+		this.userRepository.update(id, {status: UserStatus.ON});
 		const currentTime = Math.floor(Date.now() / 1000);
 		return await this.userRepository.update(id, {lastTask: currentTime});
 	}
