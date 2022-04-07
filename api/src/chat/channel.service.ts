@@ -187,8 +187,7 @@ export class ChannelService {
 
 	async banUser(channel: Ichannel, user: Iuser): Promise<Ichannel> {
 		channel.ban.push(user);
-		this.channelRepository.save(channel);
-		return channel;
+		return await this.channelRepository.save(channel);
 	}
 
 	async unbanUser(channelId: number, Iuserid: number): Promise<Ichannel> {
