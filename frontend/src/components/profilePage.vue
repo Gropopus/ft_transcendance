@@ -1,3 +1,7 @@
+<script setup lang="ts">
+	import scoreBoard from './scoreBoard.vue'
+</script>
+
 <template>
 	<div class="profilePage">
 		<!-- <button @click="reload()"> reload </button> -->
@@ -62,24 +66,7 @@
 					</div>
 				</div>
 				<div v-if="currentTab==2" class="history">
-					<div class="histCats">
-						<div> Result </div>
-						<div> UserLogin </div>
-						<div> score 1 </div>
-						<div> score 2 </div>
-						<div> Opponent </div>
-						<div> Result </div>
-					</div>
-					<div v-for="elem in gameHistory">
-						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
-							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.status }} </div>
-							<div v-if="elem.player_left_id != undefined"> {{ elem.player_left_id.user.username }} </div>
-							<div v-if="elem.score_l != undefined"> {{ elem.score_l }} </div>
-							<div v-if="elem.score_r != undefined"> {{ elem.score_r }} </div>
-							<div v-if="elem.player_right_id != undefined"> {{ elem.player_right_id.user.username }} </div>
-							<div v-if="elem.player_right_id != undefined"> {{ elem.player_right_id.status }} </div>
-						</div>
-					</div>
+					<scoreBoard :userId="userId"/>
 				</div>
 			</div>
 		</div>
@@ -104,8 +91,6 @@ export default	defineComponent ({
 			currentTab: 0,
 			picture: "",
 			ladder: 0,
-			gameInfo: [],
-			gameHistory: [],
 		}
 	},
 
@@ -113,14 +98,12 @@ export default	defineComponent ({
 		this.userData;
 		this.picture;
 		this.ladder;
-		this.gameHistory;
 	},
 
 	async created() {
 		this.userData = await this.fetchUserData();
 		this.picture = await this.getPicture();
 		this.ladder = await this.fetchLadderLevel();
-		this.gameHistory = await this.fetchPlayerHistory();
 	},
 
 	methods: {
@@ -179,35 +162,9 @@ export default	defineComponent ({
     		return blobUrl;
 		},
 
-		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
-    			method: 'get',
-    			headers: { 'content-type': 'application/json' }
-			})
-			const history = await res.json();
-			return history.items;
-		},
-
 		goToRoute(path: string) {
 			this.$router.push(path);
 		},
-
-		whoWon(playerStats)	{
- 			if (playerStats.user.username === this.userData.username)
-			{
-				if (playerStats.status === 'lost-the-game')
-					return (false);
-				else
-					return (true);
-			}
-			else
-			{
-				if (playerStats.status === 'lost-the-game')
-					return (true);
-				else
-					return (false);
-			}
-		}
 	},
 })
 </script>
@@ -467,46 +424,4 @@ export default	defineComponent ({
 	aspect-ratio: 1 / 1;
 	border-radius: 5px;
 }
-
-.history
-{
-	width: 90%;
-	display: inline-block;
-	margin-top: 3%;
-	margin-bottom: 3%;
-	margin-right: auto;
-	margin-left: auto;
-	max-height:	500px;
-	overflow-y: scroll;
-	border: solid 3px white;
-}
-
-.histCats
-{
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-	text-align: center;
-	background: var(--white-10);
-}
-
-.histCats > div
-{
-	flex: 1 1 0;
-}
-
-.histElem
-{
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-	text-align: center;
-	border-bottom: solid 1px white;
-}
-
-.histElem > div
-{
-	flex: 1 1 0;
-}
-
 </style>
