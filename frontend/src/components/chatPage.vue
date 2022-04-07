@@ -242,7 +242,7 @@ export default	defineComponent ({
 		},
 
 		goToUserProfile(userInfo) {
-			this.$router.push(`/profile/${userInfo.name}`)
+			this.$router.push(`/profile/${userInfo}`)
 		},
 
 		async hasSettingsRights()	{
