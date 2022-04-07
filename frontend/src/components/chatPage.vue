@@ -38,12 +38,20 @@
 			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					<button @click="goToUserProfile(mess.user.username)" class=linkButton > {{ mess.user.username}}: </button><br>
-					{{ mess.text }} <br>
+					<p v-if="mess.text != '!challenge'">{{ mess.text }}</p>
+											<p v-else>
+							<p style="color: rgb(73, 105, 219); margin-bottom: 0px">Play with me !</p>
+							<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
+						</p>
 				</div>
 				<div v-else class="currentUserMess">
 					<p class="currentUserText">
-					{{ mess.user.username }}: <br>
-					{{ mess.text }}
+						{{ mess.user.username }}: <br>
+						<p v-if="mess.text != '!challenge'">{{ mess.text }}</p>
+						<p v-else>
+							<p style="color: rgb(73, 105, 219); margin-bottom: 0px">Play with me !</p>
+							<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
+						</p>
 					</p>
 				</div>
 			</ul>
@@ -51,7 +59,7 @@
 		<!--</div>-->
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
-			<button @click="sendMessage(message)" class="sendButton">send</button>
+			<img src="/src/assets/message012.png" @click="sendMessage(message)" title="Send" class="sendButton">
 		</div>
 		</div>
 		<div class="chatToolSpace">
@@ -90,7 +98,7 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save', 'addMessage'],
+	emits: ['save', 'addMessage', 'userIsOnline'],
 
 	data() {
 		return {
@@ -113,13 +121,16 @@ export default	defineComponent ({
 		this.all = await this.fetchAllChannels();
 		this.channelsList = await this.fetchChannelsList();
 		this.all;
-		const param = this.$route.query.id;
-		if (param)
-			this.channelId = param;
+		const chanId = this.$route.query.id;
+		if (chanId)
+			this.channelId = chanId;
 		else if (this.channelsList.length > 0)
 			this.channelId = this.channelsList[0].id;
 		this.socket.auth = {userId: this.userId};
 		this.socket.connect();
+		const challengeId = this.$route.query.challengeId;
+		if (challengeId)
+			this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
 		this.channelMessages = await this.fetchMessages();
 		this.resetScroll();
 		if (this.channelId)
@@ -142,6 +153,9 @@ export default	defineComponent ({
 			autoConnect: false});
 	},
 
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods: {
 		async fetchAllChannels() {
@@ -203,19 +217,22 @@ export default	defineComponent ({
 
 		async sendMessage(message: string)
 		{
-			this.socket.emit('addMessage', {msg: message, channelId: this.channelId});
+			let challengeId = 0
+			if (message == '!challenge')
+				challengeId = await this.createChallenge();
+			this.socket.emit('addMessage', {msg: message, challengeId: challengeId, channelId: this.channelId});
 			this.message = "";
+			if (challengeId)
+				this.$router.push('/challenge/normal/' + challengeId);
 		},
 
 		async fetchMessages() {
-			console.log('in message')
 			if (!this.channelId)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
-			console.log('message set')
 			const mess = await res.json();
 			return mess.items;
 		},
@@ -282,6 +299,20 @@ export default	defineComponent ({
 				return {name: chan.owner.username, status: chan.owner.username};
 			else
 				return {name: chan.admin[0].username, status: chan.admin[0].username};
+		},
+
+		async createChallenge() {
+			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const challengeId = await ret.json();
+
+			return challengeId;
+		},
+
+		acceptChallenge(challengeId: number) {
+			this.$router.push('/challenge/normal/' + challengeId);
 		}
 	},
 })
@@ -631,7 +662,7 @@ export default	defineComponent ({
 
 .writing-zone > input
 {
-	flex: 9;
+	flex: 15;
 	border-radius: 40px;
 	margin: 2%;
 	margin-top: 1%;
@@ -651,20 +682,19 @@ export default	defineComponent ({
 	caret-color: rgb(255, 255, 255, 0.6);
 }
 
+.sendButton > img 
+{
+	object-fit: contain;
+}
 .sendButton
 {
 	flex: 1;
 	margin-top: auto;
 	margin-bottom: auto;
 	margin-right: 1%;
-	width: 9%;
-	height:	42px;
+	width: 70px;
+	height:	70px;
 	background: none;
-	border: solid 3px white;
-	border-radius: 5px;
-	font-size: 120%;
-	font-style: Myanmar;
-	color: white;
 }
 
 .usernameButton {
@@ -683,8 +713,59 @@ export default	defineComponent ({
 
 .sendButton:hover
 {
+	border-radius: 5px;
 	cursor: pointer;
-	background: rgb(255, 255, 255, 0.5);
+	background: rgb(255, 255, 255, 0.2);
+}
+
+.watchButton {
+	flex: 1 1 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 10px;
+}
+
+
+.playButton {
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, rgb(221, 172, 226) 0, rgb(73, 105, 219) 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono",monospace;
+  height: 80px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s,transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow,transform;
+  font-size: 18px;
+}
+
+.playButton:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.playButton:active {
+  box-shadow: rgb(23, 61, 199) 0 3px 7px inset;
+  transform: translateY(2px);
 }
 
 </style>

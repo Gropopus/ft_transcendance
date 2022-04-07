@@ -15,6 +15,9 @@ export default	defineComponent ({
             default:	"0"
         },
     },
+
+	emits:	['userIsOnline'],
+	
     async mounted() {	
         this.gameList;
         this.gameListPlaying;
@@ -23,7 +26,6 @@ export default	defineComponent ({
         });
         try {
             const test = await h.json();
-			console.log('trying');
 			if (test.status != 'playing')
 				this.$router.replace('/404')
 			else
@@ -34,8 +36,13 @@ export default	defineComponent ({
         }
  
     },
+
     unmounted() {
         unload(this.userId);
+    },
+
+	async updated() {
+        await this.$emit('userIsOnline', this.userId);
     },
 
     methods: {

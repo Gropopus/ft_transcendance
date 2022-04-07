@@ -8,6 +8,7 @@
       <router-view
         :userId="this.userId"
         @update:userId="saveUserId($event)"
+        @userIsOnline="userIsOnline($event)"
         v-bind="setRoute()" />
     </div>
   </main>

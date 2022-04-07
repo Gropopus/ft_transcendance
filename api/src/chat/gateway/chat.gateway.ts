@@ -97,13 +97,14 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('addMessage')
-  async onAddMessage(socket: Socket, message: {msg: string, channelId: number}) {
+  async onAddMessage(socket: Socket, message: {msg: string, challengeId: number, channelId: number}) {
     const user = await this.userService.findOne(socket.handshake.auth.userId);
     const nb_mute: number = await this.channelService.boolUserMutedOnChannel(socket.handshake.auth.userId, message.channelId);
     if (nb_mute == 0) {
       const channel: Ichannel = await this.channelService.getChannel(message.channelId);
       const createdMessage: Imessage = await this.messageService.create({ type: 0, user: user, username: user.username,
-                                                          text:message.msg, channel: channel, created_at: new Date(), updated_at: new Date()});
+                                                          text:message.msg, challengeId: message.challengeId,
+                                                          channel: channel, created_at: new Date(), updated_at: new Date()});
 
       const joinedUsers: IjoinedChanel[] = await this.joinedChannelService.findByChannel(message.channelId);
       for(const user of joinedUsers) {

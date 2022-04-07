@@ -73,7 +73,9 @@ export default	{
 			default:	0
 		}
 	},
-	emits:	['update:userId'],
+
+	emits:	['update:userId', 'userIsOnline'],
+
 	data:	function()	{
 		return {
 			userData: [],
@@ -97,17 +99,16 @@ export default	{
 		this.picture;
 	},
 
-/*	created(){
-		this.displayPicture();
-		this.isTwoFA();
-	},*/
-
 	async created()	{
 		this.displayPicture();
 		this.isTwoFA();
 		this.userData = await this.fetchUserData();
 		this.picture = await this.getPicture();
 	},
+
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods:	{
 		async fetchUserData() {

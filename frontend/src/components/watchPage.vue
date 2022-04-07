@@ -64,6 +64,8 @@ export default	defineComponent ({
 		}
 	},
 
+	emits:	['userIsOnline'],
+	
 	async mounted() {	
 		this.gameList;
 		this.gameListPlaying;
@@ -73,8 +75,9 @@ export default	defineComponent ({
 		this.picture;
 	}, 
 
-	created() {
-	},
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
 
 	methods: {
 		goToRoute() {

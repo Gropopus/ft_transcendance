@@ -76,6 +76,12 @@ export default	{
 		}
 	},
 
+	emits:	['userIsOnline'],
+
+    async updated() {
+        await this.$emit('userIsOnline', this.userId);
+    },
+
 	methods:	{
 		async createChat()	{
             this.error = "";
