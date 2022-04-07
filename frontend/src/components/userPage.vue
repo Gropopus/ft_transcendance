@@ -11,7 +11,7 @@
 				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/chat.png" class="challengeButton"/>
+				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/message03.png" class="challengeButton"/>
 				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
@@ -110,7 +110,7 @@ export default	defineComponent ({
 			userData: [],
 			relation: "",
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
-			challengeIcon: {img: "/src/assets/challenge.png", title:"challenge"},
+			challengeIcon: {img: "/src/assets/challenge01.png", title:"challenge"},
 			blockIcon: {img: "/src/assets/plain-cat.png", title:'block '},
 			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock '},
 			relationIcon: "",
