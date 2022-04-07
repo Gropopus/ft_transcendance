@@ -1,21 +1,21 @@
 <template>
 	<div class="history">
 		<div class="histCats">
-			<div> Mode </div>
 			<div> Result </div>
-			<div> Your Score </div>
+			<div> Mode </div>
+			<div> Player Score </div>
 			<div> Opponent Score </div>
 			<div> Opponent </div>
 		</div>
 		<div v-for="elem in gameHistory">
 			<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
-				<div> {{ elem.mode }} </div>
 				<div v-if="whoWon(elem.player_left_id)">
 					Victory
 				</div>
 				<div v-else>
 					Defeat
 				</div>
+				<div> {{ elem.mode }} </div>
 				<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_r }} </div>
 				<div v-else> {{ elem.score_l }} </div>
 				<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_l }} </div>
@@ -33,7 +33,7 @@ import { defineComponent } from 'vue'
 export default	defineComponent ({
 	name:	'scoreBoard',
 	props:	{
-		userId:	{
+		profId:	{
 			type:	[Number, String],
 			default:	"0"
 		},
@@ -55,7 +55,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/game/history/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -65,7 +65,7 @@ export default	defineComponent ({
 		},
 
 		whoWon(playerStats)	{
- 			if (playerStats.user.id === this.userId)
+ 			if (playerStats.user.id === this.profId)
 			{
 				if (playerStats.status === 'lost-the-game')
 					return (false);
@@ -82,7 +82,7 @@ export default	defineComponent ({
 		},
 
 		UserIsPlayer(playerId)	{
-			if (playerId === this.userId)
+			if (playerId === this.profId)
 				return (true);
 			return (false);
 		}
