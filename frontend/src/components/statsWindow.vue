@@ -29,26 +29,26 @@
 				<div class="achievementsTable">
 					<div class="achievementsCol">
 						<div :key="file.name" v-for="file in socialAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn">
-							<img v-else :src="file.iconOff">
+							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
+							<img v-else :src="file.iconOff" :title="file.name">
 						</div>
 					</div>
 					<div class="achievementsCol">
 						<div :key="file.name" v-for="file in victoryAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn">
-							<img v-else :src="file.iconOff">
+							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
+							<img v-else :src="file.iconOff" :title="file.name">
 						</div>
 					</div>
 					<div class="achievementsCol">
 						<div :key="file.name" v-for="file in chanAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn">
-							<img v-else :src="file.iconOff">
+							<img v-if="file.status == 1" :src="file.iconOn" title="file.name">
+							<img v-else :src="file.iconOff" :title="file.name">
 						</div>
 					</div>
 					<div class="achievementsCol">
 						<div :key="file.name" v-for="file in eloAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn">
-							<img v-else :src="file.iconOff">
+							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
+							<img v-else :src="file.iconOff" :title="file.name">
 						</div>
 					</div>
 				</div>
@@ -435,7 +435,7 @@ export default	defineComponent ({
 	margin-bottom: 3%;
 	margin-right: 5%;
 	margin-left: 5%;
-	border: solid white 3px;
+	/* border: solid white 3px; */
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
