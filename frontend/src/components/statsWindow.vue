@@ -154,7 +154,7 @@ export default	defineComponent ({
 		},
 
 		async fetchUserData() {
-			const res = await fetch(`http://localhost:3000/api/users/${this.profId}`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -163,7 +163,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadderLevel() {
-			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.profId}`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/users/ladder-level/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -173,7 +173,7 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.profId}`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/game/history/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -205,7 +205,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadder() {
-			const res = await fetch(`http://localhost:3000/api/users`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/users`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})

@@ -51,7 +51,7 @@ export default	{
 		async 	twoFACheck()
 		{
 			this.error = "";
-			const res = await fetch('http://localhost:3000/api/2fa/authenticate', {
+			const res = await fetch('http://www.kittypong.fr:3000/api/2fa/authenticate', {
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
@@ -66,7 +66,7 @@ export default	{
 		
 		async	loginWith42(){
 			let uri = window.location.href
-			let backadrr = "http://localhost:3000/api/oauth2/school42/callback"
+			let backadrr = "http://www.kittypong.fr:3000/api/oauth2/school42/callback"
 			let auth = "/api/oauth2/school42";
 			let test= uri.slice(30);
 			backadrr += test;
