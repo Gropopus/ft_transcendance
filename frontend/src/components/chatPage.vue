@@ -156,11 +156,7 @@ export default	defineComponent ({
 	},
 
 	async created() {
-<<<<<<< HEAD
 		this.socket = io('http://www.kittypong.fr:42070', {
-=======
-		this.socket = io('http://localhost:42070', {
->>>>>>> master
 			withCredentials: true,
 			extraHeaders: {
 				"my-custom-header": "chat"
@@ -174,11 +170,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchAllChannels() {
-<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all`, {
-=======
-			const res = await fetch(`http://localhost:3000/api/channel/all`, {
->>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -187,11 +179,7 @@ export default	defineComponent ({
 		},
 
 		async fetchChannelsList() {
-<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all/${this.userId}`, {
-=======
-			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
->>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -252,11 +240,7 @@ export default	defineComponent ({
 		async fetchMessages() {
 			if (!this.channelId)
 				return ;
-<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
-=======
-			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
->>>>>>> master
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -333,11 +317,7 @@ export default	defineComponent ({
 
 		async getPicture(id: number)
 		{
-<<<<<<< HEAD
 			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${id}`, {
-=======
-			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${id}`, {
->>>>>>> master
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -387,11 +367,7 @@ export default	defineComponent ({
 		},
 
 		async createChallenge() {
-<<<<<<< HEAD
 			const ret = await fetch(` http://www.kittypong.fr:3000/api/game/newchallengeid/`, {
-=======
-			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
->>>>>>> master
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});

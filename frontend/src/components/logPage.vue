@@ -23,11 +23,7 @@
 				Log-in </button>
 		</div>
 		</div> <!-- LoginForm end -->
-<<<<<<< HEAD
 		<a class="submit42Button" href="http://www.kittypong.fr:3000/api/oauth2/school42">
-=======
-		<a class="submit42Button" href="http://localhost:3000/api/oauth2/school42">
->>>>>>> master
 			<img src="../assets/logo-42_white.png">
 			<div>
 				Log In with<br>
@@ -77,22 +73,14 @@ checkForm() {
 				this.error = this.checkForm();
 				if (this.error)
 					return ;
-<<<<<<< HEAD
 				const res = await fetch(`http://www.kittypong.fr:3000/api/users/login`, {
-=======
-				const res = await fetch(`http://localhost:3000/api/users/login`, {
->>>>>>> master
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ email: this.userLogin, password: this.userPass })
 				})
 				if (res.status != 400 && res.status != 404)
 				{
-<<<<<<< HEAD
 					const userRes = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-email/${this.userLogin}`, {
-=======
-					const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
->>>>>>> master
 						method: 'get',
 						headers: { 'content-type': 'application/json' },
 					})
@@ -117,11 +105,7 @@ checkForm() {
 		async 	twoFACheck()
 		{
 			this.error = "";
-<<<<<<< HEAD
 			const userRes = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-email/${this.userLogin}`, {
-=======
-			const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
->>>>>>> master
 				method: 'get',
 				headers: { 'content-type': 'application/json' },
 			})
@@ -131,11 +115,7 @@ checkForm() {
 				this.error = "No code to submit"
 				return ;
 			}
-<<<<<<< HEAD
 			const res = await fetch('http://www.kittypong.fr:3000/api/2fa/authenticate', {
-=======
-			const res = await fetch('http://localhost:3000/api/2fa/authenticate', {
->>>>>>> master
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: data1}),
@@ -151,11 +131,7 @@ checkForm() {
 
 		},
 		async	loginWith42(){
-<<<<<<< HEAD
 			return await fetch(`http://www.kittypong.fr:3000/api/oauth2/school42`, {
-=======
-			return await fetch(`http://localhost:3000/api/oauth2/school42`, {
->>>>>>> master
 						method: 'get',
 						mode: 'no-cors',
 						headers: { 'content-type': 'application/json' },

@@ -55,11 +55,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchPlayerHistory() {
-<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/game/history/${this.profId}`, {
-=======
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.profId}`, {
->>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})

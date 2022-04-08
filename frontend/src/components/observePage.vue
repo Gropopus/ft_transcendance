@@ -21,11 +21,7 @@ export default	defineComponent ({
     async mounted() {	
         this.gameList;
         this.gameListPlaying;
-<<<<<<< HEAD
         const h = await fetch('http://www.kittypong.fr:3000/api/game/stat/' + this.$route.params.gameId, {
-=======
-        const h = await fetch('http://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
->>>>>>> master
             method: 'get',
         });
         try {

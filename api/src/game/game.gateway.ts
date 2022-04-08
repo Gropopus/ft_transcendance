@@ -229,13 +229,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			{
 				const impact = score.ball_y - score.pos_r - score.l_height / 2;
 				const ratio = 100 / (score.l_height / 2)
-<<<<<<< HEAD
 				const multi = Math.abs(score.speed_x) / 0.4;
 				score.speed_y = multi * impact * ratio / 180;
-=======
-
-				score.speed_y = impact * ratio / 180;
->>>>>>> master
 				if (score.speed_x < 2.0 && score.speed_x > -2.0)
 					score.speed_x *= 1.2;
 

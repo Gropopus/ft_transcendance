@@ -61,11 +61,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchUserData() {
-<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.userId}`, {
-=======
-			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
->>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -74,22 +70,14 @@ export default	defineComponent ({
 		},
 
 		async addfriend(targetId: number){
-<<<<<<< HEAD
 			await fetch(`http://www.kittypong.fr:3000/api/friends/1/add/${targetId}`, {
-=======
-			await fetch(`http://localhost:3000/api/friends/1/add/${targetId}`, {
->>>>>>> master
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
 		},
 
 		async blockUser(targetId: number){
-<<<<<<< HEAD
 			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/block/${targetId}`, {
-=======
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${targetId}`, {
->>>>>>> master
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -97,11 +85,7 @@ export default	defineComponent ({
 
 		async getPicture()
 		{
-<<<<<<< HEAD
 			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${this.userId}`, {
-=======
-			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
->>>>>>> master
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
