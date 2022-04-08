@@ -477,26 +477,31 @@ export default	defineComponent ({
 	margin-top: 5%;
 	display: flex;
 	flex-direction: row;
+	height:	600px;
+	width: 100%;
 }
 
 .chatSide {
 	display: flex;
 	flex: 8;
 	flex-direction: column;
-	min-height:	500px;
 	max-height:	45em;
 	min-width: 500px;
 	width: 100%;
 	margin-right: 3%;
 	margin-left: 3%;
+	min-height:	100%;
 }
 
 .chatArea
 {
+	display: block;
 	overflow-y:	scroll;
 	border:	solid 3px white;
+	border-top:	solid 1px white;
+	border-bottom: none;
 	width: 100%;
-	min-height:	300px;
+	height:	75%;
 }
 
 .chatToolSpace
