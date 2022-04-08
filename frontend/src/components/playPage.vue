@@ -1,7 +1,7 @@
 <template>
-		<div class="GameArea1">
-			<canvas id="canvas" width="1600" height="1200"></canvas>
-		</div>
+	<div class="GameArea">
+		<canvas id="canvas" width="1600" height="1200"></canvas>
+	</div>
 </template>
 
 <script lang="ts">
@@ -27,19 +27,19 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
-	.GameArea1
-	{
-		float:	left;
-		display:	flex;
-		width:	70%;
-		height: 70%;
-		min-height: 600px;
-		min-width: 800px;
-		margin-left: auto;
-		margin-right: auto;
-		border:	solid 3px white;
-		border-radius: 5px;
-		flex-direction:	column;
-	}
+<style lang="css" scoped>
+.GameArea
+{
+	display:	flex;
+	width:	50% !important;
+	height: 50% !important;
+	min-height: 400px;
+	min-width: 600px;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 5%;
+	border:	solid 3px white;
+	border-radius: 5px;
+	flex-direction:	column;
+}
 </style>

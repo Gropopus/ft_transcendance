@@ -107,7 +107,7 @@ export default	defineComponent ({
 
 .StatsWin
 {
-	width:	100%;
+	/* width:	100%; */
 	min-height:	500px;
 	display:	flex;
 	flex-direction:	column;
@@ -118,8 +118,8 @@ export default	defineComponent ({
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
+	margin-right: 3%;
+	margin-left: 3%;
 	margin-bottom: 0%;
 }
 
@@ -129,11 +129,11 @@ export default	defineComponent ({
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
-	min-width: 1300px;
-	width: 100%;
+	/* min-width: 1300px; */
+	/* width: 100%; */
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 5px;
+	border: none;
 }
 
 .info

@@ -1,9 +1,8 @@
 <template>
 <div>
+	<search-bar></search-bar>
 	<div class="listName" @click="setDiplayState()">
-		<p>
-			All channels
-		</p>
+		<div> All channels </div>
 		<button>
 			<img v-if="listStatus==0" src="/src/assets/arrow-whitedown.png"/>
 			<img v-else src="/src/assets/arrow-white-up.png" />
@@ -95,8 +94,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { io, Socket } from "socket.io-client";
+import searchBar from './searchBar.vue';
 
 export default	defineComponent ({
 	name: 'chatPage',
@@ -107,7 +106,11 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save', 'addMessage', 'userIsOnline'],
+	components: {
+		searchBar,
+	},
+
+	emits: ['addMessage', 'userIsOnline'],
 
 	data() {
 		return {
@@ -162,10 +165,12 @@ export default	defineComponent ({
 				"my-custom-header": "chat"
 			},
 			autoConnect: false});
+		this.resetScroll();
 	},
 
     async updated() {
         await this.$emit('userIsOnline', this.userId);
+		this.resetScroll();
     },
 
 	methods: {
@@ -269,8 +274,6 @@ export default	defineComponent ({
 			for (i in this.all)
 				if (this.all[i].id == chanId)
 					break ;
-			console.log(this.joinPassword)
-			console.log(this.all);
 			if (this.joinPassword == "" && this.all[i].type == "protected")
 				return ;
 			const res = await fetch(
@@ -402,14 +405,15 @@ export default	defineComponent ({
 	flex-direction: row;
 	text-align: left;
 	border-bottom: solid 2px white;
-	margin-top: auto;
+	margin-top: 5%;
 	margin-bottom: auto;
+	margin-left: 3%;
 	font-size: 150%;
 	cursor: pointer;
 	gap: 2%;
 }
 
-.listName > p	{
+.listName > div	{
 	flex: 14;
 	user-select: none;
 }
@@ -433,6 +437,7 @@ export default	defineComponent ({
 	display: flex;
 	gap: 5%;
 	font-size: 20px;
+	margin-left: 3%;
 	margin-top: 1%;
 }
 
@@ -467,29 +472,34 @@ export default	defineComponent ({
 }
 .chatPage
 {
-	margin-top: 2%;
+	margin-top: 5%;
 	display: flex;
 	flex-direction: row;
+	height:	600px;
+	width: 100%;
 }
 
 .chatSide {
 	display: flex;
 	flex: 8;
 	flex-direction: column;
-	min-height:	500px;
 	max-height:	45em;
 	min-width: 500px;
 	width: 100%;
 	margin-right: 3%;
 	margin-left: 3%;
+	min-height:	100%;
 }
 
 .chatArea
 {
+	display: block;
 	overflow-y:	scroll;
 	border:	solid 3px white;
+	border-top:	solid 1px white;
+	border-bottom: none;
 	width: 100%;
-	min-height:	300px;
+	height:	75%;
 }
 
 .chatToolSpace

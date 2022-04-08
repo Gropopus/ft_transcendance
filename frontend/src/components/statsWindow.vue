@@ -28,23 +28,27 @@
 			<div v-if="currentTab==1" class="achievements">
 				<div class="achievementsTable">
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in socialAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in victoryAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in chanAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in eloAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 				</div>
@@ -120,9 +124,24 @@ export default	defineComponent ({
 			ladder:	[],
 			gameHistory: [],
 			socialAchievements: [
-                {name: "Social 1", icon: "/src/assets/Achievement_Social_1.png"},
-                {name: "Social 2", icon: "/src/assets/Achievement_Social_2.png"},
-                {name: "Social 3", icon: "/src/assets/Achievement_Social_3.png"},
+                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
+            ],
+			victoryAchievements: [
+                {name: "Victory 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Victory 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Victory 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
+            ],
+			chanAchievements: [
+                {name: "Chan 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Chan 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Chan 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
+            ],
+			eloAchievements: [
+                {name: "Elo 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Elo 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Elo 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
             ],
 		}
 	},
@@ -139,6 +158,7 @@ export default	defineComponent ({
 		this.userLadder = await this.fetchLadderLevel();
 		this.gameHistory = await this.fetchPlayerHistory();
 		this.ladder = await this.fetchLadder();
+		await this.setAchievementStatus();
 	},
 
 	methods: {
@@ -168,7 +188,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const userLadder = await res.json();
-			console.log(userLadder);
 			return userLadder;
 		},
 
@@ -179,6 +198,61 @@ export default	defineComponent ({
 			})
 			const history = await res.json();
 			return history.items;
+		},
+
+		async setSocialStatus() {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.profId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const friends = await res.json();
+			const size = friends.length;
+			if (size >= 1)
+				this.socialAchievements[0].status = 1;
+			if (size >= 5)
+				this.socialAchievements[1].status = 1;
+			if (size >= 20)
+				this.socialAchievements[2].status = 1;
+		},
+
+		setVictoryStatus() {
+			if (this.userData.victory >= 1)
+				this.victoryAchievements[0].status = 1;
+			if (this.userData.victory >= 5)
+				this.victoryAchievements[1].status = 1;
+			if (this.userData.victory >= 20)
+				this.victoryAchievements[2].status = 1;
+		},
+
+		async setChanStatus() {
+			const res = await fetch(`http://localhost:3000/api/channel/all/${this.profId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const channels = (await res.json()).items;
+			const size = channels.length;
+			if (size >= 1)
+				this.chanAchievements[0].status = 1;
+			if (size >= 5)
+				this.chanAchievements[1].status = 1;
+			if (size >= 20)
+				this.chanAchievements[2].status = 1;
+		},
+		
+		setEloStatus() {
+			if (this.userData.level >= 1050)
+				this.eloAchievements[0].status = 1;
+			if (this.userData.level >= 1200)
+				this.eloAchievements[1].status = 1;
+			if (this.userData.level >= 1400)
+				this.eloAchievements[2].status = 1;
+		},
+		
+		async setAchievementStatus() {
+			await this.setSocialStatus();
+			await this.setChanStatus();
+			this.setVictoryStatus();
+			this.setEloStatus();
 		},
 
 		whoWon(playerStats)	{
@@ -210,7 +284,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const ladder = await res.json();
-			console.log(ladder.items);
 			return ladder.items.sort((v1, v2) =>	{
 				if (v1.level > v2.level)
 					return -1;
@@ -256,7 +329,7 @@ export default	defineComponent ({
 
 .StatsWin
 {
-	width:	100%;
+	/* width:	100%; */
 	min-height:	500px;
 	display:	flex;
 	flex-direction:	column;
@@ -265,8 +338,8 @@ export default	defineComponent ({
 
 .StatsArea
 {
-	width:	100%;
-	min-width: 1300px;
+	/* width:	100%; */
+	/* min-width: 1300px; */
 	min-height:	500px;
 	border: solid white 3px;
 	border-top: none;
@@ -276,13 +349,13 @@ export default	defineComponent ({
 
 .StatsTabs
 {
-	min-width: 1300px;
+	min-width: 20%;
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-	width: 100%;
+	/* width: 100%; */
 	overflow: hidden;
 }
 
@@ -357,7 +430,7 @@ export default	defineComponent ({
 
 .achievementsTable
 {
-	width: 90%%;
+	width: 90%;
 	margin-top: 3%;
 	margin-bottom: 3%;
 	margin-right: 5%;
@@ -381,10 +454,10 @@ export default	defineComponent ({
 
 .achievementsCol > div
 {
-	border: solid white 3px;
+	/* border: solid white 3px; */
 	margin-top: 3%;
 	margin-bottom: 3%;
-	min-width: 120px;
+	/* min-width: 120px; */
 	flex: 1 1 1;
 	aspect-ratio: 1 / 1;
 	border-radius: 5px;

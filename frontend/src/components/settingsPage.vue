@@ -344,18 +344,14 @@ export default	{
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
+	margin-right: 3%;
+	margin-left: 3%;
 	margin-bottom: 0%;
-	min-width: 1000px;
+	/* min-width: 1000px; */
 }
 
 .settings {
-	width:	100%;
-	min-height:	500px;
-	border: solid white 3px;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
+	margin-top: 7%;
 	font-size: 150%;
 }
 .submitBar > input.textArea
@@ -469,7 +465,8 @@ export default	{
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 5px;
+	border: none;
+	border-bottom: solid 2px  white;
 }
 
 .info

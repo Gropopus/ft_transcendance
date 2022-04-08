@@ -251,8 +251,8 @@ export default	defineComponent ({
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
+	/* margin-right: 2%;
+	margin-left: 2%; */
 	margin-bottom: 0%;
 }
 
@@ -261,11 +261,11 @@ export default	defineComponent ({
 	flex-direction: row;
 	gap: 3%;
 	/* flex: 1 1 0; */
-	min-width: 1300px;
+	/* min-width: 1300px; */
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 5px;
+	border: none;
 }
 
 .info
@@ -318,10 +318,6 @@ export default	defineComponent ({
 	flex: 5;
 	background: none;
 	border: solid 3px white;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: white;
 	padding-top: 2%;
 	margin: 20%;
 	margin-top: 30%;
@@ -343,15 +339,8 @@ export default	defineComponent ({
 }
 
 .picture > img {
-	/*margin-left: 2%;
-	margin-bottom: 2%;
-	margin-top: 2%;
-	min-height: 150px;
-	min-width: 150px;*/
 	border-radius: 50%;
 	overflow: hidden;
-    width: 200px;
-    height: 200px;
     max-width: 200px;
     max-height: 200px;
 	object-fit:cover;
@@ -421,8 +410,8 @@ export default	defineComponent ({
 .user-profile {
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
+	margin-right: 3%;
+	margin-left: 3%;
 	margin-bottom: 0%;
 }
 

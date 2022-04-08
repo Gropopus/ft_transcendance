@@ -1,5 +1,6 @@
 <template>
 <div>
+	<button class="refreshButton" @click="refresh()">refresh </button>
 	<h1 v-if="actualSelect" class="watchTitle"> Game {{ index + 1 }} / {{ gameList.length }} </h1>
 	<h1 v-else class="watchTitle"> No game in progress. </h1>
 	<div class="watchPage">
@@ -42,7 +43,7 @@
 </div>
 </template>
 
-<script lang="ts" scoped>
+<script lang="ts">
 // import { throwStatement } from '@babel/types';
 import { defineComponent } from 'vue'
 export default	defineComponent ({
@@ -123,6 +124,20 @@ export default	defineComponent ({
 		async changeSelectGame(n: number) {
 			this.index += n;
 			await this.Select(this.gameList[this.index]);
+		},
+
+		async refresh(){
+			this.gameList;
+			this.gameListPlaying;
+       	 	await this.fectGameList();
+			if (this.gameList.length)
+				await this.Select(this.gameList[0]);
+			else
+				{
+					this.actualSelect = "";
+					return ;
+				}
+			this.picture;
 		}
 	}
 })
@@ -130,6 +145,31 @@ export default	defineComponent ({
 
 
 <style lang="css" scoped>
+
+.refreshButton
+{
+	margin-right: 5%;
+	margin-left:90%;
+	width: 100px;
+	height: 60px;
+	border: solid white 2px;
+	border-radius: 5PX;;
+	background: none;
+	margin-top: auto;
+	margin-bottom: auto;
+	cursor: pointer;
+	font-style: Myanmar;
+	color: white;
+	font-size: 130%;
+	letter-spacing: 2px;
+}
+
+.refreshButton:hover
+{
+	cursor: pointer;
+	background: rgb(255, 255, 255, 0.5);
+}
+
 .watchPage
 {
 	display: flex;
