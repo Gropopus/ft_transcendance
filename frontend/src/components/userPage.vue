@@ -251,8 +251,8 @@ export default	defineComponent ({
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
+	/* margin-right: 2%;
+	margin-left: 2%; */
 	margin-bottom: 0%;
 }
 
@@ -410,8 +410,8 @@ export default	defineComponent ({
 .user-profile {
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 5%;
-	margin-left: 5%;
+	margin-right: 3%;
+	margin-left: 3%;
 	margin-bottom: 0%;
 }
 
