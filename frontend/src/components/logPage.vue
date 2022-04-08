@@ -219,7 +219,6 @@ checkForm() {
 	cursor: pointer; 
 }
 
-
 .submit42Button
 {
 	display:	block;
@@ -256,6 +255,45 @@ checkForm() {
 .secret {
 	margin-bottom: 5%;
 }
+
+.secret > input.textArea
+{
+	border: none;
+	background-color:	var(--input-fields);
+	margin-bottom:	3%;
+	opacity:	50%;
+	font-size:	24px;
+	padding:	6px;
+	width:		81%;
+}
+
+.secret > .submitButton
+{
+	width:		35%;
+	margin-right: 10%;
+	display:	block;
+	background:	none;
+	flex:	0 0 center;
+	margin-bottom:	5%;
+	margin-right:	auto;
+	padding-top:	3%;
+	padding-bottom:	2%;
+	background:	none;
+	border:	solid white;
+	font-size:	100%;
+	color:	white;
+	font-family: MyanmarText;
+}
+
+.secret > .submitButton:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
+}
+
+
+
 
 .error {
 	justify-content: top;

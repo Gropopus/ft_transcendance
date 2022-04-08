@@ -1,8 +1,6 @@
 import { Body, Controller, Param, Get, Put, Post, Query, UseGuards } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { JwtAuthGuard } from '../auth/login/guards/jwt.guard'
-// import { RolesGuard } from 'src/auth/login/guards/roles.guards';
-// import { hasRoles } from 'src/auth/login/roles.decorator';
 import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { ChannelService } from 'src/chat/channel.service';
 import { Observable } from 'rxjs';

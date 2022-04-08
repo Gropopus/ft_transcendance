@@ -84,15 +84,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const usr = await this.userService.findOne(socket.handshake.auth.userId)
     const messages = await this.messageService.findMessagesForChannel(channel, socket.handshake.auth.userId, { limit: 30, page: 1 });
     messages.meta.currentPage = messages.meta.currentPage - 1;
-    // Save Connection to Channel
     await this.joinedChannelService.create({ socketId: socket.id, user: usr, Iuserid: socket.handshake.auth.userId, channel: channel, channelId: channelId});
-    // Send last messages from Channel to User
     this.server.to(socket.id).emit('messages', messages);
   }
 
   @SubscribeMessage('leaveJoinChannel')
   async onleaveJoinChannel(socket: Socket) {
-    // remove connection from JoinedChannels
     await this.joinedChannelService.deleteBySocketId(socket.id);
   }
 
@@ -108,7 +105,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
       const joinedUsers: IjoinedChanel[] = await this.joinedChannelService.findByChannel(message.channelId);
       for(const user of joinedUsers) {
-        const nu = null //await this.friendsService.boolIusersBlocked(user.Iuserid, createdMessage.user.id);
+        const nu = null;
         if (!nu) 
         {
           this.server.to(user.socketId).emit('messageAdded', message.channelId,user.Iuserid);
@@ -116,11 +113,4 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       }
     }
   }
-
-  // private handleIncomingPageRequest(page: Ipage) {
-  //   page.limit = page.limit > 100 ? 100 : page.limit;
-  //   // add page +1 to match angular material paginator
-  //   page.page = page.page + 1;
-  //   return page;
-  // }
 }

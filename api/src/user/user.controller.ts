@@ -12,9 +12,6 @@ import { JwtAuthGuard } from '../auth/login/guards/jwt.guard'
 import { diskStorage } from 'multer';
 import path = require('path');
 import { join } from 'path';
-
-import { RolesGuard } from 'src/auth/login/guards/roles.guards';
-// import { hasRoles } from 'src/auth/login/roles.decorator';
 import * as fs from 'fs';
 
 export const storage = {
@@ -63,11 +60,6 @@ export class UserController {
 	@Get('/find-by-email/:email')
 	async findOneByEmail(@Param() params): Promise<Iuser> {	  
 	  return this.userService.findOneByEmail(params.email);
-	}
-  
-	@Get('/find-by-level')
-	async findAllByLevel() {	  
-	  return this.userService.findAllByLevel();
 	}
   
 	@Get(':id')
@@ -129,12 +121,6 @@ export class UserController {
 	async findProfileImageById(@Param('id') id, @Res() res): Promise<Object> {
 	    const user = await this.userService.findOne(id);
 	    return of(res.sendFile(join(process.cwd(), 'src/uploads/' + user.picture)));
-	}
-
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Put('ban/:id')
-	async updateBanOfUser(@Param('id') id: string, @Body() user: Iuser): Promise<Iuser> {		
-	  return this.userService.updateBanOfUser(Number(id), user);
 	}
 
 }
