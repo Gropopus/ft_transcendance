@@ -201,7 +201,7 @@ export default	defineComponent ({
 		},
 
 		async setSocialStatus() {
-			const res = await fetch(`http://localhost:3000/api/friends/${this.profId}`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/friends/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -225,7 +225,7 @@ export default	defineComponent ({
 		},
 
 		async setChanStatus() {
-			const res = await fetch(`http://localhost:3000/api/channel/all/${this.profId}`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
