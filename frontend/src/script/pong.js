@@ -347,7 +347,6 @@ function playerclick(event, ) {
 		{
 			game.button = 0;
 			game.wait = 1;
-			setTimeout(speed_Game_check, 10000);
 			ready(game);
 		}
 	}
@@ -434,7 +433,7 @@ function socket_init()
 		game.socket.emit('joinRoom', conf_id);
 		setTimeout(function() {
 			waited_too_long(game.id)
-		}, 5000);
+		}, 15000);
 	})
 
 	game.socket.on('didntRespond', function() {
