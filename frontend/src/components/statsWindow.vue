@@ -230,7 +230,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			});
 			const channels = (await res.json()).items;
-			console.log(channels);
 			const size = channels.length;
 			if (size >= 1)
 				this.chanAchievements[0].status = 1;

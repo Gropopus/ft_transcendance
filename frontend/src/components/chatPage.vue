@@ -274,8 +274,6 @@ export default	defineComponent ({
 			for (i in this.all)
 				if (this.all[i].id == chanId)
 					break ;
-			console.log(this.joinPassword)
-			console.log(this.all);
 			if (this.joinPassword == "" && this.all[i].type == "protected")
 				return ;
 			const res = await fetch(

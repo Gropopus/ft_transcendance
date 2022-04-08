@@ -110,7 +110,6 @@ export default defineComponent ({
     async created() {
         this.channelId = this.$route.params.id;
         this.channelData = await this.fetchChannel();
-        console.log(this.channelData);
         this.setRole();
     },
 
