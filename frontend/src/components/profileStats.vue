@@ -32,7 +32,11 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchUserData() {
+<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.profId}`, {
+=======
+			const res = await fetch(`http://localhost:3000/api/users/${this.profId}`, {
+>>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -41,7 +45,11 @@ export default	defineComponent ({
 		},
 
 		async fetchLadderLevel() {
+<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/ladder-level/${this.profId}`, {
+=======
+			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.profId}`, {
+>>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})

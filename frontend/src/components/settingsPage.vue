@@ -111,7 +111,11 @@ export default	{
 
 	methods:	{
 		async fetchUserData() {
+<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.userId}`, {
+=======
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+>>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -121,7 +125,11 @@ export default	{
 
 		async getPicture()
 		{
+<<<<<<< HEAD
 			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${this.userId}`, {
+=======
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
+>>>>>>> master
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -138,7 +146,11 @@ export default	{
 	        	 	this.error = "Unable to update login with an empty login.";
 					return ;
 				}
+<<<<<<< HEAD
 				const test = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-username/${this.userLogin}`, {
+=======
+				const test = await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
+>>>>>>> master
 					method: 'get',
 					headers: { 'content-type': 'application/json' },
 				})
@@ -150,7 +162,11 @@ export default	{
 				}
 				else
 				{
+<<<<<<< HEAD
 					const res = await fetch(`http://www.kittypong.fr:3000/api/users/update/${this.userId}`, {
+=======
+					const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
+>>>>>>> master
 						method: 'post',
 						headers: { 'content-type': 'application/json' },
 						body: JSON.stringify({ username: this.userLogin })
@@ -166,7 +182,11 @@ export default	{
 	        	 	this.error = "unable to update password with an empty password.";
 					return ;
 				}
+<<<<<<< HEAD
 				const res = await fetch(`http://www.kittypong.fr:3000/api/users/update/${this.userId}`, {
+=======
+				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
+>>>>>>> master
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ password: this.userPass })
@@ -188,11 +208,19 @@ export default	{
 			}
 			let formData = new FormData();
   			formData.append('file', this.file);
+<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/upload`, {
 				method: 'post',
 				body: formData,
 				})
 			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/update/${this.userId}`, {
+=======
+			const res = await fetch(`http://localhost:3000/api/users/upload`, {
+				method: 'post',
+				body: formData,
+				})
+			const ret = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
+>>>>>>> master
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ picture: this.file.name })
@@ -202,7 +230,11 @@ export default	{
 
 		async displayPicture()
 		{
+<<<<<<< HEAD
 			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${this.userId}`, {
+=======
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
+>>>>>>> master
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -215,7 +247,11 @@ export default	{
 
 		async isTwoFA()
 		{
+<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.userId}`, {
+=======
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+>>>>>>> master
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
@@ -246,7 +282,11 @@ export default	{
 		{
 			if (this.twofa == false)
 			{
+<<<<<<< HEAD
 				const res = await fetch('http://www.kittypong.fr:3000/api/2fa/generate', {
+=======
+				const res = await fetch('http://localhost:3000/api/2fa/generate', {
+>>>>>>> master
 
 					method: 'post',
 					headers: { 'content-type': 'application/json' },
@@ -254,7 +294,11 @@ export default	{
 				})
 				const rep = await res.json();
 				this.secret = rep;
+<<<<<<< HEAD
 				const ret = await fetch(`http://www.kittypong.fr:3000/api/2fa/qrcode`, {
+=======
+				const ret = await fetch(`http://localhost:3000/api/2fa/qrcode`, {
+>>>>>>> master
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 				})
@@ -281,7 +325,11 @@ export default	{
 				this.error = "No code to submit"
 				return ;
 			}
+<<<<<<< HEAD
 			const res = await fetch('http://www.kittypong.fr:3000/api/2fa/turn-on', {
+=======
+			const res = await fetch('http://localhost:3000/api/2fa/turn-on', {
+>>>>>>> master
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
@@ -303,7 +351,11 @@ export default	{
 				this.error = "No code to submit"
 				return ;
 			}
+<<<<<<< HEAD
 			const res = await fetch('http://www.kittypong.fr:3000/api/2fa/turn-off', {
+=======
+			const res = await fetch('http://localhost:3000/api/2fa/turn-off', {
+>>>>>>> master
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),

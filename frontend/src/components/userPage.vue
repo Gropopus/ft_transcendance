@@ -87,7 +87,11 @@ export default	defineComponent ({
 		},
 
 		async fetchUserData() {
+<<<<<<< HEAD
 			const res = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-username/${this.$route.params.username}`, {
+=======
+			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
+>>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -104,7 +108,11 @@ export default	defineComponent ({
 		async fetchRelation() {
 			if (this.userData === undefined)
 				this.userData = await this.fetchUserData();
+<<<<<<< HEAD
 			return await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
+=======
+			return await fetch(`http://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
+>>>>>>> master
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -121,13 +129,21 @@ export default	defineComponent ({
 
 		async addOrRemovefriend(){
 			if (this.isFriend()) {
+<<<<<<< HEAD
 				await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/unfriend/${this.userData.id}`, {
+=======
+				await fetch(`http://localhost:3000/api/friends/${this.userId}/unfriend/${this.userData.id}`, {
+>>>>>>> master
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
 			}
 			else if (!this.relation) {
+<<<<<<< HEAD
 				await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
+=======
+				await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
+>>>>>>> master
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
@@ -136,7 +152,11 @@ export default	defineComponent ({
 		},
 
 		async blockUser(){
+<<<<<<< HEAD
 			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
+=======
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
+>>>>>>> master
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -144,7 +164,11 @@ export default	defineComponent ({
 		},
 
 		async unblock(){
+<<<<<<< HEAD
 			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
+=======
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
+>>>>>>> master
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -152,7 +176,11 @@ export default	defineComponent ({
 		},
 
 		async acceptRequest(){
+<<<<<<< HEAD
 			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/accept/${this.userData.id}`, {
+=======
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/accept/${this.userData.id}`, {
+>>>>>>> master
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -160,7 +188,11 @@ export default	defineComponent ({
 		},
 
 		async declineRequest(){
+<<<<<<< HEAD
 			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/decline/${this.userData.id}`, {
+=======
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/decline/${this.userData.id}`, {
+>>>>>>> master
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -181,7 +213,11 @@ export default	defineComponent ({
 
 		async getPicture()
 		{
+<<<<<<< HEAD
 			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${this.userData.id}`, {
+=======
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userData.id}`, {
+>>>>>>> master
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -193,21 +229,33 @@ export default	defineComponent ({
 
 		async challenge() {
 			// /challenge/:challengeMode/:challengeId
+<<<<<<< HEAD
 			const ret = await fetch(` http://www.kittypong.fr:3000/api/game/newchallengeid/`, {
+=======
+			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
+>>>>>>> master
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			const challengeId = await ret.json();
 			
 			let res = await fetch(
+<<<<<<< HEAD
 				`http://www.kittypong.fr:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+=======
+				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+>>>>>>> master
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			let data = await res.json();
 			if (!data.items.length) {
 				res = await fetch(
+<<<<<<< HEAD
 					`http://www.kittypong.fr:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+=======
+					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+>>>>>>> master
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
@@ -222,14 +270,22 @@ export default	defineComponent ({
 
 		async sendMessage() {
 			let res = await fetch(
+<<<<<<< HEAD
 				`http://www.kittypong.fr:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+=======
+				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+>>>>>>> master
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			let data = await res.json();
 			if (!data.items.length) {
 				res = await fetch(
+<<<<<<< HEAD
 					`http://www.kittypong.fr:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+=======
+					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+>>>>>>> master
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
