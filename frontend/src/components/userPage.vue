@@ -27,7 +27,7 @@
 				<img v-else v-if="unblockIcon.img && this.userData" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
-		<statsWindow v-if="userData.id != undefined" :profId="userData.id"/>
+		<statsWindow v-if="userData.id != undefined" :userId="userId" @profId="update()" :profId="userData.id"/>
 	</div>
 </template>
 
@@ -100,6 +100,8 @@ export default	defineComponent ({
 		},
 
 		async fetchRelation() {
+			if (this.userData === undefined)
+				this.userData = await this.fetchUserData();
 			return await fetch(`http://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }

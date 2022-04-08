@@ -9,6 +9,7 @@ import { defineComponent } from 'vue'
 import { load, unload, observe } from '../script/pong.js'
 export default	defineComponent ({
 	name: 'gamePage',
+
 	props:	{
 		userId:	{
 			type:	[Number, String],

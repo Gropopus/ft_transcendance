@@ -18,7 +18,7 @@
 				<button @click="goToRoute('/settings')" title="settings" class="Edit"> Edit</button>
 			</div>
 		</div>
-		<statsWindow :profId="userId"/>
+		<statsWindow :userId="userId" :profId="userId"/>
 	</div>
 </template>
 
@@ -127,7 +127,7 @@ export default	defineComponent ({
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
-	min-width: 800px;
+	min-width: 1300px;
 	width: 100%;
 	margin-bottom: 2%;
 	align-content: center;
