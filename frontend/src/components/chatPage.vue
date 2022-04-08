@@ -71,7 +71,7 @@
 			<div class="chanList">
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
-					<div v-if="channel.type != 'direct-message'"> {{ channel.name }}</div>
+					<div v-if="channel.type != 'direct-message'" style="text-align: left; margin-left: 5%;"> {{ channel.name }}</div>
 					<div v-else class="dmInfo" v-bind="getOneDM(channel.id)">
 						<img :src="getOneDM(channel.id).picture" class="picture2" />
 						<div>{{ getOneDM(channel.id).name }}</div>
@@ -560,12 +560,6 @@ export default	defineComponent ({
 	/*padding-bottom: 5%;*/
 }
 
-.chanNameButton
-{
-	width: 100%;
-	border-bottom: solid 3px white;
-}
-
 .channelName
 {
 	display: flex;
@@ -617,9 +611,8 @@ export default	defineComponent ({
 	width: 100%;
 	/* overflow-x: scroll; */
 	height:	42px;
-	flex:	1 1 0;
-	text-align:	center;
-	vertical-align:	center;
+	/* flex:	1 1 0; */
+	/* vertical-align:	center; */
 	text-align:	center;
 	text-decoration:	none;
 	font-family: MyanmarText;
@@ -823,6 +816,7 @@ export default	defineComponent ({
 	height: 42px;
 	margin-top: 0px;
 	margin-bottom: 0px;
+	margin-left: 4%;
 }
 
 .picture1 {
