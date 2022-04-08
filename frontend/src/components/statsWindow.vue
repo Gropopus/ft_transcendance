@@ -35,8 +35,8 @@
 					</div>
 					<div class="achievementsCol">
 						<div :key="file.name" v-for="file in victoryAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn" title="file.name">
-							<img v-else :src="file.iconOff" title="file.name">
+							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
+							<img v-else :src="file.iconOff" :title="file.name">
 						</div>
 					</div>
 					<div class="achievementsCol">
