@@ -92,7 +92,6 @@
 						<div> {{ elem.level }} </div>
 					</div>
 				</div>
-				<button class="jumpTo" @click="resetScroll(userData.username)"> See User </button>
 			</div>
 		</div>
 	</div>

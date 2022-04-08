@@ -2,10 +2,6 @@
 	<header>
 	</header>
 <div>
-		<!-- <div class="LoginHeader">
-			<img src="../assets/picto-id.png">
-		</div> LoginHeader end -->
-
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Login </label>	<br>
