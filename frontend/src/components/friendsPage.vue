@@ -1,19 +1,6 @@
-
 <template>
-<div style="width: 93%; display: flex; flex-direction: column">
-	<div class="header-friends">
-		<img style="width: 280px; height: 150px; margin-left: 5%; margin-top: 10px" src="/src/assets/header-id.png" />
-		<div class="searchBar">
-			<div style="display: flex; justify-content: right">
-				<img style="width: 3%; min-height: 40px; min-width: 50px" src="../assets/magnifying-glass.png">
-				<span style="font-size: 25px; text-align: right; margin-left: 1%"> Search a user</span>
-			</div>
-			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1">
-			<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
-				<p v-on:click="goToUserPage(elem.username)"> {{ elem.username }}</p>
-			</div>
-		</div>
-	</div>
+<div style="display: flex; flex-direction: column">
+	<search-bar></search-bar>
 	<div class="friendsPage">
 		<div :key="relation.type" v-for="relation in all" class="friendsArea">
 			<div class="listName">
@@ -45,6 +32,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import searchBar from './searchBar.vue';
 
 export default	defineComponent ({
 	name: 'friendsPage',
@@ -53,6 +41,10 @@ export default	defineComponent ({
 			type:	[Number, String],
 			default:	"0"
 		},
+	},
+
+	components: {
+		searchBar,
 	},
 
 	data() {
@@ -186,17 +178,6 @@ export default	defineComponent ({
 	margin-top: 2%;
 }
 
-.header-friends {
-	display: flex;
-}
-
-.searchBar {
-	display: flex;
-	flex: 1 0;
-	flex-direction: column;
-	justify-content: right;
-}
-
 .friendsArea
 {
 	float:	left;
@@ -210,7 +191,7 @@ export default	defineComponent ({
 }
 
 .friendsArea > .listName {
-	display:flex;
+	display: flex;
 	flex-direction: row;
 	text-align: left;
 	border-bottom: solid 2px white;

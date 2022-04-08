@@ -9,7 +9,8 @@
         :userId="this.userId"
         @update:userId="saveUserId($event)"
         @userIsOnline="userIsOnline($event)"
-        v-bind="setRoute()" />
+        v-bind="setRoute()"
+        style="width: 93%;"/>
     </div>
   </main>
 </template>
