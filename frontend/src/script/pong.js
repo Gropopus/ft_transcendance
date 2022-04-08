@@ -3,11 +3,11 @@ import 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js'
 var game = {
 	player: {
 		score: 0,
-		name: 'roger'
+		name: 'right'
 	},
 	computer: {
 		score: 0,
-		name: 'huhuhuhuhuhuhuhuhuhuh'
+		name: 'left'
 	},
 	ball: {
 		r: 15,
@@ -269,6 +269,15 @@ async function waited_too_long(pid)
 	game.ready_usefull = 0;
 	if (game.matchmaking == 2)
 	{
+		if(game.challenge != 0)
+		{
+			game.socket.emit('MatchTimeOut', game.confirm_id);
+			clearCanvas();
+			drawHead();
+			textDraw("You didn\'t respond in time", 150);
+			textDraw("The duel got aborted", 231);
+			return ;
+		}
 		clearLower()
 		game.socket.emit('MatchTimeOut', game.confirm_id);
 		game.matchmaking = -1;
@@ -281,8 +290,10 @@ async function waited_too_long(pid)
 	{
 		// opponent didn't respond
 		game.socket.emit('MatchTimeOut', game.confirm_id);
-		game.nb_confirm = 0;
-		entermatchmaking(0, game);
+		clearCanvas();
+		drawHead();
+		textDraw("Your opponent didn\'t respond in time", 150);
+		textDraw("The duel got aborted", 231);
 	}
 }
 
@@ -311,7 +322,7 @@ function playerclick(event, ) {
 	var y = (event.clientY - rect.top) * scaleY  ;   // been adjusted to be relative to element
 	if (game.button == 0)
 		return ;
-	if (game.button == 1) // press to start
+	else if (game.button == 1) // press to start
 	{
 		if (x >= mod_select.a.x && x <= mod_select.a.xMax &&
 			y >= mod_select.a.y && y <= mod_select.a.yMax)
@@ -329,7 +340,7 @@ function playerclick(event, ) {
 		}
 		
 	}
-	if (game.button == 2) // press to confirm
+	else if (game.button == 2) // press to confirm
 	{
 		if (x >= game.start_buton.x && x <= game.start_buton.maxX &&
 			y >= game.start_buton.y && y <= game.start_buton.maxY)
@@ -340,7 +351,7 @@ function playerclick(event, ) {
 			ready(game);
 		}
 	}
-	if (game.button == 3) //play again
+	else if (game.button == 3) //play again
 	{
 		if (x >= mod_select.a.x && x <= mod_select.a.xMax &&
 			y >= mod_select.a.y && y <= mod_select.a.yMax)
@@ -558,17 +569,11 @@ function socket_init()
 	game.socket.on('tooLateForChall', function() {
 		clearCanvas()
 		drawHead();
-		textDraw('This challenge is already finish', 150);
+		textDraw('This challenge is already finish !', 150);
 	})
 
 	game.socket.on('playingForChall', function(gameId) {
-		console.log('need to observe')
 		observe(game.userId, gameId);
-	})
-	game.socket.on('confirmingForChall', function() {
-		console.log('AHHHHH')
-		drawHead();
-		textDraw('This challenge is already confirming', 150);
 	})
 }
 
@@ -707,7 +712,6 @@ function load(userId, challenge = 0, mode = '')
 		return ;
 	socket_init();
 	canvas_init('player');
-	console.log('userid = ' + userId);
 	game.socket.auth = {userId};
 	game.socket.connect();
 	game.wait = 0;
