@@ -70,8 +70,8 @@
 						<div v-else> {{ elem.score_l }} </div>
 						<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_l }} </div>
 						<div v-else> {{ elem.score_r }} </div>
-						<div v-if="UserIsPlayer(elem.player_right_id.user.id)" @click="goToUserProfile(elem.player_left_id.user.username)"> {{ elem.player_left_id.user.username }} </div>
-						<div v-else @click="goToUserProfile(elem.player_right_id.user.username)"> {{ elem.player_right_id.user.username }} </div>
+						<div v-if="UserIsPlayer(elem.player_right_id.user.id)" class="userLink" @click="goToUserProfile(elem.player_left_id.user)"> {{ elem.player_left_id.user.username }} </div>
+						<div v-else class="userLink" @click="goToUserProfile(elem.player_right_id.user)"> {{ elem.player_right_id.user.username }} </div>
 					</div>
 				</div>
 			</div>
@@ -84,7 +84,7 @@
 					</div>
 					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "rgb(37, 46, 131, 0.6)" : "none"}'>
 						<div> {{ index + 1 }} </div>
-						<div @click="goToUserProfile(elem.username)"> {{ elem.username }} </div>
+						<div class="userLink" @click="goToUserProfile(elem)"> {{ elem.username }} </div>
 						<div> {{ elem.level }} </div>
 					</div>
 				</div>
@@ -221,13 +221,13 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			if (userInfo === this.userId)
+			if (userInfo.id === this.userId)
 				this.$router.push(`/profile`)
 			else
 			{
 				this.$emit('profId', this.profId);
 				await this.profId;
-				this.$router.push(`/profile/${userInfo}`)
+				this.$router.push(`/profile/${userInfo.username}`)
 			}
 		},
 
@@ -485,6 +485,11 @@ export default	defineComponent ({
 .laddElem > div
 {
 	flex: 1 1 0;
+}
+
+.userLink
+{
+	cursor: pointer;
 }
 
 .jumpTo 
