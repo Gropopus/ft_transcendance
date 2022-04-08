@@ -1,9 +1,8 @@
 <template>
 <div>
+	<search-bar></search-bar>
 	<div class="listName" @click="setDiplayState()">
-		<p>
-			All channels
-		</p>
+		<div> All channels </div>
 		<button>
 			<img v-if="listStatus==0" src="/src/assets/arrow-whitedown.png"/>
 			<img v-else src="/src/assets/arrow-white-up.png" />
@@ -95,8 +94,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import { Socket, SocketIoConfig } from 'ngx-socket-io';
 import { io, Socket } from "socket.io-client";
+import searchBar from './searchBar.vue';
 
 export default	defineComponent ({
 	name: 'chatPage',
@@ -107,7 +106,11 @@ export default	defineComponent ({
 		},
 	},
 
-	emits: ['save', 'addMessage', 'userIsOnline'],
+	components: {
+		searchBar,
+	},
+
+	emits: ['addMessage', 'userIsOnline'],
 
 	data() {
 		return {
@@ -402,14 +405,15 @@ export default	defineComponent ({
 	flex-direction: row;
 	text-align: left;
 	border-bottom: solid 2px white;
-	margin-top: auto;
+	margin-top: 5%;
 	margin-bottom: auto;
+	margin-left: 3%;
 	font-size: 150%;
 	cursor: pointer;
 	gap: 2%;
 }
 
-.listName > p	{
+.listName > div	{
 	flex: 14;
 	user-select: none;
 }
@@ -433,6 +437,7 @@ export default	defineComponent ({
 	display: flex;
 	gap: 5%;
 	font-size: 20px;
+	margin-left: 3%;
 	margin-top: 1%;
 }
 
@@ -467,7 +472,7 @@ export default	defineComponent ({
 }
 .chatPage
 {
-	margin-top: 2%;
+	margin-top: 5%;
 	display: flex;
 	flex-direction: row;
 }
