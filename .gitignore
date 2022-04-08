@@ -1,3 +1,3 @@
-./api/node_modules/
-./frontend/node_modules/
-node_modules
+.*.swp
+*.vim
+.*.swo

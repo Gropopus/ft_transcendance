@@ -1,6 +1,5 @@
-import { JoinColumn, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { JoinColumn, Column, Entity, ManyToOne,  PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "src/user/model/user.entity";
-// import { Iuser } from "src/user/model/user.interface";
 import { PlayerStatus, PlayerSide } from "./player.interface"
 
 @Entity()
@@ -8,12 +7,18 @@ export class PlayerEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => UserEntity, user => user.history)
+    @ManyToOne(() => UserEntity, user => user.history, {eager: true})
     @JoinColumn()
     user: UserEntity;
 
     @Column({default: 0})
     points: number;
+
+    @Column()
+    gameId: number;
+
+    @Column()
+    username: string;
 
     @Column({
         type: "enum",

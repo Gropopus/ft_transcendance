@@ -1,21 +1,36 @@
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { gameMode, gameStatus } from "src/game/model/game.interface"
 import { PlayerEntity } from "src/player/player.entity";
-import { UserEntity } from "src/user/model/user.entity";
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class GameEntity{
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
-	player_left: number;
+	@OneToOne(() => PlayerEntity, {eager: true})
+	@JoinColumn()
+	player_left_id?: PlayerEntity;
 
-	@Column()
-	player_right: number;
+	@OneToOne(() => PlayerEntity, {eager: true})
+	@JoinColumn()
+	player_right_id?: PlayerEntity;
 
 	@Column()
 	score_l: number;
 
 	@Column()
 	score_r: number;
+
+	@Column({
+		type: "enum",
+		enum: gameStatus,
+	})
+	status: gameStatus;
+
+
+	@Column({
+		type: "enum",
+		enum: gameMode,
+	})
+	mode: gameMode;
 }

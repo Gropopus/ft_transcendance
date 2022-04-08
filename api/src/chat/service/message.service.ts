@@ -27,10 +27,10 @@ export class MessageService {
 
   async findMessagesForChannel(channel: Ichannel, user: Iuser, options: IPaginationOptions): Promise<Pagination<Imessage>> {
 	
-    const blocked = this.userRepository
+    const blocked = await this.userRepository
     .createQueryBuilder("u")
     .leftJoin('u.friends', 'c')
-    .leftJoin('u.recvFriendRequests', 'r')
+    .leftJoin('u.target', 'r')
     .where("r.user = :id")
     .andWhere("r.status = 'user-blocked'")
     .setParameters({ id : user.id })

@@ -20,7 +20,9 @@ import { ChannelController } from './channel.controller';
 import { FriendEntity } from 'src/friend/friend.entity';
 
 @Module({
-  imports: [UserModule, FriendModule,
+  imports: [
+    UserModule,
+    FriendModule,
     TypeOrmModule.forFeature([
       ChannelEntity,
       ConnectedUserEntity,

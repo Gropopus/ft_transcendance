@@ -8,4 +8,5 @@ export interface IjoinedChanel {
   socketId: string;
   user: Iuser;
   channel: Ichannel;
+  channelId: number;
 }

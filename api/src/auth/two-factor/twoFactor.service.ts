@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { authenticator } from 'otplib';
-import { UserEntity } from 'src/user/model/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
-import { toFileStream } from 'qrcode';
 import { toFile } from 'qrcode';
-import { Response } from 'express';
 import { Iuser } from 'src/user/model/user.interface';
- 
+
 @Injectable()
 export class TwoFactorService {
   constructor (
@@ -19,11 +16,8 @@ export class TwoFactorService {
  
   public async generateTwoFactorAuthenticationSecret(user: Iuser) {
     const secret = authenticator.generateSecret();
-	
     const otpauthUrl = authenticator.keyuri(user.email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'), secret);
-	
     await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id);
- 
     return {
       secret,
       otpauthUrl
@@ -34,10 +28,14 @@ export class TwoFactorService {
 	  toFile('src/uploads/qrcode.png',otpauthUrl);
   }
 
-  public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: UserEntity) {
+  public async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: Iuser) {
+    const u1 = await this.usersService.findOne(user.id);
+    authenticator.options = {
+      window: 1,
+    };
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
-      secret: user.twoFactorAuthenticationSecret
+      secret: u1.twoFactorAuthenticationSecret
     })
   }
 

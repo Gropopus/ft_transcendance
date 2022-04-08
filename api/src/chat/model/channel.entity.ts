@@ -1,5 +1,5 @@
 import { UserEntity } from "src/user/model/user.entity";
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { JoinedChannelEntity } from "./joined-channel.entity";
 import { MessageEntity } from "./message.entity";
 import { ChannelType } from "./channel.interface";
@@ -29,18 +29,23 @@ export class ChannelEntity {
   @ManyToMany(() => UserEntity)
   @JoinTable()
   admin: UserEntity[];
-  
+
   @ManyToMany(() => UserEntity)
   @JoinTable()
   muted: UserEntity[];
 
-  @OneToMany(() => JoinedChannelEntity, joinedChannel => joinedChannel.channel)
+  @ManyToMany(() => UserEntity)
+  @JoinTable()
+  ban: UserEntity[];
+  
+  @OneToMany(() => JoinedChannelEntity, joinedChannel => joinedChannel.channel, { onDelete: 'CASCADE' })
   joinedUsers: JoinedChannelEntity[];
 
   @OneToMany(() => MessageEntity, message => message.channel)
   messages: MessageEntity[];
 
-  @ManyToOne(() => UserEntity, (userEntity) => userEntity.chatOwner)
+  @ManyToOne(() => UserEntity, user => user.chatOwner)
+  @JoinColumn()
   owner: UserEntity;
 
   @CreateDateColumn()

@@ -1,65 +1,45 @@
 <template>
-<ul>
-	<div class="GameArea">
-		<canvas id="canvas" width="640" height="500"></canvas>
-	</div>
-	<div class="UserRecap">
-		<p>Joueur 1 : <em id="player-score">0</em> - Joueur 2 : <em id="computer-score">0</em></p>
-	</div>
-	<div class="SocialRecap">
-		<p>Osef</p>
-	</div>
-	</ul>
+		<div class="GameArea1">
+			<canvas id="canvas" width="1600" height="1200"></canvas>
+		</div>
 </template>
 
-<script lang="ts" type="module">
-export default	{
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { load, unload, observe } from '../script/pong.js'
+export default	defineComponent ({
+	name: 'gamePage',
+
 	props:	{
 		userId:	{
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		}
 	},
-	mounted() {
-		let game = document.createElement('script')
-		game.setAttribute('src', 'src/script/pong.js')
-		game.setAttribute('type', 'module')
-		document.head.appendChild(game);	
-	}
-}
+
+	mounted() {	
+		load(this.userId, 0);
+	},
+	unmounted() {
+		unload(this.userId);
+	},
+})
 </script>
 
 
 <style lang="css">
-.GameArea
-{
-}
-
-#canvas
-{
-}
-
-.UserRecap
-{
-	float:	right;
-	width:	25%;
-	min-height:	225px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	margin-bottom:	min(22px);
-}
-
-.SocialRecap
-{
-	float:	right;
-	width:	25%;
-	min-height:	225px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	margin-top:	min(22px);
-}
+	.GameArea1
+	{
+		float:	left;
+		display:	flex;
+		width:	70%;
+		height: 70%;
+		min-height: 600px;
+		min-width: 800px;
+		margin-left: auto;
+		margin-right: auto;
+		border:	solid 3px white;
+		border-radius: 5px;
+		flex-direction:	column;
+	}
 </style>

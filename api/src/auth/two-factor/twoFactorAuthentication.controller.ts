@@ -1,26 +1,19 @@
 import {
-	ClassSerializerInterceptor,
 	Controller,
 	Post,
 	Get,
-	UseInterceptors,
 	UseGuards,
-	Req,
 	Res,
 	Body,
-	UnauthorizedException, HttpCode,
+	UnauthorizedException,
   } from '@nestjs/common';
 import { TwoFactorService } from './twoFactor.service';
-import { Response } from 'express';
-import path = require('path');
 import { join } from 'path';
-import { Observable, of } from 'rxjs';
-import RequestWithUser from '../requestWithUser.interface';
+import { of } from 'rxjs';
 import { UserService } from 'src/user/user.service';
-import { TwoFactorAuthenticationCodeDto } from './twoFactor.dto';
 import { JwtAuthGuard } from 'src/auth/login/guards/jwt.guard';
-import { UserEntity } from 'src/user/model/user.entity';
-   
+import { Iuser } from 'src/user/model/user.interface';
+
   @Controller('2fa')
   export class TwoFactorAuthenticationController {
 	constructor(
@@ -30,62 +23,41 @@ import { UserEntity } from 'src/user/model/user.entity';
 
 	@Post('authenticate')
 	@UseGuards(JwtAuthGuard)
-	async authenticate(
-	  @Req() request: RequestWithUser,
-	  @Body() { twoFactorAuthenticationCode } : TwoFactorAuthenticationCodeDto) : Promise<string>{
-		
-		const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-		twoFactorAuthenticationCode, request.body
-		);
+	async authenticate(@Body() bod: any) {
+		const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		  bod.code, await this.usersService.findOne(bod.user.id));	  
 		if (!isCodeValid) {
 		  throw new UnauthorizedException('Wrong authentication code');
 		}
-		
-		const user = await this.usersService.findOne(request.body.id);
-		if (user.ban) {
-		  throw new UnauthorizedException('You\'re banned');
-		}
-
-		const accessTokenCookie = this.twoFactorAuthenticationService.getCookieWithJwtToken(request.body.id, true);
-		request.res.setHeader('Set-Cookie', [accessTokenCookie.cookie]);
-
-		return JSON.stringify(accessTokenCookie.token);
+		return ;
 	}
 
 	@Post('turn-on')
 	@UseGuards(JwtAuthGuard)
-	async turnOnTwoFactorAuthentication(
-	  @Req() request: RequestWithUser
-	) {
-	  const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-		request.body.twoFactorAuthenticationCode, request.body
-	  );	  
+	async turnOnTwoFactorAuthentication(@Body() bod: any) {
+	  const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		bod.code, await this.usersService.findOne(bod.user.id));  
 	  if (!isCodeValid) {
 		throw new UnauthorizedException('Wrong authentication code');
 	  }
-	  await this.usersService.turnOnTwoFactorAuthentication(request.body.id);
+	  await this.usersService.turnOnTwoFactorAuthentication(bod.user.id);
 	}
-	
 
 	@Post('turn-off')
 	@UseGuards(JwtAuthGuard)
-	async turnOffTwoFactorAuthentication(
-	  @Req() request: RequestWithUser,
-	  @Body() { twoFactorAuthenticationCode } : TwoFactorAuthenticationCodeDto
-	) {
-	  const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-		twoFactorAuthenticationCode, request.body
-	  );
-	  if (!isCodeValid) {
-		throw new UnauthorizedException('Wrong authentication code');
-	  }
-	  await this.usersService.turnOffTwoFactorAuthentication(request.body.id);
+	async turnOffTwoFactorAuthentication(@Body() bod: any) {
+		const isCodeValid = await this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
+		  bod.code, await this.usersService.findOne(bod.user.id));	  
+		if (!isCodeValid) {
+		  throw new UnauthorizedException('Wrong authentication code');
+		}
+		await this.usersService.turnOffTwoFactorAuthentication(bod.user.id);
 	}
 
 	@Post('generate')
 	@UseGuards(JwtAuthGuard)
-	async generate(@Req() request: RequestWithUser) : Promise<string>{		
-		const otpauth = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(request.body);
+	async generate(@Body() user : Iuser){
+		const otpauth = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(user);
 		this.twoFactorAuthenticationService.pipeQrCodeStream(otpauth.otpauthUrl);
 		return (JSON.stringify(otpauth.secret));
 	}

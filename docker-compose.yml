@@ -10,7 +10,7 @@ services:
     # Reflect File changes from host to container
     volumes:
       - ./api:/transcendance/src/app
-      - ./api/node_modules:/transcendance/src/app/node_modules/
+      - /transcendance/src/app/node_modules/
     # RUN in debug mode: npm run start:debug --> Also start your vscode debugger
     # Run in dev mode: npm run start:dev
     command: npm run start:debug
@@ -28,12 +28,15 @@ services:
       - 3000:3000
       - 9229:9229
       - 42069:42069
+      - 42070:42070
   
   frontend:
     build:
       dockerfile: Dockerfile
       context: ./frontend
     command: npm run start
+    depends_on:
+      - api
     volumes:
       - ./frontend:/transcendance/frontend/src/app
       - /transcendance/frontend/src/app/node_modules
@@ -60,5 +63,5 @@ services:
       PGADMIN_DEFAULT_PASSWORD: password
     ports:
       - 5050:80
-
-
+    logging:
+      driver: none

@@ -1,24 +1,24 @@
 import { JoinColumn, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FriendStatus } from "./friend.interface";
 import { UserEntity } from "src/user/model/user.entity";
-import { Iuser } from "src/user/model/user.interface";
 
 @Entity()
 export class FriendEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => UserEntity, (UserEntity) => UserEntity.friends)
+    @ManyToOne(() => UserEntity, user => user.friends)
+    @JoinColumn()
     user: UserEntity;
-    // @JoinColumn()
 
-    @ManyToOne(
-        () => UserEntity,
-        (userEntity) => userEntity.recvFriendRequests,
-      )
-      receiver: UserEntity;
-    
-    @Column()
+    @ManyToOne(() => UserEntity, user => user.target)
+    @JoinColumn()
+    target: UserEntity;
+
+    @Column({ nullable: true })
+    targetName: string;
+
+    @Column({ nullable: true })
     targetId: number;
 
     @Column({

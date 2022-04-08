@@ -28,12 +28,8 @@ export default	{
 			type:	[Number, String],
 			default:	"0"
 		},
-		currentPage:	{
-			type:	[Number, String],
-			default:	"0"
-		}
 	},
-	emits:	['update:currentPage', 'update:userId'],
+	emits:	['update:userId'],
 	methods:	{
 		async logout()	{
 			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
@@ -41,29 +37,26 @@ export default	{
 					headers: { 'content-type': 'application/json' }
 			})
 			const data = await res.json()
-			console.log(data)
 			const res1 = await fetch(`http://localhost:3000/api/users/logout`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify(data)
 			})
-			console.log(res1);
 			this.$emit('update:userId', "0");
-			this.$emit('update:currentPage', "0");
+			this.$router.push({name: 'login'});
 		},
 		cancel:	function()	{
-			console.log(this.currentPage);
-			this.$emit('update:currentPage', "0");
+			this.$router.push({name: 'game'});
 		}
 	}
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .LogoutHeader
 {
-	margin-top:	3%;
+	margin-top:	15%;
 	height:	20%;
 	display:	flex;
 	justify-content:	center;
@@ -76,15 +69,21 @@ export default	{
 
 .LogoutForm
 {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
 	border-radius: 5px;
 	margin-top:	2%;
 	margin-bottom:	5%;
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
-	padding-left:	5%;
+	padding-right: auto;
+	padding-left: auto;
 	width:	30%;
 	height:	40%;
+	min-width: 300px;
 	border:	solid 3px white;
 	font-size:	24px;
 	font-family: MyanmarText;
@@ -103,57 +102,31 @@ export default	{
 .LogoutForm > .submitBar
 {
 	margin-top:	2%;
+	margin-bottom: 5%;
+	margin-right: 5%;
+	margin-left: 5%;
 	display:	flex;
-	margin-right:	auto;
-	margin-left:	auto;
 	flex-direction:	row;
+	justify-content: center;
 }
 
 .LogoutForm > .submitBar > .submitButton
 {
-	display:	block;
+	flex: 1 1 0;
+	margin: 5%;
+	padding-top: 2%;
 	background:	none;
-	flex:	0 0 auto;
-	margin-bottom:	5%;
-	margin-right:	auto;
-	padding-top:	3%;
-	padding-left:	5%;
-	padding-right:	5%;
-	background:	none;
-	border:	solid 3px white;
-	font-size:	24px;
+	border:	solid white 3px;
+	font-size:	100%;
 	color:	white;
 	font-family: MyanmarText;
 }
 
-.submit42Button
+.LogoutForm > .submitBar > .submitButton:hover
 {
-	display:	block;
-	background:	none;
-	margin-left:	auto;
-	margin-right:	auto;
-	margin-bottom:	5%;
-	padding-top:	1%;
-	padding-bottom:	1%;
-	width:	20%;
-	border:	solid 3px white;
-	font-size:	24px;
-	color:	white;
-	min-height:	42px;
-	min-width:	280px;
-	justify-content:	center;
-	line-height:	1.5;
-	font-weight:	bold;
-	font-family: MyanmarText;
-	text-decoration:	none;
-}
-
-.submit42Button > img
-{
-	float:	left;
-	margin-left:	10px;
-	margin-right:	10px;
-	object-fit:	contain;
+	background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer; 
 }
 
 </style>

@@ -14,9 +14,15 @@ export class MessageEntity {
   @Column({nullable: true})
   type: number;
 
+  @Column({nullable: true})
+  challengeId: number;
+
   @ManyToOne(() => UserEntity, user => user.messages)
   @JoinColumn()
   user: UserEntity;
+
+  @Column()
+  username: string;
 
   @ManyToOne(() => ChannelEntity, channel => channel.messages, { onDelete: 'CASCADE' })
   @JoinTable()

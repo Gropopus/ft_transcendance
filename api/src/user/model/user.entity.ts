@@ -4,9 +4,8 @@ import { JoinedChannelEntity } from "src/chat/model/joined-channel.entity";
 import { MessageEntity } from "src/chat/model/message.entity";
 import { ChannelEntity } from "src/chat/model/channel.entity";
 import { FriendEntity } from "src/friend/friend.entity";
-import { UserRole, UserStatus } from "./user.interface";
+import { UserStatus } from "./user.interface";
 import { PlayerEntity } from "src/player/player.entity";
-import { Exclude } from 'class-transformer';
 
 @Entity()
 export class UserEntity {
@@ -29,7 +28,7 @@ export class UserEntity {
 	@Column({default: 'profile-picture.png'})
 	picture: string;
 	
-	@Column({default: 0})
+	@Column({default: 1000})
 	level: number;
 	
 	@Column({ nullable: true })
@@ -43,52 +42,57 @@ export class UserEntity {
 	
 	@Column({ default: false })
 	twoFactorAuthEnabled: boolean;
-
+	
 	@Column({ nullable: true })
 	twoFactorAuthenticationSecret: string;
 	
 	@Column({type: 'enum', enum: UserStatus, default: UserStatus.OFF})
 	status: UserStatus;
 
-	@Column({type: 'enum', enum: UserRole, default: UserRole.USER})
-	role: UserRole;
-
 	@ManyToMany(() => ChannelEntity, channel => channel.users)
 	channels: ChannelEntity[]
-
+	
 	@ManyToMany(() => ChannelEntity, channel => channel.admin)
- 	admin: ChannelEntity[]
+	admin: ChannelEntity[]
 
  	@OneToMany(() => ConnectedUserEntity, connection => connection.user)
  	connections: ConnectedUserEntity[];
 
  	@OneToMany(() => JoinedChannelEntity, joinedChannel => joinedChannel.channel)
  	joinedChannels: JoinedChannelEntity[];
-
+	 
  	@OneToMany(() => MessageEntity, message => message.user)
  	messages: MessageEntity[];
-
-	@OneToMany(() => ChannelEntity, channel => channel.owner)
-	chatOwner: ChannelEntity[];
-
-	@OneToMany(() => FriendEntity, friends => friends.user)
+	 
+	 @OneToMany(() => ChannelEntity, channel => channel.owner)
+	 chatOwner: ChannelEntity[];
+	 
+	 @OneToMany(() => FriendEntity, friends => friends.user, {
+		cascade: true,
+		// orphanRemoval: true,
+		// fetch: FetchType.EAGER
+	})
 	friends: FriendEntity[];
-
-	@OneToMany(
-	() => FriendEntity,
-	(friendRequestEntity) => friendRequestEntity.receiver,
-	)
-	recvFriendRequests: FriendEntity[];
-
+	
+	@OneToMany(() => FriendEntity, friends => friends.target, {
+		cascade: true,
+		// orphanRemoval: true,
+		// fetch: FetchType.EAGER
+	})
+	target: FriendEntity[];
 
     @OneToMany(() => PlayerEntity, player => player.user)
 	history: PlayerEntity[];
 
- 	@BeforeInsert()
+	
+	@BeforeInsert()
  	@BeforeUpdate()
  	emailToLowerCase() {
     	this.email = this.email.toLowerCase();
     	//this.username = this.username.toLowerCase();
-  }
+	}
+
+	@Column({ default: 0, nullable: true })
+	lastTask: number;
 
 }

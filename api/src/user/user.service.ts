@@ -1,14 +1,13 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
-import { Iuser, UserRole, UserStatus } from 'src/user/model/user.interface';
+import { Iuser, UserStatus } from 'src/user/model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { Observable, from, throwError } from 'rxjs';
-import { switchMap, map, catchError} from 'rxjs/operators';
+import { Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/auth/auth.service';
 import UserOauthIdNotFoundException from 'src/auth/exception/UserOauthIdNotFound.exception';
-import { LogoutUserDto } from 'src/user/model/dto/logout-user.dt';
 
 @Injectable()
 export class UserService {
@@ -25,22 +24,18 @@ export class UserService {
 		if (!exists) {
 			const passwordHash: string = await this.hashPassword(newUser.password);
 			newUser.password = passwordHash;
-			newUser.level = 0;
+			newUser.level = 1000;
 			newUser.defeat = 0;
 			newUser.victory = 0;
 			newUser.twoFactorAuthEnabled = false;
 			newUser.picture = "profile-picture.png";
 			const user = await this.userRepository.save(this.userRepository.create(newUser));
-			//if (user.id == 0) {
-			//user.role = UserRole.OWNER;
-			//await this.userRepository.save(user);
-			//}
 			return this.findOne(user.id);
 		} else {
 			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
 		}
 		} catch {
-		throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
+			throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
 		}
 	}
 
@@ -51,10 +46,11 @@ export class UserService {
 				const matches: boolean = await this.validatePassword(user.password, foundUser.password);
 				if (matches) {
 					const payload: Iuser = await this.findOne(foundUser.id);
-					if (payload.ban)
-						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);
+					/*if (payload.ban)
+						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);*/
 					const jwt: string = await this.authService.generateJwt(payload);
-					this.updateStatusOfUser(payload.id, {"status": UserStatus.ON});
+					this.updateLastTaskTime(payload.id);
+					this.userRepository.update(payload.id, {status: UserStatus.ON});
 					return {
 						jwt,
 						payload,
@@ -71,7 +67,7 @@ export class UserService {
 	}
 
 	async logout(user:Iuser): Promise<any> {
-		this.updateStatusOfUser(user.id, {"status": UserStatus.OFF});
+		this.userRepository.update(user.id, {status: UserStatus.OFF});
 	}
 
 	async findAll(options: IPaginationOptions): Promise<Pagination<Iuser>> {
@@ -86,10 +82,10 @@ export class UserService {
 		})
 	}
 
-	async findAllByLevel(): Promise<Iuser[]> {
-		return this.userRepository.find({
-			order: {
-				level: "DESC"
+	async findOneByEmail(email: string): Promise<Iuser> {
+		return this.userRepository.findOne({
+			where: {
+				email: Like(`%${email.toLowerCase()}%`)
 			}
 		})
 	}
@@ -98,44 +94,18 @@ export class UserService {
 		return this.userRepository.findOne({ id });
 	}
 
+	async updateUser(id: number, user: Iuser)
+	{
+		return this.userRepository.update(id, user);
+	}
+
 	async updateOne(id: number, user: Iuser): Promise<any> {
-		//delete user.email;
 		delete user.password;
-		delete user.role;
 		
 		return from(this.userRepository.update(id, user)).pipe(
 			switchMap(() => this.findOne(id))
 			);
 	}
-
-    async  updateUserRole(id: number, user: Iuser): Promise<any> {
-		const temp = await this.userRepository.findOne({
-			where: {
-			  id: id,
-			},
-		});
-		if (temp.role == UserRole.OWNER) throw new HttpException('Can\'t change the Owner role...', HttpStatus.CONFLICT);
-		if (user.role == UserRole.OWNER) throw new HttpException('Can\'t have 2 owner', HttpStatus.CONFLICT);
-		return from(this.userRepository.update(id, user)).pipe(
-			switchMap(() => this.findOne(id))
-		);
-    }
-
-    async updateBanOfUser(id: number, user: Iuser): Promise<any> {
-		const temp = await this.userRepository.findOne({
-			where: {
-			  id: id,
-			},
-		});		
-		if (temp.role == UserRole.OWNER) throw new HttpException('You can\'t ban Owner...', HttpStatus.CONFLICT);
-		return from(this.userRepository.update(id, user)).pipe(
-			switchMap(() => this.findOne(id))
-		);
-    }
-
-    updateStatusOfUser(id: number, user: Iuser): Observable<any> {
-      	return from(this.userRepository.update(id, user))
-    }
 
 	updateOneOb(id: number, user: Iuser): Observable<any> {
 		delete user.email;
@@ -170,9 +140,10 @@ export class UserService {
 	}
 
 	async setTwoFactorAuthenticationSecret(secret: string, Iuserid: number) {
-		return this.userRepository.update(Iuserid, {
+		this.userRepository.update(Iuserid, {
 		twoFactorAuthenticationSecret: secret
 		});
+		return;
 	}
 
 	async turnOnTwoFactorAuthentication(Iuserid: number) {
@@ -197,5 +168,45 @@ export class UserService {
 		else throw new UserOauthIdNotFoundException(id);
 	}
 
+	async updateStat(userId: number, isWinner: boolean) {
+		if (isWinner)
+			await this.userRepository.increment({id: userId}, "victory", 1);
+		else 
+			await this.userRepository.increment({id: userId}, "defeat", 1);
+		this.userRepository.update(userId, {status: UserStatus.ON});
+	}
+
+	async getLadderLevel(userId: number) {
+		const ladder = await this.userRepository.find({
+			select: ["id"],
+			order: {
+				level: "DESC"
+			},
+		});
+		for (let i = 0; i < ladder.length; i++)
+			if (userId == ladder[i].id)
+				return {level: i + 1, total: ladder.length};
+	}
+
+	async setStatus(user: Iuser, newStatus: UserStatus) {
+		this.userRepository.update(user.id, {status: newStatus});
+	}
+
+	async updateLastTaskTime(id: number) {
+		this.userRepository.update(id, {status: UserStatus.ON});
+		const currentTime = Math.floor(Date.now() / 1000);
+		return await this.userRepository.update(id, {lastTask: currentTime});
+	}
+
+	async handleUserConnection() {
+		const currentTime = Math.floor(Date.now() / 1000);
+		const connectUsers = await this.userRepository.find({
+			select: ['id', 'lastTask'],
+			where: {status: UserStatus.ON},
+		})
+		for (let user of connectUsers)
+			if (currentTime - user.lastTask > 3 * 60) // 3min
+				this.userRepository.update(user.id, {status: UserStatus.OFF});
+	}
 
 }

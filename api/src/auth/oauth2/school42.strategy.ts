@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-oauth2';
+import { Strategy } from 'passport-oauth2';
 import axios from 'axios';
 import {UserService} from 'src/user/user.service';
 import UserOauthIdNotFoundException from '../exception/UserOauthIdNotFound.exception';
@@ -10,13 +10,13 @@ import UserNameAlreadyExistsException from '../exception/UserNameAlreadyExists.e
 export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 	constructor(private usersService: UserService) {
 		super({
-			authorizationURL: "https://api.intra.42.fr/oauth/authorize?client_id=90727c13a881b305781354461f119b6772fdd365a2557c93b61b6d1d9015a3c4&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fpublic%2Fcallback&response_type=code",
+			authorizationURL: "https://api.intra.42.fr/oauth/authorize?client_id=90727c13a881b305781354461f119b6772fdd365a2557c93b61b6d1d9015a3c4&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fcallback&response_type=code",
 			tokenURL: "https://api.intra.42.fr/oauth/token",
 			clientID: process.env.OAUTH_42_UID,
 			clientSecret: process.env.OAUTH_42_SECRET,
-			callbackURL: "http://localhost:4200/public/callback",
+			callbackURL: "http://localhost:4200/callback",
 			scope: 'public',
-			proxy: true
+			proxy: true,
 		});
 	}
 
@@ -29,10 +29,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 			headers: { Authorization: `Bearer ${accessToken}` },
 		});
 		try {
-			// check if user already exists
 			let user = await this.usersService.getUserByid42(data.id);
-			
-			//check if user is banned
 			if (user.ban) {
 				throw new UnauthorizedException('You\'re banned');				
 			}
