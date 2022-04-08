@@ -133,7 +133,7 @@ export default	defineComponent ({
 	/* width: 100%; */
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 5px;
+	border: none;
 }
 
 .info

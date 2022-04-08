@@ -265,7 +265,7 @@ export default	defineComponent ({
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
-	border-radius: 5px;
+	border: none;
 }
 
 .info
