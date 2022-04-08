@@ -31,7 +31,7 @@
 					{{ channelsList[getChannelIndex(channelId)].description }} </p>
 			</div>
 			<div v-else>
-				<div style="display: flex; gap: 5%; margin-left: 40%">
+				<div style="display: flex; gap: 5%; justify-content: center;">
 					<img :src="getOneDM(channelId).picture" class="picture1" />
 					<div @click="goToUserProfile(getOneDM(channelId).name)" class="usernameButton"> {{ getOneDM(channelId).name }}</div>
 				</div>
@@ -71,11 +71,15 @@
 			<div class="chanList">
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
-					<div v-if="channel.type != 'direct-message'" style="text-align: left; margin-left: 5%;"> {{ channel.name }}</div>
-					<div v-else class="dmInfo" v-bind="getOneDM(channel.id)">
-						<img :src="getOneDM(channel.id).picture" class="picture2" />
-						<div>{{ getOneDM(channel.id).name }}</div>
-						<div style="color: rgb(255,255,255,0.5); flex: 1 1 0"> {{ getOneDM(channel.id).status }} </div>
+					<div v-if="channel.type != 'direct-message'" class="dmInfo"> 
+						<div style="flex: 1 1 1; aspect-ratio: 1 / 1;"></div>
+						<div style="flex: 3; text-align: left;"> {{ channel.name }} </div>
+						<div style="color: rgb(255,255,255,0.5); flex: 3;"> {{ channel.type }} </div>
+					</div>
+					<div v-else class="dmInfo">
+						<img style="flex: 0 0 1; aspect-ratio: 1 / 1;" :src="getOneDM(channel.id).picture" class="picture2" />
+						<div style="flex: 3; text-align: left;">{{ getOneDM(channel.id).name }}</div>
+						<div style="color: rgb(255,255,255,0.5); flex: 3"> {{ getOneDM(channel.id).status }} </div>
 					</div>
 				</button>
 			</div>
