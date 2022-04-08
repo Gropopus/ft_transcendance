@@ -56,7 +56,7 @@
                         update
                     </button> <br>
             </div>
-            <div v-if="channelData.ban.length" class="banList">
+            <div v-if="channelData.ban != undefined && channelData.ban.length" class="banList">
                 <h3> Banned users </h3>
                 <div :key="user.id" v-for="user in channelData.ban" class="banUser">
                     <p> {{ user.username }} </p>
