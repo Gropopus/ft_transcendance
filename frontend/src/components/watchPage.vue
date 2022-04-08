@@ -42,7 +42,7 @@
 </div>
 </template>
 
-<script lang="ts" scoped>
+<script lang="ts">
 // import { throwStatement } from '@babel/types';
 import { defineComponent } from 'vue'
 export default	defineComponent ({

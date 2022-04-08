@@ -1,5 +1,5 @@
 <template>
-		<div class="GameArea1">
+		<div class="GameArea">
 			<canvas id="canvas" width="1600" height="1200"></canvas>
 		</div>
 </template>
@@ -27,17 +27,18 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
-	.GameArea1
+<style lang="css" scoped>
+	.GameArea
 	{
-		float:	left;
 		display:	flex;
-		width:	70%;
-		height: 70%;
-		min-height: 600px;
-		min-width: 800px;
-		margin-left: auto;
-		margin-right: auto;
+		width:	50%;
+		height: 50%;
+		min-height: 400px;
+		min-width: 600px;
+		margin-right: 10%;
+		margin-left: 10%;
+		margin-top: 5%;
+		vertical-align: center;
 		border:	solid 3px white;
 		border-radius: 5px;
 		flex-direction:	column;

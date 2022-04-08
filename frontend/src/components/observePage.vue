@@ -57,32 +57,20 @@ export default	defineComponent ({
 </script>
 
 
-<style lang="css">
+<style lang="css" scoped>
 	.GameArea
 	{
-	}
-
-	#canvas
-	{
-	}
-
-	.UserRecap
-	{
-		float:	right;
-		width:	25%;
-		min-height:	225px;
+		display:	flex;
+		width:	50%;
+		height: 50%;
+		min-height: 400px;
+		min-width: 600px;
+		margin-right: 10%;
+		margin-left: 10%;
+		margin-top: 5%;
+		vertical-align: center;
 		border:	solid 3px white;
 		border-radius: 5px;
-		margin-bottom:	min(22px);
-	}
-
-	.SocialRecap
-	{
-		float:	right;
-		width:	25%;
-		min-height:	225px;
-		border:	solid 3px white;
-		border-radius: 5px;
-		margin-top:	min(22px);
+		flex-direction:	column;
 	}
 </style>
