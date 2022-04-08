@@ -30,7 +30,12 @@
 				<p style="font-style: italic; color: rgb(255,255,255,0.7); margin-block-end: 0.60em;">
 					{{ channelsList[getChannelIndex(channelId)].description }} </p>
 			</div>
-			<div v-else @click="goToUserProfile(getDMUserInfo(channelId))" class="usernameButton"> {{ getDMUserInfo(channelId).name }}</div>
+			<div v-else>
+				<div style="display: flex; gap: 5%; margin-left: 40%">
+					<img :src="getOneDM(channelId).picture" class="picture1" />
+					<div @click="goToUserProfile(getOneDM(channelId))" class="usernameButton"> {{ getOneDM(channelId).name }}</div>
+				</div>
+			</div>
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
@@ -67,10 +72,10 @@
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					<div v-if="channel.type != 'direct-message'"> {{ channel.name }}</div>
-					<div v-else>
-						{{getDMUserInfo(channel.id).name}}
-						<!-- <p>{{ getDMUserInfo(channel.id).name }}</p>
-						<p>{{ getDMUserInfo(channel.id).status }}</p> -->
+					<div v-else class="dmInfo" v-bind="getOneDM(channel.id)">
+						<img :src="getOneDM(channel.id).picture" class="picture2" />
+						<div>{{ getOneDM(channel.id).name }}</div>
+						<div style="color: rgb(255,255,255,0.5); flex: 1 1 0"> {{ getOneDM(channel.id).status }} </div>
 					</div>
 				</button>
 			</div>
@@ -113,6 +118,7 @@ export default	defineComponent ({
 			all: [],
 			joinPassword: "",
 			tmpUsername: "",
+			dmList: [],
 		}
 	},
 	
@@ -120,6 +126,7 @@ export default	defineComponent ({
 		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
 		this.channelsList = await this.fetchChannelsList();
+		this.dmList = await this.getDMList();
 		this.all;
 		const chanId = this.$route.query.id;
 		if (chanId)
@@ -293,7 +300,7 @@ export default	defineComponent ({
 
 		async filterChans(searchKey: string)	{
 			this.channelsList = await this.fetchChannelsList();
-			if (this.channelsList != 'undefined')	{
+			if (this.channelsList != undefined)	{
 				if (searchKey.trim() == "")	{
 					this.searchKey = "";
 					return ;
@@ -303,14 +310,56 @@ export default	defineComponent ({
 			}
 			this.searchKey = "";
 		},
-		getDMUserInfo(id: number) {
-			const chan = this.channelsList[this.getChannelIndex(id)];
+
+		async getPicture(id: number)
+		{
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${id}`, {
+				method: 'get',
+					headers: { 'responseType': 'blob' },
+			})
+			const blob = await ret.blob();
+    		const newBlob = new Blob([blob]);
+			const blobUrl = window.URL.createObjectURL(newBlob);
+    		return blobUrl;
+		},
+
+		async getDMInfo(chan : any) {
 			if (chan.type != 'direct-message' || chan.admin.length != 2)
-				return "error";
-			if (chan.admin[0].id == this.userId)
-				return {name: chan.owner.username, status: chan.owner.username};
-			else
-				return {name: chan.admin[0].username, status: chan.admin[0].username};
+				return ;
+			if (chan.admin[0].id == this.userId) {
+				return {
+					chanId: chan.id,
+					id: chan.owner.id,
+					name: chan.owner.username,
+					status: chan.owner.status,
+					picture: await this.getPicture(chan.owner.id)
+				};
+			}
+			else {
+				return {
+					chanId: chan.id,
+					id: chan.admin[0].id,
+					name: chan.admin[0].username,
+					status: chan.admin[0].status,
+					picture: await this.getPicture(chan.admin[0].id)
+				};
+			}
+		},
+
+		async getDMList() {
+			let list = [];
+			for (let chan of this.channelsList)
+				if (chan.type == 'direct-message')
+					list.push(await this.getDMInfo(chan));
+			return list;
+
+		},
+
+		getOneDM(id: number) {
+			for (let dm of this.dmList)
+				if (dm.chanId == id)
+					return dm;
+			return {};
 		},
 
 		async createChallenge() {
@@ -578,7 +627,7 @@ export default	defineComponent ({
 .chanNameButton
 {
 	width: 100%;
-	overflow-x: scroll;
+	/* overflow-x: scroll; */
 	height:	42px;
 	flex:	1 1 0;
 	text-align:	center;
@@ -778,6 +827,32 @@ export default	defineComponent ({
 .playButton:active {
   box-shadow: rgb(23, 61, 199) 0 3px 7px inset;
   transform: translateY(2px);
+}
+
+.dmInfo {
+	display: flex;
+	gap: 15px;
+	height: 42px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.picture1 {
+    width: 70px;
+    height: 70px;
+    border-radius: 35px;
+	overflow: hidden;
+	object-fit:cover;
+	margin-top: 7px;
+}
+
+.picture2 {
+    width: 35px;
+    height: 35px;
+    border-radius: 20px;
+	overflow: hidden;
+	object-fit:cover;
+	margin-top: 3px;
 }
 
 </style>
