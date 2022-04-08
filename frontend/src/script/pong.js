@@ -382,7 +382,7 @@ function playerclick(event, ) {
     
 function socket_init()
 {
-	game.socket = io("http://www.kittypong.fr:42069",{
+	game.socket = io("http://localhost:42069",{
 		withCredentials: true,
 		extraHeaders: {
 		"my-custom-header": "pong"

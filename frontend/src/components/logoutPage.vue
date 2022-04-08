@@ -32,12 +32,12 @@ export default	{
 	emits:	['update:userId'],
 	methods:	{
 		async logout()	{
-			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
 				method: 'get',
 					headers: { 'content-type': 'application/json' }
 			})
 			const data = await res.json()
-			const res1 = await fetch(`http://www.kittypong.fr:3000/api/users/logout`, {
+			const res1 = await fetch(`http://localhost:3000/api/users/logout`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify(data)

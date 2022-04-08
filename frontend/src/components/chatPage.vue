@@ -156,7 +156,7 @@ export default	defineComponent ({
 	},
 
 	async created() {
-		this.socket = io('http://www.kittypong.fr:42070', {
+		this.socket = io('http://localhost:42070', {
 			withCredentials: true,
 			extraHeaders: {
 				"my-custom-header": "chat"
@@ -170,7 +170,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchAllChannels() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all`, {
+			const res = await fetch(`http://localhost:3000/api/channel/all`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -179,7 +179,7 @@ export default	defineComponent ({
 		},
 
 		async fetchChannelsList() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -240,7 +240,7 @@ export default	defineComponent ({
 		async fetchMessages() {
 			if (!this.channelId)
 				return ;
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -274,7 +274,7 @@ export default	defineComponent ({
 			if (this.joinPassword == "" && this.all[i].type == "protected")
 				return ;
 			const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.userId}/join/${chanId}`, {
+                `http://localhost:3000/api/channel/${this.userId}/join/${chanId}`, {
                     method: 'put',
                     headers: { 'content-type': 'application/json' ,
                     'Access-Control-Allow-Origin': '*'},
@@ -317,7 +317,7 @@ export default	defineComponent ({
 
 		async getPicture(id: number)
 		{
-			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${id}`, {
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${id}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -367,7 +367,7 @@ export default	defineComponent ({
 		},
 
 		async createChallenge() {
-			const ret = await fetch(` http://www.kittypong.fr:3000/api/game/newchallengeid/`, {
+			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
