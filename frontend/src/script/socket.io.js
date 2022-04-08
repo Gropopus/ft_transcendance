@@ -1648,7 +1648,7 @@ function url(uri) {
 
     debug("parse %s", uri);
     obj = parseuri(uri);
-  } // make sure we treat `localhost:80` and `localhost` equally
+  } // make sure we treat `www.kittypong.fr:80` and `www.kittypong.fr` equally
 
 
   if (!obj.port) {
@@ -2553,7 +2553,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
       opts.port = _this.secure ? "443" : "80";
     }
 
-    _this.hostname = opts.hostname || (typeof location !== "undefined" ? location.hostname : "localhost");
+    _this.hostname = opts.hostname || (typeof location !== "undefined" ? location.hostname : "www.kittypong.fr");
     _this.port = opts.port || (typeof location !== "undefined" && location.port ? location.port : _this.secure ? 443 : 80);
     _this.transports = opts.transports || ["polling", "websocket"];
     _this.readyState = "";
@@ -2603,7 +2603,7 @@ var Socket = /*#__PURE__*/function (_Emitter) {
         }, false);
       }
 
-      if (_this.hostname !== "localhost") {
+      if (_this.hostname !== "www.kittypong.fr") {
         _this.offlineEventListener = function () {
           _this.onClose("transport close");
         };
