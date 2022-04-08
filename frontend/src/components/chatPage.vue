@@ -33,7 +33,7 @@
 			<div v-else>
 				<div style="display: flex; gap: 5%; margin-left: 40%">
 					<img :src="getOneDM(channelId).picture" class="picture1" />
-					<div @click="goToUserProfile(getOneDM(channelId))" class="usernameButton"> {{ getOneDM(channelId).name }}</div>
+					<div @click="goToUserProfile(getOneDM(channelId).name)" class="usernameButton"> {{ getOneDM(channelId).name }}</div>
 				</div>
 			</div>
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
