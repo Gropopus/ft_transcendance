@@ -162,10 +162,12 @@ export default	defineComponent ({
 				"my-custom-header": "chat"
 			},
 			autoConnect: false});
+		this.resetScroll();
 	},
 
     async updated() {
         await this.$emit('userIsOnline', this.userId);
+		this.resetScroll();
     },
 
 	methods: {
