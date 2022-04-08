@@ -261,8 +261,13 @@ export default	defineComponent ({
                     'Access-Control-Allow-Origin': '*'},
                     body: JSON.stringify({password: this.joinPassword}),
             });
+			const ret = await res.json();
+			console.log(ret);
+			if (ret.error == "Bad password")
+				return ;
+			console.log("yaaay");
 			this.joinPassword = "";
-			this.changeCurrentChan(chanId);
+			await this.changeCurrentChan(chanId);
 			this.channelsList = await this.fetchChannelsList();
 		},
 
