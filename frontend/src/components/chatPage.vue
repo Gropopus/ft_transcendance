@@ -137,7 +137,7 @@ export default	defineComponent ({
 		this.socket.connect();
 		const challengeId = this.$route.query.challengeId;
 		if (challengeId)
-			this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
+			await this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
 		this.channelMessages = await this.fetchMessages();
 		this.resetScroll();
 		if (this.channelId)
