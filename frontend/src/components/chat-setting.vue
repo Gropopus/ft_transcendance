@@ -8,6 +8,7 @@
                 </div>
                 <div :key="user.id" v-for="user in channelData.users">
                     <div class="displayUser">
+                        <div  class="role" style="color: rgb(255, 228, 113, 0.7);"> {{ user.status }} </div>
                         <div @click="goToProfile(user.username)" class="username">{{ user.username }}</div>
                         <div v-if="role=='owner' && userId != user.id" class="buts">
                             <button v-if="!isAdmin(user.id)" @click="setAdmin(user.id)" class="addButton">set admin</button>

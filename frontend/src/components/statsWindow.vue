@@ -2,14 +2,15 @@
 	<div class="StatsWin">
 		<div class="StatsTabs">
 			<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
-			<button class="tab middle" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
+			<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
 			<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
+			<button class="tab corner"  @click="changeCurrent(3)" :id="isCurrentTab(3)"> Ladder </button>
 		</div>
 		<div class="StatsArea">
 			<div v-if="currentTab==0" class="stat">
 				<div class="statElem">
 					<h3>Rank</h3>
-					<p> {{ ladder.level }} / {{ ladder.total }} </p>
+					<p> {{ userLadder.level }} / {{ userLadder.total }} </p>
 				</div>
 				<div class="statElem">
 					<h3>Elo</h3>
@@ -69,10 +70,25 @@
 						<div v-else> {{ elem.score_l }} </div>
 						<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_l }} </div>
 						<div v-else> {{ elem.score_r }} </div>
-						<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.player_left_id.user.username }} </div>
-						<div v-else> {{ elem.player_right_id.user.username }} </div>
+						<div v-if="UserIsPlayer(elem.player_right_id.user.id)" class="userLink" @click="goToUserProfile(elem.player_left_id.user)"> {{ elem.player_left_id.user.username }} </div>
+						<div v-else class="userLink" @click="goToUserProfile(elem.player_right_id.user)"> {{ elem.player_right_id.user.username }} </div>
 					</div>
 				</div>
+			</div>
+			<div v-if="currentTab==3 && ladder != undefined">
+				<div class="ladder">
+					<div class="ladderCats">
+						<div> Rank </div>
+						<div> User Name </div>
+						<div> Elo score </div>
+					</div>
+					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "rgb(37, 46, 131, 0.6)" : "none"}'>
+						<div> {{ index + 1 }} </div>
+						<div class="userLink" @click="goToUserProfile(elem)"> {{ elem.username }} </div>
+						<div> {{ elem.level }} </div>
+					</div>
+				</div>
+				<button class="jumpTo" @click="resetScroll(userData.username)"> See User </button>
 			</div>
 		</div>
 	</div>
@@ -84,17 +100,24 @@ import { defineComponent } from 'vue'
 export default	defineComponent ({
 	name: 'statsWindow',
 	props:	{
+		userId:	{
+			type:	[Number, String],
+			default:	"0"
+		},
 		profId:	{
 			type:	[Number, String],
 			default:	"0"
 		},
 	},
 
+	emits:	['profId'],
+
 	data() {
 		return {
 			currentTab: 0,
 			userData: [],
-			ladder: 0,
+			userLadder: 0,
+			ladder:	[],
 			gameHistory: [],
 			socialAchievements: [
                 {name: "Social 1", icon: "/src/assets/Achievement_Social_1.png"},
@@ -106,14 +129,16 @@ export default	defineComponent ({
 
 	mounted() {
 		this.userData;
-		this.ladder;
+		this.userLadder;
 		this.gameHistory;
+		this.ladder;
 	},
 
 	async created() {
 		this.userData = await this.fetchUserData();
-		this.ladder = await this.fetchLadderLevel();
+		this.userLadder = await this.fetchLadderLevel();
 		this.gameHistory = await this.fetchPlayerHistory();
+		this.ladder = await this.fetchLadder();
 	},
 
 	methods: {
@@ -142,8 +167,9 @@ export default	defineComponent ({
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
-			const ladder = await res.json();
-			return ladder;
+			const userLadder = await res.json();
+			console.log(userLadder);
+			return userLadder;
 		},
 
 		async fetchPlayerHistory() {
@@ -177,6 +203,50 @@ export default	defineComponent ({
 				return (true);
 			return (false);
 		},
+
+		async fetchLadder() {
+			const res = await fetch(`http://localhost:3000/api/users`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			})
+			const ladder = await res.json();
+			console.log(ladder.items);
+			return ladder.items.sort((v1, v2) =>	{
+				if (v1.level > v2.level)
+					return -1;
+				if (v1.level < v2.level)
+					return 1;
+				return 0;
+			});
+		},
+
+		async goToUserProfile(userInfo) {
+			if (userInfo.id === this.userId)
+				this.$router.push(`/profile`)
+			else
+			{
+				this.$emit('profId', this.profId);
+				await this.profId;
+				this.$router.push(`/profile/${userInfo.username}`)
+			}
+		},
+
+		getUserField(username: String)	{
+			let laddList = document.getElementsByClassName("laddElem");
+			if (typeof laddList === 'undefined')
+				return ;
+			for (let elem of laddList)	{
+				if (elem.childNodes[1].innerHTML === username)	{
+					return elem;
+				}
+			}
+		},
+
+		resetScroll(username: String)	{
+			const user = this.getUserField(username);
+			if (user != undefined)
+				user.scrollIntoView(false, {block: "end", inline: "end"});
+		},
 	},
 })
 </script>
@@ -196,7 +266,7 @@ export default	defineComponent ({
 .StatsArea
 {
 	width:	100%;
-	min-width: 800px;
+	min-width: 1300px;
 	min-height:	500px;
 	border: solid white 3px;
 	border-top: none;
@@ -206,7 +276,7 @@ export default	defineComponent ({
 
 .StatsTabs
 {
-	min-width: 800px;
+	min-width: 1300px;
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
@@ -216,10 +286,9 @@ export default	defineComponent ({
 	overflow: hidden;
 }
 
-.middle
+.StatsTabs > .corner
 {
-	border-right: solid 3px white !important;
-	border-left: solid 3px white !important;
+	border-right: none;
 }
 
 .StatsTabs > button
@@ -237,6 +306,7 @@ export default	defineComponent ({
 	color: white;
 	padding-top: 1%;
 	font-weight:	bold;
+	border-right: solid 3px white;
 }
 
 .StatsTabs > button:hover
@@ -372,5 +442,70 @@ export default	defineComponent ({
 .histElem > div
 {
 	flex: 1 1 0;
+}
+
+.ladder
+{
+	width: 90%;
+	display: inline-block;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	margin-right: auto;
+	margin-left: auto;
+	max-height:	500px;
+	overflow-y: scroll;
+	border: solid 3px white;
+}
+
+.ladderCats
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	background: var(--white-10);
+	font-size: 120%;
+}
+
+.ladderCats > div
+{
+	flex: 1 1 0;
+}
+
+.laddElem
+{
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	text-align: center;
+	border-bottom: solid 1px white;
+	font-size: 120%;
+}
+
+.laddElem > div
+{
+	flex: 1 1 0;
+}
+
+.userLink
+{
+	cursor: pointer;
+}
+
+.jumpTo 
+{
+	background: none;
+	border: solid 3px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	font-size:	150%;
+	color: white;
+	width:		10%;
+}
+
+.jumpTo:hover
+{
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
 }
 </style>

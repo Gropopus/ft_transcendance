@@ -12,7 +12,9 @@
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
 				<div class="usermail"> {{userData.email }} </div>
-				<div class="status"> {{ userData.status }} </div>
+				<div class="status" v-if="userData.status == 'online'" style="color: rgb(255, 228, 113);"> online </div>
+				<div class="status" v-else-if="userData.status == 'offline'" style="color: rgb(255, 255, 255, 0.4);"> offline </div>
+				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
 				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/message03.png" class="challengeButton"/>
@@ -27,7 +29,7 @@
 				<img v-else v-if="unblockIcon.img && this.userData" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
-		<statsWindow v-if="userData.id != undefined" :profId="userData.id"/>
+		<statsWindow v-if="userData.id != undefined" :userId="userId" @profId="update()" :profId="userData.id"/>
 	</div>
 </template>
 
@@ -100,6 +102,8 @@ export default	defineComponent ({
 		},
 
 		async fetchRelation() {
+			if (this.userData === undefined)
+				this.userData = await this.fetchUserData();
 			return await fetch(`http://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }

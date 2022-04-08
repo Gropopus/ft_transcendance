@@ -29,6 +29,8 @@ export default	{
     }
   },
 
+	emits:	['userIsOnline'],
+
   async updated() {
     if (this.isLogged())
         await this.userIsOnline(this.userId);

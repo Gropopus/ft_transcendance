@@ -7,7 +7,6 @@
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
 				<div class="usermail"> {{ userData.email }} </div>
-				<div class="status"> {{ userData.status }} </div>
 			</div>
 			<div class="perso-info">
 				<button @click="goToRoute('/profile')" title="profile"> Profile </button>
@@ -507,14 +506,6 @@ export default	{
 	margin-top: 2%;
 	margin-bottom: 2%;
 	vertical-align: center;
-}
-
-.status {
-	flex: 1;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: green;
 }
 
 .perso-info > button

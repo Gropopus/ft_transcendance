@@ -30,7 +30,12 @@
 				<p style="font-style: italic; color: rgb(255,255,255,0.7); margin-block-end: 0.60em;">
 					{{ channelsList[getChannelIndex(channelId)].description }} </p>
 			</div>
-			<div v-else @click="goToUserProfile(getDMUserInfo(channelId))" class="usernameButton"> {{ getDMUserInfo(channelId).name }}</div>
+			<div v-else>
+				<div style="display: flex; gap: 5%; justify-content: center;">
+					<img :src="getOneDM(channelId).picture" class="picture1" />
+					<div @click="goToUserProfile(getOneDM(channelId).name)" class="usernameButton"> {{ getOneDM(channelId).name }}</div>
+				</div>
+			</div>
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
@@ -66,11 +71,15 @@
 			<div class="chanList">
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
-					<div v-if="channel.type != 'direct-message'"> {{ channel.name }}</div>
-					<div v-else>
-						{{getDMUserInfo(channel.id).name}}
-						<!-- <p>{{ getDMUserInfo(channel.id).name }}</p>
-						<p>{{ getDMUserInfo(channel.id).status }}</p> -->
+					<div v-if="channel.type != 'direct-message'" class="dmInfo"> 
+						<div style="flex: 1 1 1; aspect-ratio: 1 / 1;"></div>
+						<div style="flex: 3; text-align: left;"> {{ channel.name }} </div>
+						<div style="color: rgb(255,255,255,0.5); flex: 3;"> {{ channel.type }} </div>
+					</div>
+					<div v-else class="dmInfo">
+						<img style="flex: 0 0 1; aspect-ratio: 1 / 1;" :src="getOneDM(channel.id).picture" class="picture2" />
+						<div style="flex: 3; text-align: left;">{{ getOneDM(channel.id).name }}</div>
+						<div style="color: rgb(255,255,255,0.5); flex: 3"> {{ getOneDM(channel.id).status }} </div>
 					</div>
 				</button>
 			</div>
@@ -113,6 +122,7 @@ export default	defineComponent ({
 			all: [],
 			joinPassword: "",
 			tmpUsername: "",
+			dmList: [],
 		}
 	},
 	
@@ -120,6 +130,7 @@ export default	defineComponent ({
 		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
 		this.channelsList = await this.fetchChannelsList();
+		this.dmList = await this.getDMList();
 		this.all;
 		const chanId = this.$route.query.id;
 		if (chanId)
@@ -130,7 +141,7 @@ export default	defineComponent ({
 		this.socket.connect();
 		const challengeId = this.$route.query.challengeId;
 		if (challengeId)
-			this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
+			await this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
 		this.channelMessages = await this.fetchMessages();
 		this.resetScroll();
 		if (this.channelId)
@@ -293,7 +304,7 @@ export default	defineComponent ({
 
 		async filterChans(searchKey: string)	{
 			this.channelsList = await this.fetchChannelsList();
-			if (this.channelsList != 'undefined')	{
+			if (this.channelsList != undefined)	{
 				if (searchKey.trim() == "")	{
 					this.searchKey = "";
 					return ;
@@ -303,14 +314,56 @@ export default	defineComponent ({
 			}
 			this.searchKey = "";
 		},
-		getDMUserInfo(id: number) {
-			const chan = this.channelsList[this.getChannelIndex(id)];
+
+		async getPicture(id: number)
+		{
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${id}`, {
+				method: 'get',
+					headers: { 'responseType': 'blob' },
+			})
+			const blob = await ret.blob();
+    		const newBlob = new Blob([blob]);
+			const blobUrl = window.URL.createObjectURL(newBlob);
+    		return blobUrl;
+		},
+
+		async getDMInfo(chan : any) {
 			if (chan.type != 'direct-message' || chan.admin.length != 2)
-				return "error";
-			if (chan.admin[0].id == this.userId)
-				return {name: chan.owner.username, status: chan.owner.username};
-			else
-				return {name: chan.admin[0].username, status: chan.admin[0].username};
+				return ;
+			if (chan.admin[0].id == this.userId) {
+				return {
+					chanId: chan.id,
+					id: chan.owner.id,
+					name: chan.owner.username,
+					status: chan.owner.status,
+					picture: await this.getPicture(chan.owner.id)
+				};
+			}
+			else {
+				return {
+					chanId: chan.id,
+					id: chan.admin[0].id,
+					name: chan.admin[0].username,
+					status: chan.admin[0].status,
+					picture: await this.getPicture(chan.admin[0].id)
+				};
+			}
+		},
+
+		async getDMList() {
+			let list = [];
+			for (let chan of this.channelsList)
+				if (chan.type == 'direct-message')
+					list.push(await this.getDMInfo(chan));
+			return list;
+
+		},
+
+		getOneDM(id: number) {
+			for (let dm of this.dmList)
+				if (dm.chanId == id)
+					return dm;
+			return {};
 		},
 
 		async createChallenge() {
@@ -523,12 +576,6 @@ export default	defineComponent ({
 	/*padding-bottom: 5%;*/
 }
 
-.chanNameButton
-{
-	width: 100%;
-	border-bottom: solid 3px white;
-}
-
 .channelName
 {
 	display: flex;
@@ -578,11 +625,10 @@ export default	defineComponent ({
 .chanNameButton
 {
 	width: 100%;
-	overflow-x: scroll;
+	/* overflow-x: scroll; */
 	height:	42px;
-	flex:	1 1 0;
-	text-align:	center;
-	vertical-align:	center;
+	/* flex:	1 1 0; */
+	/* vertical-align:	center; */
 	text-align:	center;
 	text-decoration:	none;
 	font-family: MyanmarText;
@@ -778,6 +824,33 @@ export default	defineComponent ({
 .playButton:active {
   box-shadow: rgb(23, 61, 199) 0 3px 7px inset;
   transform: translateY(2px);
+}
+
+.dmInfo {
+	display: flex;
+	gap: 15px;
+	height: 42px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 4%;
+}
+
+.picture1 {
+    width: 70px;
+    height: 70px;
+    border-radius: 35px;
+	overflow: hidden;
+	object-fit:cover;
+	margin-top: 7px;
+}
+
+.picture2 {
+    width: 35px;
+    height: 35px;
+    border-radius: 20px;
+	overflow: hidden;
+	object-fit:cover;
+	margin-top: 3px;
 }
 
 </style>
