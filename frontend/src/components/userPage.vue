@@ -261,7 +261,7 @@ export default	defineComponent ({
 	flex-direction: row;
 	gap: 3%;
 	/* flex: 1 1 0; */
-	min-width: 1300px;
+	/* min-width: 1300px; */
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
@@ -318,10 +318,6 @@ export default	defineComponent ({
 	flex: 5;
 	background: none;
 	border: solid 3px white;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: white;
 	padding-top: 2%;
 	margin: 20%;
 	margin-top: 30%;
@@ -343,15 +339,8 @@ export default	defineComponent ({
 }
 
 .picture > img {
-	/*margin-left: 2%;
-	margin-bottom: 2%;
-	margin-top: 2%;
-	min-height: 150px;
-	min-width: 150px;*/
 	border-radius: 50%;
 	overflow: hidden;
-    width: 200px;
-    height: 200px;
     max-width: 200px;
     max-height: 200px;
 	object-fit:cover;

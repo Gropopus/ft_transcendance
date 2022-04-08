@@ -107,7 +107,7 @@ export default	defineComponent ({
 
 .StatsWin
 {
-	width:	100%;
+	/* width:	100%; */
 	min-height:	500px;
 	display:	flex;
 	flex-direction:	column;
@@ -129,8 +129,8 @@ export default	defineComponent ({
 	gap: 3%;
 	/* flex: 1 1 0; */
 	border: solid 3px white;
-	min-width: 1300px;
-	width: 100%;
+	/* min-width: 1300px; */
+	/* width: 100%; */
 	margin-bottom: 2%;
 	align-content: center;
 	border-radius: 5px;

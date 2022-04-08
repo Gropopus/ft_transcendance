@@ -256,7 +256,7 @@ export default	defineComponent ({
 
 .StatsWin
 {
-	width:	100%;
+	/* width:	100%; */
 	min-height:	500px;
 	display:	flex;
 	flex-direction:	column;
@@ -265,8 +265,8 @@ export default	defineComponent ({
 
 .StatsArea
 {
-	width:	100%;
-	min-width: 1300px;
+	/* width:	100%; */
+	/* min-width: 1300px; */
 	min-height:	500px;
 	border: solid white 3px;
 	border-top: none;
@@ -276,13 +276,13 @@ export default	defineComponent ({
 
 .StatsTabs
 {
-	min-width: 1300px;
+	min-width: 20%;
 	display:	flex;
 	flex-direction:	row;
 	border:	solid 3px white;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-	width: 100%;
+	/* width: 100%; */
 	overflow: hidden;
 }
 
@@ -384,7 +384,7 @@ export default	defineComponent ({
 	border: solid white 3px;
 	margin-top: 3%;
 	margin-bottom: 3%;
-	min-width: 120px;
+	/* min-width: 120px; */
 	flex: 1 1 1;
 	aspect-ratio: 1 / 1;
 	border-radius: 5px;
