@@ -40,13 +40,13 @@
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.name" v-for="file in eloAchievements">
+						<div :key="file.name" v-for="file in chanAchievements">
 							<img v-if="file.status == 1" :src="file.iconOn">
 							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.name" v-for="file in socialAchievements">
+						<div :key="file.name" v-for="file in eloAchievements">
 							<img v-if="file.status == 1" :src="file.iconOn">
 							<img v-else :src="file.iconOff">
 						</div>
@@ -124,19 +124,24 @@ export default	defineComponent ({
 			ladder:	[],
 			gameHistory: [],
 			socialAchievements: [
-                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "/src/assets/Achievement_Social_1.png", status: 0},
-                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "/src/assets/Achievement_Social_2.png", status: 0},
-                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "/src/assets/Achievement_Social_3.png", status: 0},
+                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
             ],
 			victoryAchievements: [
-                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "/src/assets/Achievement_Social_1.png", status: 0},
-                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "/src/assets/Achievement_Social_2.png", status: 0},
-                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "/src/assets/Achievement_Social_3.png", status: 0},
+                {name: "Victory 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Victory 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Victory 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
+            ],
+			chanAchievements: [
+                {name: "Chan 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Chan 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Chan 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
             ],
 			eloAchievements: [
-                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "/src/assets/Achievement_Social_1.png", status: 0},
-                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "/src/assets/Achievement_Social_2.png", status: 0},
-                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "/src/assets/Achievement_Social_3.png", status: 0},
+                {name: "Elo 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "", status: 0},
+                {name: "Elo 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "", status: 0},
+                {name: "Elo 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "", status: 0},
             ],
 		}
 	},
@@ -183,7 +188,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const userLadder = await res.json();
-			console.log(userLadder);
 			return userLadder;
 		},
 
@@ -211,7 +215,7 @@ export default	defineComponent ({
 				this.socialAchievements[2].status = 1;
 		},
 
-		async setVictoryStatus() {
+		setVictoryStatus() {
 			if (this.userData.victory >= 1)
 				this.victoryAchievements[0].status = 1;
 			if (this.userData.victory >= 5)
@@ -219,18 +223,35 @@ export default	defineComponent ({
 			if (this.userData.victory >= 20)
 				this.victoryAchievements[2].status = 1;
 		},
+
+		async setChanStatus() {
+			const res = await fetch(`http://localhost:3000/api/channel/all/${this.profId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const channels = (await res.json()).items;
+			console.log(channels);
+			const size = channels.length;
+			if (size >= 1)
+				this.chanAchievements[0].status = 1;
+			if (size >= 5)
+				this.chanAchievements[1].status = 1;
+			if (size >= 20)
+				this.chanAchievements[2].status = 1;
+		},
 		
-		async setEloStatus() {
-			if (this.level >= 1050)
+		setEloStatus() {
+			if (this.userData.level >= 1050)
 				this.eloAchievements[0].status = 1;
-			if (this.level >= 1200)
+			if (this.userData.level >= 1200)
 				this.eloAchievements[1].status = 1;
-			if (this.level >= 1400)
+			if (this.userData.level >= 1400)
 				this.eloAchievements[2].status = 1;
 		},
 		
 		async setAchievementStatus() {
 			await this.setSocialStatus();
+			await this.setChanStatus();
 			this.setVictoryStatus();
 			this.setEloStatus();
 		},
@@ -264,7 +285,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const ladder = await res.json();
-			console.log(ladder.items);
 			return ladder.items.sort((v1, v2) =>	{
 				if (v1.level > v2.level)
 					return -1;
@@ -411,7 +431,7 @@ export default	defineComponent ({
 
 .achievementsTable
 {
-	width: 90%%;
+	width: 90%;
 	margin-top: 3%;
 	margin-bottom: 3%;
 	margin-right: 5%;
@@ -435,7 +455,7 @@ export default	defineComponent ({
 
 .achievementsCol > div
 {
-	border: solid white 3px;
+	/* border: solid white 3px; */
 	margin-top: 3%;
 	margin-bottom: 3%;
 	/* min-width: 120px; */
