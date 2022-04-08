@@ -28,23 +28,27 @@
 			<div v-if="currentTab==1" class="achievements">
 				<div class="achievementsTable">
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in socialAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in victoryAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in eloAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.icon" v-for="file in socialAchievements">
-							<img :src="file.icon">
+						<div :key="file.name" v-for="file in socialAchievements">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 				</div>
@@ -120,9 +124,19 @@ export default	defineComponent ({
 			ladder:	[],
 			gameHistory: [],
 			socialAchievements: [
-                {name: "Social 1", icon: "/src/assets/Achievement_Social_1.png"},
-                {name: "Social 2", icon: "/src/assets/Achievement_Social_2.png"},
-                {name: "Social 3", icon: "/src/assets/Achievement_Social_3.png"},
+                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "/src/assets/Achievement_Social_1.png", status: 0},
+                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "/src/assets/Achievement_Social_2.png", status: 0},
+                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "/src/assets/Achievement_Social_3.png", status: 0},
+            ],
+			victoryAchievements: [
+                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "/src/assets/Achievement_Social_1.png", status: 0},
+                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "/src/assets/Achievement_Social_2.png", status: 0},
+                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "/src/assets/Achievement_Social_3.png", status: 0},
+            ],
+			eloAchievements: [
+                {name: "Social 1", iconOn: "/src/assets/Achievement_Social_1.png", iconOff: "/src/assets/Achievement_Social_1.png", status: 0},
+                {name: "Social 2", iconOn: "/src/assets/Achievement_Social_2.png", iconOff: "/src/assets/Achievement_Social_2.png", status: 0},
+                {name: "Social 3", iconOn: "/src/assets/Achievement_Social_3.png", iconOff: "/src/assets/Achievement_Social_3.png", status: 0},
             ],
 		}
 	},
@@ -139,6 +153,7 @@ export default	defineComponent ({
 		this.userLadder = await this.fetchLadderLevel();
 		this.gameHistory = await this.fetchPlayerHistory();
 		this.ladder = await this.fetchLadder();
+		await this.setAchievementStatus();
 	},
 
 	methods: {
@@ -179,6 +194,45 @@ export default	defineComponent ({
 			})
 			const history = await res.json();
 			return history.items;
+		},
+
+		async setSocialStatus() {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.profId}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const friends = await res.json();
+			const size = friends.length;
+			if (size >= 1)
+				this.socialAchievements[0].status = 1;
+			if (size >= 5)
+				this.socialAchievements[1].status = 1;
+			if (size >= 20)
+				this.socialAchievements[2].status = 1;
+		},
+
+		async setVictoryStatus() {
+			if (this.userData.victory >= 1)
+				this.victoryAchievements[0].status = 1;
+			if (this.userData.victory >= 5)
+				this.victoryAchievements[1].status = 1;
+			if (this.userData.victory >= 20)
+				this.victoryAchievements[2].status = 1;
+		},
+		
+		async setEloStatus() {
+			if (this.level >= 1050)
+				this.eloAchievements[0].status = 1;
+			if (this.level >= 1200)
+				this.eloAchievements[1].status = 1;
+			if (this.level >= 1400)
+				this.eloAchievements[2].status = 1;
+		},
+		
+		async setAchievementStatus() {
+			await this.setSocialStatus();
+			this.setVictoryStatus();
+			this.setEloStatus();
 		},
 
 		whoWon(playerStats)	{
