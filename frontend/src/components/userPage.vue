@@ -4,14 +4,12 @@
 
 <template>
 	<div v-if="userData != undefined" class="user-profile">
-		<!-- <button @click="reload()"> reload </button> -->
 		<div class="profile-resume">
 			<div class="picture">
 				<img :src="picture" alt="userDate.username" />
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
-				<!-- <div class="usermail"> {{userData.email }} </div> -->
 				<div class="status" v-if="userData.status == 'online'" style="color: rgb(255, 228, 113);"> online </div>
 				<div class="status" v-else-if="userData.status == 'offline'" style="color: rgb(255, 255, 255, 0.4);"> offline </div>
 				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
