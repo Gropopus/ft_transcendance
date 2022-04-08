@@ -12,7 +12,9 @@
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
 				<div class="usermail"> {{userData.email }} </div>
-				<div class="status"> {{ userData.status }} </div>
+				<div class="status" v-if="userData.status == 'online'" style="color: rgb(255, 228, 113);"> online </div>
+				<div class="status" v-else-if="userData.status == 'offline'" style="color: rgb(255, 255, 255, 0.4);"> offline </div>
+				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
 				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/message03.png" class="challengeButton"/>

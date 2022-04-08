@@ -12,7 +12,9 @@
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
 				<div class="usermail"> {{ userData.email }} </div>
-				<div class="status"> {{ userData.status }} </div>
+				<div class="status" v-if="userData.status == 'online'" style="color: rgb(255, 228, 113);"> online </div>
+				<div class="status" v-else-if="userData.status == 'offline'" style="color: rgb(255, 255, 255, 0.4);"> offline </div>
+				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
 			</div>
 			<div class="perso-info">
 				<button @click="goToRoute('/settings')" title="settings" class="Edit"> Edit</button>
@@ -176,7 +178,6 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	font-size:	150%;
-	color: green;
 }
 
 .perso-info > button
