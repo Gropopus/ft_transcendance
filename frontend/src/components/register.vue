@@ -58,6 +58,8 @@ export default	{
 	    	if (!this.userLogin) {
 	        	 return "A Username is required.";
 			}
+			else if (this.userLogin.length > 16)
+				return "16 character Maximum"
 			if(!this.userPass) {
         		return "A password is required.";
 			}
