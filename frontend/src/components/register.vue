@@ -2,10 +2,6 @@
 	<header>
 	</header>
 <div>
-		<!-- <div class="LoginHeader">
-			<img src="../assets/picto-id.png">
-		</div> LoginHeader end -->
-
 		<div class="RegisterForm">
 			<p class="error" v-if="error"> {{ error }} </p>
 			<label for="login"> Login </label>	<br>
@@ -88,19 +84,13 @@ export default	{
 					method: 'get',
 					headers: { 'content-type': 'application/json' },
 				})
-				const data1 = await userRes.json()
 				this.$router.push({name: 'login'})
-
-				return ;
 			}
-			if (res.status == 409)
-			{
+			else if (res.status == 409)
 				this.error = "Email or login already used by another user.";
-				return ;
-			}
 		},
-		async goBack()
-		{
+
+		async goBack() {
 			this.$router.push({name: 'login'});
 		}
 	}

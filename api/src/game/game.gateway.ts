@@ -218,19 +218,28 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		let score = this.games_score.get(gameId);
 		if (!score || score.r >= 11 || score.l >= 11)
 			return;
-		if (score.ball_y > 100 || score.ball_y < 0)
+		if (score.ball_y > 100)
+		{
 			score.speed_y *= -1;
+			score.ball_y = 100;
+		}
+		else if (score.ball_y < 0)
+		{
+			score.speed_y *= -1;
+			score.ball_y = 0;
+		} 
 			
 		if (score.ball_x >= 100) // colllision right
 		{
+			score.ball_x = 100;
 			if (score.ball_y < score.pos_r || score.ball_y > score.pos_r + score.r_height )
 				this.handleRightMiss(gameId)
 			else
 			{
 				const impact = score.ball_y - score.pos_r - score.l_height / 2;
 				const ratio = 100 / (score.l_height / 2)
-
-				score.speed_y = impact * ratio / 180;
+				const multi = Math.abs(score.speed_x) / 0.4;
+				score.speed_y = multi * impact * ratio / 180;
 				if (score.speed_x < 2.0 && score.speed_x > -2.0)
 					score.speed_x *= 1.2;
 
@@ -238,14 +247,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		}
 		if (score.ball_x <= 0)
 		{
+			score.ball_x = 0;
 			if (score.ball_y < score.pos_l || score.ball_y > score.pos_l + score.l_height )
 				this.handleLeftMiss(gameId)
 			else
 			{
 				const impact = score.ball_y - score.pos_l - score.r_height / 2;
 				const ratio = 100 / (score.r_height / 2)
-
-				score.speed_y = impact * ratio / 180;
+				const multi = Math.abs(score.speed_x) / 0.4;
+				score.speed_y = multi * impact * ratio / 180;
 				if (score.speed_x < 2.0 && score.speed_x > -2.0)
 					score.speed_x *= 1.2;
 			}
