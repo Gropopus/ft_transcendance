@@ -261,16 +261,28 @@ export default	defineComponent ({
 		},
 
 		async joinChannel(chanId: number) {
-            const res = await fetch(
+			let i;
+			for (i in this.all)
+				if (this.all[i].id == chanId)
+					break ;
+			console.log(this.joinPassword)
+			console.log(this.all);
+			if (this.joinPassword == "" && this.all[i].type == "protected")
+				return ;
+			const res = await fetch(
                 `http://localhost:3000/api/channel/${this.userId}/join/${chanId}`, {
                     method: 'put',
                     headers: { 'content-type': 'application/json' ,
                     'Access-Control-Allow-Origin': '*'},
                     body: JSON.stringify({password: this.joinPassword}),
             });
+			const ret = await res.json();
+			if (ret.error == "Bad password")
+				return ;
 			this.joinPassword = "";
-			this.changeCurrentChan(chanId);
+		/*	await this.changeCurrentChan(chanId);*/
 			this.channelsList = await this.fetchChannelsList();
+			await this.changeCurrentChan(chanId);
 		},
 
 		isInChannel(chanId: number) {

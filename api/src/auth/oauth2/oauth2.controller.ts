@@ -10,7 +10,6 @@ import { Iuser } from 'src/user/model/user.interface';
 @Controller('oauth2')
 export class Oauth2Controller {
   constructor(
-    //private twofactorService: TwoFactorService,
     @Inject(forwardRef(() => UserService))
     private readonly usersService: UserService,) { }
 

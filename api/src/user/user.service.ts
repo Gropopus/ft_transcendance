@@ -46,8 +46,8 @@ export class UserService {
 				const matches: boolean = await this.validatePassword(user.password, foundUser.password);
 				if (matches) {
 					const payload: Iuser = await this.findOne(foundUser.id);
-					if (payload.ban)
-						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);
+					/*if (payload.ban)
+						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);*/
 					const jwt: string = await this.authService.generateJwt(payload);
 					this.updateLastTaskTime(payload.id);
 					this.userRepository.update(payload.id, {status: UserStatus.ON});
@@ -90,14 +90,6 @@ export class UserService {
 		})
 	}
 
-	async findAllByLevel(): Promise<Iuser[]> {
-		return this.userRepository.find({
-			order: {
-				level: "DESC"
-			}
-		})
-	}
-
 	async findOne(id: number): Promise<Iuser> {
 		return this.userRepository.findOne({ id });
 	}
@@ -114,17 +106,6 @@ export class UserService {
 			switchMap(() => this.findOne(id))
 			);
 	}
-
-    async updateBanOfUser(id: number, user: Iuser): Promise<any> {
-		const temp = await this.userRepository.findOne({
-			where: {
-			  id: id,
-			},
-		});		
-		return from(this.userRepository.update(id, user)).pipe(
-			switchMap(() => this.findOne(id))
-		);
-    }
 
 	updateOneOb(id: number, user: Iuser): Observable<any> {
 		delete user.email;
