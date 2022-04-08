@@ -21,7 +21,7 @@ export class ChannelController {
 
 	@Get('all')
 	async getAllChannels(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>>{
-		return this.channelService.getAllChannel({ page, limit, route: 'http://localhost:3000/api/channel/all' });
+		return this.channelService.getAllChannel({ page, limit, route: 'http://www.kittypong.fr:3000/api/channel/all' });
 	}
 
 	@Put('new/:creatorId')
@@ -39,18 +39,18 @@ export class ChannelController {
 
 	@Get('direct-message/:userId')
 	async getDirectMessage(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
-		return this.channelService.getDirectMessage(params.userId, { page, limit, route: 'http://localhost:3000/api/channel/direct-message/:userId' });
+		return this.channelService.getDirectMessage(params.userId, { page, limit, route: 'http://www.kittypong.fr:3000/api/channel/direct-message/:userId' });
 	}
 
 	@Get('direct-message/:user1/:user2')
 	async getOneDirectMessage(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
-		return this.channelService.getOneDirectMessage(params.user1, params.user2, { page, limit, route: 'http://localhost:3000/api/channel/direct-message/:user1/:user2' });
+		return this.channelService.getOneDirectMessage(params.user1, params.user2, { page, limit, route: 'http://www.kittypong.fr:3000/api/channel/direct-message/:user1/:user2' });
 	}
 
 	@UseGuards(JwtAuthGuard)
 	@Post(':id/update-password')
 	async updatePassword(@Param() params, @Body() password, @Query('page') page: number = 1, @Query('limit') limit: number = 10){
-		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'})
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://www.kittypong.fr:3000/api/:id/users'})
 		const pass : string = password.password;
 		this.channelService.changePasswordChannel(channel.items[0], pass);
 	}
@@ -64,23 +64,23 @@ export class ChannelController {
 	@Get('')
 	async getAllChannelAdmin(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
 	  limit = limit > 100 ? 100 : limit;
-	  return this.channelService.getAllChannelAdmin({ page, limit, route: 'http://localhost:3000/api/channel' });
+	  return this.channelService.getAllChannelAdmin({ page, limit, route: 'http://www.kittypong.fr:3000/api/channel' });
 	}
 
 	@Get('/all/:user')
 	async getChannelsForUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 100): Promise<Pagination<Ichannel>> {
-	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://localhost:3000/api/channel/all/:user' });
+	  return this.channelService.getChannelsForUser(params.user, { page, limit, route: 'http://www.kittypong.fr:3000/api/channel/all/:user' });
 	}
 
 	@Get('/:id/info')
 	async getChannelData(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Ichannel>> {
 		limit = limit > 100 ? 100 : limit;
-		return this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+		return this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://www.kittypong.fr:3000/api/:id/users'});
 	}
 
 	@Put(':id/mute/:userId')
 	async muteUser(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://www.kittypong.fr:3000/api/:id/users'});
 		return this.channelService.muteUser(
 			channel.items[0],
 			await this.userService.findOne(params.userId));
@@ -107,7 +107,7 @@ export class ChannelController {
 	@Put(':id/changetype/:type')
 	async changeTypeChannel(@Param() params,@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Ichannel>
 	{
-		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'})
+		const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://www.kittypong.fr:3000/api/:id/users'})
 		return this.channelService.changeTypeChannel(channel.items[0], params.type);
 	}
 
@@ -121,7 +121,7 @@ export class ChannelController {
 	// @UseGuards(JwtAuthGuard)
 	@Put(':id/admin/give/:userId')
 	async updateChannelUserForAdmin(@Param() params, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Ichannel> {  
-	const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://localhost:3000/api/:id/users'});
+	const channel = await this.channelService.getChannelInfo(params.id, { page, limit, route: 'http://www.kittypong.fr:3000/api/:id/users'});
 	  return this.channelService.addAdminToChannel(channel.items[0],
 		await this.userService.findOne(params.userId));
 	}
@@ -179,7 +179,7 @@ export class ChannelController {
 			{
 				page,
 				limit,
-				route: 'http://localhost:3000/api/channel/:channelId/messages/:userId'
+				route: 'http://www.kittypong.fr:3000/api/channel/:channelId/messages/:userId'
 			}
 		);
 		return mess;

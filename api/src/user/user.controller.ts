@@ -43,7 +43,7 @@ export class UserController {
 	@Get()
 	async findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<Pagination<Iuser>> {
 	  limit = limit > 100 ? 100 : limit;
-	  return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' });
+	  return this.userService.findAll({ page, limit, route: 'http://www.kittypong.fr:3000/api/users' });
 	}
 
 	@Put(':id/isOnline')

@@ -24,7 +24,7 @@ export class Oauth2Controller {
     try {
 		 await response.send(user);
     } catch (error) {
-      response.redirect('http://localhost:4200');
+      response.redirect('http://www.kittypong.fr:4200');
     }
   }
 

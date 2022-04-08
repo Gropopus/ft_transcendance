@@ -14,14 +14,14 @@ En vrai pour le temps de build c'est comme service donc c'est pratique il faut b
 toutes les modifs s'appliquent directement sans avoir a rebuild.
 -> docker-compose up pour build et lancer
 
-sur localhost:5050 il y a postgres admin, on s'y connecte avec l'addresse
+sur www.kittypong.fr:5050 il y a postgres admin, on s'y connecte avec l'addresse
 -> admin@admin.com
 mot de passe : password
 ca communique avec notre database par le port 80.
 
 Notre database s'appel db, le login pour s'y connecter est "user" et le mot de passe "password"
 
-localhost:3000 --> API(NESTJS)
-localhost:4200 --> Angular(html/css/js)
-localhost:5050 --> postgresadmin
+www.kittypong.fr:3000 --> API(NESTJS)
+www.kittypong.fr:4200 --> Angular(html/css/js)
+www.kittypong.fr:5050 --> postgresadmin
 

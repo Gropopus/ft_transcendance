@@ -38,7 +38,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
+			const res = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-username/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
