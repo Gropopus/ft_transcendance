@@ -552,7 +552,7 @@ export default	defineComponent ({
 .chanSearch
 {
 	display: flex;
-	border-top: solid white 1px;
+	border-top: solid rgb(255, 255, 255, 0.4) 1px;
 	padding: 2%;
 	gap: 2%;
 	margin-bottom: 2%;

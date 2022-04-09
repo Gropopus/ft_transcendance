@@ -157,6 +157,7 @@ export default	{
 					})
 					this.userData.username = this.userLogin;
 				}
+				this.userLogin = "";
 				
 		},
 		async updatePassword()	{
@@ -164,6 +165,7 @@ export default	{
 				if (!this.userPass)
 				{
 	        	 	this.error = "unable to update password with an empty password.";
+					this.userPass = "";
 					return ;
 				}
 				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
@@ -171,6 +173,7 @@ export default	{
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ password: this.userPass })
 			})
+			this.userPass = "";
 		},
 
 		onChangeFileUpload($event) {
@@ -343,7 +346,7 @@ export default	{
 {
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
-	text-align: center;
+	/* text-align: center; */
 	margin-right: 3%;
 	margin-left: 3%;
 	margin-bottom: 0%;
@@ -352,6 +355,7 @@ export default	{
 
 .settings {
 	margin-top: 7%;
+	margin-left: 7%;
 	font-size: 150%;
 }
 .submitBar > input.textArea
@@ -361,8 +365,8 @@ export default	{
 	opacity:	50%;
 	font-size:	130%;
 	padding:	6px;
-	width:		20%;
-	margin-left: 10%;
+	width:		auto;
+	/* margin-left: 10%; */
 }
 
 .secret > input.textArea 
@@ -394,9 +398,9 @@ export default	{
 
 .title {
 	margin-top: 1.5%;
-	width:		30%;
+	/* width:		30%; */
 	font-size: 100%;
-	margin-left: 10%;
+	/* margin-left: 10%; */
 }
 
 .selector {
@@ -409,17 +413,18 @@ export default	{
 	color:	rgb(236, 100, 151);
 	border-radius: 4px;
 	font-family: MyanmarText;
+	min-width: 150px;
 }
 
 .submitBar > .fileArea {
-	justify-content: left;;
+	justify-content: left;
 	background:	none;
 	font-size:	100%;
 	font-family: MyanmarText;
 	margin-top: 1.5%;
-	margin-left: 10%;
     margin-right: auto;
-	width:		20.8%;
+	width:	auto;
+	min-width: 150px;
 }
 .settingsPage > .submitBar
 {
@@ -433,15 +438,17 @@ export default	{
 
 .submitButton
 {
-	margin-left: 40%;
+	margin-left: 30%;
 	padding-top: 1%;
 	width: 10%;
 	background:	none;
-	border:	solid white;
+	border:	solid white 2px;
 	font-size:	100%;
 	color:	white;
 	border-radius: 4px;
 	font-family: MyanmarText;
+	overflow: hidden;
+	min-width: 95px;
 }
 
 .submitButton:hover
