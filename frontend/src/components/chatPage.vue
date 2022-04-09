@@ -36,13 +36,12 @@
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
-			<!--<div v-if="mess">-->
 			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					<button @click="goToUserProfile(mess.user.username)" class=linkButton > {{ mess.user.username}}: </button><br>
 					<p v-if="mess.text != '!challenge'">{{ mess.text }}</p>
 					<p v-else>
-						<p style="color: rgb(73, 105, 219); margin-bottom: 0px">Play with me !</p>
+						<p style="color: rgb(73, 105, 219); margin: 0px;">Play with me !</p>
 						<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
 					</p>
 				</div>
@@ -50,15 +49,14 @@
 					<p class="currentUserText">
 						<p style="color: rgb(255,255,255, 0.7);">{{ mess.user.username }}:</p>
 						<p v-if="mess.text != '!challenge'">{{ mess.text }}</p>
-						<p v-else>
-							<p style="color: rgb(73, 105, 219); margin-bottom: 0px">Play with me !</p>
+						<p v-else >
+							<p style="color: rgb(73, 105, 219); margin: 0px;">Play with me !</p>
 							<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
 						</p>
 					</p>
 				</div>
 			</ul>
 			</div>
-		<!--</div>-->
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
 			<img src="/src/assets/message012.png" @click="sendMessage(message)" title="Send" class="sendButton">
@@ -78,7 +76,7 @@
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					<div v-if="channel.type != 'direct-message'" class="dmInfo"> 
 						<div style="flex: 1 1 1; aspect-ratio: 1 / 1;"></div>
-						<div style="flex: 3; text-align: left;"> {{ channel.name }} </div>
+						<div class="name"> {{ channel.name }} </div>
 						<div style="color: rgb(255,255,255,0.5); flex: 3;"> {{ channel.type }} </div>
 					</div>
 					<div v-else class="dmInfo">
@@ -530,8 +528,6 @@ export default	defineComponent ({
 	color: white;
 	font-size: 200%;
 	margin-top: 2%;
-	/* font-style: bold; */
-	/* margin-bottom: 2%; */
 }
 
 .chatHead > button
@@ -540,7 +536,6 @@ export default	defineComponent ({
 	margin-top: 2%;
 	margin-bottom: 2%;
 	margin-right: 2%;
-	/* height:	42px; */
 	background: none;
 	border: solid 1px white;
 	border-radius: 5px;
@@ -556,28 +551,18 @@ export default	defineComponent ({
 }
 .chanSearch
 {
-	flex: 1;
 	display: flex;
 	border-top: solid white 1px;
-	/* border-bottom: solid white 1px; */
 	padding: 2%;
-	/* min-width: 300px; */
-	height: 1%;
 	gap: 2%;
+	margin-bottom: 2%;
 }
 
 .chanSearch > input
 {
 	flex: 3;
-	/* border: none; */
 	border-radius: 40px;
-	/* margin: 2%; */
-	/* padding-top: 1%; */
-	/* padding-right: 1%;
-	padding-left: 1%; */
-	/* width: 100%; */
 	font-style: Myanmar;
-	/* color: grey; */
 	font-size: 120%;
 	border: none;
 	max-height: 40px;
@@ -594,7 +579,6 @@ export default	defineComponent ({
 {
 	margin-right: 4%;
 	width: auto;
-	/* height: 40px; */
 	max-height: 40px;
 	background: none;
 }
@@ -608,18 +592,12 @@ export default	defineComponent ({
 .chanList
 {
 	flex: 9;
-	/*overflow-y: scroll;*/
-	/* min-width: 313px; */
-	/* max-height:	45em; */
 	border-bottom: none;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-	margin: 5%;
 	margin-top: 0%;
 	margin-bottom: 0;
 	padding: 0;
-	/*padding-top: 5%;*/
-	/*padding-bottom: 5%;*/
 }
 
 .channelName
@@ -669,10 +647,7 @@ export default	defineComponent ({
 .chanNameButton
 {
 	width: 100%;
-	/* overflow-x: scroll; */
 	height:	42px;
-	/* flex:	1 1 0; */
-	/* vertical-align:	center; */
 	text-align:	center;
 	text-decoration:	none;
 	font-family: MyanmarText;
@@ -767,7 +742,6 @@ export default	defineComponent ({
 
 .writing-zone
 {
-	/* border: solid 3px white; */
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	border-top: none;
@@ -891,6 +865,9 @@ export default	defineComponent ({
 	margin-top: 0px;
 	margin-bottom: 0px;
 	margin-left: 4%;
+	letter-spacing:	1px;
+	font-size: 85%;
+	overflow: hidden;
 }
 
 .picture1 {
@@ -911,4 +888,8 @@ export default	defineComponent ({
 	margin-top: 3px;
 }
 
+.dmInfo > .name {
+	flex: 3;
+	text-align: left;
+}
 </style>

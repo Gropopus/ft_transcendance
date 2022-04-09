@@ -26,15 +26,9 @@ export default	defineComponent ({
 
 
 <style lang="css">
-	.GameArea
-	{
-		float:	left;
-		display:	flex;
-		width:	80%;
-		margin-left: auto;
-		margin-right: auto;
-		border:	solid 3px white;
-		border-radius: 5px;
-		flex-direction:	column;
-	}
+.GameArea
+{
+	margin-left: 10%;
+	margin-right: 10%;
+}
 </style>

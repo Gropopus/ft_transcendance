@@ -258,8 +258,7 @@ export default	defineComponent ({
 	display: flex;
 	flex-direction: row;
 	gap: 3%;
-	/* flex: 1 1 0; */
-	/* min-width: 1300px; */
+	min-width: 700px;
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
