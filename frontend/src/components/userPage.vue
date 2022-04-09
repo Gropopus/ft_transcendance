@@ -258,8 +258,7 @@ export default	defineComponent ({
 	display: flex;
 	flex-direction: row;
 	gap: 3%;
-	/* flex: 1 1 0; */
-	/* min-width: 1300px; */
+	min-width: 700px;
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
@@ -339,6 +338,8 @@ export default	defineComponent ({
 .picture > img {
 	border-radius: 50%;
 	overflow: hidden;
+    width: 200px;
+    height: 200px;
     max-width: 200px;
     max-height: 200px;
 	object-fit:cover;

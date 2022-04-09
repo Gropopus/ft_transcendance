@@ -86,7 +86,7 @@
 						<div> User Name </div>
 						<div> Elo score </div>
 					</div>
-					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "rgb(37, 46, 131, 0.6)" : "none"}'>
+					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "var(--deep-blue-50)" : "none"}'>
 						<div> {{ index + 1 }} </div>
 						<div class="userLink" @click="goToUserProfile(elem)"> {{ elem.username }} </div>
 						<div> {{ elem.level }} </div>
@@ -231,7 +231,10 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			});
 			const channels = (await res.json()).items;
-			const size = channels.length;
+			let size = 0;
+			for (const chan of channels)
+				if (chan.type != 'direct-message')
+					++size;
 			if (size >= 1)
 				this.chanAchievements[0].status = 1;
 			if (size >= 5)
@@ -331,6 +334,7 @@ export default	defineComponent ({
 .StatsWin
 {
 	/* width:	100%; */
+	min-width: 700px;
 	min-height:	500px;
 	display:	flex;
 	flex-direction:	column;

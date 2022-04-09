@@ -111,6 +111,21 @@ header
 	height:	100%;
 }
 
+.GameArea
+{
+	display:	flex;
+	width:	60% !important;
+	height: auto !important;
+	min-height: 400px;
+	min-width: 600px;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 5%;
+	border:	solid 3px white;
+	border-radius: 5px;
+	flex-direction:	column;
+}
+
 /* Works on Firefox */
 * {
   scrollbar-width: large;

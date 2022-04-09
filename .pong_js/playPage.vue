@@ -37,6 +37,8 @@ export default	{
 <style lang="css">
 .GameArea
 {
+	margin-left: 10%;
+	margin-right: 10%;
 }
 
 #canvas

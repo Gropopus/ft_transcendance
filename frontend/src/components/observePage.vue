@@ -60,17 +60,7 @@ export default	defineComponent ({
 <style lang="css" scoped>
 .GameArea
 {
-	display:	flex;
-	width:	50% !important;
-	height: 50% !important;
-	min-height: 400px;
-	min-width: 600px;
 	margin-left: 10%;
 	margin-right: 10%;
-	margin-top: 5%;
-	border:	solid 3px white;
-	border-radius: 5px;
-	flex-direction:	column;
-	object-fit: contain;
 }
 </style>
