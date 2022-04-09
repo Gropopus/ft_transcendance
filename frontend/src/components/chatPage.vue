@@ -142,8 +142,6 @@ export default	defineComponent ({
 		this.socket.auth = {userId: this.userId};
 		this.socket.connect();
 		const challengeId = this.$route.query.challengeId;
-		if (challengeId)
-			await this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
 		this.channelMessages = await this.fetchMessages();
 		this.resetScroll();
 		if (this.channelId)
@@ -151,6 +149,8 @@ export default	defineComponent ({
 		this.socket.on('messageAdded', async () =>  {
 			this.channelMessages = await this.fetchMessages();
 		});
+		if (challengeId)
+			await this.socket.emit('addMessage', {msg: '!challenge', challengeId: challengeId, channelId: this.channelId});
 	},
 
 	unmounted() {
