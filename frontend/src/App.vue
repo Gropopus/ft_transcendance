@@ -88,7 +88,7 @@ export default	{
 
     async userIsOnline(id: number) {
       await fetch(
-        `http://www.kittypong.fr:3000/api/users/${id}/isOnline`, {
+        `http://kittypong.fr:3000/api/users/${id}/isOnline`, {
         method: 'put',
         headers: { 'content-type': 'application/json' }
         });

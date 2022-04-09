@@ -124,7 +124,7 @@ export default defineComponent ({
 		},
         async fetchChannel() {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/info`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/info`, {
                 method: 'get',
                 headers: { 'content-type': 'application/json' },
             });
@@ -178,7 +178,7 @@ export default defineComponent ({
             if (!this.chatPassword)
                 return ;
              const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/update-password`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/update-password`, {
                 method: 'post',
                headers: { 'content-type': 'application/json' },
                body: JSON.stringify({password: this.chatPassword})
@@ -188,7 +188,7 @@ export default defineComponent ({
         },
         async muteUser(id: number) {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/mute/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/mute/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -197,7 +197,7 @@ export default defineComponent ({
 
         async unmuteUser(id: number) { 
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/unmute/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/unmute/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -207,7 +207,7 @@ export default defineComponent ({
         async banUser(id: number)
         {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/ban/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/ban/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -216,7 +216,7 @@ export default defineComponent ({
 
         async unbanUser(id: number) { 
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/unban/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/unban/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -229,7 +229,7 @@ export default defineComponent ({
             if (!this.userToAdd)
                 return ;
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/users/find-by-username/${this.userToAdd}`, {
+                `http://kittypong.fr:3000/api/users/find-by-username/${this.userToAdd}`, {
                     method: 'get',
                headers: { 'content-type': 'application/json' },
             })
@@ -243,7 +243,7 @@ export default defineComponent ({
                         if (this.isBan(elem.id) == true)
                             this.unbanUser(elem.id);
                         await fetch(
-                            `http://www.kittypong.fr:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
+                            `http://kittypong.fr:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
                                 method: 'put',
                                 headers: { 'content-type': 'application/json' ,
                                 'Access-Control-Allow-Origin': '*'},
@@ -264,7 +264,7 @@ export default defineComponent ({
 
         async removeUser(id: number) {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/remove/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/remove/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -273,7 +273,7 @@ export default defineComponent ({
 
         async setAdmin(id: number) {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/admin/give/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/admin/give/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -282,7 +282,7 @@ export default defineComponent ({
 
         async unsetAdmin(id: number) {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/admin/remove/${id}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/admin/remove/${id}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             })
@@ -291,7 +291,7 @@ export default defineComponent ({
 
         async deleteChannel() {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/delete/${this.channelId}`, {
+                `http://kittypong.fr:3000/api/channel/delete/${this.channelId}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
@@ -300,7 +300,7 @@ export default defineComponent ({
 
         async quitChannel() {
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/remove/${this.userId}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });
@@ -313,7 +313,7 @@ export default defineComponent ({
             else
                 type = "protected";
             const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.channelId}/changetype/${type}`, {
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/changetype/${type}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
             });

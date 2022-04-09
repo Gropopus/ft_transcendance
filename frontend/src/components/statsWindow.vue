@@ -86,7 +86,7 @@
 						<div> User Name </div>
 						<div> Elo score </div>
 					</div>
-					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "rgb(37, 46, 131, 0.6)" : "none"}'>
+					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "var(--deep-blue-50)" : "none"}'>
 						<div> {{ index + 1 }} </div>
 						<div class="userLink" @click="goToUserProfile(elem)"> {{ elem.username }} </div>
 						<div> {{ elem.level }} </div>
@@ -175,7 +175,7 @@ export default	defineComponent ({
 		},
 
 		async fetchUserData() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/users/${this.profId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -184,7 +184,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadderLevel() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/users/ladder-level/${this.profId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users/ladder-level/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -193,7 +193,7 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/game/history/${this.profId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/game/history/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -202,7 +202,7 @@ export default	defineComponent ({
 		},
 
 		async setSocialStatus() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/friends/${this.profId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/friends/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -226,12 +226,15 @@ export default	defineComponent ({
 		},
 
 		async setChanStatus() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all/${this.profId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/channel/all/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			const channels = (await res.json()).items;
-			const size = channels.length;
+			let size = 0;
+			for (const chan of channels)
+				if (chan.type != 'direct-message')
+					++size;
 			if (size >= 1)
 				this.chanAchievements[0].status = 1;
 			if (size >= 5)
@@ -280,7 +283,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadder() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/users`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -331,6 +334,7 @@ export default	defineComponent ({
 .StatsWin
 {
 	/* width:	100%; */
+	min-width: 700px;
 	min-height:	500px;
 	display:	flex;
 	flex-direction:	column;

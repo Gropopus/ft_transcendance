@@ -77,7 +77,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchFriends() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -86,7 +86,7 @@ export default	defineComponent ({
 		},
 
 		async fetchRequest() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/received-requests`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}/received-requests`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -95,7 +95,7 @@ export default	defineComponent ({
 		},
 
 		async fetchBlocked() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/blocked-users`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}/blocked-users`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -104,7 +104,7 @@ export default	defineComponent ({
 		},
 
 		async acceptRequest(targetId: number){
-			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/accept/${targetId}`, {
+			await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}/accept/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -112,21 +112,21 @@ export default	defineComponent ({
 			this.all[1].list = await this.fetchRequest();
 		},
 		async declineRequest(targetId: number){
-			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/decline/${targetId}`, {
+			await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}/decline/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
 			this.all[1].list = await this.fetchRequest();
 		},
 		async unfriend(targetId: number){
-			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/unfriend/${targetId}`, {
+			await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}/unfriend/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
 			this.all[0].list = await this.fetchFriends();
 		},
 		async unblock(targetId: number){
-			await fetch(`http://www.kittypong.fr:3000/api/friends/${this.userId}/unblock/${targetId}`, {
+			await fetch(`http://kittypong.fr:3000/api/friends/${this.userId}/unblock/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -143,7 +143,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-username/${this.search}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users/find-by-username/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})

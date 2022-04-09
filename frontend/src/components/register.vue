@@ -73,14 +73,14 @@ export default	{
 			this.error = this.checkForm();
 			if (this.error)
 				return ;
-			const res = await fetch(`http://www.kittypong.fr:3000/api/users`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ email: this.userMail, username: this.userLogin, password: this.userPass })
 			})
 			if (res.status != 400 && res.status != 404 && res.status != 409)
 			{
-				const userRes = await fetch(`http://www.kittypong.fr:3000/api/users/find-by-email/${this.userLogin}`, {
+				const userRes = await fetch(`http://kittypong.fr:3000/api/users/find-by-email/${this.userLogin}`, {
 					method: 'get',
 					headers: { 'content-type': 'application/json' },
 				})

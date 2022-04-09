@@ -19,8 +19,6 @@
 		</div>
 	</div>
 	<div class="chatPage">
-		<div class="allChan">
-		</div>
 		<div class="chatSide">
 		<div class="channelName" v-if="channelsList.length > 0">
 			<div v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'">
@@ -38,41 +36,47 @@
 			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
 		</div>
 		<div class="chatArea">
-			<!--<div v-if="mess">-->
 			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
 				<div v-if="mess.user.id != userId" class="otherUserMess">
 					<button @click="goToUserProfile(mess.user.username)" class=linkButton > {{ mess.user.username}}: </button><br>
 					<p v-if="mess.text != '!challenge'">{{ mess.text }}</p>
-											<p v-else>
-							<p style="color: rgb(73, 105, 219); margin-bottom: 0px">Play with me !</p>
-							<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
-						</p>
+					<p v-else>
+						<p style="color: rgb(73, 105, 219); margin: 0px;">Play with me !</p>
+						<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
+					</p>
 				</div>
 				<div v-else class="currentUserMess">
 					<p class="currentUserText">
-						{{ mess.user.username }}: <br>
+						<p style="color: rgb(255,255,255, 0.7);">{{ mess.user.username }}:</p>
 						<p v-if="mess.text != '!challenge'">{{ mess.text }}</p>
-						<p v-else>
-							<p style="color: rgb(73, 105, 219); margin-bottom: 0px">Play with me !</p>
+						<p v-else >
+							<p style="color: rgb(73, 105, 219); margin: 0px;">Play with me !</p>
 							<img  @click="acceptChallenge(mess.challengeId)" src="/src/assets/challenge.png" title="play" class="playButton">
 						</p>
 					</p>
 				</div>
 			</ul>
 			</div>
-		<!--</div>-->
 		<div class="writing-zone">
 			<input type="text" v-model="message" @keyup.enter="sendMessage(message)" class="messageArea">
 			<img src="/src/assets/message012.png" @click="sendMessage(message)" title="Send" class="sendButton">
 		</div>
 		</div>
 		<div class="chatToolSpace">
+			<div class="chatHead">
+				<div>Chats</div>
+				<button @click="createChannel()"> new channel</button>
+			</div>
+			<div class="chanSearch">
+				<input @keyup.enter="filterChans(searchKey)" placeholder="Search" type="text" v-model="searchKey">
+				<img @click="filterChans(searchKey)" src="/src/assets/magnifying-glass.png"/>
+			</div>
 			<div class="chanList">
 				<button :key="channel.id" v-for="channel in channelsList" class="chanNameButton" @click="changeCurrentChan(channel.id)"
 					v-bind:style='{"background" : (isCurrent(channel.id) ? "var(--deep-blue-50)" : "none")}'>
 					<div v-if="channel.type != 'direct-message'" class="dmInfo"> 
 						<div style="flex: 1 1 1; aspect-ratio: 1 / 1;"></div>
-						<div style="flex: 3; text-align: left;"> {{ channel.name }} </div>
+						<div class="name"> {{ channel.name }} </div>
 						<div style="color: rgb(255,255,255,0.5); flex: 3;"> {{ channel.type }} </div>
 					</div>
 					<div v-else class="dmInfo">
@@ -81,11 +85,6 @@
 						<div style="color: rgb(255,255,255,0.5); flex: 3"> {{ getOneDM(channel.id).status }} </div>
 					</div>
 				</button>
-			</div>
-			<div class="chanSearch">
-				<input @keyup.enter="filterChans(searchKey)" type="text" class="searchBar" v-model="searchKey">
-				<button @click="filterChans(searchKey)"> Filter Channels </button>
-				<button @click="createChannel()"> new channel</button>
 			</div>
 		</div>
 	</div>
@@ -159,7 +158,7 @@ export default	defineComponent ({
 	},
 
 	async created() {
-		this.socket = io('http://www.kittypong.fr:42070', {
+		this.socket = io('http://kittypong.fr:42070', {
 			withCredentials: true,
 			extraHeaders: {
 				"my-custom-header": "chat"
@@ -169,13 +168,13 @@ export default	defineComponent ({
 	},
 
     async updated() {
-        await this.$emit('userIsOnline', this.userId);
+		await this.$emit('userIsOnline', this.userId);
 		this.resetScroll();
     },
 
 	methods: {
 		async fetchAllChannels() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/channel/all`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -184,7 +183,7 @@ export default	defineComponent ({
 		},
 
 		async fetchChannelsList() {
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/all/${this.userId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/channel/all/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -200,6 +199,8 @@ export default	defineComponent ({
 				this.socket.emit('joinChannel', this.channelId);
 				this.channelMessages = await this.fetchMessages();
 			}
+			this.searchKey = "";
+			this.channelsList = await this.fetchChannelsList();
 		},
 
 		getChannelIndex(id: number) {
@@ -245,7 +246,7 @@ export default	defineComponent ({
 		async fetchMessages() {
 			if (!this.channelId)
 				return ;
-			const res = await fetch(`http://www.kittypong.fr:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/channel/${this.channelId}/messages/${this.userId}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -277,7 +278,7 @@ export default	defineComponent ({
 			if (this.joinPassword == "" && this.all[i].type == "protected")
 				return ;
 			const res = await fetch(
-                `http://www.kittypong.fr:3000/api/channel/${this.userId}/join/${chanId}`, {
+                `http://kittypong.fr:3000/api/channel/${this.userId}/join/${chanId}`, {
                     method: 'put',
                     headers: { 'content-type': 'application/json' ,
                     'Access-Control-Allow-Origin': '*'},
@@ -315,12 +316,11 @@ export default	defineComponent ({
 				let tmpList = this.channelsList.filter(value => this.matchKey(value, searchKey.toLowerCase()));
 				this.channelsList = tmpList;
 			}
-			this.searchKey = "";
 		},
 
 		async getPicture(id: number)
 		{
-			const ret = await fetch(`http://www.kittypong.fr:3000/api/users/pictureById/${id}`, {
+			const ret = await fetch(`http://kittypong.fr:3000/api/users/pictureById/${id}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -370,7 +370,7 @@ export default	defineComponent ({
 		},
 
 		async createChallenge() {
-			const ret = await fetch(` http://www.kittypong.fr:3000/api/game/newchallengeid/`, {
+			const ret = await fetch(` http://kittypong.fr:3000/api/game/newchallengeid/`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -473,21 +473,23 @@ export default	defineComponent ({
 .chatPage
 {
 	margin-top: 5%;
+	margin-left: 3%;
 	display: flex;
 	flex-direction: row;
-	height:	600px;
-	width: 100%;
+	border:	solid 3px white;
+	border-radius: 5px;
+	height: 45em;
 }
 
 .chatSide {
 	display: flex;
-	flex: 8;
+	flex: 6;
 	flex-direction: column;
-	max-height:	45em;
-	min-width: 500px;
-	width: 100%;
-	margin-right: 3%;
-	margin-left: 3%;
+	/* max-height:	45em;
+	min-width: 500px; */
+	/* width: 100%; */
+	/* margin-right: 3%;
+	margin-left: 3%; */
 	min-height:	100%;
 }
 
@@ -495,52 +497,77 @@ export default	defineComponent ({
 {
 	display: block;
 	overflow-y:	scroll;
-	border:	solid 3px white;
-	border-top:	solid 1px white;
-	border-bottom: none;
-	width: 100%;
-	height:	75%;
+	height:	100%;
 }
 
+.chatArea > ul {
+	margin: 0px;
+}
 .chatToolSpace
 {
 	flex: 3;
 	display: flex;
 	flex-direction: column;
 	min-height:	500px;
+	border-left: solid white 1px;
+	border-radius: 5px;
 }
 
-.chanSearch
+.chatHead {
+	flex: 1;
+	display: flex;
+	flex-direction: row;
+
+}
+
+.chatHead > div {
+	flex: 9;
+	font-weight: bold;
+	text-align: center;
+	font-style: Myanmar;
+	color: white;
+	font-size: 200%;
+	margin-top: 2%;
+}
+
+.chatHead > button
 {
 	flex: 1;
-	display: flex;	
-	border: solid white 3px;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	margin-right: 2%;
+	background: none;
+	border: solid 1px white;
 	border-radius: 5px;
-	border-top-right-radius: 0;
-	border-top-left-radius: 0;
-	margin-left: 5%;
-	margin-right: 5%;
-	margin-top: 0;
+	font-size: 120%;
+	font-style: Myanmar;
+	color: white;
+}
+
+.chatHead > button:hover
+{
+	cursor: pointer;
+	background: rgb(255, 255, 255, 0.5);
+}
+.chanSearch
+{
+	display: flex;
+	border-top: solid white 1px;
 	padding: 2%;
-	min-width: 300px;
+	gap: 2%;
+	margin-bottom: 2%;
 }
 
 .chanSearch > input
 {
-	flex: 4;
-	border: none;
+	flex: 3;
 	border-radius: 40px;
-	margin: 2%;
-	margin-top: 1%;
-	margin-bottom: 1%;
-	padding-top: 1%;
-	padding-right: 1%;
-	padding-left: 1%;
-	width: 100%;
 	font-style: Myanmar;
-	color: white;
 	font-size: 120%;
-	background: rgb(255, 255, 255, 0.4);
+	border: none;
+	max-height: 40px;
+    background-color: var(--input-fields);
+    opacity: 50%;
 }
 
 .chanSearch > input:focus
@@ -548,21 +575,15 @@ export default	defineComponent ({
 	outline: solid rgb(255, 255, 255, 0.4) 2px;
 	caret-color: rgb(255, 255, 255, 0.6);
 }
-
-.chanSearch > button
+.chanSearch > img
 {
-	flex: 1;
-	margin-left: 4%;
 	margin-right: 4%;
+	width: auto;
+	max-height: 40px;
 	background: none;
-	border: solid 3px white;
-	border-radius: 5px;
-	font-size: 120%;
-	font-style: Myanmar;
-	color: white;
 }
 
-.chanSearch > button:hover
+.chanSearch > img:hover
 {
 	cursor: pointer;
 	background: rgb(255, 255, 255, 0.5);
@@ -571,19 +592,13 @@ export default	defineComponent ({
 .chanList
 {
 	flex: 9;
-	/*overflow-y: scroll;*/
-	min-width: 313px;
-	max-height:	45em;
-	border: solid white 3px;
 	border-bottom: none;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-	margin: 5%;
 	margin-top: 0%;
 	margin-bottom: 0;
 	padding: 0;
-	/*padding-top: 5%;*/
-	/*padding-bottom: 5%;*/
+	overflow-y:	scroll;
 }
 
 .channelName
@@ -591,12 +606,10 @@ export default	defineComponent ({
 	display: flex;
 	flex-direction: row;
 	text-align: center;
-	border-top: solid white 3px;
-	border-right: solid white 3px;
-	border-left: solid white 3px;
-	border-top-right-radius: 5px;
-	border-top-left-radius: 5px;
-	width: 100%;
+	border-bottom: solid white 1px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	/* width: 100%; */
 }
 
 .channelName > div
@@ -619,7 +632,7 @@ export default	defineComponent ({
 	margin-right: 1%;
 	height:	42px;
 	background: none;
-	border: solid 3px white;
+	border: solid 1px white;
 	border-radius: 5px;
 	font-size: 120%;
 	font-style: Myanmar;
@@ -635,10 +648,7 @@ export default	defineComponent ({
 .chanNameButton
 {
 	width: 100%;
-	/* overflow-x: scroll; */
 	height:	42px;
-	/* flex:	1 1 0; */
-	/* vertical-align:	center; */
 	text-align:	center;
 	text-decoration:	none;
 	font-family: MyanmarText;
@@ -663,7 +673,6 @@ export default	defineComponent ({
 	font-size:	32px;
 	color: var(--font-blue);
 	border:	none;
-
 }
 
 .chanNameButton:hover
@@ -684,7 +693,6 @@ export default	defineComponent ({
 	padding-right: 2%;
 	padding-left: 2%;
 	padding-top: 	1%;
-	padding-bottom: 1%;
 	font-size: 130%;
 	margin-right: 4%;
 	border-radius: 20px;
@@ -693,10 +701,24 @@ export default	defineComponent ({
 	background-color:	rgba(23, 61, 199, 0.103);
 }
 
+.otherUserMess > p {
+	margin: 0px;
+}
+
+.otherUserMess > button {
+	margin: 0px;
+	color: rgb(255,255,255, 0.7)
+}
+
 .currentUserMess
 {
 	display: flex;
 	justify-content: right;
+}
+
+.currentUserMess > p
+{
+	margin: 7px;
 }
 
 .currentUserText
@@ -707,19 +729,20 @@ export default	defineComponent ({
 	padding-right: 2%;
 	padding-left: 2%;
 	padding-top: 	1%;
-	padding-bottom: 1%;
 	font-size: 130%;
 	margin-right: 4%;
 	border-radius: 20px;
 	height: auto;
 	max-width: 80%;
 	background-color:	rgba(255, 255, 255, 0.24);
+}
 
+.currentUserText > p {
+	margin: 0px;
 }
 
 .writing-zone
 {
-	border: solid 3px white;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 	border-top: none;
@@ -843,6 +866,9 @@ export default	defineComponent ({
 	margin-top: 0px;
 	margin-bottom: 0px;
 	margin-left: 4%;
+	letter-spacing:	1px;
+	font-size: 85%;
+	overflow: hidden;
 }
 
 .picture1 {
@@ -863,4 +889,8 @@ export default	defineComponent ({
 	margin-top: 3px;
 }
 
+.dmInfo > .name {
+	flex: 3;
+	text-align: left;
+}
 </style>
