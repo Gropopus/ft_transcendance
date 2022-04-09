@@ -229,7 +229,10 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			});
 			const channels = (await res.json()).items;
-			const size = channels.length;
+			let size = 0;
+			for (const chan of channels)
+				if (chan.type != 'direct-message')
+					++size;
 			if (size >= 1)
 				this.chanAchievements[0].status = 1;
 			if (size >= 5)

@@ -339,6 +339,8 @@ export default	defineComponent ({
 .picture > img {
 	border-radius: 50%;
 	overflow: hidden;
+    width: 200px;
+    height: 200px;
     max-width: 200px;
     max-height: 200px;
 	object-fit:cover;

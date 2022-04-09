@@ -215,11 +215,6 @@ export default	defineComponent ({
 }
 
 .picture > img {
-	/*margin-left: 2%;
-	margin-bottom: 2%;
-	margin-top: 2%;
-	min-height: 150px;
-	min-width: 150px;*/
 	border-radius: 50%;
 	overflow: hidden;
     width: 200px;
