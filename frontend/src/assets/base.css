@@ -109,6 +109,7 @@ header
 	margin-bottom:	5%;
 	width:	90%;
 	height:	100%;
+	min-width: 700px;
 }
 
 .GameArea

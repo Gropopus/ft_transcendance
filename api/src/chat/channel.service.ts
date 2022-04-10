@@ -42,7 +42,9 @@ export class ChannelService {
 		};
 		channel.owner = user1;
 		const newChannel = await this.addCreatorToChannel(channel, user1);
-		return await this.addAdminToChannel(newChannel, user1);
+		console.log(newChannel);
+		// return await this.addAdminToChannel(newChannel, user1);
+		return await this.channelRepository.save(newChannel);
 	}
 
 	async getDirectMessage(userId: number, options: IPaginationOptions): Promise<Pagination<Ichannel>> {
