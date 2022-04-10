@@ -3,8 +3,18 @@
 </script>
 
 <template>
+<div style="display: flex; flex-direction: column">
+	<div class="searchBar" style="margin-right: 3%">
+			<div style="display: flex; justify-content: right">
+				<img style="height: 25px" src="../assets/magnifying-glass.png">
+				<span style="font-size: 15px; text-align: right; margin-left: 1%"> Search a user</span>
+			</div>
+			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
+			<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
+				<p v-on:click="goToUserPage(elem.username)"> {{ elem.username }}</p>
+            </div>
+	</div>
 	<div class="profilePage">
-		<!-- <button @click="reload()"> reload </button> -->
 		<div class="profile-resume">
 			<div class="picture">
 				<img :src="picture" alt="userDate.username" />
@@ -22,10 +32,12 @@
 		</div>
 		<statsWindow :userId="userId" :profId="userId"/>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import searchBar from './searchBar.vue';
 
 export default	defineComponent ({
 	name: 'profilePage',
@@ -36,10 +48,16 @@ export default	defineComponent ({
 		},
 	},
 
+	components: {
+		searchBar,
+	},
+
 	data() {
 		return {
 			userData: [],
 			picture: "",
+			found: [],
+            search: "",
 		}
 	},
 
@@ -97,6 +115,33 @@ export default	defineComponent ({
 
 		goToRoute(path: string) {
 			this.$router.push(path);
+		},
+		
+		async goToUserPage(username: string) {
+			this.$router.push(`/profile/${username}`)
+		},
+
+		async searchUser() {
+			if (!this.search)
+			{
+				this.found = [];
+				return [];
+			}
+			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' }
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				this.found = resJson;
+				return resJson;
+			})
+			.catch(error => {
+				this.found = [];
+				return [];
+			});
 		},
 	},
 })
