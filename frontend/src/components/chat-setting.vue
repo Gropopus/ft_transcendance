@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div v-if="role == 'admin' || role == 'owner'" class="formElem">
-                <p class="error"> {{ error }} </p>
+                <p v-if="error" class="error"> {{ error }} </p>
                 <label for="users">Add users</label> <br>
                 <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
                     <button @click="addUser()" class="addButton">
