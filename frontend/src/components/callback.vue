@@ -147,8 +147,12 @@ export default	{
 }
 
 .error {
-	text-align: center;
+	margin-top: auto;
+	margin-bottom: 5%;
 	justify-content: top;
-	color: red;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
 }
 </style>

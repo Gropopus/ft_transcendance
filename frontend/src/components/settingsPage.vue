@@ -14,6 +14,7 @@
 		</div>
 		<div class="settings">
 		<p class="error" v-if="error"> {{ error }} </p>
+		<p class="update" v-if="updateMess"> {{ updateMess }} </p>
 		<div class="submitBar">
 			<div class="title"> Change your Login:</div>
 			<input type="text" v-model="userLogin" class="textArea">
@@ -91,6 +92,7 @@ export default	{
 			googlecode: "",
 			turnoff: "",
 			finish: "",
+			updateMess: "",
 		}
 	},
 	mounted() {
@@ -133,9 +135,10 @@ export default	{
 
 		async updateLogin() {
 				this.error = "";
+				this.updateMess = "";
 				if (!this.userLogin)
 				{
-	        	 	this.error = "Unable to update login with an empty login.";
+	        	 	this.error = "Invalid login";
 					return ;
 				}
 				const test = await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
@@ -145,7 +148,8 @@ export default	{
 				const rep = await test.json();
 				if (rep.length != 0)
 				{
-					this.error = "This login is already used by another user."
+					if (rep[0].username != this.userData.username)
+						this.error = "This login already exists"
 					return ;
 				}
 				else
@@ -157,22 +161,25 @@ export default	{
 					})
 					this.userData.username = this.userLogin;
 				}
+				this.updateMess = "Login updated";
 				this.userLogin = "";
 				
 		},
 		async updatePassword()	{
-				this.error = "";
-				if (!this.userPass)
-				{
-	        	 	this.error = "unable to update password with an empty password.";
-					this.userPass = "";
-					return ;
-				}
-				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
-				method: 'post',
-					headers: { 'content-type': 'application/json' },
-					body: JSON.stringify({ password: this.userPass })
+			this.error = "";
+			this.updateMess = "";
+			if (!this.userPass)
+			{
+				this.error = "Invalid password";
+				this.userPass = "";
+				return ;
+			}
+			const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
+			method: 'post',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ password: this.userPass })
 			})
+			this.updateMess = "Password updated";
 			this.userPass = "";
 		},
 
@@ -184,11 +191,9 @@ export default	{
 		async Upload()
 		{
 			this.error = "";
+			this.updateMess = "";
 			if (!this.file)
-			{
-				this.error = "No image to upload."
 				return ;
-			}
 			let formData = new FormData();
   			formData.append('file', this.file);
 			const res = await fetch(`http://localhost:3000/api/users/upload`, {
@@ -242,7 +247,7 @@ export default	{
 			if (this.twofa == true)
 				return 1;
 			else
-			return 0;
+				return 0;
 		},
 
 		async handleTwoFA()
@@ -279,6 +284,7 @@ export default	{
 		async turnOn2FA()
 		{
 			this.error = "";
+			this.updateMess = "";
 			if (!this.googlecode)
 			{
 				this.error = "No code to submit"
@@ -292,10 +298,10 @@ export default	{
 			const ret =	await res;
 			if (ret.status == 401)
 			{
-				this.error = "Wrong identification code."
+				this.error = "Wrong identification code"
 				return ;
 			}
-			this.finish = "Two factor authentication activated."
+			this.finish = "Two factor authentication activated"
 		},
 
 		async turnOff2FA()
@@ -330,9 +336,23 @@ export default	{
 <style lang="css" scoped>
 
 .error {
+	margin-top: auto;
+	margin-bottom: 5%;
 	justify-content: top;
-	color: red;
-	margin-left: 10%;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
+}
+
+.update {
+	margin-top: auto;
+	margin-bottom: 5%;
+	justify-content: top;
+	text-align: center;
+	border: solid 1px rgb(255, 255, 255, 0.7);
+	background: rgb(255, 255, 255, 0.1);
+	color: rgb(255, 255, 255, 0.7);
 }
 
 .alert {

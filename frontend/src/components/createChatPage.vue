@@ -27,13 +27,14 @@
             </div>
             
             <div class="formElem">
+                <p v-if="error" class="error"> {{ error }} </p>
+                <label for="users">Add users</label> <br>
                 <div :key="username" v-for="username in usernameList">
                     {{ username }}
                     <button @click="deleteUsername(username)" class="deleteButton1">
                         x
                     </button>
                 </div>
-                <label for="users">Add users</label> <br>
                 <input type="text" v-model="userToAdd" @keyup.enter="filterUsers(userToAdd)" placeholder="username" class="textArea">
                     <button @click="filterUsers(userToAdd)" class="searchButton">
                         Search
@@ -46,12 +47,9 @@
                 </div>
             </div>
             
-			<!-- <div class="submitBar"> -->
 				<button @click="createChat()" class="submitButton">
 					Create
 				</button>
-			<!-- </div> submitBar end -->
-            <p class="error"> {{ error }} </p>
 		</div> <!-- RegisterForm end -->
 </template>
 
@@ -266,12 +264,15 @@ export default	{
 .chatForm > .submitButton:hover {
 	background:	var(--deep-blue-10);
 }
-
-.error
-{
-    color:red;
+.error {
+	margin-top: auto;
+	margin-bottom: 5%;
+	justify-content: top;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
 }
-
 .addButton {
     padding: 6px;
 	font-size:	20px;

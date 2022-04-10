@@ -60,10 +60,10 @@ checkForm() {
 	        	 return "Email address required.";
 			}
 			else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.userLogin))) {
-	        	return "A valid email address is required.";
+	        	return "Invalid email address";
       		}
 			else if(!this.userPass) {
-        		return "A password is required.";
+        		return "Invalid password";
 			}
 			return ("");
 		},
@@ -98,7 +98,7 @@ checkForm() {
 				}
 				else if (res.status == 400 || res.status == 404)
 				{
-					this.error = "User not found, Wrong Email or password.";
+					this.error = "Invalid email address or password";
 					return ;
 				}
 		},
@@ -163,7 +163,9 @@ checkForm() {
 	margin-left:	auto;
 	margin-right:	auto;
 	padding-top:	2%;
+	padding-bottom:	2%;
 	padding-left:	5%;
+	padding-right:	5%;
 	width:	50%;
 	height:	50%;
 	border:	solid white;
@@ -182,7 +184,7 @@ checkForm() {
 	opacity:	50%;
 	font-size:	24px;
 	padding:	6px;
-	width:		81%;
+	width:		100%;
 }
 
 .LoginForm > .submitBar
@@ -197,12 +199,12 @@ checkForm() {
 .LoginForm > .submitBar > .submitButton
 {
 	width:		35%;
-	margin-right: 10%;
 	display:	block;
 	background:	none;
-	flex:	0 0 center;
+	/* flex:	0 0 center; */
 	margin-bottom:	5%;
 	margin-right:	auto;
+	margin-left:	auto;
 	padding-top:	3%;
 	padding-bottom:	2%;
 	background:	none;
@@ -292,12 +294,14 @@ checkForm() {
 	cursor: pointer; 
 }
 
-
-
-
 .error {
-	justify-content: top;
-	color: red;
+	margin-top: auto;
+	margin-bottom: 5%;
+	margin-top: 5%;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
 }
 
 </style>

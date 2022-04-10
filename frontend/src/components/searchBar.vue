@@ -62,6 +62,7 @@ export default	defineComponent ({
 
 .searchHeader {
     display: flex;
+	min-width: 700px;
 }
 
 .searchBar {

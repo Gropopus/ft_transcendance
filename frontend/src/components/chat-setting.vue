@@ -39,6 +39,7 @@
                 </div>
             </div>
             <div v-if="role == 'admin' || role == 'owner'" class="formElem">
+                <p class="error"> {{ error }} </p>
                 <label for="users">Add users</label> <br>
                 <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
                     <button @click="addUser()" class="addButton">
@@ -63,18 +64,16 @@
                 <h3> Banned users </h3>
                 <div :key="user.id" v-for="user in channelData.ban" class="banUser">
                     <p> {{ user.username }} </p>
-                    <button @click="unbanUser(user.id)" class="addButton"> unban </button>
+                    <button @click="unbanUser(user.id)" class="addButton" style="margin-top: 3%; margin-bottom: 3%;"> unban </button>
                 </div>
             </div>
             <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
             <button v-else @click="quitChannel()" class="delButton">Leave channel</button>
-            <p class="error"> {{ error }} </p>
             </div>
 </template>
 
 <script lang="ts">
 
-// import { labeledStatement } from '@babel/types';
 import { defineComponent } from 'vue';
 
 export default defineComponent ({
@@ -453,9 +452,13 @@ export default defineComponent ({
 	background:	var(--deep-blue-10);
 }
 
-.error
-{
-    color:red;
+.error {
+	margin-top: auto;
+	margin-bottom: 1%;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
 }
 
 .addButton {
