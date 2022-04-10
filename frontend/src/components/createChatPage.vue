@@ -36,6 +36,7 @@
                     </button>
                 </div>
                 <input type="text" v-model="userToAdd" @keyup.enter="filterUsers(userToAdd)" placeholder="username" class="textArea">
+                    {{userToAdd}}
                     <button @click="filterUsers(userToAdd)" class="searchButton">
                         Search
                     </button>

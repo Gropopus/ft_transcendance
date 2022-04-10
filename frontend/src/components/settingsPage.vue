@@ -459,7 +459,7 @@ export default	{
 .submitButton
 {
 	margin-left: 30%;
-	padding-top: 1%;
+	/* padding-top: 1%;
 	width: 10%;
 	background:	none;
 	border:	solid white 2px;
@@ -468,14 +468,26 @@ export default	{
 	border-radius: 4px;
 	font-family: MyanmarText;
 	overflow: hidden;
-	min-width: 95px;
+	min-width: 95px; */
+	padding: 10px 24px;
+    text-transform: uppercase;
+    border-radius: 25px;
+    border: 2px solid white;
+    font-weight: 100;
+    font-size: 16px;
+    background: transparent;
+    color: white;
+	transition: all 0.3s linear;
 }
 
 .submitButton:hover
 {
-	background: rgba(255, 255, 255, 0.5);
+	/* background: rgba(255, 255, 255, 0.5);
 	color: white;
-	cursor: pointer; 
+	cursor: pointer;  */
+	background-color: white;
+	cursor: pointer;
+	color: black;
 }
 .settingsPage > .submitBar > .submitButton:hover
 {

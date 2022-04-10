@@ -7,7 +7,7 @@
 	<div class="searchBar" style="margin-right: 3%">
 		<div style="display: flex; justify-content: right">
 			<img style="height: 25px" src="../assets/magnifying-glass.png">
-			<span style="font-size: 15px; text-align: right; margin-left: 1%"> Search a user</span>
+			<span style="font-size: 15px; text-align: right; margin-left: 1%"> &quot;Search a user</span>
 		</div>
 		<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
 		<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">

@@ -1,7 +1,10 @@
 <template>
 		 <div class="chatForm"> 
              <button @click="goBack()" class="BackButton">go back</button>
-            <h1> {{ channelData.name }}: settings </h1>
+            <h1> 
+                <div>{{ channelData.name }}</div>
+                <div style="color: rgb(255,255,255,0.6);">settings</div>
+            </h1>
             <div class="userList">
                 <div class="listName">
                     List of users
@@ -415,6 +418,8 @@ export default defineComponent ({
 }
 
 .chatForm > h1 {
+    display: flex;
+    flex-direction: column;
     text-align: center;
     border-bottom : solid 1px white;
 }
