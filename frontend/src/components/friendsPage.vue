@@ -24,6 +24,9 @@
 						</div>
 					</div>
 				</div>
+				<div v-else-if="relation.status == 1" class="listArea">
+					<div class="elem" style="color: rgb(255, 255, 255, 0.5);">Empty list</div>
+				</div>
 		</div>
 
 	</div>
