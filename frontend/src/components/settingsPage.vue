@@ -169,7 +169,7 @@ export default	{
 			this.updateMess = "";
 			if (!this.userLogin || this.userLogin.length > 16)
 				this.error = "Invalid login";
-			if ((await this.isLoginExist(this.userLogin)))
+			else if ((await this.isLoginExist(this.userLogin)))
 				this.error = "This login already exists";
 			else {
 				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
@@ -182,7 +182,7 @@ export default	{
 			}
 			this.userLogin = "";
 		},
-		
+
 		async updatePassword()	{
 			this.error = "";
 			this.updateMess = "";
