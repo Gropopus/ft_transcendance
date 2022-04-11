@@ -153,7 +153,7 @@ export class ChannelController {
 	@Put(':channelId/adduser/:username')
 	async addUserToChannel(@Param() params, @Body() bod) {
 		const userToAdd = await this.userService.findAllByUsername(params.username);
-		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
+		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password, bod.isAdd);
 	}
 
 	@Put(':userId/join/:channelId')
@@ -162,7 +162,7 @@ export class ChannelController {
 		const channel = await this.channelService.findOne(params.channelId);
 		const res = await this.channelService.boolUserBanedOnChannel(params.userId, params.channelId);
 		if (!res)
-			return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
+			return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password, 0);
 	}
 
 	@Get(':channelId/messages/:userId')

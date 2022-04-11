@@ -146,12 +146,12 @@ export class ChannelService {
 	return paginate(query, options);
 	}
 
-	async addUserToChannel(channelId: number, user: Iuser, password: string): Promise<Observable<{ error: string } | { success: string }>> {
+	async addUserToChannel(channelId: number, user: Iuser, password: string, isAdd: number): Promise<Observable<{ error: string } | { success: string }>> {
 		const channel = await this.getChannel(channelId);
 	const bool: number = await this.boolIusersOnChannel(user.id, channel);
 	if (bool) return of({ error: 'Already on the channel;' });
 	if (channel.type == ChannelType.CLOSE) return of({ error: 'Can\'t join channel closed;' }); 
-	if (channel.type == ChannelType.PUBLIC) {
+	if (channel.type == ChannelType.PUBLIC || isAdd == 1) {
 		channel.users.push(user);
 		await this.channelRepository.save(channel);
 		return of({ success: 'Channel joined;' });
