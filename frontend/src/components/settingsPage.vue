@@ -164,10 +164,19 @@ export default	{
 			return isLoginExist;
 		},
 
+		checkLogin(login: string) {
+			if (!this.userLogin || this.userLogin.length > 16)
+				return false;
+			for (const c of login)
+				if ((c < 'A' || c > 'z') && (c < '0' || c > '9') && c != '-' && c != '_' && c!= '.')
+					return false;
+			return true;
+		},
+
 		async updateLogin() {
 			this.error = "";
 			this.updateMess = "";
-			if (!this.userLogin || this.userLogin.length > 16)
+			if (!this.checkLogin(this.userLogin))
 				this.error = "Invalid login";
 			else if ((await this.isLoginExist(this.userLogin)))
 				this.error = "This login already exists";

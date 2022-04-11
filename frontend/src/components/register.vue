@@ -50,6 +50,16 @@ export default	{
 		}
 	},
 	methods:	{
+		checkLogin(login: string) {
+			for (const c of login) {
+				if ((c < 'A' || c > 'z') && (c < '0' || c > '9') && c != '-' && c != '_' && c!= '.')
+				{
+					this.errStatus[0] = true;
+					this.error = "Invalid username";
+					return ;
+				}
+			}
+		},
 
 		checkForm() {
 			this.error = "";
@@ -61,6 +71,8 @@ export default	{
 				this.errStatus[0] = true;
 				this.error = "16 characters maximum"
 			}
+			else
+				this.checkLogin(this.userLogin);
 			if (!this.userPass) {
 				this.errStatus[1] = true;
 			}
@@ -80,6 +92,9 @@ export default	{
 
 		async login()	{
 			this.checkForm();
+			var textArea = document.createElement('textarea');
+			textArea.innerText = this.userLogin;
+			console.log(textArea.innerText);
 			if (this.error || this.errStatus[0] || this.errStatus[1] || this.errStatus[2])
 				return ;
 			const res = await fetch(`http://localhost:3000/api/users`, {

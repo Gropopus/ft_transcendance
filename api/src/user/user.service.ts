@@ -23,9 +23,6 @@ export class UserService {
 		const exists: boolean = await this.mailExists(newUser.email);
 		if (!exists) {
 			const passwordHash: string = await this.hashPassword(newUser.password);
-			// var textArea = document.createElement('textarea');
-			// textArea.innerHTML = newUser.username;
-			// console.log(textArea.innerHTML);
 			newUser.password = passwordHash;
 			newUser.level = 1000;
 			newUser.defeat = 0;
