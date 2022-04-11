@@ -35,14 +35,10 @@
                         x
                     </button>
                 </div>
-                <input type="text" v-model="userToAdd" @keyup.enter="filterUsers(userToAdd)" placeholder="username" class="textArea">
-                    {{userToAdd}}
-                    <button @click="filterUsers(userToAdd)" class="searchButton">
-                        Search
-                    </button>
-                <div v-if="usernameSearch != undefined" v-for="user in usernameSearch">
+                <input type="text" v-model="search" v-on:keyup="searchUser()" placeholder="username" class="textArea">
+                <div v-if="found.length" :key="user.id" v-for="user in found">
                     {{ user.username }}
-                    <button @click="addUserFromList(user)" class="addButton">
+                    <button @click="addUsernameToList(user)" class="addButton">
                         Add
                     </button>
                 </div>
@@ -59,7 +55,8 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	0,
+            required: true
 		},
 	},
 	data:	function()	{
@@ -69,8 +66,8 @@ export default	{
 			chatDescription:	"",
             chatType: "",
             usernameList: [],
-			usernameSearch: [],
-            userToAdd: "",
+			found: [],
+            search: "",
             error: "",
 		}
 	},
@@ -124,38 +121,6 @@ export default	{
             });
         },
 
-        async addUsername() {
-            let found = 0;
-            this.error = "";
-            if (!this.userToAdd)
-                return ;
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
-                    method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-            for (let elem of user)
-            {
-                if (elem.username == this.userToAdd)
-                {
-                    if (elem.id == this.userId)
-                        this.error = "You are already in the channel.";
-                    else
-                        found = 1;
-                }
-            }
-            if (found)
-            {
-                for (let username of this.usernameList)
-                    if (username == this.userToAdd)
-                        return ;
-                this.usernameList.push(this.userToAdd);
-            }
-            else if (!this.error)
-                this.error = "user doesn't exist.";
-            this.userToAdd = "";
-        },
         deleteUsername(username: string) {
             for (let i in this.usernameList)
             {
@@ -165,45 +130,52 @@ export default	{
                     
         },
 
-		IsInChan(user: any)	{
-			if (user.id === this.userId)
-				return (false);
+		isInChan(user: any)	{
+			if (user.id == this.userId)
+				return (true);
 			if (this.usernameList.length != 0)	{
-				for (let elem of this.usernameList)	{
-					if (elem === user.username)
-						return (false);
+				for (const elem of this.usernameList)	{
+					if (elem == user.username)
+						return (true);
 				}
 			}
-			return (true);
+			return (false);
 		},
 
-		addUserFromList(user: any)	{
-			if (this.usernameList.length != 0)	{
-				for (let elem in this.usernameList)	{
-					if (user.username === elem)
-						return ;
-				}
-			}
+		addUsernameToList(user: any) {
 			this.usernameList.push(user.username);
-			this.usernameSearch.splice(user, 1);
+			this.found.splice(user, 1);
 		},
 
-		async filterUsers(searchString: string)	{
-			if (searchString.trim() === "")	{
-				this.searchString = "";
-				this.usernameSearch = [];
-				return ;
+        filterList(list: any) {
+            let newList = [];
+            for (const user of list)
+                if (!this.isInChan(user))
+                    newList.push(user);
+            return newList;
+        },
+
+		async searchUser() {
+			if (!this.search)
+			{
+				this.found = [];
+				return [];
 			}
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${searchString}`, {
-                    method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-			this.usernameSearch = user.filter(value => this.IsInChan(value));
-            if(this.usernameSearch == "")
-                this.error = "User doesn't exists."
-			this.searchString = "";
+			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' }
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				this.found = this.filterList(resJson);
+				return resJson;
+			})
+			.catch(error => {
+				this.found = [];
+				return [];
+			});
 		},
 	}
 }

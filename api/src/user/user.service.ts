@@ -74,10 +74,18 @@ export class UserService {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
-	async findAllByUsername(username: string): Promise<Iuser[]> {
-			return this.userRepository.find({
+	async findAllByUsername(username: string): Promise<Iuser> {
+			return this.userRepository.findOne({
 			where: {
-				username: Like(`%${username.toLowerCase()}%`)
+				username: username
+			}
+		})
+	}
+
+	async searchUser(key: string): Promise<Iuser[]> {
+		return this.userRepository.find({
+			where: {
+				username: Like(`%${key.toLowerCase()}%`)
 			}
 		})
 	}

@@ -152,11 +152,7 @@ export class ChannelController {
 
 	@Put(':channelId/adduser/:username')
 	async addUserToChannel(@Param() params, @Body() bod) {
-		const users = await this.userService.findAllByUsername(params.username);
-		let userToAdd = {};
-		for (let user of users)
-			if (user.username == params.username)
-				userToAdd = user;
+		const userToAdd = await this.userService.findAllByUsername(params.username);
 		return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password);
 	}
 

@@ -52,10 +52,14 @@ export class UserController {
 	}
 
 	@Get('/find-by-username/:name')
-	// async findAllByUsername(@Query('username') username: string) {	  
-		async findAllByUsername(@Param() params) {	  
+		async findAllByUsername(@Param() params): Promise<Iuser> {	  
 	 	return this.userService.findAllByUsername(params.name);
 	}
+
+	@Get('/search/:key')
+	async searchUser(@Param() params): Promise<Iuser[]>  {	  
+		return this.userService.searchUser(params.key);
+}
 
 	@Get('/find-by-email/:email')
 	async findOneByEmail(@Param() params): Promise<Iuser> {	  

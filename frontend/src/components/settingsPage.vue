@@ -83,7 +83,8 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	0,
+			required: true
 		}
 	},
 
@@ -146,42 +147,56 @@ export default	{
     		return blobUrl;
 		},
 
-		async updateLogin() {
-				this.error = "";
-				this.updateMess = "";
-				if (!this.userLogin)
-				{
-	        	 	this.error = "Invalid login";
-					return ;
-				}
-				const test = await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
-					method: 'get',
-					headers: { 'content-type': 'application/json' },
-				})
-				const rep = await test.json();
-				if (rep.length != 0)
-				{
-					if (rep[0].username != this.userData.username)
-						this.error = "This login already exists"
-					return ;
-				}
-				else
-				{
-					const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
-						method: 'post',
-						headers: { 'content-type': 'application/json' },
-						body: JSON.stringify({ username: this.userLogin })
-					})
-					this.userData.username = this.userLogin;
-				}
-				this.updateMess = "Login updated";
-				this.userLogin = "";
-				
+		async isLoginExist(login: string) {
+			let isLoginExist = 0;
+			await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' },
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then(() => {
+				isLoginExist = 1;
+			})
+			.catch(() => {
+				isLoginExist = 0;
+			});
+			return isLoginExist;
 		},
+
+		checkLogin(login: string) {
+			if (!this.userLogin || this.userLogin.length > 16)
+				return false;
+			for (const c of login)
+				if ((c < 'A' || c > 'z') && (c < '0' || c > '9') && c != '-' && c != '_' && c!= '.')
+					return false;
+			return true;
+		},
+
+		async updateLogin() {
+			this.error = "";
+			this.updateMess = "";
+			if (!this.checkLogin(this.userLogin))
+				this.error = "Invalid login";
+			else if ((await this.isLoginExist(this.userLogin)))
+				this.error = "This login already exists";
+			else {
+				const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
+					method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ username: this.userLogin })
+				})
+				this.userData.username = this.userLogin;
+				this.updateMess = "Login updated";
+			}
+			this.userLogin = "";
+		},
+
 		async updatePassword()	{
 			this.error = "";
 			this.updateMess = "";
-			if (!this.userPass)
+			if (!this.userPass || this.userPass.length > 42)
 			{
 				this.error = "Invalid password";
 				this.userPass = "";
@@ -350,7 +365,6 @@ export default	{
 <style lang="css" scoped>
 
 .error {
-	margin-top: auto;
 	margin-bottom: 5%;
 	justify-content: top;
 	text-align: center;
