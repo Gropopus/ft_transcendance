@@ -39,7 +39,8 @@ export default	defineComponent ({
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	"0"
+			default:	"0",
+			required: true
 		},
 	},
 
