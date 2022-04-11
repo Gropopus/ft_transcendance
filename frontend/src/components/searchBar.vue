@@ -38,7 +38,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://kittypong.fr:3000/api/users/find-by-username/${this.search}`, {
+			await fetch(`http://kittypong.fr:3000/api/users/search/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
@@ -62,6 +62,7 @@ export default	defineComponent ({
 
 .searchHeader {
     display: flex;
+	min-width: 700px;
 }
 
 .searchBar {

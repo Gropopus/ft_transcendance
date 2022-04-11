@@ -24,6 +24,9 @@
 						</div>
 					</div>
 				</div>
+				<div v-else-if="relation.status == 1" class="listArea">
+					<div class="elem" style="color: rgb(255, 255, 255, 0.5);">Empty list</div>
+				</div>
 		</div>
 
 	</div>
@@ -39,7 +42,8 @@ export default	defineComponent ({
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	"0"
+			default:	"0",
+			required: true
 		},
 	},
 
@@ -137,36 +141,12 @@ export default	defineComponent ({
 			this.$router.push(`/profile/${username}`)
 		},
 
-		async searchUser() {
-			if (!this.search)
-			{
-				this.found = [];
-				return [];
-			}
-			const res = await fetch(`http://kittypong.fr:3000/api/users/find-by-username/${this.search}`, {
-				method: 'get',
-				headers: { 'content-type': 'application/json' }
-			})
-			.then(res => {
-				return res.json();
-			})
-			.then((resJson) => {
-				this.found = resJson;
-				return resJson;
-			})
-			.catch(error => {
-				this.found = [];
-				return [];
-			});
-		},
-
 		setDiplayState(type: string) {
 			for (let elem of this.all)
 				if (elem.type == type)
 					elem.status = 1 - elem.status;
 		}
 	},
-
 })
 </script>
 

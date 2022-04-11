@@ -1,32 +1,32 @@
 <template>
+<div>
 	<header>
 	</header>
-<div>
-		<div class="RegisterForm">
-			<p class="error" v-if="error"> {{ error }} </p>
-			<label for="login"> Login </label>	<br>
-			<input type="text" @keyup.enter="login()" v-model="userLogin" class="textArea">
-			<br>
-			<br>
-			<label for="password"> Password </label>	<br>
-			<input type="password" @keyup.enter="login()" v-model="userPass" class="textArea">
-			<br>
-			<br>
-			<label for="email"> Email </label>	<br>
-			<input type="text" @keyup.enter="login()" v-model="userMail" class="textArea">	<br>
+	<div class="RegisterForm">
+		<p class="error" v-if="error"> {{ error }} </p>
+		<label for="login"> Login </label>	<br>
+		<input type="text" @keyup.enter="login()" v-model="userLogin" class="textArea" v-bind:style='{"border": (errStatus[0] == true ? "solid 2px rgb(255, 0, 0)" : "none")}'>
+		<br>
+		<br>
+		<label for="password"> Password </label>	<br>
+		<input type="password" @keyup.enter="login()" v-model="userPass" class="textArea" v-bind:style='{"border": (errStatus[1] == true ? "solid 2px rgb(255, 0, 0)" : "none")}'>
+		<br>
+		<br>
+		<label for="email"> Email </label>	<br>
+		<input type="text" @keyup.enter="login()" v-model="userMail" class="textArea" v-bind:style='{"border": (errStatus[2] == true ? "solid 2px rgb(255, 0, 0)" : "none")}'>	<br>
 
-			<div class="submitBar">
-		
-				<br>
-				<button @click="login()" class="submitButton">
-					Register
-				</button>
-				<button @click="goBack()" class="submitButton">
-					Cancel
-				</button>
-			</div> <!-- submitBar end -->
+		<div class="submitBar">
+	
+			<br>
+			<button @click="login()" class="submitButton">
+				Register
+			</button>
+			<button @click="goBack()" class="submitButton">
+				Cancel
+			</button>
+		</div> <!-- submitBar end -->
 
-		</div> <!-- RegisterForm end -->
+	</div> <!-- RegisterForm end -->
 </div>
 </template>
 
@@ -36,7 +36,8 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	0,
+			required: true
 		}
 	},
 	emits:	['update:userId'],
@@ -45,33 +46,42 @@ export default	{
 			userLogin:	"",
 			userPass:	"",
 			userMail:	"",
-			error: ""
+			error: "",
+			errStatus: [false, false, false],
 		}
 	},
 	methods:	{
 
 		checkForm() {
+			this.error = "";
+			this.errStatus = [false, false, false];
 	    	if (!this.userLogin) {
-	        	 return "A Username is required.";
+				this.errStatus[0] = true;
 			}
-			else if (this.userLogin.length > 16)
-				return "16 character Maximum"
-			if(!this.userPass) {
-        		return "A password is required.";
+			else if (this.userLogin.length > 16) {
+				this.errStatus[0] = true;
+				this.error = "16 characters maximum"
 			}
-			else if (!this.userMail) {
-	        	return "Email required.";
+			if (!this.userPass) {
+				this.errStatus[1] = true;
+			}
+			else if (this.userPass.length > 42)
+			{
+				this.errStatus[1] = true;
+				this.error = "Password too long"
+			}
+			if (!this.userMail) {
+				this.errStatus[2] = true;
 			}
 			else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.userMail))){
-	        	return "A valid email is required.";
+				this.errStatus[2] = true;
+	        	this.error = "Invalid email address";
       		}
-			  return "";
 		},
 
 		async login()	{
-			this.error = "";
-			this.error = this.checkForm();
-			if (this.error)
+			this.checkForm();
+			if (this.error || this.errStatus[0] || this.errStatus[1] || this.errStatus[2])
 				return ;
 			const res = await fetch(`http://kittypong.fr:3000/api/users`, {
 				method: 'post',
@@ -100,8 +110,12 @@ export default	{
 <style lang="css" scoped>
 
 .error {
-	justify-content: top;
-	color: red;
+	margin-top: auto;
+	margin-bottom: 5%;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
 }
 
 .RegisterHeader
@@ -124,8 +138,10 @@ export default	{
 	margin-bottom:	5%;
 	margin-left:	auto;
 	margin-right:	auto;
-	padding-top:	2%;
+	padding-top:	5%;
+	padding-bottom:	5%;
 	padding-left:	5%;
+	padding-right:	5%;
 	width:	50%;
 	height:	50%;
 	border:	solid white;
@@ -143,14 +159,13 @@ export default	{
 	opacity:	50%;
 	font-size:	130%;
 	padding:	6px;
-	width:		81%;
+	width:		100%;
 }
 
 .RegisterForm > .submitBar
 {
 	margin-top:	2%;
 	display:	flex;
-	/*margin-right:	6%;*/
 	margin-left:	auto;
 	flex-direction:	row;
 }
@@ -160,8 +175,9 @@ export default	{
 	display:	block;
 	background:	none;
 	flex:	0 0 auto;
-	margin-bottom:	5%;
-	margin-right:	22%;	
+	margin-top:	5%;
+	margin-right:	auto;	
+	margin-left:	auto;	
 	padding-top:	3%;
 	padding-bottom: 3%;
 	padding-left:	5%;

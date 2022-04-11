@@ -1,7 +1,10 @@
 <template>
 		 <div class="chatForm"> 
              <button @click="goBack()" class="BackButton">go back</button>
-            <h1> {{ channelData.name }}: settings </h1>
+            <h1> 
+                <div>{{ channelData.name }}</div>
+                <div style="color: rgb(255,255,255,0.6);">settings</div>
+            </h1>
             <div class="userList">
                 <div class="listName">
                     List of users
@@ -39,11 +42,15 @@
                 </div>
             </div>
             <div v-if="role == 'admin' || role == 'owner'" class="formElem">
+                <p v-if="error" class="error"> {{ error }} </p>
                 <label for="users">Add users</label> <br>
-                <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
-                    <button @click="addUser()" class="addButton">
-                        add
+                <input type="text" v-model="search" v-on:keyup="searchUser()" placeholder="username" class="textArea">
+                <div v-if="found.length" :key="user.id" v-for="user in found">
+                    {{ user.username }}
+                    <button @click="addUser(user)" class="addButton">
+                        Add
                     </button>
+                </div>
                 <div v-if="role == 'owner'" style="margin-top:5%; margin-botton: 6%">
                     Change channel type:
                     <select class="selector" @change="changeType()">
@@ -63,18 +70,16 @@
                 <h3> Banned users </h3>
                 <div :key="user.id" v-for="user in channelData.ban" class="banUser">
                     <p> {{ user.username }} </p>
-                    <button @click="unbanUser(user.id)" class="addButton"> unban </button>
+                    <button @click="unbanUser(user.id)" class="addButton" style="margin-top: 3%; margin-bottom: 3%;"> unban </button>
                 </div>
             </div>
             <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
             <button v-else @click="quitChannel()" class="delButton">Leave channel</button>
-            <p class="error"> {{ error }} </p>
             </div>
 </template>
 
 <script lang="ts">
 
-// import { labeledStatement } from '@babel/types';
 import { defineComponent } from 'vue';
 
 export default defineComponent ({
@@ -82,7 +87,8 @@ export default defineComponent ({
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	0,
+            required: true
 		},
 	},
 	data:	function()	{
@@ -93,11 +99,12 @@ export default defineComponent ({
             userToMute: "",
             userToAdmin: "",
             chatPassword: "",
-            userToAdd: "",
             users: [],
             role: "",
             error: "",
             new_type: "",
+            found: [],
+            search: "",
 		}
 	},
 
@@ -223,43 +230,23 @@ export default defineComponent ({
             this.channelData = await this.fetchChannel();
         },
 
-        async addUser() {
+        async addUser(user: any) {
             let found = 0;
             this.error = "";
-            if (!this.userToAdd)
+            if (!user)
                 return ;
-            const res = await fetch(
-                `http://kittypong.fr:3000/api/users/find-by-username/${this.userToAdd}`, {
-                    method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-            for (let elem of user)
-            {
-                if (elem.username == this.userToAdd)
-                {
-                    if (!this.isInChannel(elem.id))
-                    {
-                        if (this.isBan(elem.id) == true)
-                            this.unbanUser(elem.id);
-                        await fetch(
-                            `http://kittypong.fr:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
-                                method: 'put',
-                                headers: { 'content-type': 'application/json' ,
-                                'Access-Control-Allow-Origin': '*'},
-                                body: JSON.stringify({password: this.chatPassword}),
-                        });
-                       
-                       this.channelData = await this.fetchChannel();
-                        this.userToAdd = "";
-                    }
-                    else
-                        this.error = "User already in the channel.";
-                    return ;
-                }
-            }
-            this.error = "User doesn't exist.";
-            this.userToAdd = "";
+            if (this.isBan(user.id) == true)
+                this.unbanUser(user.id);
+            await fetch(
+                `http://kittypong.fr:3000/api/channel/${this.channelId}/adduser/${user.username}`, {
+                    method: 'put',
+                    headers: { 'content-type': 'application/json' ,
+                    'Access-Control-Allow-Origin': '*'},
+                    body: JSON.stringify({password: this.chatPassword}),
+            });
+            this.channelData = await this.fetchChannel();
+            this.search = "";
+            this.found = [];
         },
 
         async removeUser(id: number) {
@@ -329,7 +316,38 @@ export default defineComponent ({
 
 		goToProfile(username: string) {
             this.$router.push(`/profile/${username}`)
-        }
+        },
+
+        filterList(list: any) {
+            let newList = [];
+            for (const user of list)
+                if (!this.isInChannel(user.id))
+                    newList.push(user);
+            return newList;
+        },
+
+		async searchUser() {
+			if (!this.search)
+			{
+				this.found = [];
+				return [];
+			}
+			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' }
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				this.found = this.filterList(resJson);
+				return resJson;
+			})
+			.catch(error => {
+				this.found = [];
+				return [];
+			});
+		},
 	}
 })
 </script>
@@ -393,6 +411,7 @@ export default defineComponent ({
     text-decoration: underline;
     cursor: pointer;
 }
+
 .role {
     margin-right: 2%;
     font-size: 15px;
@@ -416,6 +435,8 @@ export default defineComponent ({
 }
 
 .chatForm > h1 {
+    display: flex;
+    flex-direction: column;
     text-align: center;
     border-bottom : solid 1px white;
 }
@@ -453,9 +474,13 @@ export default defineComponent ({
 	background:	var(--deep-blue-10);
 }
 
-.error
-{
-    color:red;
+.error {
+	margin-top: auto;
+	margin-bottom: 1%;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
 }
 
 .addButton {

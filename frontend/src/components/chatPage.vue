@@ -101,7 +101,8 @@ export default	defineComponent ({
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	"0"
+			default:	"0",
+			required: true
 		},
 	},
 
@@ -331,9 +332,7 @@ export default	defineComponent ({
 		},
 
 		async getDMInfo(chan : any) {
-			if (chan.type != 'direct-message' || chan.admin.length != 2)
-				return ;
-			if (chan.admin[0].id == this.userId) {
+			if (chan.owner.id != this.userId) {
 				return {
 					chanId: chan.id,
 					id: chan.owner.id,

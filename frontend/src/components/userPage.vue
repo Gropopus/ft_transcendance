@@ -3,6 +3,17 @@
 </script>
 
 <template>
+<div style="display: flex; flex-direction: column">
+	<div class="searchBar" style="margin-right: 3%">
+		<div style="display: flex; justify-content: right">
+			<img style="height: 25px" src="../assets/magnifying-glass.png">
+			<span style="font-size: 15px; text-align: right; margin-left: 1%"> &quot;Search a user</span>
+		</div>
+		<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
+		<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
+			<p v-on:click="goToUserPage(elem.username)"> {{ elem.username }}</p>
+		</div>
+	</div>
 	<div v-if="userData != undefined" class="user-profile">
 		<div class="profile-resume">
 			<div class="picture">
@@ -29,6 +40,7 @@
 		</div>
 		<statsWindow v-if="userData.id != undefined" :userId="userId" @profId="update()" :profId="userData.id"/>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -39,7 +51,8 @@ export default	defineComponent ({
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	"0"
+			default:	"0",
+			required: true
 		},
 	},
 	data() {
@@ -52,6 +65,8 @@ export default	defineComponent ({
 			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock '},
 			relationIcon: "",
 			picture: "",
+			found: [],
+            search: "",
 		}
 	},
 
@@ -89,14 +104,10 @@ export default	defineComponent ({
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
-			const data = await res.json();
-			for (let elem of data)
-				if (this.$route.params.username == elem.username)
-				{
-					this.blockIcon.title += elem.username;
-					this.unblockIcon.title += elem.username;
-					return elem;
-				}
+			const user = await res.json();
+			this.blockIcon.title += user.username;
+			this.unblockIcon.title += user.username;
+			return user;
 		},
 
 		async fetchRelation() {
@@ -107,8 +118,8 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			.then(res => {
-				return res.json();}
-			)
+				return res.json();
+			})
 			.then((resJson) => {
 				return resJson.status;
 			})
@@ -237,6 +248,33 @@ export default	defineComponent ({
 			else
 				this.$router.push({path: '/chat', query: {id: data.items[0].id}});
 		},
+
+		async goToUserPage(username: string) {
+			this.$router.push(`/profile/${username}`)
+		},
+
+		async searchUser() {
+			if (!this.search)
+			{
+				this.found = [];
+				return [];
+			}
+			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' }
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				this.found = resJson;
+				return resJson;
+			})
+			.catch(error => {
+				this.found = [];
+				return [];
+			});
+		},
 	},
 })
 </script>
@@ -350,9 +388,8 @@ export default	defineComponent ({
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	min-width: 400px;
+	min-width: 100px;
 	margin-right: 5%;
-	/*margin-left:auto;*/
 	margin-top: auto;
 	margin-bottom: auto;
 }

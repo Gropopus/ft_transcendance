@@ -14,31 +14,45 @@
 		</div>
 		<div class="settings">
 		<p class="error" v-if="error"> {{ error }} </p>
+		<p class="update" v-if="updateMess"> {{ updateMess }} </p>
 		<div class="submitBar">
 			<div class="title"> Change your Login:</div>
-			<input type="text" v-model="userLogin" class="textArea">
-			<button @click="updateLogin()" class="submitButton">
-				Update </button></div>
+ 			<div class="settingsField">
+				<input type="text" v-model="userLogin" class="textArea">
+				<button @click="updateLogin()" class="submitButton">
+					Update
+				</button>
+			</div>
+		</div>
 		<div class="submitBar">
-		<div class="title"> Change your Password: </div>
-		<input type="password" v-model="userPass" class="textArea">
-		<button @click="updatePassword()" class="submitButton">
-				Update </button>
+			<div class="title"> Change your Password: </div>
+			<div class="settingsField">
+				<input type="password" v-model="userPass" class="textArea">
+				<button @click="updatePassword()" class="submitButton">
+						Update
+				</button>
+			</div>
 		</div>
 		<div class="submitBar">
 			<div class="title"> Change your Picture: </div>
-			<input type="file" accept="image/x-png,image/gif,image/jpeg,image/png" @change="onChangeFileUpload($event)" class="fileArea">
-			<button @click="Upload()" class="submitButton">
-				Upload </button>
+			<div class="settingsField">
+				<input type="file" accept="image/x-png,image/gif,image/jpeg,image/png" @change="onChangeFileUpload($event)" class="fileArea">
+				<button @click="Upload()" class="submitButton">
+					Upload
+				</button>
+			</div>
 		</div>
 		<div class="submitBar">
 			<div class="title"> Two factor authentication: </div>
-			<select class="selector" @change="handleTwoFA()">
-                <option :selected="isDisable()">disable</option>
-                <option :selected="isEnable()"> enable</option>
-            </select>
+			<div class="settingsField">
+				<div class="textArea"></div>
+				<select class="selector" @change="handleTwoFA()">
+					<option :selected="isDisable()">disable</option>
+					<option :selected="isEnable()"> enable</option>
+				</select>
+			</div>
 		</div>
-		<div class="secret" v-if="secret">
+		<div class="secret" v-if="secret && qrcode">
 			<div class= "secret-content">
 				Please keep this secret code: {{ secret}}
 				<br>
@@ -51,7 +65,7 @@
 				<button @click="turnOn2FA()" class="submitButton">
 					Submit </button>
 		</div>
-		<div class="secret" v-if="turnoff">
+		<div class="secret" v-if="secret && turnoff">
 			<div class="desactived"> Finish this security verification to disable Google Authenticator, please enter the 6 digit code from Google Authenticator:</div> <br>
 			<input type="googlecode" v-model="googlecode" class="textArea">
 			<button @click="turnOff2FA()" class="submitButton">
@@ -69,7 +83,8 @@ export default	{
 	props:	{
 		userId:	{
 			type:	[Number, String],
-			default:	0
+			default:	0,
+			required: true
 		}
 	},
 
@@ -91,6 +106,7 @@ export default	{
 			googlecode: "",
 			turnoff: "",
 			finish: "",
+			updateMess: "",
 		}
 	},
 	mounted() {
@@ -131,48 +147,58 @@ export default	{
     		return blobUrl;
 		},
 
-		async updateLogin() {
-				this.error = "";
-				if (!this.userLogin)
-				{
-	        	 	this.error = "Unable to update login with an empty login.";
-					return ;
-				}
-				const test = await fetch(`http://kittypong.fr:3000/api/users/find-by-username/${this.userLogin}`, {
-					method: 'get',
-					headers: { 'content-type': 'application/json' },
-				})
-				const rep = await test.json();
-				if (rep.length != 0)
-				{
-					this.error = "This login is already used by another user."
-					return ;
-				}
-				else
-				{
-					const res = await fetch(`http://kittypong.fr:3000/api/users/update/${this.userId}`, {
-						method: 'post',
-						headers: { 'content-type': 'application/json' },
-						body: JSON.stringify({ username: this.userLogin })
-					})
-					this.userData.username = this.userLogin;
-				}
-				this.userLogin = "";
-				
-		},
-		async updatePassword()	{
-				this.error = "";
-				if (!this.userPass)
-				{
-	        	 	this.error = "unable to update password with an empty password.";
-					this.userPass = "";
-					return ;
-				}
-				const res = await fetch(`http://kittypong.fr:3000/api/users/update/${this.userId}`, {
-				method: 'post',
-					headers: { 'content-type': 'application/json' },
-					body: JSON.stringify({ password: this.userPass })
+		async isLoginExist(login: string) {
+			let isLoginExist = 0;
+			await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' },
 			})
+			.then(res => {
+				return res.json();
+			})
+			.then(() => {
+				isLoginExist = 1;
+			})
+			.catch(() => {
+				isLoginExist = 0;
+			});
+			return isLoginExist;
+		},
+
+		async updateLogin() {
+			this.error = "";
+			this.updateMess = "";
+			if (!this.userLogin || this.userLogin.length > 16)
+				this.error = "Invalid login";
+			else if ((await this.isLoginExist(this.userLogin)))
+				this.error = "This login already exists";
+			else {
+				const res = await fetch(`http://kittypong.fr:3000/api/users/update/${this.userId}`, {
+					method: 'post',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ username: this.userLogin })
+				})
+				this.userData.username = this.userLogin;
+				this.updateMess = "Login updated";
+			}
+			this.userLogin = "";
+		},
+
+		async updatePassword()	{
+			this.error = "";
+			this.updateMess = "";
+			if (!this.userPass || this.userPass.length > 42)
+			{
+				this.error = "Invalid password";
+				this.userPass = "";
+				return ;
+			}
+			const res = await fetch(`http://kittypong.fr:3000/api/users/update/${this.userId}`, {
+			method: 'post',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ password: this.userPass })
+			})
+			this.updateMess = "Password updated";
 			this.userPass = "";
 		},
 
@@ -184,11 +210,9 @@ export default	{
 		async Upload()
 		{
 			this.error = "";
+			this.updateMess = "";
 			if (!this.file)
-			{
-				this.error = "No image to upload."
 				return ;
-			}
 			let formData = new FormData();
   			formData.append('file', this.file);
 			const res = await fetch(`http://kittypong.fr:3000/api/users/upload`, {
@@ -242,7 +266,7 @@ export default	{
 			if (this.twofa == true)
 				return 1;
 			else
-			return 0;
+				return 0;
 		},
 
 		async handleTwoFA()
@@ -272,6 +296,7 @@ export default	{
 			else if (this.twofa == true)
 			{
 				this.turnoff = "oui";
+				this.secret = "";
 				this.twofa = false;
 			}
 		},
@@ -279,6 +304,7 @@ export default	{
 		async turnOn2FA()
 		{
 			this.error = "";
+			this.updateMess = "";
 			if (!this.googlecode)
 			{
 				this.error = "No code to submit"
@@ -292,10 +318,10 @@ export default	{
 			const ret =	await res;
 			if (ret.status == 401)
 			{
-				this.error = "Wrong identification code."
+				this.error = "Wrong identification code"
 				return ;
 			}
-			this.finish = "Two factor authentication activated."
+			this.finish = "Two factor authentication activated"
 		},
 
 		async turnOff2FA()
@@ -330,9 +356,22 @@ export default	{
 <style lang="css" scoped>
 
 .error {
+	margin-bottom: 5%;
 	justify-content: top;
-	color: red;
-	margin-left: 10%;
+	text-align: center;
+	border: solid 1px rgb(240, 69, 69);
+	background: rgb(255, 0, 0, 0.06);
+	color: rgb(255, 255, 255, 0.7);
+}
+
+.update {
+	margin-top: auto;
+	margin-bottom: 5%;
+	justify-content: top;
+	text-align: center;
+	border: solid 1px rgb(255, 255, 255, 0.7);
+	background: rgb(255, 255, 255, 0.1);
+	color: rgb(255, 255, 255, 0.7);
 }
 
 .alert {
@@ -358,18 +397,35 @@ export default	{
 	margin-left: 7%;
 	font-size: 150%;
 }
-.submitBar > input.textArea
+
+.submitBar	{
+	display: flex;
+	flex-direction: column;
+}
+
+.settingsField	{
+	display: flex;
+	flex-direction: row;
+	width: 70%;
+}
+
+.textArea	{
+	flex:	0 0 9;
+	width:	100%;
+}
+
+.settingsField > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
 	opacity:	50%;
 	font-size:	130%;
 	padding:	6px;
-	width:		auto;
+	width:	100%;
 	/* margin-left: 10%; */
 }
 
-.secret > input.textArea 
+.secret > input
 {
 	border: none;
 	background-color:	var(--input-fields);
@@ -389,12 +445,6 @@ export default	{
 {
 	margin-left: 10%;
 }
-.textArea {
-	height: 20%;
-	vertical-align: center;
-	margin-left: auto;
-    margin-right: auto;
-}
 
 .title {
 	margin-top: 1.5%;
@@ -404,27 +454,45 @@ export default	{
 }
 
 .selector {
-    margin-left: 10%;
-	padding-top: 1%;
+	margin-left: 30%;
+	/* padding-top: 1%;
 	width: 10%;
-	background:	white;
-	border:	solid rgb(238, 220, 220);
+	background:	none;
+	border:	solid white 2px;
 	font-size:	100%;
-	color:	rgb(236, 100, 151);
+	color:	white;
 	border-radius: 4px;
 	font-family: MyanmarText;
-	min-width: 150px;
+	overflow: hidden;
+	min-width: 95px; */
+	padding: 10px 24px;
+    text-transform: uppercase;
+    border-radius: 25px;
+    border: 2px solid white;
+    font-weight: 100;
+    font-size: 16px;
+    background: transparent;
+    color: white;
 }
 
-.submitBar > .fileArea {
+.selector:hover	{
+	/* background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer;  */
+	background-color: white;
+	cursor: pointer;
+	color: black;
+}
+
+.submitBar > .settingsField > input.fileArea {
+	flex: 0 0 9;
 	justify-content: left;
 	background:	none;
 	font-size:	100%;
 	font-family: MyanmarText;
-	margin-top: 1.5%;
-    margin-right: auto;
-	width:	auto;
 	min-width: 150px;
+	padding:	6px;
+	width:	100%;
 }
 .settingsPage > .submitBar
 {
@@ -438,9 +506,8 @@ export default	{
 
 .submitButton
 {
-	margin-left: 30%;
-	padding-top: 1%;
-	width: 10%;
+	flex: 0 0 2;
+	/* padding-top: 1%;
 	background:	none;
 	border:	solid white 2px;
 	font-size:	100%;
@@ -448,14 +515,27 @@ export default	{
 	border-radius: 4px;
 	font-family: MyanmarText;
 	overflow: hidden;
-	min-width: 95px;
+	min-width: 95px; */
+	padding: 10px 24px;
+    text-transform: uppercase;
+    border-radius: 25px;
+    border: 2px solid white;
+    font-weight: 100;
+    font-size: 16px;
+    background: transparent;
+    color: white;
+	transition: all 0.3s linear;
+	margin-left: 30%;
 }
 
 .submitButton:hover
 {
-	background: rgba(255, 255, 255, 0.5);
+	/* background: rgba(255, 255, 255, 0.5);
 	color: white;
-	cursor: pointer; 
+	cursor: pointer;  */
+	background-color: white;
+	cursor: pointer;
+	color: black;
 }
 .settingsPage > .submitBar > .submitButton:hover
 {

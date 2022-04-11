@@ -9,7 +9,8 @@ export default	defineComponent ({
 	props:	{
 		profId:	{
 			type:	[Number, String],
-			default:	"0"
+			default:	"0",
+			required: true
 		},
 	},
 
