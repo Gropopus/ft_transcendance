@@ -44,10 +44,13 @@
             <div v-if="role == 'admin' || role == 'owner'" class="formElem">
                 <p v-if="error" class="error"> {{ error }} </p>
                 <label for="users">Add users</label> <br>
-                <input type="text" v-model="userToAdd" placeholder="username" class="textArea">
-                    <button @click="addUser()" class="addButton">
-                        add
+                <input type="text" v-model="search" v-on:keyup="searchUser()" placeholder="username" class="textArea">
+                <div v-if="found.length" :key="user.id" v-for="user in found">
+                    {{ user.username }}
+                    <button @click="addUser(user)" class="addButton">
+                        Add
                     </button>
+                </div>
                 <div v-if="role == 'owner'" style="margin-top:5%; margin-botton: 6%">
                     Change channel type:
                     <select class="selector" @change="changeType()">
@@ -95,11 +98,12 @@ export default defineComponent ({
             userToMute: "",
             userToAdmin: "",
             chatPassword: "",
-            userToAdd: "",
             users: [],
             role: "",
             error: "",
             new_type: "",
+            found: [],
+            search: "",
 		}
 	},
 
@@ -225,43 +229,23 @@ export default defineComponent ({
             this.channelData = await this.fetchChannel();
         },
 
-        async addUser() {
+        async addUser(user: any) {
             let found = 0;
             this.error = "";
-            if (!this.userToAdd)
+            if (!user)
                 return ;
-            const res = await fetch(
-                `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
-                    method: 'get',
-               headers: { 'content-type': 'application/json' },
-            })
-            const user = await res.json();
-            for (let elem of user)
-            {
-                if (elem.username == this.userToAdd)
-                {
-                    if (!this.isInChannel(elem.id))
-                    {
-                        if (this.isBan(elem.id) == true)
-                            this.unbanUser(elem.id);
-                        await fetch(
-                            `http://localhost:3000/api/channel/${this.channelId}/adduser/${this.userToAdd}`, {
-                                method: 'put',
-                                headers: { 'content-type': 'application/json' ,
-                                'Access-Control-Allow-Origin': '*'},
-                                body: JSON.stringify({password: this.chatPassword}),
-                        });
-                       
-                       this.channelData = await this.fetchChannel();
-                        this.userToAdd = "";
-                    }
-                    else
-                        this.error = "User already in the channel.";
-                    return ;
-                }
-            }
-            this.error = "User doesn't exist.";
-            this.userToAdd = "";
+            if (this.isBan(user.id) == true)
+                this.unbanUser(user.id);
+            await fetch(
+                `http://localhost:3000/api/channel/${this.channelId}/adduser/${user.username}`, {
+                    method: 'put',
+                    headers: { 'content-type': 'application/json' ,
+                    'Access-Control-Allow-Origin': '*'},
+                    body: JSON.stringify({password: this.chatPassword}),
+            });
+            this.channelData = await this.fetchChannel();
+            this.search = "";
+            this.found = [];
         },
 
         async removeUser(id: number) {
@@ -331,7 +315,38 @@ export default defineComponent ({
 
 		goToProfile(username: string) {
             this.$router.push(`/profile/${username}`)
-        }
+        },
+
+        filterList(list: any) {
+            let newList = [];
+            for (const user of list)
+                if (!this.isInChannel(user.id))
+                    newList.push(user);
+            return newList;
+        },
+
+		async searchUser() {
+			if (!this.search)
+			{
+				this.found = [];
+				return [];
+			}
+			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
+				method: 'get',
+				headers: { 'content-type': 'application/json' }
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				this.found = this.filterList(resJson);
+				return resJson;
+			})
+			.catch(error => {
+				this.found = [];
+				return [];
+			});
+		},
 	}
 })
 </script>
@@ -395,6 +410,7 @@ export default defineComponent ({
     text-decoration: underline;
     cursor: pointer;
 }
+
 .role {
     margin-right: 2%;
     font-size: 15px;

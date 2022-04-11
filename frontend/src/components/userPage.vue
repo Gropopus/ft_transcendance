@@ -103,14 +103,10 @@ export default	defineComponent ({
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
-			const data = await res.json();
-			for (let elem of data)
-				if (this.$route.params.username == elem.username)
-				{
-					this.blockIcon.title += elem.username;
-					this.unblockIcon.title += elem.username;
-					return elem;
-				}
+			const user = await res.json();
+			this.blockIcon.title += user.username;
+			this.unblockIcon.title += user.username;
+			return user;
 		},
 
 		async fetchRelation() {
@@ -121,8 +117,8 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			.then(res => {
-				return res.json();}
-			)
+				return res.json();
+			})
 			.then((resJson) => {
 				return resJson.status;
 			})
@@ -262,7 +258,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
+			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
