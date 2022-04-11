@@ -50,14 +50,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	async handleConnection(client: Socket, ...args: any[]) {
 		this.player_room.set(client.id, 'not in a room')
-		// try {
-		// 	const user: Iuser = await this.userService.getOne(client.handshake.auth.userId);
-		// 	if (!user)
-		// 		return this.disconnect(client);
-		// } catch {
-		// 	this.logger.log('auth fail');
-		// 	return this.disconnect(client);
-		// }
+		try {
+			const user: Iuser = await this.userService.getOne(client.handshake.auth.userId);
+			if (!user)
+				return this.disconnect(client);
+		} catch {
+			this.logger.log('auth fail');
+			return this.disconnect(client);
+		}
 
 	}
 	async handleDisconnect(client: Socket) {
