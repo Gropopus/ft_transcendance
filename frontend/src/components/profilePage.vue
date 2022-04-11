@@ -11,7 +11,7 @@
 			</div>
 			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
 			<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
-				<p v-on:click="goToUserProfile(elem.id)"> {{ elem.username }}</p>
+				<p v-on:click="goToUserProfile(elem)"> {{ elem.username }}</p>
             </div>
 	</div>
 	<div class="profilePage">
@@ -401,12 +401,7 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			if (userInfo.id === this.userId)
-				this.$router.push(`/profile`)
-			else
-			{
-				this.$router.push(`/profile/${userInfo.username}`)
-			}
+			this.$router.push(`/profile/${userInfo.username}`)
 		},
 
 		getUserField(username: String)	{

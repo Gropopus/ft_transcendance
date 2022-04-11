@@ -526,7 +526,6 @@ export default	defineComponent ({
 
 		async goToUserProfile(userInfo) {
 			this.$router.push(`/profile/${userInfo.username}`)
-			console.log(userInfo);
 			this.userData = await this.fetchUserData();
 			this.picture = await this.getPicture();
 			this.userLadder = await this.fetchLadderLevel();
