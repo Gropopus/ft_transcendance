@@ -1,3 +1,7 @@
+<script setup lang="ts">
+	import statsWindow from './statsWindow.vue'
+</script>
+
 <template>
 <div style="display: flex; flex-direction: column">
 	<div class="searchBar" style="margin-right: 3%">
@@ -397,8 +401,7 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			console.log(userInfo);
-			// this.$router.push(`/profile/${userInfo.username}`);
+			this.$router.push(`/profile/${userInfo.username}`)
 		},
 
 		getUserField(username: String)	{

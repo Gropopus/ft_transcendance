@@ -1,161 +1,124 @@
 <template>
-<div style="display: flex; flex-direction: column">
-	<div class="searchBar" style="margin-right: 3%">
-			<div style="display: flex; justify-content: right">
-				<img style="height: 25px" src="../assets/magnifying-glass.png">
-				<span style="font-size: 15px; text-align: right; margin-left: 1%"> Search a user</span>
-			</div>
-			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
-			<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
-				<p v-on:click="goToUserProfile(elem)"> {{ elem.username }}</p>
-            </div>
-	</div>
-	<div class="profilePage">
-		<div class="profile-resume">
-			<div class="picture">
-				<img :src="picture" alt="userDate.username" />
-			</div>
-			<div class="info">
-				<div class="username"> {{ userData.username }} </div>
-				<div class="usermail"> {{ userData.email }} </div>
-				<div class="status" v-if="userData.status == 'online'" style="color: rgb(255, 228, 113);"> online </div>
-				<div class="status" v-else-if="userData.status == 'offline'" style="color: rgb(255, 255, 255, 0.4);"> offline </div>
-				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
-			</div>
-			<div class="perso-info">
-				<img @click="goToRoute('/settings')" title="settings" v-if="settingsIcon.img" :src="settingsIcon.img">
-			</div>
+	<div class="StatsWin">
+		<div class="StatsTabs">
+			<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
+			<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
+			<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
+			<button class="tab corner"  @click="changeCurrent(3)" :id="isCurrentTab(3)"> Ladder </button>
 		</div>
-		<div class="StatsWin">
-			<div class="StatsTabs">
-				<button class="tab"  @click="changeCurrent(0)" :id="isCurrentTab(0)"> Statistics </button>
-				<button class="tab" @click="changeCurrent(1)" :id="isCurrentTab(1)"> Achievements </button>
-				<button class="tab"  @click="changeCurrent(2)" :id="isCurrentTab(2)"> History </button>
-				<button class="tab corner"  @click="changeCurrent(3)" :id="isCurrentTab(3)"> Ladder </button>
+		<div class="StatsArea">
+			<div v-if="currentTab==0" class="stat">
+				<div class="statElem">
+					<h3>Rank</h3>
+					<p> {{ userLadder.level }} / {{ userLadder.total }} </p>
+				</div>
+				<div class="statElem">
+					<h3>Elo</h3>
+					<p> {{ userData.level }}  </p>
+				</div>
+				<div class="statElem">
+					<h3>Victories</h3>
+					<p>{{ userData.victory }}</p>
+				</div>
+				<div class="statElem">
+					<h3>Defeats</h3>
+					<p>{{ userData.defeat }}</p>
+				</div>
 			</div>
-			<div class="StatsArea">
-				<div v-if="currentTab==0" class="stat">
-					<div class="statElem">
-						<h3>Rank</h3>
-						<p> {{ userLadder.level }} / {{ userLadder.total }} </p>
-					</div>
-					<div class="statElem">
-						<h3>Elo</h3>
-						<p> {{ userData.level }}  </p>
-					</div>
-					<div class="statElem">
-						<h3>Victories</h3>
-						<p>{{ userData.victory }}</p>
-					</div>
-					<div class="statElem">
-						<h3>Defeats</h3>
-						<p>{{ userData.defeat }}</p>
-					</div>
-				</div>
-				<div v-if="currentTab==1" class="achievements">
-					<div class="achievementsTable">
-						<div class="achievementsCol">
-							<div :key="file.name" v-for="file in socialAchievements" :description="file.title + ': ' + file.description">
-								<img v-if="file.status == 1" :src="file.iconOn">
-								<img v-else :src="file.iconOff">
-							</div>
+			<div v-if="currentTab==1" class="achievements">
+				<div class="achievementsTable">
+					<div class="achievementsCol">
+						<div :key="file.name" v-for="file in socialAchievements" :description="file.title + ': ' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
-						<div class="achievementsCol">
-							<div :key="file.title" v-for="file in victoryAchievements" :description="file.title + ':\n' + file.description">
-								<img v-if="file.status == 1" :src="file.iconOn">
-								<img v-else :src="file.iconOff">
-							</div>
+					</div>
+					<div class="achievementsCol">
+						<div :key="file.title" v-for="file in victoryAchievements" :description="file.title + ':\n' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
-						<div class="achievementsCol">
-							<div :key="file.title" v-for="file in chanAchievements" :description="file.title + ':\n' + file.description">
-								<img v-if="file.status == 1" :src="file.iconOn">
-								<img v-else :src="file.iconOff">
-							</div>
+					</div>
+					<div class="achievementsCol">
+						<div :key="file.title" v-for="file in chanAchievements" :description="file.title + ':\n' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
-						<div class="achievementsCol">
-							<div :key="file.title" v-for="file in eloAchievements" :description="file.title + ':\n' + file.description">
-								<img v-if="file.status == 1" :src="file.iconOn">
-								<img v-else :src="file.iconOff">
-							</div>
+					</div>
+					<div class="achievementsCol">
+						<div :key="file.title" v-for="file in eloAchievements" :description="file.title + ':\n' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 				</div>
-				<div v-if="currentTab==2" class="history">
-					<div class="histCats">
-						<div> Result </div>
-						<div> Mode </div>
-						<div> Player Score </div>
-						<div> Opponent Score </div>
-						<div> Opponent </div>
-					</div>
-					<div v-for="elem in gameHistory">
-						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
-							<div v-if="whoWon(elem.player_left_id)">
-								Victory
-							</div>
-							<div v-else>
-								Defeat
-							</div>
-							<div> {{ elem.mode }} </div>
-							<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_r }} </div>
-							<div v-else> {{ elem.score_l }} </div>
-							<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_l }} </div>
-							<div v-else> {{ elem.score_r }} </div>
-							<div v-if="UserIsPlayer(elem.player_right_id.user.id)" class="userLink" @click="goToUserProfile(elem.player_left_id.user)"> {{ elem.player_left_id.user.username }} </div>
-							<div v-else class="userLink" @click="goToUserProfile(elem.player_right_id.user)"> {{ elem.player_right_id.user.username }} </div>
+			</div>
+			<div v-if="currentTab==2" class="history">
+				<div class="histCats">
+					<div> Result </div>
+					<div> Mode </div>
+					<div> Player Score </div>
+					<div> Opponent Score </div>
+					<div> Opponent </div>
+				</div>
+				<div v-for="elem in gameHistory">
+					<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
+						<div v-if="whoWon(elem.player_left_id)">
+							Victory
 						</div>
+						<div v-else>
+							Defeat
+						</div>
+						<div> {{ elem.mode }} </div>
+						<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_r }} </div>
+						<div v-else> {{ elem.score_l }} </div>
+						<div v-if="UserIsPlayer(elem.player_right_id.user.id)"> {{ elem.score_l }} </div>
+						<div v-else> {{ elem.score_r }} </div>
+						<div v-if="UserIsPlayer(elem.player_right_id.user.id)" class="userLink" @click="goToUserProfile(elem.player_left_id.user)"> {{ elem.player_left_id.user.username }} </div>
+						<div v-else class="userLink" @click="goToUserProfile(elem.player_right_id.user)"> {{ elem.player_right_id.user.username }} </div>
 					</div>
 				</div>
-				<div v-if="currentTab==3 && ladder != undefined">
-					<div class="ladder">
-						<div class="ladderCats">
-							<div> Rank </div>
-							<div> User Name </div>
-							<div> Elo score </div>
-						</div>
-						<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "var(--deep-blue-50)" : "none"}'>
-							<div> {{ index + 1 }} </div>
-							<div class="userLink" @click="goToUserProfile(elem)"> {{ elem.username }} </div>
-							<div> {{ elem.level }} </div>
-						</div>
+			</div>
+			<div v-if="currentTab==3 && ladder != undefined">
+				<div class="ladder">
+					<div class="ladderCats">
+						<div> Rank </div>
+						<div> User Name </div>
+						<div> Elo score </div>
+					</div>
+					<div :key="elem.level" v-for="(elem, index) in ladder" class="laddElem" v-bind:style='{"background" : (UserIsPlayer(elem.id)) ? "var(--deep-blue-50)" : "none"}'>
+						<div> {{ index + 1 }} </div>
+						<div class="userLink" @click="goToUserProfile(elem)"> {{ elem.username }} </div>
+						<div> {{ elem.level }} </div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import searchBar from './searchBar.vue';
 
 export default	defineComponent ({
-	name: 'profilePage',
+	name: 'statsWindow',
 	props:	{
 		userId:	{
 			type:	[Number, String],
 			default:	"0",
 			required: true
 		},
+		profId:	{
+			type:	[Number, String],
+			default:	"0",
+			required: true
+		},
 	},
 
-	components: {
-		searchBar,
-	},
+	emits:	['profId'],
 
 	data() {
 		return {
-			userData: [],
-			picture: "",
-			found: [],
-            search: "",
-			settingsIcon: {img: "/src/assets/settings-icon.png", title:"settings"},
-			relation: "",
-			relationIcon: "",
-			picture: "",
-			found: [],
-            search: "",
 			currentTab: 0,
 			userData: [],
 			userLadder: 0,
@@ -184,11 +147,7 @@ export default	defineComponent ({
 		}
 	},
 
-	emits:	['userIsOnline'],
-	
 	mounted() {
-		this.userData;
-		this.picture;
 		this.userData;
 		this.userLadder;
 		this.gameHistory;
@@ -197,16 +156,11 @@ export default	defineComponent ({
 
 	async created() {
 		this.userData = await this.fetchUserData();
-		this.picture = await this.getPicture();
 		this.userLadder = await this.fetchLadderLevel();
 		this.gameHistory = await this.fetchPlayerHistory();
 		this.ladder = await this.fetchLadder();
 		await this.setAchievementStatus();
 	},
-
-    async updated() {
-        await this.$emit('userIsOnline', this.userId);
-    },
 
 	methods: {
 		changeCurrent(index: number) {
@@ -221,7 +175,7 @@ export default	defineComponent ({
 		},
 
 		async fetchUserData() {
-			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -229,61 +183,8 @@ export default	defineComponent ({
 			return data;
 		},
 
-		async addfriend(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/add/${targetId}`, {
-    			method: 'put',
-    			headers: { 'content-type': 'application/json' }
-    		})
-		},
-
-		async blockUser(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${targetId}`, {
-    			method: 'put',
-    			headers: { 'content-type': 'application/json' }
-    		})
-		},
-
-		async getPicture()
-		{
-			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
-				method: 'get',
-					headers: { 'responseType': 'blob' },
-			})
-			const blob = await ret.blob();
-    		const newBlob = new Blob([blob]);
-			const blobUrl = window.URL.createObjectURL(newBlob);
-    		return blobUrl;
-		},
-
-		goToRoute(path: string) {
-			this.$router.push(path);
-		},
-
-		async searchUser() {
-			if (!this.search)
-			{
-				this.found = [];
-				return [];
-			}
-			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
-				method: 'get',
-				headers: { 'content-type': 'application/json' }
-			})
-			.then(res => {
-				return res.json();
-			})
-			.then((resJson) => {
-				this.found = resJson;
-				return resJson;
-			})
-			.catch(error => {
-				this.found = [];
-				return [];
-			});
-		},
-
 		async fetchLadderLevel() {
-			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -292,7 +193,7 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/game/history/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -301,7 +202,7 @@ export default	defineComponent ({
 		},
 
 		async setSocialStatus() {
-			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -325,7 +226,7 @@ export default	defineComponent ({
 		},
 
 		async setChanStatus() {
-			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/channel/all/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -359,7 +260,7 @@ export default	defineComponent ({
 		},
 
 		whoWon(playerStats)	{
- 			if (playerStats.user.id === this.userId)
+ 			if (playerStats.user.id === this.profId)
 			{
 				if (playerStats.status === 'lost-the-game')
 					return (false);
@@ -376,7 +277,7 @@ export default	defineComponent ({
 		},
 
 		UserIsPlayer(playerId)	{
-			if (playerId === this.userId)
+			if (playerId === this.profId)
 				return (true);
 			return (false);
 		},
@@ -397,8 +298,13 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			console.log(userInfo);
-			// this.$router.push(`/profile/${userInfo.username}`);
+			if (userInfo.id === this.userId)
+				this.$router.push(`/profile`)
+			else
+			{
+				this.$emit('profId', this.profId);
+				this.$router.push(`/profile/${userInfo.username}`)
+			}
 		},
 
 		getUserField(username: String)	{
@@ -411,141 +317,12 @@ export default	defineComponent ({
 				}
 			}
 		},
-
-		resetScroll(username: String)	{
-			const user = this.getUserField(username);
-			if (user != undefined)
-				user.scrollIntoView(false, {block: "end", inline: "end"});
-		},
 	},
 })
 </script>
 
 
 <style lang="css" scoped>
-
-.StatsWin
-{
-	/* width:	100%; */
-	min-height:	500px;
-	display:	flex;
-	flex-direction:	column;
-}
-
-.profilePage
-{
-	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
-	flex-direction:	row;
-	text-align: center;
-	margin-right: 3%;
-	margin-left: 3%;
-	margin-bottom: 0%;
-}
-
-.profile-resume {
-	display: flex;
-	flex-direction: row;
-	gap: 3%;
-	/* flex: 1 1 0; */
-	border: solid 3px white;
-	min-width: 700px;
-	margin-bottom: 2%;
-	align-content: center;
-	border: none;
-}
-
-.info
-{
-	flex: 4;
-	display: flex;
-	flex-direction:	column;
-	margin-top: 4%;
-	margin-bottom: 2%;
-	text-align: left;
-	vertical-align: center;
-}
-
-.username {
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	300%;
-	color: var(--font-blue);
-	font-weight:	bold;
-}
-
-.usermail{
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	
-}
-
-.perso-info
-{
-	margin-right: 3%;
-	display: flex;
-	flex-direction:	column;
-	margin-top: auto;
-	margin-bottom: auto;
-}
-
-.status {
-	flex: 1;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-}
-
-.perso-info > button
-{
-	flex: 5;
-	background: none;
-	border: none;
-	padding-top: 2%;
-	margin: 20%;
-	margin-top: 30%;
-}
-
-.perso-info > img:hover
-{
-	background:	var(--deep-blue-10);
-	color: white;
-	cursor: pointer;
-}
-
-.perso-info > img
-{
-	margin-right: 3%;
-	margin-left: 3%;
-	flex: 1 1 1;
-	border-radius: 50%;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	max-height: 70px;
-	height: auto;
-	width: auto;
-	padding: 3%;
-	border: solid 2px white;
-	object-fit: contain;
-}
-
-.picture {
-	flex: 1;
-	width: calc(33.333% - 1rem);
-    vertical-align: center;
-	margin-left: 3%;
-	margin-top: 2%;
-	margin-bottom: 2%;
-}
-
-.picture > img {
-	border-radius: 50%;
-	overflow: hidden;
-    width: 200px;
-    height: 200px;
-    max-width: 200px;
-    max-height: 200px;
-	object-fit:cover;
-}
 
 .StatsWin
 {

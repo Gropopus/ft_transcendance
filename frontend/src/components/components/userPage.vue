@@ -1,29 +1,41 @@
+<script setup lang="ts">
+	import statsWindow from './statsWindow.vue'
+</script>
+
 <template>
 <div style="display: flex; flex-direction: column">
 	<div class="searchBar" style="margin-right: 3%">
-			<div style="display: flex; justify-content: right">
-				<img style="height: 25px" src="../assets/magnifying-glass.png">
-				<span style="font-size: 15px; text-align: right; margin-left: 1%"> Search a user</span>
-			</div>
-			<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
-			<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
-				<p v-on:click="goToUserProfile(elem)"> {{ elem.username }}</p>
-            </div>
+		<div style="display: flex; justify-content: right">
+			<img style="height: 25px" src="../assets/magnifying-glass.png">
+			<span style="font-size: 15px; text-align: right; margin-left: 1%"> Search a user</span>
+		</div>
+		<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
+		<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
+			<p v-on:click="goToUserProfile(elem)"> {{ elem.username }}</p>
+		</div>
 	</div>
-	<div class="profilePage">
+	<div v-if="userData != undefined" class="user-profile">
 		<div class="profile-resume">
 			<div class="picture">
 				<img :src="picture" alt="userDate.username" />
 			</div>
 			<div class="info">
 				<div class="username"> {{ userData.username }} </div>
-				<div class="usermail"> {{ userData.email }} </div>
 				<div class="status" v-if="userData.status == 'online'" style="color: rgb(255, 228, 113);"> online </div>
 				<div class="status" v-else-if="userData.status == 'offline'" style="color: rgb(255, 255, 255, 0.4);"> offline </div>
 				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
 			</div>
-			<div class="perso-info">
-				<img @click="goToRoute('/settings')" title="settings" v-if="settingsIcon.img" :src="settingsIcon.img">
+			<div v-if="userId != userData.id" class="relation">
+				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/message03.png" class="challengeButton" title="send a message"/>
+				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
+				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
+				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
+				<div v-else-if="!isBlocked()" class="replyButton">
+					<button @click="acceptRequest()">accept</button>
+					<button @click="declineRequest()">decline</button>
+				</div>
+				<img v-if="blockIcon.img && !isBlocked()" :src="blockIcon.img" @click="blockUser()" class="blockButton" :title="blockIcon.title">
+				<img v-else v-if="unblockIcon.img && this.userData" :src="unblockIcon.img" @click="unblock()" class="unblockButton" :title="unblockIcon.title">
 			</div>
 		</div>
 		<div class="StatsWin">
@@ -88,7 +100,7 @@
 						<div> Opponent Score </div>
 						<div> Opponent </div>
 					</div>
-					<div v-for="elem in gameHistory">
+					<div :key="elem.id" v-for="elem in gameHistory">
 						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
 							<div v-if="whoWon(elem.player_left_id)">
 								Victory
@@ -122,16 +134,15 @@
 				</div>
 			</div>
 		</div>
+		</div>
 	</div>
-</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import searchBar from './searchBar.vue';
 
 export default	defineComponent ({
-	name: 'profilePage',
+	name: 'userPage',
 	props:	{
 		userId:	{
 			type:	[Number, String],
@@ -139,19 +150,15 @@ export default	defineComponent ({
 			required: true
 		},
 	},
-
-	components: {
-		searchBar,
-	},
-
 	data() {
 		return {
+			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
+			challengeIcon: {img: "/src/assets/challenge01.png", title:"challenge"},
+			blockIcon: {img: "/src/assets/plain-cat.png", title:'block'},
+			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock'},
 			userData: [],
-			picture: "",
-			found: [],
-            search: "",
-			settingsIcon: {img: "/src/assets/settings-icon.png", title:"settings"},
 			relation: "",
+			picture: "",
 			relationIcon: "",
 			picture: "",
 			found: [],
@@ -185,11 +192,10 @@ export default	defineComponent ({
 	},
 
 	emits:	['userIsOnline'],
-	
-	mounted() {
+
+	async mounted() {
 		this.userData;
-		this.picture;
-		this.userData;
+		this.relation;
 		this.userLadder;
 		this.gameHistory;
 		this.ladder;
@@ -202,6 +208,7 @@ export default	defineComponent ({
 		this.gameHistory = await this.fetchPlayerHistory();
 		this.ladder = await this.fetchLadder();
 		await this.setAchievementStatus();
+		await this.update();
 	},
 
     async updated() {
@@ -220,34 +227,110 @@ export default	defineComponent ({
 				return "notCurrentTab";
 		},
 
+		async update() {
+			this.userData = await this.fetchUserData();
+			this.relation = await this.fetchRelation();
+			this.userLadder = await this.fetchLadderLevel();
+			if (this.isFriend())
+				this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
+			else if (!this.relation)
+				this.friendIcon = {img: "/src/assets/friends-requests.png", title:"add friend"};
+			else
+				this.friendIcon = {img: "", title: this.relation};
+		},
+
 		async fetchUserData() {
-			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
+			})
+			const user = await res.json();
+			return user;
+		},
+
+		async fetchRelation() {
+			if (this.userData === undefined)
+				this.userData = await this.fetchUserData();
+			return await fetch(`http://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
+    			method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			})
+			.then(res => {
+				return res.json();
+			})
+			.then((resJson) => {
+				return resJson.status;
+			})
+			.catch(error => {
+				return "";
 			});
-			const data = await res.json();
-			return data;
 		},
 
-		async addfriend(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/1/add/${targetId}`, {
-    			method: 'put',
-    			headers: { 'content-type': 'application/json' }
-    		})
+		async addOrRemovefriend(){
+			if (this.isFriend()) {
+				await fetch(`http://localhost:3000/api/friends/${this.userId}/unfriend/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+			}
+			else if (!this.relation) {
+				await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+			}
+			this.update();
 		},
 
-		async blockUser(targetId: number){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${targetId}`, {
+		async blockUser(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
-    		})
+    		});
+			this.update();
+		},
+
+		async unblock(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			this.update();
+		},
+
+		async acceptRequest(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/accept/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			this.update();
+		},
+
+		async declineRequest(){
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/decline/${this.userData.id}`, {
+    			method: 'put',
+    			headers: { 'content-type': 'application/json' }
+    		});
+			this.update();
+		},
+
+		isFriend() {
+			if (this.relation == "friends")
+				return true;
+			return false;
+		},
+
+		isBlocked() {
+			if (this.relation == "user-blocked")
+				return true;
+			return false;
 		},
 
 		async getPicture()
 		{
-			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userData.id}`, {
 				method: 'get',
-					headers: { 'responseType': 'blob' },
+    			headers: { 'content-type': 'application/json' }
 			})
 			const blob = await ret.blob();
     		const newBlob = new Blob([blob]);
@@ -255,8 +338,52 @@ export default	defineComponent ({
     		return blobUrl;
 		},
 
-		goToRoute(path: string) {
-			this.$router.push(path);
+		async challenge() {
+			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			const challengeId = await ret.json();
+			
+			let res = await fetch(
+				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			let data = await res.json();
+			if (!data.items.length) {
+				res = await fetch(
+					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+				data = await res.json();
+				this.$router.push({path: '/chat', query: {id: data.id, challengeId: challengeId}});
+			}
+			else
+				this.$router.push({path: '/chat', query: {id: data.items[0].id, challengeId: challengeId}});
+
+			return "";
+		},
+
+		async sendMessage() {
+			let res = await fetch(
+				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+				method: 'get',
+    			headers: { 'content-type': 'application/json' }
+			});
+			let data = await res.json();
+			if (!data.items.length) {
+				res = await fetch(
+					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+					method: 'put',
+					headers: { 'content-type': 'application/json' }
+				});
+				data = await res.json();
+				this.$router.push({path: '/chat', query: {id: data.id}});
+			}
+			else
+				this.$router.push({path: '/chat', query: {id: data.items[0].id}});
 		},
 
 		async searchUser() {
@@ -283,7 +410,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadderLevel() {
-			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -292,7 +419,7 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/game/history/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -301,7 +428,7 @@ export default	defineComponent ({
 		},
 
 		async setSocialStatus() {
-			const res = await fetch(`http://localhost:3000/api/friends/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/friends/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -325,7 +452,7 @@ export default	defineComponent ({
 		},
 
 		async setChanStatus() {
-			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -359,7 +486,7 @@ export default	defineComponent ({
 		},
 
 		whoWon(playerStats)	{
- 			if (playerStats.user.id === this.userId)
+ 			if (playerStats.user.id === this.userData.id)
 			{
 				if (playerStats.status === 'lost-the-game')
 					return (false);
@@ -376,7 +503,7 @@ export default	defineComponent ({
 		},
 
 		UserIsPlayer(playerId)	{
-			if (playerId === this.userId)
+			if (playerId === this.userData.id)
 				return (true);
 			return (false);
 		},
@@ -397,8 +524,14 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			console.log(userInfo);
-			// this.$router.push(`/profile/${userInfo.username}`);
+			this.$router.push(`/profile/${userInfo.username}`)
+			this.userData = await this.fetchUserData();
+			this.picture = await this.getPicture();
+			this.userLadder = await this.fetchLadderLevel();
+			this.gameHistory = await this.fetchPlayerHistory();
+			this.ladder = await this.fetchLadder();
+			await this.setAchievementStatus();
+			await this.update();
 		},
 
 		getUserField(username: String)	{
@@ -421,24 +554,16 @@ export default	defineComponent ({
 })
 </script>
 
-
 <style lang="css" scoped>
 
-.StatsWin
-{
-	/* width:	100%; */
-	min-height:	500px;
-	display:	flex;
-	flex-direction:	column;
-}
-
+	/*** PROFILE STYLES ***/
 .profilePage
 {
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
-	margin-right: 3%;
-	margin-left: 3%;
+	/* margin-right: 2%;
+	margin-left: 2%; */
 	margin-bottom: 0%;
 }
 
@@ -446,9 +571,8 @@ export default	defineComponent ({
 	display: flex;
 	flex-direction: row;
 	gap: 3%;
-	/* flex: 1 1 0; */
-	border: solid 3px white;
 	min-width: 700px;
+	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
 	border: none;
@@ -463,6 +587,7 @@ export default	defineComponent ({
 	margin-bottom: 2%;
 	text-align: left;
 	vertical-align: center;
+	min-width: 350px;
 }
 
 .username {
@@ -477,16 +602,17 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	font-size:	150%;
-	
 }
 
 .perso-info
 {
+	flex: 1;
 	margin-right: 3%;
 	display: flex;
 	flex-direction:	column;
-	margin-top: auto;
-	margin-bottom: auto;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	vertical-align: center;
 }
 
 .status {
@@ -494,38 +620,23 @@ export default	defineComponent ({
 	font-family: MyanmarText;
 	letter-spacing:	2px;
 	font-size:	150%;
+	color: green;
 }
 
 .perso-info > button
 {
 	flex: 5;
 	background: none;
-	border: none;
+	border: solid 3px white;
 	padding-top: 2%;
 	margin: 20%;
 	margin-top: 30%;
 }
 
-.perso-info > img:hover
+.perso-info > button:hover
 {
-	background:	var(--deep-blue-10);
-	color: white;
-	cursor: pointer;
-}
-
-.perso-info > img
-{
-	margin-right: 3%;
-	margin-left: 3%;
-	flex: 1 1 1;
-	border-radius: 50%;
-	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
-	max-height: 70px;
-	height: auto;
-	width: auto;
-	padding: 3%;
-	border: solid 2px white;
-	object-fit: contain;
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer; 
 }
 
 .picture {
@@ -545,6 +656,138 @@ export default	defineComponent ({
     max-width: 200px;
     max-height: 200px;
 	object-fit:cover;
+}
+
+.relation {
+	flex: 2;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	min-width: 100px;
+	margin-right: 5%;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.relation > img	{
+	object-fit: contain;
+}
+
+.challengeButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	display: flex;
+	align-items: center;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+}
+
+.challengeButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
+}
+
+.relationButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white;
+}
+
+.relationButton:hover {
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
+
+}
+
+.user-profile {
+	flex-direction:	row;
+	text-align: center;
+	margin-right: 3%;
+	margin-left: 3%;
+	margin-bottom: 0%;
+}
+
+.replyButton {
+	display: flex;
+	flex-direction: column;
+	justify-content: right;
+}
+
+.replyButton > button {
+	border-radius: 8px;
+	background:	none;
+	border: none;
+	border: solid 2px white;
+	font-family: MyanmarText;
+	letter-spacing:	2px;
+	color: white;
+	margin-top: 5%;
+}
+
+.replyButton > button:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+}
+
+.blockButton {
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	background: linear-gradient(135deg, transparent 49%, white 49% 51%, transparent 51% 100%);
+	padding: 3%;
+	border: solid 2px white
+}
+
+.blockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
+	background: linear-gradient(135deg, var(--deep-blue-10) 49%, white 49% 51%, var(--deep-blue-10) 51% 100%);
+}
+
+
+.unblockButton {
+	width: calc(33.333% - 1rem);
+    vertical-align: center;
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: auto;
+	border-radius: 50%;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	padding: 3%;
+	border: solid 2px white;
+	max-width: 80px;
+}
+
+.unblockButton:hover {
+	background:	var(--deep-blue-10);
+	cursor: pointer;
 }
 
 .StatsWin
