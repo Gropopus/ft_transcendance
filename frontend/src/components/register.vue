@@ -52,6 +52,7 @@ export default	{
 	methods:	{
 
 		checkForm() {
+			this.error = "";
 			this.errStatus = [false, false, false];
 	    	if (!this.userLogin) {
 				this.errStatus[0] = true;
@@ -75,7 +76,6 @@ export default	{
 				this.errStatus[2] = true;
 	        	this.error = "Invalid email address";
       		}
-			this.error = "";
 		},
 
 		async login()	{
@@ -111,7 +111,6 @@ export default	{
 .error {
 	margin-top: auto;
 	margin-bottom: 5%;
-	margin-top: 5%;
 	text-align: center;
 	border: solid 1px rgb(240, 69, 69);
 	background: rgb(255, 0, 0, 0.06);
