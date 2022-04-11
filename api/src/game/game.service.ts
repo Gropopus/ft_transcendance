@@ -22,7 +22,7 @@ export class GameService {
 		return this.gameRepository.find();
 	}
 	async findAllPlaying(): Promise<any[]> {
-		return await this.gameRepository.find({where: { status: "playing" }});
+		return await this.gameRepository.find({where: { status: gameStatus.PLAYING }});
 	}
 
 	async userHistory(userId: number, options: IPaginationOptions): Promise<Pagination<Igame>> {
@@ -39,7 +39,7 @@ export class GameService {
 	}
 
 	findOne(id: number): Promise<GameEntity> {
-		return this.gameRepository.findOne(id);
+		return this.gameRepository.findOne({ where: { id: id }});
 	}
 	async remove(id: number): Promise<void> {
 		await this.gameRepository.delete(id);

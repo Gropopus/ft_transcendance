@@ -38,7 +38,6 @@ export class MessageService {
 
     const blockedIds = (await blocked).map(b => b.id);
     if (blockedIds.length != 0) {
-    // query for messages excluding blocked users
     const query = this.messageRepository
         .createQueryBuilder('message')
         .leftJoin('message.channel', 'channel')
