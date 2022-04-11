@@ -103,6 +103,7 @@ export default defineComponent ({
             error: "",
             new_type: "",
             found: [],
+            search: "",
 		}
 	},
 
@@ -231,7 +232,6 @@ export default defineComponent ({
         async addUser(user: any) {
             let found = 0;
             this.error = "";
-            console.log(user);
             if (!user)
                 return ;
             if (this.isBan(user.id) == true)
