@@ -5,15 +5,15 @@
 	<div class="RegisterForm">
 		<p class="error" v-if="error"> {{ error }} </p>
 		<label for="login"> Login </label>	<br>
-		<input type="text" @keyup.enter="login()" v-model="userLogin" class="textArea" v-bind:style='{"border": (errStatus == 1 ? "solid 2px rgb(255, 0, 0)" : "none")}'>
+		<input type="text" @keyup.enter="login()" v-model="userLogin" class="textArea" v-bind:style='{"border": (errStatus[0] == true ? "solid 2px rgb(255, 0, 0)" : "none")}'>
 		<br>
 		<br>
 		<label for="password"> Password </label>	<br>
-		<input type="password" @keyup.enter="login()" v-model="userPass" class="textArea" v-bind:style='{"border": (errStatus == 2 ? "solid 2px rgb(255, 0, 0)" : "none")}'>
+		<input type="password" @keyup.enter="login()" v-model="userPass" class="textArea" v-bind:style='{"border": (errStatus[1] == true ? "solid 2px rgb(255, 0, 0)" : "none")}'>
 		<br>
 		<br>
 		<label for="email"> Email </label>	<br>
-		<input type="text" @keyup.enter="login()" v-model="userMail" class="textArea" v-bind:style='{"border": (errStatus == 3 ? "solid 2px rgb(255, 0, 0)" : "none")}'>	<br>
+		<input type="text" @keyup.enter="login()" v-model="userMail" class="textArea" v-bind:style='{"border": (errStatus[2] == true ? "solid 2px rgb(255, 0, 0)" : "none")}'>	<br>
 
 		<div class="submitBar">
 	
@@ -46,35 +46,40 @@ export default	{
 			userPass:	"",
 			userMail:	"",
 			error: "",
-			errStatus: 0,
+			errStatus: [false, false, false],
 		}
 	},
 	methods:	{
 
 		checkForm() {
+			this.errStatus = [false, false, false];
 	    	if (!this.userLogin) {
-				this.errStatus = 1;
+				this.errStatus[0] = true;
 			}
 			else if (this.userLogin.length > 16) {
-				this.errStatus = 1;
-				return "16 characters maximum"
+				this.errStatus[0] = true;
+				this.error = "16 characters maximum"
 			}
-			if(!this.userPass) {
-				this.errStatus = 2;
+			if (!this.userPass) {
+				this.errStatus[1] = true;
 			}
-			else if (!this.userMail) {
-				this.errStatus = 3;
+			else if (this.userPass.length > 21)
+			{
+				this.errStatus[1] = true;
+				this.error = "Password too long"
+			}
+			if (!this.userMail) {
+				this.errStatus[2] = true;
 			}
 			else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.userMail))){
-				this.errStatus = 3;
-	        	return "Invalid email address";
+				this.errStatus[2] = true;
+	        	this.error = "Invalid email address";
       		}
-			  return "";
+			this.error = "";
 		},
 
 		async login()	{
-			this.errStatus = 0;
-			this.error = this.checkForm();
+			this.checkForm();
 			if (this.error || this.errStatus)
 				return ;
 			const res = await fetch(`http://localhost:3000/api/users`, {
