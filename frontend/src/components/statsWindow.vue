@@ -303,7 +303,6 @@ export default	defineComponent ({
 			else
 			{
 				this.$emit('profId', this.profId);
-				await this.profId;
 				this.$router.push(`/profile/${userInfo.username}`)
 			}
 		},
@@ -317,12 +316,6 @@ export default	defineComponent ({
 					return elem;
 				}
 			}
-		},
-
-		resetScroll(username: String)	{
-			const user = this.getUserField(username);
-			if (user != undefined)
-				user.scrollIntoView(false, {block: "end", inline: "end"});
 		},
 	},
 })
