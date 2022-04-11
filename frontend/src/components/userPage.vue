@@ -338,7 +338,6 @@ export default	defineComponent ({
 		},
 
 		async challenge() {
-			// /challenge/:challengeMode/:challengeId
 			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
@@ -524,15 +523,7 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			if (userInfo.id === this.userId)
-			{
-				this.$router.push(`/profile`)
-				return ;
-			}
-			else
-			{
-				this.$router.push(`/profile/${userInfo.username}`)
-			}
+			this.$router.push(`/profile/${userInfo.username}`)
 			console.log(userInfo);
 			this.userData = await this.fetchUserData();
 			this.picture = await this.getPicture();
