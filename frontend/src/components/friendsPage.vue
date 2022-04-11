@@ -15,12 +15,12 @@
 			</div>
 				<div v-if="relation.status == 1 && relation.list.length" class="listArea">
 					<div  :key="elem.id"  v-for="elem in relation.list" class="elem">
-						<div class="friend-username" @click="goToUserPage(elem.targetName)">
-							{{ elem.targetName }}
+						<div class="friend-username" @click="goToUserPage(elem.target.username)">
+							{{ elem.target.username }}
 						</div>
 						<div class="replyButton">
-							<button v-if="relation.type==all[1].type" @click="acceptRequest(elem.targetId)">accept</button>
-							<button v-if="relation.type==all[1].type" @click="declineRequest(elem.targetId)">decline</button>
+							<button v-if="relation.type==all[1].type" @click="acceptRequest(elem.target.id)">accept</button>
+							<button v-if="relation.type==all[1].type" @click="declineRequest(elem.target.id)">decline</button>
 						</div>
 					</div>
 				</div>

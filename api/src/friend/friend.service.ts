@@ -24,15 +24,11 @@ export class FriendService {
         const u1Relation = {
             user: u1,
             target: u2,
-            targetName: u2.username,
-            targetId: u2.id,
             status: FriendStatus.PENDING
         }
         const u2Relation = {
             user: u2,
             target: u1,
-            targetName: u1.username,
-            targetId: u1.id,
             status: FriendStatus.WAITING
         }
         await this.friendRepository.save(this.friendRepository.create(u1Relation));
@@ -88,8 +84,6 @@ export class FriendService {
         const relation = {
             user: u1,
             target: u2,
-            targetName: u2.username,
-            targetId: u2.id,
             status: FriendStatus.BLOCKED
         }
         await this.friendRepository.save(this.friendRepository.create(relation));
@@ -110,8 +104,6 @@ export class FriendService {
         const relation = {
             user: u1,
             target: u2,
-            targetName: u2.username,
-            targetId: u2.id,
             status: FriendStatus.FRIEND
         }
         await this.friendRepository.save(this.friendRepository.create(relation));

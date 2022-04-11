@@ -532,13 +532,17 @@ export default	defineComponent ({
 		},
 
 		async goToUserProfile(userInfo) {
-			this.update();
 			if (userInfo.id === this.userId)
 				this.$router.push(`/profile`)
 			else
 			{
 				this.$router.push(`/profile/${userInfo.username}`)
 			}
+			this.userData = await this.fetchUserData();
+			this.userLadder = await this.fetchLadderLevel();
+			this.gameHistory = await this.fetchPlayerHistory();
+			this.ladder = await this.fetchLadder();
+			await this.setAchievementStatus();
 		},
 
 		getUserField(username: String)	{
