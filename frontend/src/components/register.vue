@@ -80,7 +80,7 @@ export default	{
 
 		async login()	{
 			this.checkForm();
-			if (this.error || this.errStatus)
+			if (this.error || this.errStatus[0] || this.errStatus[1] || this.errStatus[2])
 				return ;
 			const res = await fetch(`http://localhost:3000/api/users`, {
 				method: 'post',
