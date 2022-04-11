@@ -5,11 +5,8 @@ WORKDIR /transcendance/src/app
 COPY package*.json ./
 
 RUN npm install
-RUN npm install -g @vue/cli
-RUN npm install --save @nestjs/swagger swagger-ui-express
 
-# RUN npm uninstall bcrypt
-# RUN npm i bcrypt
+COPY . .
 
 EXPOSE 3000
 CMD [ "node", "dist/main" ]

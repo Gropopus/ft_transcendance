@@ -7,7 +7,7 @@
 	<div class="searchBar" style="margin-right: 3%">
 		<div style="display: flex; justify-content: right">
 			<img style="height: 25px" src="../assets/magnifying-glass.png">
-			<span style="font-size: 15px; text-align: right; margin-left: 1%"> &quot;Search a user</span>
+			<span style="font-size: 15px; text-align: right; margin-left: 1%"> Search a user</span>
 		</div>
 		<input type="text" v-model="search" v-on:keyup="searchUser()" class="textArea1" style="height: 15px;">
 		<div class="friendFound" v-if="found.length"  :key="elem.id" v-for="elem in found">
@@ -26,7 +26,7 @@
 				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
 			</div>
 			<div v-if="userId != userData.id" class="relation">
-				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/message03.png" class="challengeButton"/>
+				<img v-if="!isBlocked()" @click="sendMessage()" src="/src/assets/message03.png" class="challengeButton" title="send a message"/>
 				<img v-if="challengeIcon.img && userId != userData.id && !isBlocked()" :src="challengeIcon.img" class="challengeButton" @click="challenge()" :title="challengeIcon.title">
 				<img v-if="friendIcon.img" :src="friendIcon.img"  @click="addOrRemovefriend()"  class="relationButton" :title="friendIcon.title" />
 				<p v-else-if="relation=='resquest-pending'" class="pending">request <br> pending...</p>
@@ -61,8 +61,8 @@ export default	defineComponent ({
 			relation: "",
 			friendIcon: {img: "/src/assets/friends-requests.png", title:"add"},
 			challengeIcon: {img: "/src/assets/challenge01.png", title:"challenge"},
-			blockIcon: {img: "/src/assets/plain-cat.png", title:'block '},
-			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock '},
+			blockIcon: {img: "/src/assets/plain-cat.png", title:'block'},
+			unblockIcon: {img: "/src/assets/plain-cat.png", title:'unblock'},
 			relationIcon: "",
 			picture: "",
 			found: [],
@@ -105,8 +105,6 @@ export default	defineComponent ({
     			headers: { 'content-type': 'application/json' }
 			})
 			const user = await res.json();
-			this.blockIcon.title += user.username;
-			this.unblockIcon.title += user.username;
 			return user;
 		},
 
@@ -495,6 +493,8 @@ export default	defineComponent ({
 
 
 .unblockButton {
+	width: calc(33.333% - 1rem);
+    vertical-align: center;
 	margin-right: 3%;
 	margin-left: 3%;
 	flex: auto;
@@ -504,7 +504,8 @@ export default	defineComponent ({
 	width: auto;
 	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
 	padding: 3%;
-	border: solid 2px white
+	border: solid 2px white;
+	max-width: 80px;
 }
 
 .unblockButton:hover {
