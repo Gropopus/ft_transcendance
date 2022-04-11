@@ -100,7 +100,7 @@
 						<div> Opponent Score </div>
 						<div> Opponent </div>
 					</div>
-					<div v-for="elem in gameHistory">
+					<div :key="elem.id" v-for="elem in gameHistory">
 						<div class="histElem" v-if="elem.player_left_id != undefined" v-bind:style='{"background" : (whoWon(elem.player_left_id) ? "none" : "rgb(224, 55, 55, 0.5)")}'>
 							<div v-if="whoWon(elem.player_left_id)">
 								Victory
@@ -214,14 +214,6 @@ export default	defineComponent ({
     async updated() {
         await this.$emit('userIsOnline', this.userId);
     },
-
-	async created() {
-		this.userData = await this.fetchUserData();
-		this.userLadder = await this.fetchLadderLevel();
-		this.gameHistory = await this.fetchPlayerHistory();
-		this.ladder = await this.fetchLadder();
-		await this.setAchievementStatus();
-	},
 
 	methods: {
 		changeCurrent(index: number) {
@@ -538,11 +530,14 @@ export default	defineComponent ({
 			{
 				this.$router.push(`/profile/${userInfo.username}`)
 			}
+			console.log(userInfo);
 			this.userData = await this.fetchUserData();
+			this.picture = await this.getPicture();
 			this.userLadder = await this.fetchLadderLevel();
 			this.gameHistory = await this.fetchPlayerHistory();
 			this.ladder = await this.fetchLadder();
 			await this.setAchievementStatus();
+			await this.update();
 		},
 
 		getUserField(username: String)	{
