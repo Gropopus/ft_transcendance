@@ -479,6 +479,7 @@ export default	defineComponent ({
 	border:	solid 3px white;
 	border-radius: 5px;
 	height: 45em;
+	/* min-width: 900px; */
 }
 
 .chatSide {
