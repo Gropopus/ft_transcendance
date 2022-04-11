@@ -83,9 +83,10 @@ export class ChannelService {
 	}
 
 	async getChannel(channelId: number): Promise<Ichannel> {
-		return await this.channelRepository.findOne(channelId, {
+		return await this.channelRepository.findOne({
 			relations: ['users', 'owner', 'admin', 'muted', 'ban'],
-			select: ['id', 'name', 'type', 'password']
+			select: ['id', 'name', 'type', 'password'],
+			where: { 'id': channelId },
 		});
 	}
 
@@ -274,7 +275,7 @@ export class ChannelService {
 	}
 
 	async findOne(channelId: number): Promise<Ichannel> {
-		return await this.channelRepository.findOne(channelId);
+		return await this.channelRepository.findOne({where: { 'id': channelId }});
 	}
 
 	async deleteChannel(channelId: number): Promise<any> {

@@ -19,11 +19,11 @@ export class JoinedChannelService {
   }
 
   async findByUser(user: Iuser): Promise<IjoinedChanel[]> {
-    return this.joinedChannelRepository.find({ user });
+    return this.joinedChannelRepository.find({ where: {user: user }});
   }
 
   async findByChannel(channelId: number): Promise<IjoinedChanel[]> {
-    return this.joinedChannelRepository.find({ channelId: channelId });
+    return this.joinedChannelRepository.find({ where: {channelId: channelId }});
   }
 
   async deleteBySocketId(socketId: string) {

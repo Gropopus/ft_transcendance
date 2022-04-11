@@ -50,12 +50,12 @@ export class PlayerService {
                 points: his_score,
                 status: PlayerStatus.CANCELLED
             });
-        const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
+        const op_id = (await this.playerRepository.findOne({ where: { id: pid }})).opponentId;
         await this.playerRepository.update( {id: op_id}, {
             points: op_score,
             status: PlayerStatus.CANCELLED
         });
-        return this.playerRepository.findOne({ id: pid });
+        return this.playerRepository.findOne({ where: { id: pid }});
     }
     
     async setFinalScores(pid: number, his_score: number, op_score: number) {
@@ -63,7 +63,7 @@ export class PlayerService {
             points: his_score,
                 status: (his_score > op_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
             });
-            const op_id = (await this.playerRepository.findOne({ id: pid})).opponentId;
+            const op_id = (await this.playerRepository.findOne({ where: { id: pid }})).opponentId;
             await this.playerRepository.update( {id: op_id}, {
                 points: op_score,
             status:  (op_score > his_score ? PlayerStatus.WINNER : PlayerStatus.LOSER)
@@ -76,11 +76,11 @@ export class PlayerService {
     }
     
     async getPlayer(pid: number) {
-        return this.playerRepository.findOne({ id: pid });
+        return this.playerRepository.findOne({ where: { id: pid }});
     }
 
     async getUserHistory(user: Iuser) {
-        return this.playerRepository.find({ user: user })
+        return this.playerRepository.find({ where: { user: user }})
     }
 
 }
