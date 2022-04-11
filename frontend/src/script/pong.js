@@ -290,10 +290,22 @@ async function waited_too_long(pid)
 	{
 		// opponent didn't respond
 		game.socket.emit('MatchTimeOut', game.confirm_id);
+		if (game.challenge != 0)
+		{
+			clearCanvas();
+			drawHead();
+			textDraw("Your opponent didn\'t respond in time", 150);
+			textDraw("The duel got aborted", 231);
+			return ;
+		}
 		clearCanvas();
 		drawHead();
-		textDraw("Your opponent didn\'t respond in time", 150);
-		textDraw("The duel got aborted", 231);
+		game.socket.emit('MatchTimeOut', game.confirm_id);
+		game.matchmaking = -1;
+		game.nb_confirm = 0;
+		game.button = 3;
+		chooseMod();
+		textDraw('Your opponent didn\'t respond in time', 231);
 	}
 }
 

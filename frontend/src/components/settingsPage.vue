@@ -8,9 +8,6 @@
 				<div class="username"> {{ userData.username }} </div>
 				<div class="usermail"> {{ userData.email }} </div>
 			</div>
-			<div class="perso-info">
-				<button @click="goToRoute('/profile')" title="profile"> Profile </button>
-			</div>
 		</div>
 		<div class="settings">
 		<p class="error" v-if="error"> {{ error }} </p>
@@ -165,10 +162,19 @@ export default	{
 			return isLoginExist;
 		},
 
+		checkLogin(login: string) {
+			if (!this.userLogin || this.userLogin.length > 16)
+				return false;
+			for (const c of login)
+				if ((c < 'A' || c > 'z') && (c < '0' || c > '9') && c != '-' && c != '_' && c!= '.')
+					return false;
+			return true;
+		},
+
 		async updateLogin() {
 			this.error = "";
 			this.updateMess = "";
-			if (!this.userLogin || this.userLogin.length > 16)
+			if (!this.checkLogin(this.userLogin))
 				this.error = "Invalid login";
 			else if ((await this.isLoginExist(this.userLogin)))
 				this.error = "This login already exists";
@@ -454,22 +460,13 @@ export default	{
 }
 
 .selector {
+	transition: all 0.3s linear;
 	margin-left: 30%;
-	/* padding-top: 1%;
-	width: 10%;
-	background:	none;
-	border:	solid white 2px;
-	font-size:	100%;
-	color:	white;
-	border-radius: 4px;
-	font-family: MyanmarText;
-	overflow: hidden;
-	min-width: 95px; */
 	padding: 10px 24px;
     text-transform: uppercase;
     border-radius: 25px;
     border: 2px solid white;
-    font-weight: 100;
+    font-weight: 1200;
     font-size: 16px;
     background: transparent;
     color: white;
@@ -507,20 +504,11 @@ export default	{
 .submitButton
 {
 	flex: 0 0 2;
-	/* padding-top: 1%;
-	background:	none;
-	border:	solid white 2px;
-	font-size:	100%;
-	color:	white;
-	border-radius: 4px;
-	font-family: MyanmarText;
-	overflow: hidden;
-	min-width: 95px; */
 	padding: 10px 24px;
     text-transform: uppercase;
     border-radius: 25px;
     border: 2px solid white;
-    font-weight: 100;
+    font-weight: 1200;
     font-size: 16px;
     background: transparent;
     color: white;
@@ -594,21 +582,21 @@ export default	{
 
 .perso-info > button
 {
+	margin-top: auto;
+	margin-bottom: auto;
 	flex: 5;
-	background: none;
-	border: solid 3px white;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: white;
-	max-height: 60px;
+	max-height:	60px;
 	min-width: 150px;
-	width:		50%;
-	margin-top: auto;
-	margin-bottom: auto;	
-	padding-top: 2%;
-	/*margin: 20%;*/
-	margin-top: auto;
+	padding: 10px 24px;
+    text-transform: uppercase;
+    border-radius: 25px;
+    border: 2px solid white;
+    font-weight: 1200;
+    font-size: 16px;
+    background: transparent;
+    color: white;
+	transition: all 0.3s linear;
+	margin-left: 30%;
 }
 
 .perso-info > button:hover
