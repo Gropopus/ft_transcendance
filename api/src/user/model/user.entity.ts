@@ -69,15 +69,11 @@ export class UserEntity {
 	 
 	 @OneToMany(() => FriendEntity, friends => friends.user, {
 		cascade: true,
-		// orphanRemoval: true,
-		// fetch: FetchType.EAGER
 	})
 	friends: FriendEntity[];
 	
 	@OneToMany(() => FriendEntity, friends => friends.target, {
 		cascade: true,
-		// orphanRemoval: true,
-		// fetch: FetchType.EAGER
 	})
 	target: FriendEntity[];
 
@@ -89,7 +85,6 @@ export class UserEntity {
  	@BeforeUpdate()
  	emailToLowerCase() {
     	this.email = this.email.toLowerCase();
-    	//this.username = this.username.toLowerCase();
 	}
 
 	@Column({ default: 0, nullable: true })

@@ -52,9 +52,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         return this.disconnect(socket);
       } else {
         const channels = await this.channelService.getChannelsForUser(user.id, { page: 1, limit: 10 });
-        // Save connection to DB
         await this.connectedUserService.create({ socketId: socket.id, user });
-        // Only emit channels to the specific connected client
         return ;
       }
     } catch {
@@ -64,7 +62,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   async handleDisconnect(socket: Socket) {
     this.logger.log('clien disconnect : ' + socket.id)
-    // remove connection from DB
     await this.connectedUserService.deleteBySocketId(socket.id);
     socket.disconnect();
   }
