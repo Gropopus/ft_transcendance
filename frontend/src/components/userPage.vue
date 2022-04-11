@@ -230,6 +230,7 @@ export default	defineComponent ({
 		async update() {
 			this.userData = await this.fetchUserData();
 			this.relation = await this.fetchRelation();
+			this.userLadder = await this.fetchLadderLevel();
 			if (this.isFriend())
 				this.friendIcon = {img: "/src/assets/muted-users.png", title: "remove friend"};
 			else if (!this.relation)
