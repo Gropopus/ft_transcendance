@@ -21,12 +21,11 @@ export class UserService {
 	async create(newUser: Iuser): Promise<Iuser> {
 		try {
 		const exists: boolean = await this.mailExists(newUser.email);
-		console.log('allo')
 		if (!exists) {
 			const passwordHash: string = await this.hashPassword(newUser.password);
-			var textArea = document.createElement('textarea');
-			textArea.innerHTML = newUser.username;
-			console.log(textArea.innerHTML);
+			// var textArea = document.createElement('textarea');
+			// textArea.innerHTML = newUser.username;
+			// console.log(textArea.innerHTML);
 			newUser.password = passwordHash;
 			newUser.level = 1000;
 			newUser.defeat = 0;
@@ -78,10 +77,10 @@ export class UserService {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
-	async findAllByUsername(username: string): Promise<Iuser[]> {
-			return this.userRepository.find({
+	async findAllByUsername(username: string): Promise<Iuser> {
+			return this.userRepository.findOne({
 			where: {
-				username: Like(`%${username.toLowerCase()}%`)
+				username: username
 			}
 		})
 	}
@@ -89,7 +88,7 @@ export class UserService {
 	async searchUser(key: string): Promise<Iuser[]> {
 		return this.userRepository.find({
 			where: {
-				username: key
+				username: Like(`%${key.toLowerCase()}%`)
 			}
 		})
 	}

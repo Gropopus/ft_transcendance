@@ -127,7 +127,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
+			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})

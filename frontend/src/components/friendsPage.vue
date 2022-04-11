@@ -137,36 +137,12 @@ export default	defineComponent ({
 			this.$router.push(`/profile/${username}`)
 		},
 
-		async searchUser() {
-			if (!this.search)
-			{
-				this.found = [];
-				return [];
-			}
-			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
-				method: 'get',
-				headers: { 'content-type': 'application/json' }
-			})
-			.then(res => {
-				return res.json();
-			})
-			.then((resJson) => {
-				this.found = resJson;
-				return resJson;
-			})
-			.catch(error => {
-				this.found = [];
-				return [];
-			});
-		},
-
 		setDiplayState(type: string) {
 			for (let elem of this.all)
 				if (elem.type == type)
 					elem.status = 1 - elem.status;
 		}
 	},
-
 })
 </script>
 
