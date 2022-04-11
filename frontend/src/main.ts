@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import VueCookies from 'vue3-cookies'
-// import router from './router/index.js'
 import * as VueRouter from 'vue-router'
 import logPage from './components/logPage.vue'
 import register from './components/register.vue'

@@ -72,7 +72,6 @@ export class PlayerService {
         const p2 = await this.getPlayer(op_id);
         await this.userService.updateStat(p1.user.id, (p1.status == PlayerStatus.WINNER));
         await this.userService.updateStat(p2.user.id, (p2.status == PlayerStatus.WINNER));
-        // return this.playerRepository.findOne({ id: pid });
     }
     
     async getPlayer(pid: number) {

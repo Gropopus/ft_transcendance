@@ -546,7 +546,7 @@ function socket_init()
 					{side: game.side, gameId: game.gameId, gameRoom: game.gameRoom});
 			clearCanvas();
 			drawHead()
-			textDraw("Your opponent left the game :'(", 231);
+			textDraw("Your opponent left the game", 231);
 			chooseMod("You win !");
 			game.matchmaking = 0;
 			game.button = 1;
