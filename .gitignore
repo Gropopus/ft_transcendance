@@ -1,3 +1,8 @@
 .*.swp
 *.vim
 .*.swo
+
+api/dist
+api/node_modules
+
+frontend/node_modules
