@@ -186,7 +186,7 @@ export default	{
 		async updatePassword()	{
 			this.error = "";
 			this.updateMess = "";
-			if (!this.userPass)
+			if (!this.userPass || this.userPass.length > 42)
 			{
 				this.error = "Invalid password";
 				this.userPass = "";

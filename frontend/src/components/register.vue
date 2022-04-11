@@ -64,7 +64,7 @@ export default	{
 			if (!this.userPass) {
 				this.errStatus[1] = true;
 			}
-			else if (this.userPass.length > 21)
+			else if (this.userPass.length > 42)
 			{
 				this.errStatus[1] = true;
 				this.error = "Password too long"
