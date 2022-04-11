@@ -59,7 +59,7 @@
                     </select>
                 </div>
             </div>
-            <div class="formElem" v-if="channelData.type == 'protected' && role == 'owner'">
+            <div class="formElem" v-if="this.protected == 1 && role == 'owner'">
                 <label for="password">Change channel password </label>	<br>
                 <input type="password" v-model="chatPassword" class="textArea">
                 <button @click="changePassword()" class="addButton">
@@ -105,6 +105,7 @@ export default defineComponent ({
             new_type: "",
             found: [],
             search: "",
+            protected: 0,
 		}
 	},
 
@@ -184,6 +185,10 @@ export default defineComponent ({
         {
             if (!this.chatPassword)
                 return ;
+             const ret = await fetch(`http://localhost:3000/api/channel/${this.channelId}/changetype/protected`, {
+                method: 'put',
+               headers: { 'content-type': 'application/json' },
+                });
              const res = await fetch(
                 `http://kittypong.fr:3000/api/channel/${this.channelId}/update-password`, {
                 method: 'post',
@@ -242,7 +247,7 @@ export default defineComponent ({
                     method: 'put',
                     headers: { 'content-type': 'application/json' ,
                     'Access-Control-Allow-Origin': '*'},
-                    body: JSON.stringify({password: this.chatPassword}),
+                    body: JSON.stringify({password: this.chatPassword, isAdd: 1}),
             });
             this.channelData = await this.fetchChannel();
             this.search = "";
@@ -296,14 +301,24 @@ export default defineComponent ({
         async changeType(){
             let type = "";
             if (this.isProtected(this.channelData.type) == 1)
+            {
+                console.log("cpicpi");
                 type = "public";
-            else
-                type = "protected";
-            const res = await fetch(
-                `http://kittypong.fr:3000/api/channel/${this.channelId}/changetype/${type}`, {
+                const res = await fetch(`http://kittypong.fr:3000/api/channel/${this.channelId}/changetype/${type}`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
-            });
+                });
+            }
+            else
+            {
+                if (this.protected == 1)
+                    this.protected = 0;
+                else
+                {
+                    type = "protected";
+                    this.protected = 1;
+                }
+            }
             this.channelData = await this.fetchChannel();
         },
 

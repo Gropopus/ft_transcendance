@@ -11,15 +11,9 @@ export class FriendEntity {
     @JoinColumn()
     user: UserEntity;
 
-    @ManyToOne(() => UserEntity, user => user.target)
+    @ManyToOne(() => UserEntity, user => user.target, {eager: true})
     @JoinColumn()
     target: UserEntity;
-
-    @Column({ nullable: true })
-    targetName: string;
-
-    @Column({ nullable: true })
-    targetId: number;
 
     @Column({
         type: "enum",

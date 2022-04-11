@@ -99,7 +99,7 @@ export class UserService {
 	}
 
 	async findOne(id: number): Promise<Iuser> {
-		return this.userRepository.findOne({ id });
+		return this.userRepository.findOne({ where: { id: id }});
 	}
 
 	async updateUser(id: number, user: Iuser)
@@ -125,7 +125,7 @@ export class UserService {
 	}
 
 	private async findByEmail(email: string): Promise<Iuser> {
-		return this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] });
+		return this.userRepository.findOne({ where: { email: email }, select: ['id', 'email', 'username', 'password'] });
 	}
 
 	private async hashPassword(password: string): Promise<string> {
@@ -137,11 +137,11 @@ export class UserService {
 	}
 
 	public getOne(id: number): Promise<Iuser> {
-		return this.userRepository.findOneOrFail({ id });
+		return this.userRepository.findOneOrFail({ where: { id: id }});
 	}
 
 	private async mailExists(email: string): Promise<boolean> {
-		const user = await this.userRepository.findOne({ email });
+		const user = await this.userRepository.findOne({ where: { email: email }});
 		if (user)
 			return true;
 		return false;

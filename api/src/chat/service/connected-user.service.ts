@@ -18,7 +18,7 @@ export class ConnectedUserService {
   }
 
   async findByUser(user: Iuser): Promise<ConnectedIuser[]> {
-    return this.connectedUserRepository.find({ user });
+    return this.connectedUserRepository.find({ where: { 'user': user }});
   }
 
   async deleteBySocketId(socketId: string) {
