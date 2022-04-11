@@ -393,7 +393,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users/search/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
@@ -411,7 +411,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadderLevel() {
-			const res = await fetch(`http://localhost:3000/api/users/ladder-level/${this.userData.id}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users/ladder-level/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -420,7 +420,7 @@ export default	defineComponent ({
 		},
 
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.userData.id}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/game/history/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -429,7 +429,7 @@ export default	defineComponent ({
 		},
 
 		async setSocialStatus() {
-			const res = await fetch(`http://localhost:3000/api/friends/${this.userData.id}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/friends/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -453,7 +453,7 @@ export default	defineComponent ({
 		},
 
 		async setChanStatus() {
-			const res = await fetch(`http://localhost:3000/api/channel/all/${this.userData.id}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/channel/all/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -510,7 +510,7 @@ export default	defineComponent ({
 		},
 
 		async fetchLadder() {
-			const res = await fetch(`http://localhost:3000/api/users`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users`, {
     			method: 'get', 
     			headers: { 'content-type': 'application/json' }
 			})

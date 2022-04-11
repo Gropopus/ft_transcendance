@@ -185,7 +185,7 @@ export default defineComponent ({
         {
             if (!this.chatPassword)
                 return ;
-             const ret = await fetch(`http://localhost:3000/api/channel/${this.channelId}/changetype/protected`, {
+             const ret = await fetch(`http://kittypong.fr:3000/api/channel/${this.channelId}/changetype/protected`, {
                 method: 'put',
                headers: { 'content-type': 'application/json' },
                 });
@@ -347,7 +347,7 @@ export default defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://localhost:3000/api/users/search/${this.search}`, {
+			const res = await fetch(`http://kittypong.fr:3000/api/users/search/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})

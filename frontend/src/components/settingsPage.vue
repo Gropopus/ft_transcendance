@@ -146,7 +146,7 @@ export default	{
 
 		async isLoginExist(login: string) {
 			let isLoginExist = 0;
-			await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
+			await fetch(`http://kittypong.fr:3000/api/users/find-by-username/${this.userLogin}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' },
 			})
