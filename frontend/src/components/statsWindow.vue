@@ -219,7 +219,7 @@ export default	defineComponent ({
 		setVictoryStatus() {
 			if (this.userData.victory >= 1)
 				this.victoryAchievements[0].status = 1;
-			if (this.userData.victory >= 5)
+			if (this.userData.victory >= 10)
 				this.victoryAchievements[1].status = 1;
 			if (this.userData.victory >= 20)
 				this.victoryAchievements[2].status = 1;
