@@ -525,7 +525,10 @@ export default	defineComponent ({
 
 		async goToUserProfile(userInfo) {
 			if (userInfo.id === this.userId)
+			{
 				this.$router.push(`/profile`)
+				return ;
+			}
 			else
 			{
 				this.$router.push(`/profile/${userInfo.username}`)
