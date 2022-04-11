@@ -53,7 +53,7 @@ export class UserController {
 
 	@Get('/find-by-username/:name')
 		async findAllByUsername(@Param() params) {	  
-	  return this.userService.findAllByUsername(params.name);
+	 	return this.userService.findAllByUsername(params.name);
 	}
 
 	@Get('/search/:key')

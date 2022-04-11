@@ -201,6 +201,8 @@ export default	{
             })
             const user = await res.json();
 			this.usernameSearch = user.filter(value => this.IsInChan(value));
+            if(this.usernameSearch == "")
+                this.error = "User doesn't exists."
 			this.searchString = "";
 		},
 	}
