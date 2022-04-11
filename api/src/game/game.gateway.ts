@@ -12,7 +12,7 @@ import { AuthService } from "src/auth/auth.service";
 import { UserService } from "src/user/user.service";
 
 @WebSocketGateway(42069, {cors: {
-		origin: "http://localhost:4200",
+		origin: "https://localhost:4200",
 		methods: ["GET", "POST"],
 		allowedHeaders: ["my-custom-header"],
 		credentials: true

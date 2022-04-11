@@ -103,7 +103,7 @@ export default	defineComponent ({
 
 		async getPicture(id: number)
 		{
-			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${id}`, {
+			const ret = await fetch(`https://localhost:3000/api/users/pictureById/${id}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -114,7 +114,7 @@ export default	defineComponent ({
 		},
 
 		async fectGameList() {
-			const res = await fetch('http://localhost:3000/api/game/playinglist/', {
+			const res = await fetch('https://localhost:3000/api/game/playinglist/', {
 				method: 'get',
 			});
 			this.gameList = await res.json();

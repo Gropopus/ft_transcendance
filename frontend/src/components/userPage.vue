@@ -99,7 +99,7 @@ export default	defineComponent ({
 		},
 
 		async fetchUserData() {
-			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
+			const res = await fetch(`https://localhost:3000/api/users/find-by-username/${this.$route.params.username}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -116,7 +116,7 @@ export default	defineComponent ({
 		async fetchRelation() {
 			if (this.userData === undefined)
 				this.userData = await this.fetchUserData();
-			return await fetch(`http://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
+			return await fetch(`https://localhost:3000/api/friends/${this.userId}/status/${this.userData.id}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -133,13 +133,13 @@ export default	defineComponent ({
 
 		async addOrRemovefriend(){
 			if (this.isFriend()) {
-				await fetch(`http://localhost:3000/api/friends/${this.userId}/unfriend/${this.userData.id}`, {
+				await fetch(`https://localhost:3000/api/friends/${this.userId}/unfriend/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
 			}
 			else if (!this.relation) {
-				await fetch(`http://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
+				await fetch(`https://localhost:3000/api/friends/${this.userId}/add/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
@@ -148,7 +148,7 @@ export default	defineComponent ({
 		},
 
 		async blockUser(){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
+			await fetch(`https://localhost:3000/api/friends/${this.userId}/block/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -156,7 +156,7 @@ export default	defineComponent ({
 		},
 
 		async unblock(){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
+			await fetch(`https://localhost:3000/api/friends/${this.userId}/unblock/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -164,7 +164,7 @@ export default	defineComponent ({
 		},
 
 		async acceptRequest(){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/accept/${this.userData.id}`, {
+			await fetch(`https://localhost:3000/api/friends/${this.userId}/accept/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -172,7 +172,7 @@ export default	defineComponent ({
 		},
 
 		async declineRequest(){
-			await fetch(`http://localhost:3000/api/friends/${this.userId}/decline/${this.userData.id}`, {
+			await fetch(`https://localhost:3000/api/friends/${this.userId}/decline/${this.userData.id}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		});
@@ -193,7 +193,7 @@ export default	defineComponent ({
 
 		async getPicture()
 		{
-			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userData.id}`, {
+			const ret = await fetch(`https://localhost:3000/api/users/pictureById/${this.userData.id}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
@@ -205,21 +205,21 @@ export default	defineComponent ({
 
 		async challenge() {
 			// /challenge/:challengeMode/:challengeId
-			const ret = await fetch(` http://localhost:3000/api/game/newchallengeid/`, {
+			const ret = await fetch(` https://localhost:3000/api/game/newchallengeid/`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			const challengeId = await ret.json();
 			
 			let res = await fetch(
-				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+				`https://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			let data = await res.json();
 			if (!data.items.length) {
 				res = await fetch(
-					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+					`https://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
@@ -234,14 +234,14 @@ export default	defineComponent ({
 
 		async sendMessage() {
 			let res = await fetch(
-				`http://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
+				`https://localhost:3000/api/channel/direct-message/${this.userId}/${this.userData.id}`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
 			let data = await res.json();
 			if (!data.items.length) {
 				res = await fetch(
-					`http://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
+					`https://localhost:3000/api/channel/direct-message/new/${this.userId}/${this.userData.id}`, {
 					method: 'put',
 					headers: { 'content-type': 'application/json' }
 				});
@@ -262,7 +262,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
+			const res = await fetch(`https://localhost:3000/api/users/find-by-username/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})

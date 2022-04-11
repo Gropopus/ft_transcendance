@@ -55,7 +55,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchPlayerHistory() {
-			const res = await fetch(`http://localhost:3000/api/game/history/${this.profId}`, {
+			const res = await fetch(`https://localhost:3000/api/game/history/${this.profId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
