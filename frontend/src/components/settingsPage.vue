@@ -126,7 +126,7 @@ export default	{
 
 	methods:	{
 		async fetchUserData() {
-			const res = await fetch(`https://localhost:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -136,7 +136,7 @@ export default	{
 
 		async getPicture()
 		{
-			const ret = await fetch(`https://localhost:3000/api/users/pictureById/${this.userId}`, {
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -154,7 +154,7 @@ export default	{
 	        	 	this.error = "Invalid login";
 					return ;
 				}
-				const test = await fetch(`https://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
+				const test = await fetch(`http://localhost:3000/api/users/find-by-username/${this.userLogin}`, {
 					method: 'get',
 					headers: { 'content-type': 'application/json' },
 				})
@@ -167,7 +167,7 @@ export default	{
 				}
 				else
 				{
-					const res = await fetch(`https://localhost:3000/api/users/update/${this.userId}`, {
+					const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
 						method: 'post',
 						headers: { 'content-type': 'application/json' },
 						body: JSON.stringify({ username: this.userLogin })
@@ -187,7 +187,7 @@ export default	{
 				this.userPass = "";
 				return ;
 			}
-			const res = await fetch(`https://localhost:3000/api/users/update/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
 			method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ password: this.userPass })
@@ -209,11 +209,11 @@ export default	{
 				return ;
 			let formData = new FormData();
   			formData.append('file', this.file);
-			const res = await fetch(`https://localhost:3000/api/users/upload`, {
+			const res = await fetch(`http://localhost:3000/api/users/upload`, {
 				method: 'post',
 				body: formData,
 				})
-			const ret = await fetch(`https://localhost:3000/api/users/update/${this.userId}`, {
+			const ret = await fetch(`http://localhost:3000/api/users/update/${this.userId}`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ picture: this.file.name })
@@ -223,7 +223,7 @@ export default	{
 
 		async displayPicture()
 		{
-			const ret = await fetch(`https://localhost:3000/api/users/pictureById/${this.userId}`, {
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -236,7 +236,7 @@ export default	{
 
 		async isTwoFA()
 		{
-			const res = await fetch(`https://localhost:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})
@@ -267,7 +267,7 @@ export default	{
 		{
 			if (this.twofa == false)
 			{
-				const res = await fetch('https://localhost:3000/api/2fa/generate', {
+				const res = await fetch('http://localhost:3000/api/2fa/generate', {
 
 					method: 'post',
 					headers: { 'content-type': 'application/json' },
@@ -275,7 +275,7 @@ export default	{
 				})
 				const rep = await res.json();
 				this.secret = rep;
-				const ret = await fetch(`https://localhost:3000/api/2fa/qrcode`, {
+				const ret = await fetch(`http://localhost:3000/api/2fa/qrcode`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 				})
@@ -304,7 +304,7 @@ export default	{
 				this.error = "No code to submit"
 				return ;
 			}
-			const res = await fetch('https://localhost:3000/api/2fa/turn-on', {
+			const res = await fetch('http://localhost:3000/api/2fa/turn-on', {
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),
@@ -326,7 +326,7 @@ export default	{
 				this.error = "No code to submit"
 				return ;
 			}
-			const res = await fetch('https://localhost:3000/api/2fa/turn-off', {
+			const res = await fetch('http://localhost:3000/api/2fa/turn-off', {
 				method: 'post',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({code: this.googlecode, user: this.user}),

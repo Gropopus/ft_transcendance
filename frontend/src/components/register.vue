@@ -82,14 +82,14 @@ export default	{
 			this.checkForm();
 			if (this.error || this.errStatus[0] || this.errStatus[1] || this.errStatus[2])
 				return ;
-			const res = await fetch(`https://localhost:3000/api/users`, {
+			const res = await fetch(`http://localhost:3000/api/users`, {
 				method: 'post',
 					headers: { 'content-type': 'application/json' },
 					body: JSON.stringify({ email: this.userMail, username: this.userLogin, password: this.userPass })
 			})
 			if (res.status != 400 && res.status != 404 && res.status != 409)
 			{
-				const userRes = await fetch(`https://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
+				const userRes = await fetch(`http://localhost:3000/api/users/find-by-email/${this.userLogin}`, {
 					method: 'get',
 					headers: { 'content-type': 'application/json' },
 				})

@@ -17,7 +17,7 @@ import { FriendService } from 'src/friend/friend.service';
 import { Logger } from "@nestjs/common";
 
 @WebSocketGateway(42070, {cors: {
-  origin: "https://localhost:4200",
+  origin: "http://localhost:4200",
   methods: ["GET", "POST"],
   allowedHeaders: ["my-custom-header"],
   credentials: true

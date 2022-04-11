@@ -102,7 +102,7 @@ export default	{
                     muted: [],
                     admin: []
                 }
-                const res = await fetch(`https://localhost:3000/api/channel/new/${this.userId}`, {
+                const res = await fetch(`http://localhost:3000/api/channel/new/${this.userId}`, {
                     method: 'put',
                         headers: { 'content-type': 'application/json' },
                         body: JSON.stringify(req)
@@ -116,7 +116,7 @@ export default	{
 
         async addUserToChannel(channelId: number, username: string) {
             const res = await fetch(
-                `https://localhost:3000/api/channel/${channelId}/adduser/${username}`, {
+                `http://localhost:3000/api/channel/${channelId}/adduser/${username}`, {
                     method: 'put',
                     headers: { 'content-type': 'application/json' ,
                     'Access-Control-Allow-Origin': '*'},
@@ -130,7 +130,7 @@ export default	{
             if (!this.userToAdd)
                 return ;
             const res = await fetch(
-                `https://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
+                `http://localhost:3000/api/users/find-by-username/${this.userToAdd}`, {
                     method: 'get',
                headers: { 'content-type': 'application/json' },
             })
@@ -195,7 +195,7 @@ export default	{
 				return ;
 			}
             const res = await fetch(
-                `https://localhost:3000/api/users/find-by-username/${searchString}`, {
+                `http://localhost:3000/api/users/find-by-username/${searchString}`, {
                     method: 'get',
                headers: { 'content-type': 'application/json' },
             })

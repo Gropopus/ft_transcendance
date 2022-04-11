@@ -21,7 +21,7 @@ export default	defineComponent ({
     async mounted() {	
         this.gameList;
         this.gameListPlaying;
-        const h = await fetch('https://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
+        const h = await fetch('http://localhost:3000/api/game/stat/' + this.$route.params.gameId, {
             method: 'get',
         });
         try {

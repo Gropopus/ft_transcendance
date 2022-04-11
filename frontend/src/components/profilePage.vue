@@ -79,7 +79,7 @@ export default	defineComponent ({
 
 	methods: {
 		async fetchUserData() {
-			const res = await fetch(`https://localhost:3000/api/users/${this.userId}`, {
+			const res = await fetch(`http://localhost:3000/api/users/${this.userId}`, {
     			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			});
@@ -88,14 +88,14 @@ export default	defineComponent ({
 		},
 
 		async addfriend(targetId: number){
-			await fetch(`https://localhost:3000/api/friends/1/add/${targetId}`, {
+			await fetch(`http://localhost:3000/api/friends/1/add/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
 		},
 
 		async blockUser(targetId: number){
-			await fetch(`https://localhost:3000/api/friends/${this.userId}/block/${targetId}`, {
+			await fetch(`http://localhost:3000/api/friends/${this.userId}/block/${targetId}`, {
     			method: 'put',
     			headers: { 'content-type': 'application/json' }
     		})
@@ -103,7 +103,7 @@ export default	defineComponent ({
 
 		async getPicture()
 		{
-			const ret = await fetch(`https://localhost:3000/api/users/pictureById/${this.userId}`, {
+			const ret = await fetch(`http://localhost:3000/api/users/pictureById/${this.userId}`, {
 				method: 'get',
 					headers: { 'responseType': 'blob' },
 			})
@@ -127,7 +127,7 @@ export default	defineComponent ({
 				this.found = [];
 				return [];
 			}
-			const res = await fetch(`https://localhost:3000/api/users/find-by-username/${this.search}`, {
+			const res = await fetch(`http://localhost:3000/api/users/find-by-username/${this.search}`, {
 				method: 'get',
 				headers: { 'content-type': 'application/json' }
 			})

@@ -88,7 +88,7 @@ export default	{
 
     async userIsOnline(id: number) {
       await fetch(
-        `https://localhost:3000/api/users/${id}/isOnline`, {
+        `http://localhost:3000/api/users/${id}/isOnline`, {
         method: 'put',
         headers: { 'content-type': 'application/json' }
         });
