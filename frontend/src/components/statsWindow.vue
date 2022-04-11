@@ -28,27 +28,27 @@
 			<div v-if="currentTab==1" class="achievements">
 				<div class="achievementsTable">
 					<div class="achievementsCol">
-						<div :key="file.name" v-for="file in socialAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
-							<img v-else :src="file.iconOff" :title="file.name">
+						<div :key="file.name" v-for="file in socialAchievements" :description="file.title + ': ' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.name" v-for="file in victoryAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
-							<img v-else :src="file.iconOff" :title="file.name">
+						<div :key="file.title" v-for="file in victoryAchievements" :description="file.title + ':\n' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.name" v-for="file in chanAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn" title="file.name">
-							<img v-else :src="file.iconOff" :title="file.name">
+						<div :key="file.title" v-for="file in chanAchievements" :description="file.title + ':\n' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 					<div class="achievementsCol">
-						<div :key="file.name" v-for="file in eloAchievements">
-							<img v-if="file.status == 1" :src="file.iconOn" :title="file.name">
-							<img v-else :src="file.iconOff" :title="file.name">
+						<div :key="file.title" v-for="file in eloAchievements" :description="file.title + ':\n' + file.description">
+							<img v-if="file.status == 1" :src="file.iconOn">
+							<img v-else :src="file.iconOff">
 						</div>
 					</div>
 				</div>
@@ -125,24 +125,24 @@ export default	defineComponent ({
 			ladder:	[],
 			gameHistory: [],
 			socialAchievements: [
-                {name: "Social 1", iconOn: "/src/assets/achievments/Friends_Bronze_ON.png", iconOff: "/src/assets/achievments/Friends_Bronze_OFF.png", status: 0},
-                {name: "Social 2", iconOn: "/src/assets/achievments/Friends_Sivler_ON.png", iconOff: "/src/assets/achievments/Friends_Silver_OFF.png", status: 0},
-                {name: "Social 3", iconOn: "/src/assets/achievments/Friends_Gold_ON.png", iconOff: "/src/assets/achievments/Friends_Gold_OFF.png", status: 0},
+                {name: "Social 1", title: "Ermit" , iconOn: "/src/assets/achievments/Friends_Bronze_ON.png", iconOff: "/src/assets/achievments/Friends_Bronze_OFF.png", status: 0, description: "Have one person in you friend list"},
+                {name: "Social 2", title: "Social Butterfly" , iconOn: "/src/assets/achievments/Friends_Sivler_ON.png", iconOff: "/src/assets/achievments/Friends_Silver_OFF.png", status: 0, description: "Befriend 5 users"},
+                {name: "Social 3", title: "I know people" , iconOn: "/src/assets/achievments/Friends_Gold_ON.png", iconOff: "/src/assets/achievments/Friends_Gold_OFF.png", status: 0, description: "Befriend 20 users"},
             ],
 			victoryAchievements: [
-                {name: "Victory 1", iconOn: "/src/assets/achievments/Victory_Bronze_ON.png", iconOff: "/src/assets/achievments/Victory_Bronze_OFF.png", status: 0},
-                {name: "Victory 2", iconOn: "/src/assets/achievments/Victory_Silver_ON.png", iconOff: "/src/assets/achievments/Victory_Silver_OFF.png", status: 0},
-                {name: "Victory 3", iconOn: "/src/assets/achievments/Victory_Gold_ON.png", iconOff: "/src/assets/achievments/Victory_Gold_OFF.png", status: 0},
+                {name: "Victory 1", title: "Newbie" , iconOn: "/src/assets/achievments/Victory_Bronze_ON.png", iconOff: "/src/assets/achievments/Victory_Bronze_OFF.png", status: 0, description: "Win your first game"},
+                {name: "Victory 2", title: "Commander" , iconOn: "/src/assets/achievments/Victory_Silver_ON.png", iconOff: "/src/assets/achievments/Victory_Silver_OFF.png", status: 0, description: "Win 10 games"},
+                {name: "Victory 3", title: "Emperor" , iconOn: "/src/assets/achievments/Victory_Gold_ON.png", iconOff: "/src/assets/achievments/Victory_Gold_OFF.png", status: 0, description: "Win 50 games"},
             ],
 			chanAchievements: [
-                {name: "Chan 1", iconOn: "/src/assets/achievments/Channel_Bronze_ON.png", iconOff: "/src/assets/achievments/Channel_Bronze_OFF.png", status: 0},
-                {name: "Chan 2", iconOn: "/src/assets/achievments/Channel_Silver_ON.png", iconOff: "/src/assets/achievments/Channel_Silver_OFF.png", status: 0},
-                {name: "Chan 3", iconOn: "/src/assets/achievments/Channel_Gold_ON.png", iconOff: "/src/assets/achievments/Channel_Gold_OFF.png", status: 0},
+                {name: "Chan 1", title: "Deputy" , iconOn: "/src/assets/achievments/Channel_Bronze_ON.png", iconOff: "/src/assets/achievments/Channel_Bronze_OFF.png", status: 0, description: "Join your first channel"},
+                {name: "Chan 2", title: "Senator" , iconOn: "/src/assets/achievments/Channel_Silver_ON.png", iconOff: "/src/assets/achievments/Channel_Silver_OFF.png", status: 0, description: "Participate in 5 channels"},
+                {name: "Chan 3", title: "Mr President" , iconOn: "/src/assets/achievments/Channel_Gold_ON.png", iconOff: "/src/assets/achievments/Channel_Gold_OFF.png", status: 0, description: "Participate in 10 channels"},
             ],
 			eloAchievements: [
-                {name: "Elo 1", iconOn: "/src/assets/achievments/Elo_Bronze_ON.png", iconOff: "/src/assets/achievments/Elo_Bronze_OFF.png", status: 0},
-                {name: "Elo 2", iconOn: "/src/assets/achievments/Elo_Silver_ON.png", iconOff: "/src/assets/achievments/Elo_Silver_OFF.png", status: 0},
-                {name: "Elo 3", iconOn: "/src/assets/achievments/Elo_Gold_ON.png", iconOff: "/src/assets/achievments/Elo_Gold_OFF.png", status: 0},
+                {name: "Elo 1", title: "Rookie" , iconOn: "/src/assets/achievments/Elo_Bronze_ON.png", iconOff: "/src/assets/achievments/Elo_Bronze_OFF.png", status: 0, description: "Reach an Elo score of 1050"},
+                {name: "Elo 2", title: "Veteran" , iconOn: "/src/assets/achievments/Elo_Silver_ON.png", iconOff: "/src/assets/achievments/Elo_Silver_OFF.png", status: 0, description:  "Reach an Elo score of 1200"},
+                {name: "Elo 3", title: "GrandMaster" , iconOn: "/src/assets/achievments/Elo_Gold_ON.png", iconOff: "/src/assets/achievments/Elo_Gold_OFF.png", status: 0, description:  "Reach an Elo score of 1400"},
             ],
 		}
 	},
@@ -459,6 +459,7 @@ export default	defineComponent ({
 
 .achievementsCol > div
 {
+	position: relative;
 	/* border: solid white 3px; */
 	margin-top: 3%;
 	margin-bottom: 3%;
@@ -477,6 +478,34 @@ export default	defineComponent ({
 	height: 100%;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.achievementsCol > div:before
+{
+	content: attr(description);
+	visibility: hidden;
+	opacity: 0;
+	width: 140px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 2px;
+	padding: 5px 0;
+	transition: opacity 1s ease-in-out;
+	font-style: Myanmar;
+	color:	var(--font-blue);
+	background: rgb(255, 255, 255, 0.3);
+
+	position: absolute;
+	z-index: 1;
+	left: 110%;
+	top: 10%;
+}
+
+.achievementsCol > div:hover:before
+{
+	opacity: 1;
+	visibility: visible;
 }
 
 .history

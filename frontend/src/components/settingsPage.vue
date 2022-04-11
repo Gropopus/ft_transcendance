@@ -17,29 +17,42 @@
 		<p class="update" v-if="updateMess"> {{ updateMess }} </p>
 		<div class="submitBar">
 			<div class="title"> Change your Login:</div>
-			<input type="text" v-model="userLogin" class="textArea">
-			<button @click="updateLogin()" class="submitButton">
-				Update </button></div>
+ 			<div class="settingsField">
+				<input type="text" v-model="userLogin" class="textArea">
+				<button @click="updateLogin()" class="submitButton">
+					Update
+				</button>
+			</div>
+		</div>
 		<div class="submitBar">
-		<div class="title"> Change your Password: </div>
-		<input type="password" v-model="userPass" class="textArea">
-		<button @click="updatePassword()" class="submitButton">
-				Update </button>
+			<div class="title"> Change your Password: </div>
+			<div class="settingsField">
+				<input type="password" v-model="userPass" class="textArea">
+				<button @click="updatePassword()" class="submitButton">
+						Update
+				</button>
+			</div>
 		</div>
 		<div class="submitBar">
 			<div class="title"> Change your Picture: </div>
-			<input type="file" accept="image/x-png,image/gif,image/jpeg,image/png" @change="onChangeFileUpload($event)" class="fileArea">
-			<button @click="Upload()" class="submitButton">
-				Upload </button>
+			<div class="settingsField">
+				<input type="file" accept="image/x-png,image/gif,image/jpeg,image/png" @change="onChangeFileUpload($event)" class="fileArea">
+				<button @click="Upload()" class="submitButton">
+					Upload
+				</button>
+			</div>
 		</div>
 		<div class="submitBar">
 			<div class="title"> Two factor authentication: </div>
-			<select class="selector" @change="handleTwoFA()">
-                <option :selected="isDisable()">disable</option>
-                <option :selected="isEnable()"> enable</option>
-            </select>
+			<div class="settingsField">
+				<div class="textArea"></div>
+				<select class="selector" @change="handleTwoFA()">
+					<option :selected="isDisable()">disable</option>
+					<option :selected="isEnable()"> enable</option>
+				</select>
+			</div>
 		</div>
-		<div class="secret" v-if="secret">
+		<div class="secret" v-if="secret && qrcode">
 			<div class= "secret-content">
 				Please keep this secret code: {{ secret}}
 				<br>
@@ -52,7 +65,7 @@
 				<button @click="turnOn2FA()" class="submitButton">
 					Submit </button>
 		</div>
-		<div class="secret" v-if="turnoff">
+		<div class="secret" v-if="secret && turnoff">
 			<div class="desactived"> Finish this security verification to disable Google Authenticator, please enter the 6 digit code from Google Authenticator:</div> <br>
 			<input type="googlecode" v-model="googlecode" class="textArea">
 			<button @click="turnOff2FA()" class="submitButton">
@@ -379,18 +392,35 @@ export default	{
 	margin-left: 7%;
 	font-size: 150%;
 }
-.submitBar > input.textArea
+
+.submitBar	{
+	display: flex;
+	flex-direction: column;
+}
+
+.settingsField	{
+	display: flex;
+	flex-direction: row;
+	width: 70%;
+}
+
+.textArea	{
+	flex:	0 0 9;
+	width:	100%;
+}
+
+.settingsField > input.textArea
 {
 	border: none;
 	background-color:	var(--input-fields);
 	opacity:	50%;
 	font-size:	130%;
 	padding:	6px;
-	width:		auto;
+	width:	100%;
 	/* margin-left: 10%; */
 }
 
-.secret > input.textArea 
+.secret > input
 {
 	border: none;
 	background-color:	var(--input-fields);
@@ -410,12 +440,6 @@ export default	{
 {
 	margin-left: 10%;
 }
-.textArea {
-	height: 20%;
-	vertical-align: center;
-	margin-left: auto;
-    margin-right: auto;
-}
 
 .title {
 	margin-top: 1.5%;
@@ -425,40 +449,6 @@ export default	{
 }
 
 .selector {
-    margin-left: 10%;
-	padding-top: 1%;
-	width: 10%;
-	background:	white;
-	border:	solid rgb(238, 220, 220);
-	font-size:	100%;
-	color:	rgb(236, 100, 151);
-	border-radius: 4px;
-	font-family: MyanmarText;
-	min-width: 150px;
-}
-
-.submitBar > .fileArea {
-	justify-content: left;
-	background:	none;
-	font-size:	100%;
-	font-family: MyanmarText;
-	margin-top: 1.5%;
-    margin-right: auto;
-	width:	auto;
-	min-width: 150px;
-}
-.settingsPage > .submitBar
-{
-	height: 15%;
-	display:	flex;
-	margin-top: 3%;
-	margin-right:	6%;
-	margin-left:	auto;
-	flex-direction:	row;
-}
-
-.submitButton
-{
 	margin-left: 30%;
 	/* padding-top: 1%;
 	width: 10%;
@@ -478,7 +468,59 @@ export default	{
     font-size: 16px;
     background: transparent;
     color: white;
+}
+
+.selector:hover	{
+	/* background: rgba(255, 255, 255, 0.5);
+	color: white;
+	cursor: pointer;  */
+	background-color: white;
+	cursor: pointer;
+	color: black;
+}
+
+.submitBar > .settingsField > input.fileArea {
+	flex: 0 0 9;
+	justify-content: left;
+	background:	none;
+	font-size:	100%;
+	font-family: MyanmarText;
+	min-width: 150px;
+	padding:	6px;
+	width:	100%;
+}
+.settingsPage > .submitBar
+{
+	height: 15%;
+	display:	flex;
+	margin-top: 3%;
+	margin-right:	6%;
+	margin-left:	auto;
+	flex-direction:	row;
+}
+
+.submitButton
+{
+	flex: 0 0 2;
+	/* padding-top: 1%;
+	background:	none;
+	border:	solid white 2px;
+	font-size:	100%;
+	color:	white;
+	border-radius: 4px;
+	font-family: MyanmarText;
+	overflow: hidden;
+	min-width: 95px; */
+	padding: 10px 24px;
+    text-transform: uppercase;
+    border-radius: 25px;
+    border: 2px solid white;
+    font-weight: 100;
+    font-size: 16px;
+    background: transparent;
+    color: white;
 	transition: all 0.3s linear;
+	margin-left: 30%;
 }
 
 .submitButton:hover
