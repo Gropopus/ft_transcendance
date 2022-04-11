@@ -27,7 +27,7 @@
 				<div class="status" v-else style="color: rgb(200, 192, 255);"> in game </div>
 			</div>
 			<div class="perso-info">
-				<button @click="goToRoute('/settings')" title="settings" class="Edit"> Edit</button>
+				<img @click="goToRoute('/settings')" title="settings" v-if="settingsIcon.img" :src="settingsIcon.img">
 			</div>
 		</div>
 		<statsWindow :userId="userId" :profId="userId"/>
@@ -59,6 +59,7 @@ export default	defineComponent ({
 			picture: "",
 			found: [],
             search: "",
+			settingsIcon: {img: "/src/assets/settings-icon.png", title:"settings"},
 		}
 	},
 
@@ -209,13 +210,11 @@ export default	defineComponent ({
 
 .perso-info
 {
-	flex: 1;
 	margin-right: 3%;
 	display: flex;
 	flex-direction:	column;
-	margin-top: 2%;
-	margin-bottom: 2%;
-	vertical-align: center;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 .status {
@@ -229,25 +228,32 @@ export default	defineComponent ({
 {
 	flex: 5;
 	background: none;
-	border: solid 3px white;
-	font-family: MyanmarText;
-	letter-spacing:	2px;
-	font-size:	150%;
-	color: white;
-	max-height: 60px;
-	min-width: 150px;
-	width:		50%;
-	margin-top: auto;
-	margin-bottom: auto;	
+	border: none;
 	padding-top: 2%;
-	/*margin: 20%;*/
-	margin-top: auto;
+	margin: 20%;
+	margin-top: 30%;
 }
 
-.perso-info > button:hover
+.perso-info > img:hover
 {
-	background: rgba(255, 255, 255, 0.5);
-	cursor: pointer; 
+	background:	var(--deep-blue-10);
+	color: white;
+	cursor: pointer;
+}
+
+.perso-info > img
+{
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: 1 1 1;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	padding: 3%;
+	border: solid 2px white;
+	object-fit: contain;
 }
 
 .picture {

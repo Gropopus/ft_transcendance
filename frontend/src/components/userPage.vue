@@ -431,7 +431,7 @@ export default	defineComponent ({
 	height: auto;
 	width: auto;
 	padding: 3%;
-	border: solid 2px white
+	border: solid 2px white;
 }
 
 .relationButton:hover {

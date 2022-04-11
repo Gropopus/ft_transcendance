@@ -33,7 +33,7 @@
 					<div @click="goToUserProfile(getOneDM(channelId).name)" class="usernameButton"> {{ getOneDM(channelId).name }}</div>
 				</div>
 			</div>
-			<button v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'" @click="goToSettings(channelId)"> Settings </button>
+			<img v-if="channelsList[getChannelIndex(channelId)].type != 'direct-message'&& settingsIcon.img" @click="goToSettings(channelId)" title="settings" :src="settingsIcon.img">
 		</div>
 		<div class="chatArea">
 			<ul v-if="channelMessages != undefined" :key="mess.id" v-for="mess in channelMessages.slice().reverse()">
@@ -126,6 +126,7 @@ export default	defineComponent ({
 			joinPassword: "",
 			tmpUsername: "",
 			dmList: [],
+			settingsIcon: {img: "/src/assets/settings-icon.png", title:"settings"},
 		}
 	},
 	
@@ -623,25 +624,27 @@ export default	defineComponent ({
 
 }
 
-.channelName > button
+.channelName > img
 {
-	flex: 1;
+	margin-right: 3%;
+	margin-left: 3%;
+	flex: 1 1 1;
+	border-radius: 50%;
+	box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+	max-height: 70px;
+	height: auto;
+	width: auto;
+	border: solid 2px white;
+	object-fit: contain;
 	margin-top: auto;
 	margin-bottom: auto;
-	margin-right: 1%;
-	height:	42px;
-	background: none;
-	border: solid 1px white;
-	border-radius: 5px;
-	font-size: 120%;
-	font-style: Myanmar;
-	color: white;
 }
 
-.channelName > button:hover
+.channelName > img:hover
 {
+	background:	var(--deep-blue-10);
+	color: white;
 	cursor: pointer;
-	background: rgb(255, 255, 255, 0.5);
 }
 
 .chanNameButton
