@@ -277,6 +277,7 @@ export default	{
 			else if (this.twofa == true)
 			{
 				this.turnoff = "oui";
+				this.secret = "";
 				this.twofa = false;
 			}
 		},
