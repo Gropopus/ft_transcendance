@@ -21,15 +21,8 @@
 			<input type="googlecode" v-model="googlecode" class="textArea">
 			<button @click="twoFACheck()" class="submitButton">
 				Log-in </button>
-		</div>
+			</div>
 		</div> <!-- LoginForm end -->
-		<a class="submit42Button" href="http://kittypong.fr:3000/api/oauth2/school42">
-			<img src="../assets/logo-42_white.png">
-			<div>
-				Log In with<br>
-				Connect
-			</div></a>
-	<!--	</button> submit42Button end -->
 	</div>
 </template>
 
