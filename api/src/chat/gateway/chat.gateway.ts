@@ -5,7 +5,6 @@ import { Iuser } from 'src/user/model/user.interface';
 import { UserService } from 'src/user/user.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { ChannelService } from '../channel.service';
-import { Ipage } from '../model/page.interface';
 import { ConnectedUserService } from '../service/connected-user.service';
 import { Ichannel, ChannelType } from '../model/channel.interface';
 import { ConnectedIuser } from '../model/connected-user.interface';

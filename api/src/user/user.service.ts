@@ -20,21 +20,22 @@ export class UserService {
 
 	async create(newUser: Iuser): Promise<Iuser> {
 		try {
-		const exists: boolean = await this.mailExists(newUser.email);
-		if (!exists) {
-			const passwordHash: string = await this.hashPassword(newUser.password);
-			newUser.password = passwordHash;
-			newUser.level = 1000;
-			newUser.defeat = 0;
-			newUser.victory = 0;
-			newUser.twoFactorAuthEnabled = false;
-			newUser.picture = "profile-picture.png";
-			const user = await this.userRepository.save(this.userRepository.create(newUser));
-			return this.findOne(user.id);
-		} else {
-			throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
+			const exists: boolean = await this.mailExists(newUser.email);
+			if (!exists) {
+				const passwordHash: string = await this.hashPassword(newUser.password);
+				newUser.password = passwordHash;
+				newUser.level = 1000;
+				newUser.defeat = 0;
+				newUser.victory = 0;
+				newUser.twoFactorAuthEnabled = false;
+				newUser.picture = "profile-picture.png";
+				const user = await this.userRepository.save(this.userRepository.create(newUser));
+				return this.findOne(user.id);
+			} else {
+				throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
+			}
 		}
-		} catch {
+		catch {
 			throw new HttpException('Email or username is already in use', HttpStatus.CONFLICT);
 		}
 	}
@@ -46,23 +47,24 @@ export class UserService {
 				const matches: boolean = await this.validatePassword(user.password, foundUser.password);
 				if (matches) {
 					const payload: Iuser = await this.findOne(foundUser.id);
-					/*if (payload.ban)
-						throw new HttpException('User banned', HttpStatus.UNAUTHORIZED);*/
 					const jwt: string = await this.authService.generateJwt(payload);
 					this.updateLastTaskTime(payload.id);
 					this.userRepository.update(payload.id, {status: UserStatus.ON});
 					return {
 						jwt,
 						payload,
-						};
-				} else {
+					};
+				}
+				else {
 					throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED);
 				}
-			} else {
+			}
+			else {
 				throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED);
 			}
-		} catch {
-		throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		}
+		catch {
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -104,6 +106,8 @@ export class UserService {
 
 	async updateUser(id: number, user: Iuser)
 	{
+		if (user.password)
+			user.password = await this.authService.hashPassword(user.password);
 		return this.userRepository.update(id, user);
 	}
 

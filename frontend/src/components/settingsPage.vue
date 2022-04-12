@@ -15,16 +15,16 @@
 		<div class="submitBar">
 			<div class="title"> Change your Login:</div>
  			<div class="settingsField">
-				<input type="text" v-model="userLogin" class="textArea">
+				<input type="text" v-model="userLogin" @keyup.enter="updateLogin()" class="textArea">
 				<button @click="updateLogin()" class="submitButton">
 					Update
 				</button>
 			</div>
 		</div>
-		<div class="submitBar">
+		<div class="submitBar" v-if="!userData.id42">
 			<div class="title"> Change your Password: </div>
 			<div class="settingsField">
-				<input type="password" v-model="userPass" class="textArea">
+				<input type="password" v-model="userPass" @keyup.enter="updatePassword()" class="textArea">
 				<button @click="updatePassword()" class="submitButton">
 						Update
 				</button>
