@@ -38,8 +38,7 @@ services:
     depends_on:
       - api
     volumes:
-      - ./frontend:/transcendance/frontend/src/app
-      - /transcendance/frontend/src/app/node_modules
+      - ./frontend:/root
     ports:
       - 4200:4200
     links:

@@ -4,5 +4,8 @@
 
 api/dist
 api/node_modules
+api/src/uploads/*
 
 frontend/node_modules
+frontend/.npm/*
+frontend/yarn.lock
