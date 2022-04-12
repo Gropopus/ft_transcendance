@@ -30,9 +30,6 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 		});
 		try {
 			let user = await this.usersService.getUserByid42(data.id);
-			if (user.ban) {
-				throw new UnauthorizedException('You\'re banned');				
-			}
 			done(null, user);
 		}
 		catch (error) {
@@ -61,12 +58,7 @@ export class School42Strategy extends PassportStrategy(Strategy, 'school42') {
 					}
 				}
 			}
-			else {
-				throw new HttpException(
-					error.message,
-					HttpStatus.INTERNAL_SERVER_ERROR,
-				  );
-			}
+
 		}
 	}
 }

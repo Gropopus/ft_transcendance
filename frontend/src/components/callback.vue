@@ -8,6 +8,9 @@
 			<button @click="twoFACheck()"  class="submitButton">
 				Log-in </button>
     </div>
+	<div class="unauthorized" v-else>
+            <p class="error" v-if="error"> {{ error }} </p>
+	</div>
 </div>
 </template>
 
@@ -78,6 +81,11 @@ export default	{
 				headers: { 'content-type': 'application/json' },
 			})
 			this.user =	await res.json();
+			if (res.status == 401)
+			{
+				this.error = "Permission denied"
+				return ;
+			}
 			if (this.user.twoFactorAuthEnabled == false)
 			{
 				this.$emit('update:userId', this.user.id);

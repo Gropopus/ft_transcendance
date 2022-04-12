@@ -1,6 +1,4 @@
 import { Req, Controller, HttpCode, UseGuards, Res, Get, Inject, forwardRef } from '@nestjs/common';
-import { TwoFactorService } from '../two-factor/twoFactor.service';
-import RequestWithUser from '../requestWithUser.interface';
 import { Response } from 'express';
 import { School42AuthenticationGuard } from './school42Authentication.guard';
 import {UserService} from 'src/user/user.service';

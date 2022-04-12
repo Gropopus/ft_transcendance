@@ -111,7 +111,7 @@ export default	{
 				this.$router.push({name: 'login'})
 			}
 			else if (res.status == 409)
-				this.error = "Email or login already used by another user.";
+				this.error = "Email or login already in use";
 		},
 
 		async goBack() {
