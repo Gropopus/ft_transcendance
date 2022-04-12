@@ -339,7 +339,6 @@ export default	defineComponent ({
 		},
 
 		async challenge() {
-			// /challenge/:challengeMode/:challengeId
 			const ret = await fetch(` http://kittypong.fr:3000/api/game/newchallengeid/`, {
 				method: 'get',
     			headers: { 'content-type': 'application/json' }
@@ -511,7 +510,7 @@ export default	defineComponent ({
 
 		async fetchLadder() {
 			const res = await fetch(`http://kittypong.fr:3000/api/users`, {
-    			method: 'get', 
+    			method: 'get',
     			headers: { 'content-type': 'application/json' }
 			})
 			const ladder = await res.json();
