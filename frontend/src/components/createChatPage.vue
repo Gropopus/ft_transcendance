@@ -27,7 +27,6 @@
             </div>
             
             <div class="formElem">
-                <p v-if="error" class="error"> {{ error }} </p>
                 <label for="users">Add users</label> <br>
                 <div :key="username" v-for="username in usernameList">
                     {{ username }}
@@ -42,6 +41,7 @@
                         Add
                     </button>
                 </div>
+                <p v-if="error" class="error"> {{ error }} </p>
             </div>
             
 				<button @click="createChat()" class="submitButton">
@@ -82,10 +82,10 @@ export default	{
 		async createChat()	{
             this.error = "";
             if (!this.chatName || !this.chatDescription || !this.chatType)
-                this.error = "incomplete.";
-            else if (this.chatType == "protected" && !this.chatPassword)
+                this.error = "Incomplete";
+            else if (this.chatType == "protected" && (!this.chatPassword || this.chatPassword.length > 42))
             {
-                this.error = "Password needed.";
+                this.error = "Invalid password";
                 return ;
             }
             else
@@ -223,7 +223,7 @@ export default	{
 
 .chatForm > .submitButton
 {
-	margin-top:	4%;
+	margin-top:	3%;
 	display: flex;
 	justify-content: center;
 	align-items:	center;
@@ -240,8 +240,8 @@ export default	{
 	background:	var(--deep-blue-10);
 }
 .error {
-	margin-top: auto;
-	margin-bottom: 5%;
+	margin-top: 3%;
+	margin-bottom: 0px;
 	justify-content: top;
 	text-align: center;
 	border: solid 1px rgb(240, 69, 69);
