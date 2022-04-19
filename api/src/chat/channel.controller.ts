@@ -3,7 +3,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { JwtAuthGuard } from '../auth/login/guards/jwt.guard'
 import { Ichannel, ChannelType } from 'src/chat/model/channel.interface';
 import { ChannelService } from 'src/chat/channel.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UserService } from 'src/user/user.service';
 import { runInNewContext } from 'vm';
 import { MessageService } from './service/message.service';
@@ -158,11 +158,12 @@ export class ChannelController {
 
 	@Put(':userId/join/:channelId')
 	async joinChannel(@Param() params, @Body() bod) {
-		const userToAdd = await this.userService.findOne(params.userId);
-		const channel = await this.channelService.findOne(params.channelId);
-		const res = await this.channelService.boolUserBanedOnChannel(params.userId, params.channelId);
-		if (!res)
-			return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password, 0);
+			const userToAdd = await this.userService.findOne(params.userId);
+			const channel = await this.channelService.findOne(params.channelId);
+			const res = await this.channelService.boolUserBanedOnChannel(params.userId, params.channelId);
+			if (!res)
+				return this.channelService.addUserToChannel(params.channelId, userToAdd, bod.password, 0);
+			return of({ error: 'User banned;' }); 
 	}
 
 	@Get(':channelId/messages/:userId')

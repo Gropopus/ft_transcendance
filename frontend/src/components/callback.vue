@@ -44,9 +44,9 @@ export default	{
 			if (status == 401)
 				this.$router.push({name: 'Unauthorized'});
 			else if (status == 40)
-				this.$router.push({name: 'NotFound'});
+				this.$router.push({name: 'notFound'});
 			else if (status == 500)
-				this.$router.push({name: 'InternalServerError'});
+				this.$router.push({name: 'internalServerError'});
 			else
 				return false;
 			return true;

@@ -131,7 +131,6 @@ export default	defineComponent ({
 	},
 	
 	async mounted() {
-		/*this.channelsList;*/
 		this.all = await this.fetchAllChannels();
 		this.channelsList = await this.fetchChannelsList();
 		this.dmList = await this.getDMList();

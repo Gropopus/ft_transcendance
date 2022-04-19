@@ -196,7 +196,6 @@ export default	{
 	padding-left:	5%;
 	width:	50%;
 	height:	100%;
-	/* border:	solid 3px white; */
 	font-size:	20px;
 	font-family: MyanmarText;
 	font-weight:	bold;

@@ -34,7 +34,6 @@
 </template>
 
 <script lang="ts">
-//<!-- <button class="submit42Button" @click="loginWith42()"> -->
 export default	{
 	name: 'logPage',
 	props:	{

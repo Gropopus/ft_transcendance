@@ -651,7 +651,6 @@ export default	defineComponent ({
 	margin-bottom: 3%;
 	margin-right: 5%;
 	margin-left: 5%;
-	/* border: solid white 3px; */
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -671,10 +670,8 @@ export default	defineComponent ({
 .achievementsCol > div
 {
 	position: relative;
-	/* border: solid white 3px; */
 	margin-top: 3%;
 	margin-bottom: 3%;
-	/* min-width: 120px; */
 	flex: 1 1 1;
 	aspect-ratio: 1 / 1;
 	border-radius: 5px;

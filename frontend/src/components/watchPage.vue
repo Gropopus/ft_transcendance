@@ -44,8 +44,9 @@
 </template>
 
 <script lang="ts">
-// import { throwStatement } from '@babel/types';
+
 import { defineComponent } from 'vue'
+
 export default	defineComponent ({
 	name: 'watchPage',
 	props:	{
@@ -187,7 +188,6 @@ export default	defineComponent ({
 	border: solid 3px white;
 	border-radius: 12px;
 	height: 700px;
-	/* width: 700px; */
 	background: rgba(255, 255, 255, 0.3);
 }
 
@@ -196,13 +196,6 @@ export default	defineComponent ({
 	margin-top: 4%;
 	margin-right: 4%;
 	width: 25%;
-	/* text-align: center; */
-	/* float:	right;
-	width:	25%;
-	min-height:	500px;
-	border:	solid 3px white;
-	border-radius: 5px;
-	margin-bottom:	min(22px); */
 }
 
 .gameList > h1 {
@@ -219,7 +212,6 @@ export default	defineComponent ({
 }
 
 .vs {
-	/* flex: 1 1 0; */
 	display: flex;
 	align-items: center;
 	margin-top: 2%;
@@ -236,9 +228,6 @@ export default	defineComponent ({
 }
 
 .watchTitle {
-	/* margin-bottom: 4%;
-	width: 40%;
-	height: 20%; */
 	text-align: center;
 	color: rgb(255, 255, 255, 0.8);
 	font-size: 300%;
@@ -271,26 +260,16 @@ export default	defineComponent ({
 }
 
 .playerInfo > .userPicture > img {
-	/* display: block; */
 	overflow: hidden;
 	object-fit:cover;
 	border: solid 3px rgb(255, 228, 113);
 	border-radius: 100px;
-	/* width: 200%; */
 }
 
 .textInfo {
 	text-align: center;
 	margin-bottom: 5%;
 }
-
-.textInfo > h1 {
-
-}
-
-.textInfo > p {
-}
-
 
 .watchButton {
 	flex: 1 1 0;

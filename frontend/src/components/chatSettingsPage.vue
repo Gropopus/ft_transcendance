@@ -70,7 +70,7 @@
                 <h3> Banned users </h3>
                 <div :key="user.id" v-for="user in channelData.ban" class="banUser">
                     <p> {{ user.username }} </p>
-                    <button @click="unbanUser(user.id)" class="addButton" style="margin-top: 3%; margin-bottom: 3%;"> unban </button>
+                    <button v-if="role == 'owner' || role == 'admin'" @click="unbanUser(user.id)" class="addButton" style="margin-top: 3%; margin-bottom: 3%;"> unban </button>
                 </div>
             </div>
             <button v-if="role=='owner'" @click="deleteChannel()" class="delButton">Delete channel</button>
@@ -391,7 +391,6 @@ export default defineComponent ({
 	width:	50%;
     min-width: 800px;
 	height:	100%;
-	/* border:	solid 3px white; */
 	font-size:	20px;
 	font-family: MyanmarText;
 	font-weight:	bold;
@@ -412,7 +411,6 @@ export default defineComponent ({
     margin-top: 2%;
     margin-bottom: 2%;    
     width: 25%;
-    /* color:rgb(37, 46, 131) */
 }
 
 .displayUser > .username:hover {

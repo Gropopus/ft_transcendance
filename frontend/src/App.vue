@@ -17,12 +17,12 @@
 
 <script lang="ts">
 
-import AppNavigation from "./components/AppNavigation.vue";
+import appNavigation from "./components/appNavigation.vue";
 
 export default	{
   name: 'App',
   components: {
-      AppNavigation,
+      appNavigation,
   },
   data() {
     return {
@@ -58,9 +58,9 @@ export default	{
         'userProfile',
         'friends',
         'settings',
-        'InternalServerError',
+        'internalServerError',
         'Unauthorized',
-        'NotFound'
+        'notFound'
       ];
       for (let page of pageLog)
         if (page == name)

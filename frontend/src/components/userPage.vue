@@ -558,8 +558,6 @@ export default	defineComponent ({
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
 	text-align: center;
-	/* margin-right: 2%;
-	margin-left: 2%; */
 	margin-bottom: 0%;
 }
 
@@ -788,7 +786,6 @@ export default	defineComponent ({
 
 .StatsWin
 {
-	/* width:	100%; */
 	min-width: 700px;
 	min-height:	500px;
 	display:	flex;
@@ -798,8 +795,6 @@ export default	defineComponent ({
 
 .StatsArea
 {
-	/* width:	100%; */
-	/* min-width: 1300px; */
 	min-height:	500px;
 	border: solid white 3px;
 	border-top: none;

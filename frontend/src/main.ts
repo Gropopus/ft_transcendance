@@ -15,9 +15,9 @@ import settingsPage from './components/settingsPage.vue'
 import observePage from './components/observePage.vue'
 import callback from './components/callback.vue'
 import watchPage from './components/watchPage.vue'
-import channelsetting from './components/chat-setting.vue'
-import NotFound from './components/NotFound.vue'
-import InternalServerError from './components/InternalServerError.vue'
+import channelsetting from './components/chatSettingsPage.vue'
+import notFound from './components/notFound.vue'
+import internalServerError from './components/internalServerError.vue'
 import Unauthorized from './components/unauthorized.vue'
 import challengePage from './components/challengePage.vue'
 import unauthorizedVue from './components/unauthorized.vue'
@@ -121,13 +121,13 @@ routes: [
     },
     {
         path: "/:catchAll(.*)",
-        name: 'NotFound',
-        component: NotFound,
+        name: 'notFound',
+        component: notFound,
     },
     {
         path: '/500',
-        name: 'InternalServerError',
-        component: InternalServerError,
+        name: 'internalServerError',
+        component: internalServerError,
     },
     {
         path: '/401',

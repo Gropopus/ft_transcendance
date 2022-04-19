@@ -391,11 +391,9 @@ export default	{
 {
 	background:	linear-gradient(135deg, var(blue), var(--main-color-2))	fixed;
 	flex-direction:	row;
-	/* text-align: center; */
 	margin-right: 3%;
 	margin-left: 3%;
 	margin-bottom: 0%;
-	/* min-width: 1000px; */
 }
 
 .settings {
@@ -428,7 +426,6 @@ export default	{
 	font-size:	130%;
 	padding:	6px;
 	width:	100%;
-	/* margin-left: 10%; */
 }
 
 .secret > input
@@ -454,9 +451,7 @@ export default	{
 
 .title {
 	margin-top: 1.5%;
-	/* width:		30%; */
 	font-size: 100%;
-	/* margin-left: 10%; */
 }
 
 .selector {
@@ -473,9 +468,6 @@ export default	{
 }
 
 .selector:hover	{
-	/* background: rgba(255, 255, 255, 0.5);
-	color: white;
-	cursor: pointer;  */
 	background-color: white;
 	cursor: pointer;
 	color: black;
@@ -518,9 +510,6 @@ export default	{
 
 .submitButton:hover
 {
-	/* background: rgba(255, 255, 255, 0.5);
-	color: white;
-	cursor: pointer;  */
 	background-color: white;
 	cursor: pointer;
 	color: black;
@@ -536,7 +525,6 @@ export default	{
 	display: flex;
 	flex-direction: row;
 	gap: 3%;
-	/* flex: 1 1 0; */
 	border: solid 3px white;
 	margin-bottom: 2%;
 	align-content: center;
@@ -615,11 +603,6 @@ export default	{
 }
 
 .picture > img {
-	/*margin-left: 2%;
-	margin-bottom: 2%;
-	margin-top: 2%;
-	min-height: 150px;
-	min-width: 150px;*/
 	border-radius: 50%;
 	overflow: hidden;
     width: 200px;

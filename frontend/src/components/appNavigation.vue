@@ -11,7 +11,7 @@
 
 <script lang="ts">
 	export default	{
-        name: 'AppNavigation',
+        name: 'appNavigation',
         data() {
             return {
                 navbuttons: [
