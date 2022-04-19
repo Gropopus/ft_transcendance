@@ -11,8 +11,8 @@ The website is available at localhost:4200
 
 ## Launch
 ```
-$ git clone https://github.com/adbenoit-9/42_ft_transcendance.git
-$ cd 42_ft_transcendance
+$ git clone https://github.com/Gropopus/ft_transcendance
+$ cd ft_transcendance
 $ docker-compose up --build
 ```
 
@@ -20,7 +20,7 @@ $ docker-compose up --build
 ![4](preview.png)
 
 
-*In collaboration with [abenoit][1], [gmaris][2] and [thsembel][3] 🔥*
+*In collaboration with [abenoit][1], [gmaris][2] 🔥*
 
 [1]: https://github.com/42-abenoit
 [2]: https://github.com/gmaris42
